@@ -1,75 +1,80 @@
 """
-Publish / schedule the Reel via the Metricool API.
+Publish the rendered Short to YouTube via the Data API v3 (videos.insert).
 
-ISOLATION NOTE: this is the single most likely file to need updates, because
-scheduler APIs change endpoints. Everything Metricool-specific lives here. If
-their API shifts, or you move to a different scheduler / the Meta Graph API,
-you only rewrite schedule_reel().
+Auth: uses OAuth with a long-lived refresh token. You generate the refresh
+token ONCE, locally, with auth_setup.py, then store these as GitHub secrets:
+    YOUTUBE_CLIENT_ID
+    YOUTUBE_CLIENT_SECRET
+    YOUTUBE_REFRESH_TOKEN
 
-Metricool requires the Advanced+ plan for API access. You need:
-  METRICOOL_USER_TOKEN  - from your Metricool account API settings
-  METRICOOL_USER_ID     - your account id
-  METRICOOL_BLOG_ID     - the "brand"/profile id for the connected IG account
+videos.insert costs ~100 quota units; the free daily quota is 10,000, so one
+daily upload plus analytics reads is comfortably free.
 
-Flow per Metricool's scheduler API:
-  1. upload the media file -> get a media reference / URL
-  2. create a scheduled post (network=instagram, type=reel) with that media + caption
-
-Endpoints below follow Metricool's documented v2 scheduler API shape. Verify
-against their current docs when you set up; adjust paths/fields if they differ.
+To be classified as a Short, the video must be vertical and <= 3 minutes and
+include #Shorts in the title or description (we add it to the description).
 """
 import os
-import datetime
-import requests
 from pathlib import Path
 
-BASE = "https://app.metricool.com/api"
-TOKEN = os.environ["METRICOOL_USER_TOKEN"]
-USER_ID = os.environ["METRICOOL_USER_ID"]
-BLOG_ID = os.environ["METRICOOL_BLOG_ID"]
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaFileUpload
 
-# how many hours from now to schedule (gives the upload time to process)
-SCHEDULE_OFFSET_HOURS = int(os.environ.get("SCHEDULE_OFFSET_HOURS", "3"))
+CLIENT_ID = os.environ["YOUTUBE_CLIENT_ID"]
+CLIENT_SECRET = os.environ["YOUTUBE_CLIENT_SECRET"]
+REFRESH_TOKEN = os.environ["YOUTUBE_REFRESH_TOKEN"]
+TOKEN_URI = "https://oauth2.googleapis.com/token"
 
-
-def _headers():
-    return {"X-Mc-Auth": TOKEN}
-
-
-def _upload_media(video_path: Path) -> str:
-    """Upload the MP4, return the media URL/reference Metricool gives back."""
-    url = f"{BASE}/v2/media/upload"
-    params = {"userId": USER_ID, "blogId": BLOG_ID}
-    with open(video_path, "rb") as f:
-        files = {"file": (video_path.name, f, "video/mp4")}
-        resp = requests.post(url, headers=_headers(), params=params,
-                             files=files, timeout=300)
-    resp.raise_for_status()
-    data = resp.json()
-    # Metricool returns the hosted media url; field name may be 'url' or 'data'
-    return data.get("url") or data.get("data") or data["mediaUrl"]
+# 22 = People & Blogs. 27 = Education. Either fits Stoic content.
+CATEGORY_ID = os.environ.get("YOUTUBE_CATEGORY_ID", "22")
 
 
-def schedule_reel(video_path: Path, caption: str) -> dict:
-    media_url = _upload_media(video_path)
+def _service():
+    creds = Credentials(
+        token=None,
+        refresh_token=REFRESH_TOKEN,
+        token_uri=TOKEN_URI,
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+        scopes=["https://www.googleapis.com/auth/youtube.upload",
+                "https://www.googleapis.com/auth/youtube.readonly"],
+    )
+    return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
-    publish_at = (
-        datetime.datetime.utcnow()
-        + datetime.timedelta(hours=SCHEDULE_OFFSET_HOURS)
-    ).strftime("%Y-%m-%dT%H:%M:%S")
 
-    url = f"{BASE}/v2/scheduler/posts"
-    params = {"userId": USER_ID, "blogId": BLOG_ID}
-    payload = {
-        "providers": [{"network": "instagram"}],
-        "publicationDate": {"dateTime": publish_at, "timezone": "America/Toronto"},
-        "text": caption,
-        "instagramData": {"type": "REEL"},
-        "media": [media_url],
-        "autoPublish": True,
+def publish_short(video_path: Path, title: str, description: str,
+                  tags: list[str]) -> dict:
+    yt = _service()
+
+    # YouTube titles cap at 100 chars; ensure #Shorts is present.
+    title = title[:90].rstrip()
+    if "#shorts" not in (title + description).lower():
+        description = description + "\n\n#Shorts"
+
+    body = {
+        "snippet": {
+            "title": title,
+            "description": description,
+            "tags": [t.lstrip("#") for t in tags][:15],
+            "categoryId": CATEGORY_ID,
+        },
+        "status": {
+            "privacyStatus": "public",
+            "selfDeclaredMadeForKids": False,
+        },
     }
-    resp = requests.post(url, headers=_headers(), params=params,
-                         json=payload, timeout=120)
-    resp.raise_for_status()
-    body = resp.json()
-    return {"status": "scheduled", "publish_at": publish_at, "response": body}
+
+    media = MediaFileUpload(str(video_path), mimetype="video/mp4",
+                            resumable=True, chunksize=-1)
+    req = yt.videos().insert(part="snippet,status", body=body, media_body=media)
+
+    response = None
+    while response is None:
+        _, response = req.next_chunk()
+
+    vid = response["id"]
+    return {
+        "status": "published",
+        "video_id": vid,
+        "url": f"https://youtube.com/shorts/{vid}",
+    }

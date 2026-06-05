@@ -3,13 +3,12 @@ Append each post to data/posts.csv. This file is committed back to the repo by
 the GitHub Action, so your full posting history lives in git for free.
 """
 import csv
-import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 LOG = ROOT / "data" / "posts.csv"
 
-FIELDS = ["date", "theme", "author", "quote", "caption", "scheduled_for", "raw_result"]
+FIELDS = ["date", "theme", "author", "quote", "caption", "video_url", "video_id"]
 
 
 def log_post(date, theme, quote, author, caption, publish_result):
@@ -24,6 +23,6 @@ def log_post(date, theme, quote, author, caption, publish_result):
             "author": author,
             "quote": quote,
             "caption": caption.replace("\n", " / "),
-            "scheduled_for": publish_result.get("publish_at", ""),
-            "raw_result": json.dumps(publish_result.get("response", {}))[:500],
+            "video_url": publish_result.get("url", ""),
+            "video_id": publish_result.get("video_id", ""),
         })

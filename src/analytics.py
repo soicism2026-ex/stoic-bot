@@ -1,76 +1,91 @@
 """
-Pull recent Instagram analytics from Metricool and append to data/analytics.csv.
+Pull stats for the channel's recent uploads via the YouTube Data API and append
+to data/analytics.csv. Free: videos.list and playlistItems.list cost ~1 unit each.
 
-Runs as its own scheduled job (a day after posting, so numbers have accrued).
-Like publish.py, all Metricool-specific calls are isolated here.
-
-Metrics pulled per post where available: reach, impressions/views, likes,
-comments, saves, shares. Field names follow Metricool's analytics API; adjust
-if their docs differ when you wire it up.
+Strategy (quota-cheap, no expensive search.list):
+  1. channels.list -> get the "uploads" playlist id (1 unit)
+  2. playlistItems.list -> recent video ids from that playlist (1 unit)
+  3. videos.list (statistics) -> views/likes/comments for those ids (1 unit)
 """
 import os
 import csv
 import datetime
-import requests
 from pathlib import Path
 
-BASE = "https://app.metricool.com/api"
-TOKEN = os.environ["METRICOOL_USER_TOKEN"]
-USER_ID = os.environ["METRICOOL_USER_ID"]
-BLOG_ID = os.environ["METRICOOL_BLOG_ID"]
+from google.oauth2.credentials import Credentials
+from googleapiclient.discovery import build
+
+CLIENT_ID = os.environ["YOUTUBE_CLIENT_ID"]
+CLIENT_SECRET = os.environ["YOUTUBE_CLIENT_SECRET"]
+REFRESH_TOKEN = os.environ["YOUTUBE_REFRESH_TOKEN"]
+TOKEN_URI = "https://oauth2.googleapis.com/token"
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "analytics.csv"
-FIELDS = ["pulled_on", "post_date", "reach", "views", "likes",
-          "comments", "saves", "shares", "permalink"]
+FIELDS = ["pulled_on", "published_at", "video_id", "title",
+          "views", "likes", "comments", "url"]
+MAX_VIDEOS = 15
 
 
-def _headers():
-    return {"X-Mc-Auth": TOKEN}
+def _service():
+    creds = Credentials(
+        token=None, refresh_token=REFRESH_TOKEN, token_uri=TOKEN_URI,
+        client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
+        scopes=["https://www.googleapis.com/auth/youtube.readonly"],
+    )
+    return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
 
-def fetch_recent(days_back: int = 7):
-    end = datetime.date.today()
-    start = end - datetime.timedelta(days=days_back)
-    url = f"{BASE}/v2/analytics/posts"
-    params = {
-        "userId": USER_ID,
-        "blogId": BLOG_ID,
-        "network": "instagram",
-        "from": start.isoformat(),
-        "to": end.isoformat(),
-    }
-    resp = requests.get(url, headers=_headers(), params=params, timeout=120)
-    resp.raise_for_status()
-    return resp.json().get("data", [])
+def fetch_recent():
+    yt = _service()
+    ch = yt.channels().list(part="contentDetails", mine=True).execute()
+    uploads = ch["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+
+    items = yt.playlistItems().list(
+        part="contentDetails,snippet", playlistId=uploads,
+        maxResults=MAX_VIDEOS,
+    ).execute()
+    vids = [(i["contentDetails"]["videoId"],
+             i["snippet"]["title"],
+             i["contentDetails"].get("videoPublishedAt", ""))
+            for i in items.get("items", [])]
+    if not vids:
+        return []
+
+    stats = yt.videos().list(
+        part="statistics", id=",".join(v[0] for v in vids),
+    ).execute()
+    smap = {s["id"]: s.get("statistics", {}) for s in stats.get("items", [])}
+
+    rows = []
+    for vid, title, pub in vids:
+        s = smap.get(vid, {})
+        rows.append({
+            "video_id": vid, "title": title, "published_at": pub,
+            "views": s.get("viewCount", ""),
+            "likes": s.get("likeCount", ""),
+            "comments": s.get("commentCount", ""),
+            "url": f"https://youtube.com/shorts/{vid}",
+        })
+    return rows
 
 
-def append_rows(posts):
+def append_rows(rows):
     new = not OUT.exists()
     pulled = datetime.date.today().isoformat()
     with open(OUT, "a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)
         if new:
             w.writeheader()
-        for p in posts:
-            m = p.get("metrics", p)
-            w.writerow({
-                "pulled_on": pulled,
-                "post_date": p.get("date") or p.get("publishedAt", ""),
-                "reach": m.get("reach", ""),
-                "views": m.get("views") or m.get("impressions", ""),
-                "likes": m.get("likes", ""),
-                "comments": m.get("comments", ""),
-                "saves": m.get("saved") or m.get("saves", ""),
-                "shares": m.get("shares", ""),
-                "permalink": p.get("permalink", ""),
-            })
+        for r in rows:
+            r["pulled_on"] = pulled
+            w.writerow(r)
 
 
 def main():
-    posts = fetch_recent()
-    append_rows(posts)
-    print(f"Wrote {len(posts)} analytics rows to {OUT.name}")
+    rows = fetch_recent()
+    append_rows(rows)
+    print(f"Wrote {len(rows)} analytics rows to {OUT.name}")
 
 
 if __name__ == "__main__":
