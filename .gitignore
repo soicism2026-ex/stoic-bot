@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+data/*_voice.mp3
+data/*_reel.mp4
+.env
+client_secret.json
