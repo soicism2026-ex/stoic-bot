@@ -2,8 +2,7 @@ name: pull-analytics
 
 on:
   schedule:
-    # 14:00 UTC daily = 10:00 America/Toronto. Pulls the trailing week's numbers.
-    - cron: "0 14 * * *"
+    - cron: "0 19 * * *"   # 19:00 UTC = 15:00 ET
   workflow_dispatch: {}
 
 permissions:
@@ -20,9 +19,9 @@ jobs:
       - run: pip install -r requirements.txt
       - name: Fetch analytics
         env:
-          METRICOOL_USER_TOKEN: ${{ secrets.METRICOOL_USER_TOKEN }}
-          METRICOOL_USER_ID: ${{ secrets.METRICOOL_USER_ID }}
-          METRICOOL_BLOG_ID: ${{ secrets.METRICOOL_BLOG_ID }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python src/analytics.py
       - name: Commit analytics
         run: |
