@@ -157,7 +157,27 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     bg_path = Path(out_path).with_suffix(".bg.mp4")
     bg = fetch_background(theme, bg_path)
 
-    quote_lines = textwrap.wrap(quote, width=24) or [quote]
+    # Pick a font size and wrap width that keep every line inside a safe
+    # horizontal band. A fixed char-count wrap at a fixed font size lets long
+    # quotes (or wide glyphs in a bold proportional font) produce lines wider
+    # than the 1080px frame; the centered drawtext x then goes negative and the
+    # text bleeds off both edges. Scale the font down for longer quotes and
+    # derive the wrap width from the usable width so lines actually fit.
+    MARGIN_X = 70                      # safe margin on each side
+    usable_w = W - 2 * MARGIN_X        # widest a line may be (px)
+
+    if len(quote) > 180:
+        QUOTE_FONTSIZE = 50
+    elif len(quote) > 110:
+        QUOTE_FONTSIZE = 58
+    else:
+        QUOTE_FONTSIZE = 68
+
+    # Conservative average advance width for the bold proportional font, so the
+    # char-based wrap stays comfortably within `usable_w`.
+    avg_char_w = 0.62 * QUOTE_FONTSIZE
+    wrap_width = max(12, int(usable_w / avg_char_w))
+    quote_lines = textwrap.wrap(quote, width=wrap_width) or [quote]
     author_txt = _escape(f"— {author}")
 
     day = date.today().toordinal()
@@ -180,7 +200,6 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # Y offsets. Passing the wrapped quote to a single drawtext with embedded "\n"
     # is unreliable across ffmpeg builds (the newlines collapse and the lines draw
     # on top of each other), so we lay each line out ourselves around center_expr.
-    QUOTE_FONTSIZE = 68
     LINE_H = QUOTE_FONTSIZE + 22  # font height + line spacing
     n_lines = len(quote_lines)
     half_block = (n_lines * LINE_H) // 2
@@ -213,10 +232,13 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         for i, line in enumerate(quote_lines):
             offset = i * LINE_H - half_block
             line_y = f"{center_expr}{offset:+d}"
+            # Center horizontally, but never let the line start left of the safe
+            # margin: if a line is still wider than the usable band, clamp x so it
+            # stays on-screen rather than bleeding off both edges.
             vf_parts.append(
                 f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
                 f"fontcolor=white:fontsize={QUOTE_FONTSIZE}:"
-                f"x=(w-text_w)/2:y={line_y}:"
+                f"x='max({MARGIN_X}\\,(w-text_w)/2)':y={line_y}:"
                 f"box=0:shadowcolor=black@0.6:shadowx=3:shadowy=3"
             )
         vf_parts.append(
