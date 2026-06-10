@@ -157,8 +157,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     bg_path = Path(out_path).with_suffix(".bg.mp4")
     bg = fetch_background(theme, bg_path)
 
-    wrapped = "\n".join(textwrap.wrap(quote, width=24))
-    quote_txt = _escape(wrapped)
+    quote_lines = textwrap.wrap(quote, width=24) or [quote]
     author_txt = _escape(f"— {author}")
 
     day = date.today().toordinal()
@@ -170,16 +169,22 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
 
     # vary text vertical position: 0 -> centered, 1 -> upper third
     upper_third = (day % 2) == 1
-    if caption_band:
-        # park the quote/author in the upper third to clear the caption band
-        quote_y = "h/3-text_h/2"
-        author_y = "h/3+text_h/2+90"
-    elif upper_third:
-        quote_y = "h/3-text_h/2"
-        author_y = "h/3+text_h/2+90"
+    # When captions occupy the lower-middle, park the quote/author in the upper
+    # third to clear the caption band; otherwise keep the date-varied placement.
+    if caption_band or upper_third:
+        center_expr = "h/3"
     else:
-        quote_y = "(h-text_h)/2-80"
-        author_y = "(h-text_h)/2+220"
+        center_expr = "(h/2)-80"
+
+    # Render the quote as one drawtext per wrapped line with explicit, deterministic
+    # Y offsets. Passing the wrapped quote to a single drawtext with embedded "\n"
+    # is unreliable across ffmpeg builds (the newlines collapse and the lines draw
+    # on top of each other), so we lay each line out ourselves around center_expr.
+    QUOTE_FONTSIZE = 68
+    LINE_H = QUOTE_FONTSIZE + 22  # font height + line spacing
+    n_lines = len(quote_lines)
+    half_block = (n_lines * LINE_H) // 2
+    author_y = f"{center_expr}+{half_block + 40}"
 
     # vary color grading by date
     br, sat, con = _GRADES[day % len(_GRADES)]
@@ -199,12 +204,15 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     ]
 
     if show_quote:
-        vf_parts.append(
-            f"drawtext=fontfile='{FONT}':text='{quote_txt}':"
-            f"fontcolor=white:fontsize=68:line_spacing=14:"
-            f"x=(w-text_w)/2:y={quote_y}:"
-            f"box=0:shadowcolor=black@0.6:shadowx=3:shadowy=3"
-        )
+        for i, line in enumerate(quote_lines):
+            offset = i * LINE_H - half_block
+            line_y = f"{center_expr}{offset:+d}"
+            vf_parts.append(
+                f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
+                f"fontcolor=white:fontsize={QUOTE_FONTSIZE}:"
+                f"x=(w-text_w)/2:y={line_y}:"
+                f"box=0:shadowcolor=black@0.6:shadowx=3:shadowy=3"
+            )
         vf_parts.append(
             f"drawtext=fontfile='{FONT}':text='{author_txt}':"
             f"fontcolor=white@0.85:fontsize=44:"
