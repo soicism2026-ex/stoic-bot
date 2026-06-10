@@ -112,10 +112,18 @@ def fetch_background(theme: str, out_path: Path) -> Path:
     the local rotate-by-date clip and returns that path instead.
     """
     out_path = Path(out_path)
+    query = _search_term(theme)
     try:
         path = _fetch_from_pexels(theme, out_path)
-        print(f"  background: pexels ({_search_term(theme)}) -> {path.name}")
+        print(f"[background] SOURCE=PEXELS query='{query}' file={path.name}", flush=True)
         return path
     except Exception as e:  # noqa: BLE001 — any failure must fall back
-        print(f"  background: pexels failed ({e}); using local clip", file=sys.stderr)
-        return _rotate_local()
+        local = _rotate_local()
+        print(
+            f"[background] SOURCE=LOCAL_FALLBACK query='{query}' reason={e} "
+            f"file={local.name} "
+            f"(set the PEXELS_API_KEY repo secret to get fresh clips)",
+            file=sys.stderr, flush=True,
+        )
+        print(f"[background] SOURCE=LOCAL_FALLBACK file={local.name}", flush=True)
+        return local
