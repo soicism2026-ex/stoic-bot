@@ -12,7 +12,9 @@ Composition:
     at a time, the active word swept from soft white to amber as it is spoken
     (driven by the per-word timings from tts.synthesize_voice)
   - a slow Ken Burns push-in (zoompan) for subtle motion
-  - the ElevenLabs voiceover as the audio track
+  - a scroll-stopping hook card flashed over the first couple seconds, then faded
+  - the ElevenLabs voiceover as the audio track, with a synthesized attention
+    "whoosh" mixed under the opening so the start grabs the ear as well as the eye
   - output length = length of the voiceover
 """
 import os
@@ -34,6 +36,14 @@ CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
 CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "74"))
 CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "470"))
 
+# Hook controls — the scroll-stopping opener. A big text card flashes for the
+# first few seconds and an attention "whoosh" sound is mixed under the start.
+HOOK_TEXT_ON = os.environ.get("REEL_HOOK_TEXT", "1") not in ("0", "false", "False")
+HOOK_SOUND_ON = os.environ.get("REEL_HOOK_SOUND", "1") not in ("0", "false", "False")
+HOOK_HOLD = float(os.environ.get("REEL_HOOK_HOLD", "2.2"))      # seconds fully shown
+HOOK_FONTSIZE = int(os.environ.get("REEL_HOOK_FONTSIZE", "94"))
+HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFC83C")      # amber
+
 W, H = 1080, 1920
 
 
@@ -43,6 +53,59 @@ def _audio_duration(audio_path: Path) -> float:
         "-of", "json", str(audio_path),
     ])
     return float(json.loads(out)["format"]["duration"])
+
+
+def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
+    """Synthesize a short attention 'whoosh + soft impact' to `out_path` (wav).
+
+    Built entirely from ffmpeg's lavfi sources so nothing binary is committed to
+    the repo: a band-limited pink-noise swell that rises then falls (the whoosh)
+    over a low decaying sine (the impact). Returns the written path.
+    """
+    swell = (
+        f"anoisesrc=d={dur}:c=pink:a=0.6,"
+        "highpass=f=350,lowpass=f=6500,"
+        # rise over the first 0.55s, then fall away — reads as a whoosh.
+        f"volume='min(1,t/0.55)*max(0,1-(t-0.55)/{dur - 0.55:.3f})':eval=frame"
+    )
+    impact = (
+        f"sine=frequency=85:duration={dur},"
+        "volume='max(0,1-t/0.9)':eval=frame"
+    )
+    fc = (
+        f"{swell}[wh];{impact}[im];"
+        f"[wh][im]amix=inputs=2:duration=longest,"
+        f"afade=t=out:st={dur - 0.3:.3f}:d=0.3,volume=1.6"
+    )
+    subprocess.run(
+        ["ffmpeg", "-y", "-filter_complex", fc, "-ar", "44100", "-ac", "2",
+         str(out_path)],
+        check=True, capture_output=True,
+    )
+    return out_path
+
+
+def _mix_intro_sound(voice_path: Path, hook_path: Path, out_path: Path) -> Path:
+    """Overlay the hook sound under the very start of the voiceover.
+
+    Keeps the output as long as the voiceover (`duration=first`); the hook simply
+    stops contributing once it ends. The voice stays dominant so the opening
+    words remain clear. Returns the mixed audio path.
+    """
+    fc = (
+        "[0:a]volume=1.0[v];[1:a]volume=0.8[h];"
+        "[v][h]amix=inputs=2:duration=first:dropout_transition=0,"
+        # restore the loudness amix's averaging removed, then hard-cap so the
+        # overlap of a loud word and the whoosh can never clip.
+        "volume=1.9,alimiter=limit=0.95[a]"
+    )
+    subprocess.run(
+        ["ffmpeg", "-y", "-i", str(voice_path), "-i", str(hook_path),
+         "-filter_complex", fc, "-map", "[a]",
+         "-c:a", "aac", "-b:a", "192k", str(out_path)],
+        check=True, capture_output=True,
+    )
+    return out_path
 
 
 def _escape(text: str) -> str:
@@ -150,8 +213,23 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
-                theme: str = "", word_timings: list = None) -> Path:
-    dur = _audio_duration(audio_path) + 1.0  # small tail
+                theme: str = "", word_timings: list = None,
+                hook: str = "") -> Path:
+    # Mix an attention "whoosh" under the opening before anything else so the
+    # rest of the pipeline just sees a normal audio track. Never let it break a
+    # run: on any failure fall back to the raw voiceover.
+    audio_for_render = audio_path
+    if HOOK_SOUND_ON:
+        try:
+            hook_wav = Path(out_path).with_suffix(".hook.wav")
+            mixed = Path(out_path).with_suffix(".mix.m4a")
+            _make_hook_sound(hook_wav)
+            _mix_intro_sound(audio_path, hook_wav, mixed)
+            audio_for_render = mixed
+        except Exception as e:  # noqa: BLE001
+            print(f"  hook sound unavailable ({e}); using plain voiceover")
+
+    dur = _audio_duration(audio_for_render) + 1.0  # small tail
 
     # fresh Pexels clip (theme-matched) with safe local fallback
     bg_path = Path(out_path).with_suffix(".bg.mp4")
@@ -226,6 +304,27 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             f"shadowcolor=black@0.6:shadowx=2:shadowy=2"
         )
 
+    # Hook card: big, bold, scroll-stopping text flashed over the opening, then
+    # faded out so the clean quote is what remains. Drawn after the quote so it
+    # sits on top during those first seconds.
+    if hook and HOOK_TEXT_ON:
+        hook_lines = textwrap.wrap(hook.upper(), width=15) or [hook.upper()]
+        HOOK_LINE_H = HOOK_FONTSIZE + 18
+        h_half = (len(hook_lines) * HOOK_LINE_H) // 2
+        fade = 0.4  # seconds to fade the card out after HOOK_HOLD
+        for i, line in enumerate(hook_lines):
+            offset = i * HOOK_LINE_H - h_half
+            line_y = f"(h/2)-150{offset:+d}"
+            vf_parts.append(
+                f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
+                f"fontcolor={HOOK_COLOR}:fontsize={HOOK_FONTSIZE}:"
+                f"x=(w-text_w)/2:y={line_y}:"
+                f"borderw=7:bordercolor=black@0.9:"
+                f"shadowcolor=black@0.7:shadowx=3:shadowy=3:"
+                f"alpha='if(lt(t,{HOOK_HOLD}),1,max(0,1-(t-{HOOK_HOLD})/{fade}))':"
+                f"enable='lt(t,{HOOK_HOLD + fade})'"
+            )
+
     # burn in karaoke captions last so they sit on top
     ass_path = None
     if caption_band:
@@ -238,7 +337,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     cmd = [
         "ffmpeg", "-y",
         "-stream_loop", "-1", "-i", str(bg),   # loop bg to cover audio length
-        "-i", str(audio_path),
+        "-i", str(audio_for_render),
         "-t", f"{dur:.2f}",
         "-vf", vf,
         "-map", "0:v", "-map", "1:a",
