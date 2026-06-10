@@ -35,11 +35,16 @@ def main():
     # 1. Content
     content = generate_content()
     print(f"  theme: {content['theme']}")
+    print(f"  hook:  {content['hook']}")
     print(f"  quote: {content['quote'][:60]}...")
 
-    # 2. Voiceover (+ per-word timings for karaoke captions)
+    # 2. Voiceover (+ per-word timings for karaoke captions). The hook is spoken
+    #    first so the opening audio matches the on-screen hook card, then flows
+    #    into the script. word_timings cover the combined line for the captions.
+    hook = content["hook"].strip()
+    spoken_text = f"{hook.rstrip('.!? ')}. {content['voiceover_text']}"
     audio_path = OUT / f"{today}_voice.mp3"
-    audio_path, word_timings = synthesize_voice(content["voiceover_text"], audio_path)
+    audio_path, word_timings = synthesize_voice(spoken_text, audio_path)
     print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings)")
 
     # 3. Render
@@ -51,6 +56,7 @@ def main():
         out_path=video_path,
         theme=content["theme"],
         word_timings=word_timings,
+        hook=hook,
     )
     print(f"  rendered -> {video_path.name}")
 

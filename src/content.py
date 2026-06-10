@@ -82,8 +82,14 @@ phrasing of a real passage is fine, but it must preserve the author's actual mea
 and wording; do not turn it into a new aphorism. Attribute to the correct author.
 - Draw from the full breadth of the author's work, not only their most famous lines. \
 Favor lesser-known but genuine passages over over-quoted "greatest hits."
-- Voiceover script: 18-35 seconds spoken (~45-90 words). Open with a hook in the \
-first line. Plain, grounded, masculine-neutral tone. No hashtags in the voiceover.
+- Hook: a 3-7 word scroll-stopping opener — a blunt claim or provocative question \
+(e.g. "You are already dying." / "Stop waiting to live."). It is spoken first and \
+flashed large on screen in the opening seconds to grab attention before the swipe. \
+Punchy and plain; no author name, no quotation marks, no hashtags. It must set up the \
+quote's idea WITHOUT quoting or restating the passage.
+- Voiceover script: 18-35 seconds spoken (~45-90 words). It is spoken right AFTER the \
+hook, so flow naturally into the idea and do NOT repeat the hook line. Plain, grounded, \
+masculine-neutral tone. No hashtags in the voiceover.
 - Caption: 1-2 sentences that reframe the idea for daily life + one soft question \
 to drive comments.
 - Hashtags: 8-12, mixing broad (#stoicism #discipline) and mid-size niche tags.
@@ -93,6 +99,7 @@ Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
   "theme": "...",
   "quote": "...",
   "author": "<the exact author name you were assigned>",
+  "hook": "...",
   "voiceover_text": "...",
   "caption": "...",
   "hashtags": ["#...", "..."]
@@ -175,7 +182,7 @@ def generate_content() -> dict:
         raw = raw.split("```")[1].lstrip("json").strip()
     data = json.loads(raw)
 
-    required = {"theme", "quote", "author", "voiceover_text", "caption", "hashtags"}
+    required = {"theme", "quote", "author", "hook", "voiceover_text", "caption", "hashtags"}
     missing = required - data.keys()
     if missing:
         raise ValueError(f"Claude response missing keys: {missing}")
