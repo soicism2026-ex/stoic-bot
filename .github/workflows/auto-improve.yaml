@@ -1,8 +1,9 @@
 name: Auto-improve stoic-bot
+
 on:
   schedule:
-    - cron: '0 6 * * 1'  # Mondays 6am UTC
-  workflow_dispatch:
+    - cron: "0 6 * * *"   # daily at 06:00 UTC
+  workflow_dispatch: {}
 
 permissions:
   contents: write
@@ -13,17 +14,43 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
       - name: Fetch analytics
-        run: python scripts/fetch_analytics.py > analytics.json
         env:
-          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/fetch_analytics.py > analytics.json
+
       - uses: anthropics/claude-code-action@v1
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: |
-            Read analytics.json and IMPROVEMENTS.md (log of past changes).
-            Identify the single highest-impact improvement to retention or
-            CTR based on the data. Implement it, run the test render script
-            to verify a video still generates, append your change + rationale
-            to IMPROVEMENTS.md, and open a PR.
+            Read analytics.json, QA_LOG.md, and IMPROVEMENTS.md.
+
+            DAILY SCOPE: fix any defects logged in QA_LOG.md (rendering bugs,
+            caption clipping, sync drift) — implement fixes directly in the
+            relevant source files (src/render.py, src/tts.py, etc.).
+
+            WEEKLY SCOPE (only if today is Monday): based on at least 7 videos
+            of analytics data in analytics.json, propose and implement ONE
+            strategy improvement to retention or CTR. Never repeat or revert a
+            change already listed in IMPROVEMENTS.md.
+
+            Verify the pipeline still works: run `python src/main.py` with
+            REEL_CAPTIONS=0 and a stub audio if ElevenLabs credentials are
+            unavailable — the goal is confirming the render step doesn't crash,
+            not a full end-to-end run.
+
+            Append what you changed and why (with today's date) to
+            IMPROVEMENTS.md.
+
+            Open a PR with the changes.
           claude_args: "--max-turns 40"
