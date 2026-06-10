@@ -49,6 +49,7 @@ def main():
         author=content["author"],
         audio_path=audio_path,
         out_path=video_path,
+        theme=content["theme"],
     )
     print(f"  rendered -> {video_path.name}")
 
