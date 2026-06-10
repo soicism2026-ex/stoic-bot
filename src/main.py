@@ -37,10 +37,10 @@ def main():
     print(f"  theme: {content['theme']}")
     print(f"  quote: {content['quote'][:60]}...")
 
-    # 2. Voiceover
+    # 2. Voiceover (+ per-word timings for karaoke captions)
     audio_path = OUT / f"{today}_voice.mp3"
-    synthesize_voice(content["voiceover_text"], audio_path)
-    print(f"  voiceover -> {audio_path.name}")
+    audio_path, word_timings = synthesize_voice(content["voiceover_text"], audio_path)
+    print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings)")
 
     # 3. Render
     video_path = OUT / f"{today}_reel.mp4"
@@ -50,6 +50,7 @@ def main():
         audio_path=audio_path,
         out_path=video_path,
         theme=content["theme"],
+        word_timings=word_timings,
     )
     print(f"  rendered -> {video_path.name}")
 
