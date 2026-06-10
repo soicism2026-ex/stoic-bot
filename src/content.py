@@ -17,12 +17,19 @@ from pathlib import Path
 
 import anthropic
 
+from logbook import classify_title_style
+
 client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
 MODEL = "claude-opus-4-8"
 
 ROOT = Path(__file__).resolve().parent.parent
 LOG = ROOT / "data" / "posts.csv"
+ANALYTICS = ROOT / "data" / "analytics.csv"
+
+# Only start steering on performance once we have enough measured posts that the
+# top/bottom signal isn't just noise.
+MIN_MEASURED_POSTS = 14
 
 AUTHORS = ["Marcus Aurelius", "Seneca", "Epictetus"]
 THEMES = [
@@ -73,6 +80,80 @@ def _pick_rotation() -> tuple[str, str]:
     return AUTHORS[day % len(AUTHORS)], THEMES[day % len(THEMES)]
 
 
+def _read_csv(path: Path) -> list[dict]:
+    if not path.exists():
+        return []
+    with open(path, newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def _max_views_by_video() -> dict[str, int]:
+    """Latest/peak view count per video_id from analytics.csv.
+
+    analytics.csv is append-only (one row per pull), so a video shows up many
+    times; we keep its highest observed view count.
+    """
+    out: dict[str, int] = {}
+    for row in _read_csv(ANALYTICS):
+        vid = row.get("video_id")
+        if not vid:
+            continue
+        try:
+            views = int(row.get("views") or 0)
+        except ValueError:
+            continue
+        out[vid] = max(out.get(vid, 0), views)
+    return out
+
+
+def _performance_insights() -> str:
+    """Join posts.csv with analytics.csv and summarise what's working.
+
+    Returns a prompt fragment nudging toward the themes/authors/title styles of
+    top performers and away from bottom performers. Returns "" (skip silently)
+    until we have at least MIN_MEASURED_POSTS posts with view data.
+    """
+    views_by_video = _max_views_by_video()
+    if not views_by_video:
+        return ""
+
+    scored = []
+    for post in _read_csv(LOG):
+        vid = post.get("video_id")
+        if not vid or vid not in views_by_video:
+            continue
+        # Backfill title_style for rows logged before the column existed.
+        style = post.get("title_style") or classify_title_style(post.get("quote", ""))
+        scored.append({
+            "views": views_by_video[vid],
+            "theme": post.get("theme", "") or "?",
+            "author": post.get("author", "") or "?",
+            "style": style or "unknown",
+        })
+
+    if len(scored) < MIN_MEASURED_POSTS:
+        return ""
+
+    scored.sort(key=lambda p: p["views"], reverse=True)
+    top, bottom = scored[:3], scored[-3:]
+
+    def fmt(p: dict) -> str:
+        return (f'- theme "{p["theme"]}", {p["author"]}, '
+                f'{p["style"]}-style title ({p["views"]} views)')
+
+    return (
+        "\n\nPERFORMANCE INSIGHTS (from your "
+        f"{len(scored)} measured posts — use as a soft nudge, never at the cost "
+        "of quote authenticity or the required author/theme above):\n"
+        "Top performers — lean toward these themes / title styles:\n"
+        + "\n".join(fmt(p) for p in top)
+        + "\nBottom performers — steer away from these patterns:\n"
+        + "\n".join(fmt(p) for p in bottom)
+        + "\nFavor the angle and title style of the top group; do not copy any "
+        "specific quote."
+    )
+
+
 def generate_content() -> dict:
     used_quotes = _load_used_quotes()
     required_author, required_theme = _pick_rotation()
@@ -85,11 +166,14 @@ def generate_content() -> dict:
             f"{quoted}"
         )
 
+    insights_block = _performance_insights()
+
     user_msg = (
         f"Generate today's Stoic Reel.\n"
         f"Required author: {required_author}\n"
         f"Required theme: {required_theme}\n"
         f"Find a fresh angle — pick a passage that cuts differently from anything on the avoid list."
+        f"{insights_block}"
         f"{avoid_block}"
     )
 
