@@ -20,6 +20,7 @@ from pathlib import Path
 from content import generate_content
 from tts import synthesize_voice
 from render import render_reel
+from backgrounds import last_chosen
 from publish import publish_short
 from logbook import log_post
 
@@ -52,7 +53,8 @@ def main():
         theme=content["theme"],
         word_timings=word_timings,
     )
-    print(f"  rendered -> {video_path.name}")
+    background = last_chosen()
+    print(f"  rendered -> {video_path.name} (bg: {background or 'unknown'})")
 
     # 4. Publish to YouTube as a Short
     description = content["caption"] + "\n\n" + " ".join(content["hashtags"])
@@ -73,6 +75,7 @@ def main():
         author=content["author"],
         caption=description,
         publish_result=result,
+        background=background,
     )
     print("  logged. done.")
 
