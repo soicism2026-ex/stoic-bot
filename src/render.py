@@ -189,10 +189,17 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # vary color grading by date
     br, sat, con = _GRADES[day % len(_GRADES)]
 
-    # slow Ken Burns push-in over the clip's frames
+    # slow Ken Burns push-in over the clip's frames.
+    # NOTE: zoompan holds each INPUT frame for `d` output frames. Setting
+    # d=total_frames freezes the entire output on the clip's *first* frame —
+    # the background stops moving and looks like a still image (a likely cause
+    # of "the background doesn't change"). Use d=1 (one output frame per input
+    # frame, so the clip's own motion is preserved) and drive the zoom off
+    # `on`, the running output-frame index, so the push-in accumulates smoothly
+    # across the whole video instead of resetting on every frame.
     total_frames = max(1, int(dur * 30))
     zoompan = (
-        f"zoompan=z='min(zoom+0.0008,1.15)':d={total_frames}:"
+        f"zoompan=z='min(1+0.15*on/{total_frames},1.15)':d=1:"
         f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={W}x{H}:fps=30"
     )
 

@@ -65,10 +65,12 @@ def _pick_vertical_file(video: dict) -> str | None:
 
 def _fetch_from_pexels(theme: str, out_path: Path) -> Path:
     api_key = os.environ.get("PEXELS_API_KEY")
+    print(f"[background] PEXELS_API_KEY present={bool(api_key)}")
     if not api_key:
         raise RuntimeError("PEXELS_API_KEY not set")
 
     query = _search_term(theme)
+    print(f"[background] querying pexels: theme={theme!r} query={query!r}")
     resp = requests.get(
         PEXELS_SEARCH_URL,
         headers={"Authorization": api_key},
@@ -87,6 +89,10 @@ def _fetch_from_pexels(theme: str, out_path: Path) -> Path:
 
     # deterministic-by-date choice so it's varied but reproducible per day
     video = videos[date.today().toordinal() % len(videos)]
+    print(
+        f"[background] pexels returned {len(videos)} videos; "
+        f"chose id={video.get('id')} ({video.get('url')})"
+    )
     link = _pick_vertical_file(video)
     if not link:
         raise RuntimeError("No suitable vertical MP4 in chosen Pexels result")
@@ -114,8 +120,15 @@ def fetch_background(theme: str, out_path: Path) -> Path:
     out_path = Path(out_path)
     try:
         path = _fetch_from_pexels(theme, out_path)
-        print(f"  background: pexels ({_search_term(theme)}) -> {path.name}")
+        size = path.stat().st_size if path.exists() else 0
+        print(f"[background] SOURCE=pexels file={path.name} bytes={size}")
         return path
     except Exception as e:  # noqa: BLE001 — any failure must fall back
-        print(f"  background: pexels failed ({e}); using local clip", file=sys.stderr)
-        return _rotate_local()
+        # Print to stdout too so it's visible in the normal Actions log, not
+        # just stderr — this line is the definitive "why" when days look alike.
+        print(f"[background] pexels failed ({e}); falling back to local clip")
+        print(f"[background] pexels failed ({e}); falling back to local clip",
+              file=sys.stderr)
+        local = _rotate_local()
+        print(f"[background] SOURCE=local file={local.name}")
+        return local
