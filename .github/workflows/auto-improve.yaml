@@ -1,0 +1,29 @@
+name: Auto-improve stoic-bot
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Mondays 6am UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch analytics
+        run: python scripts/fetch_analytics.py > analytics.json
+        env:
+          YT_API_KEY: ${{ secrets.YT_API_KEY }}
+      - uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          prompt: |
+            Read analytics.json and IMPROVEMENTS.md (log of past changes).
+            Identify the single highest-impact improvement to retention or
+            CTR based on the data. Implement it, run the test render script
+            to verify a video still generates, append your change + rationale
+            to IMPROVEMENTS.md, and open a PR.
+          claude_args: "--max-turns 40"
