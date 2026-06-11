@@ -39,10 +39,12 @@ def main():
     print(f"  quote: {content['quote'][:60]}...")
 
     # 2. Voiceover (+ per-word timings for karaoke captions). The hook is spoken
-    #    first so the opening audio matches the on-screen hook card, then flows
-    #    into the script. word_timings cover the combined line for the captions.
+    #    first; the CTA is appended at the end for the reason-based follow hook.
     hook = content["hook"].strip()
+    cta = content.get("cta", "").strip()
     spoken_text = f"{hook.rstrip('.!? ')}. {content['voiceover_text']}"
+    if cta:
+        spoken_text = f"{spoken_text} {cta}"
     audio_path = OUT / f"{today}_voice.mp3"
     audio_path, word_timings = synthesize_voice(spoken_text, audio_path)
     print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings)")
@@ -60,9 +62,16 @@ def main():
     )
     print(f"  rendered -> {video_path.name}")
 
-    # 4. Publish to YouTube as a Short
-    description = content["caption"] + "\n\n" + " ".join(content["hashtags"])
-    title = f'{content["quote"][:70]} | {content["author"]}'
+    # 4. Publish to YouTube as a Short — with series framing in title/description.
+    day = content.get("day_number", "")
+    day_prefix = f"Day {day} | " if day else ""
+    title = f'{day_prefix}{content["quote"][:55]} — {content["author"]}'[:90].rstrip()
+    description = (
+        (f"Day {day} of daily Stoic wisdom.\n\n" if day else "")
+        + content["caption"]
+        + "\n\n"
+        + " ".join(content["hashtags"])
+    )
     result = publish_short(
         video_path=video_path,
         title=title,
@@ -70,6 +79,15 @@ def main():
         tags=content["hashtags"],
     )
     print(f"  published: {result.get('url', 'unknown')}")
+
+    # 4b. Post engagement comment (pinnable from YouTube Studio)
+    pinned_q = content.get("pinned_comment", "").strip()
+    if pinned_q and result.get("video_id"):
+        try:
+            from publish import post_comment
+            post_comment(result["video_id"], pinned_q)
+        except Exception as e:
+            print(f"  [comment] skipped: {e}", file=sys.stderr)
 
     # 5. Log it
     log_post(

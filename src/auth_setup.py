@@ -26,6 +26,8 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube.readonly",
+    # force-ssl enables commentThreads.insert (automated pinned comments)
+    "https://www.googleapis.com/auth/youtube.force-ssl",
 ]
 
 

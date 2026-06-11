@@ -33,8 +33,10 @@ FONT = os.environ.get("REEL_FONT", "/usr/share/fonts/truetype/dejavu/DejaVuSans-
 CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False")
 CAPTIONS_ONLY = os.environ.get("REEL_CAPTIONS_ONLY", "0") not in ("0", "false", "False")
 CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
-CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "74"))
+CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "64"))
 CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "470"))
+CAPTION_MARGINL = int(os.environ.get("REEL_CAPTION_MARGINL", "150"))
+CAPTION_MARGINR = int(os.environ.get("REEL_CAPTION_MARGINR", "150"))
 
 # Hook controls — the scroll-stopping opener. A big text card flashes for the
 # first few seconds and an attention "whoosh" sound is mixed under the start.
@@ -43,6 +45,16 @@ HOOK_SOUND_ON = os.environ.get("REEL_HOOK_SOUND", "1") not in ("0", "false", "Fa
 HOOK_HOLD = float(os.environ.get("REEL_HOOK_HOLD", "2.2"))      # seconds fully shown
 HOOK_FONTSIZE = int(os.environ.get("REEL_HOOK_FONTSIZE", "94"))
 HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFC83C")      # amber
+
+# Hook sound preset — read from env, then data/hook_preset file, then default.
+# Updated weekly by scripts/update_hook_sound.py.
+# Presets: bass_impact | cinematic | whoosh | minimal
+_HOOK_PRESET_FILE = ROOT / "data" / "hook_preset"
+def _read_hook_preset() -> str:
+    p = os.environ.get("REEL_HOOK_SOUND_PRESET", "").strip()
+    if not p and _HOOK_PRESET_FILE.exists():
+        p = _HOOK_PRESET_FILE.read_text(encoding="utf-8").strip()
+    return p if p in ("bass_impact", "cinematic", "whoosh", "minimal") else "bass_impact"
 
 W, H = 1080, 1920
 
@@ -56,27 +68,93 @@ def _audio_duration(audio_path: Path) -> float:
 
 
 def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
-    """Synthesize a short attention 'whoosh + soft impact' to `out_path` (wav).
+    """Synthesize a hook attention sound entirely from ffmpeg lavfi sources.
 
-    Built entirely from ffmpeg's lavfi sources so nothing binary is committed to
-    the repo: a band-limited pink-noise swell that rises then falls (the whoosh)
-    over a low decaying sine (the impact). Returns the written path.
+    Preset selected by _read_hook_preset() (env → data/hook_preset file → default).
+
+    bass_impact  — sub-bass punch + transient snap; dominates in modern motivation/
+                   philosophy Shorts and is updated weekly from YouTube trend data.
+    cinematic    — orchestral harmonic swell → dramatic hit; serious/philosophical.
+    whoosh       — original pink-noise swell + low sine; broadly neutral.
+    minimal      — clean struck tone + overtone; calm/educational aesthetic.
     """
-    swell = (
-        f"anoisesrc=d={dur}:c=pink:a=0.6,"
-        "highpass=f=350,lowpass=f=6500,"
-        # rise over the first 0.55s, then fall away — reads as a whoosh.
-        f"volume='min(1,t/0.55)*max(0,1-(t-0.55)/{dur - 0.55:.3f})':eval=frame"
-    )
-    impact = (
-        f"sine=frequency=85:duration={dur},"
-        "volume='max(0,1-t/0.9)':eval=frame"
-    )
-    fc = (
-        f"{swell}[wh];{impact}[im];"
-        f"[wh][im]amix=inputs=2:duration=longest,"
-        f"afade=t=out:st={dur - 0.3:.3f}:d=0.3,volume=1.6"
-    )
+    preset = _read_hook_preset()
+
+    if preset == "cinematic":
+        h1 = f"sine=frequency=65:duration={dur},volume='min(1,T/0.8)*0.45':eval=frame"
+        h2 = f"sine=frequency=130:duration={dur},volume='min(0.9,T/0.6)*0.3':eval=frame"
+        h3 = f"sine=frequency=195:duration={dur},volume='min(0.7,T/0.45)*0.18':eval=frame"
+        texture = (
+            f"anoisesrc=d={dur}:c=pink:a=0.35,"
+            "bandpass=f=800:width_type=h:w=1600,"
+            f"volume='min(0.4,T/0.9)':eval=frame"
+        )
+        hit = (
+            f"sine=frequency=52:duration={dur},"
+            f"volume='if(lt(T,0.02),T/0.02,max(0,1-(T-0.02)/0.65))':eval=frame"
+        )
+        fc = (
+            f"{h1}[h1];{h2}[h2];{h3}[h3];{texture}[tx];{hit}[ht];"
+            "[h1][h2][h3][tx][ht]amix=inputs=5:duration=longest,"
+            f"afade=t=out:st={dur-0.3:.3f}:d=0.3,volume=2.4,alimiter=limit=0.95"
+        )
+
+    elif preset == "minimal":
+        tone = (
+            f"sine=frequency=880:duration={dur},"
+            f"volume='if(lt(T,0.008),T/0.008,exp(-T*3.5))':eval=frame"
+        )
+        overtone = (
+            f"sine=frequency=1760:duration={dur},"
+            f"volume='if(lt(T,0.008),T/0.008,exp(-T*5.0))*0.28':eval=frame"
+        )
+        fc = (
+            f"{tone}[t1];{overtone}[t2];"
+            "[t1][t2]amix=inputs=2:duration=longest,"
+            f"afade=t=out:st={dur-0.3:.3f}:d=0.3,volume=2.0,alimiter=limit=0.95"
+        )
+
+    elif preset == "whoosh":
+        swell = (
+            f"anoisesrc=d={dur}:c=pink:a=0.6,"
+            "highpass=f=350,lowpass=f=6500,"
+            f"volume='min(1,T/0.55)*max(0,1-(T-0.55)/{dur - 0.55:.3f})':eval=frame"
+        )
+        impact = (
+            f"sine=frequency=85:duration={dur},"
+            "volume='max(0,1-T/0.9)':eval=frame"
+        )
+        fc = (
+            f"{swell}[wh];{impact}[im];"
+            "[wh][im]amix=inputs=2:duration=longest,"
+            f"afade=t=out:st={dur - 0.3:.3f}:d=0.3,volume=1.6"
+        )
+
+    else:  # "bass_impact" — default; most prevalent in viral motivation Shorts
+        sweep = (
+            f"anoisesrc=d={dur}:c=pink:a=0.65,"
+            "bandpass=f=1200:width_type=h:w=2000,"
+            f"volume='min(1,T/0.5)*max(0,1-(T-0.5)/0.2)':eval=frame"
+        )
+        bass = (
+            f"sine=frequency=58:duration={dur},"
+            f"volume='if(lt(T,0.04),T/0.04,max(0,1-(T-0.04)/0.72))':eval=frame"
+        )
+        snap = (
+            f"anoisesrc=d={dur}:c=white:a=1.0,"
+            "highpass=f=6000,lowpass=f=18000,"
+            "volume='max(0,1.0-T/0.05)':eval=frame"
+        )
+        mid = (
+            f"sine=frequency=116:duration={dur},"
+            f"volume='if(lt(T,0.03),T/0.03,max(0,1-(T-0.03)/0.5))*0.35':eval=frame"
+        )
+        fc = (
+            f"{sweep}[sw];{bass}[bs];{snap}[sn];{mid}[md];"
+            "[sw][bs][sn][md]amix=inputs=4:duration=longest,"
+            f"afade=t=out:st={dur-0.25:.3f}:d=0.25,volume=2.2,alimiter=limit=0.95"
+        )
+
     subprocess.run(
         ["ffmpeg", "-y", "-filter_complex", fc, "-ar", "44100", "-ac", "2",
          str(out_path)],
@@ -143,7 +221,7 @@ def _ass_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace("{", "(").replace("}", ")")
 
 
-def _group_lines(word_timings: list, max_words: int = 4, pause: float = 0.55) -> list:
+def _group_lines(word_timings: list, max_words: int = 3, pause: float = 0.55) -> list:
     """Group (word, start, end) into caption lines of 1-max_words words.
 
     Breaks on: reaching max_words, a silence gap > `pause` before the next word,
@@ -181,12 +259,12 @@ def _build_ass(word_timings: list, out_path: Path) -> Path:
 ScriptType: v4.00+
 PlayResX: {W}
 PlayResY: {H}
-WrapStyle: 2
+WrapStyle: 0
 ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{secondary},{outline},{back},-1,0,0,0,100,100,0,0,1,4,3,2,90,90,{CAPTION_MARGINV},1
+Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{secondary},{outline},{back},-1,0,0,0,100,100,0,0,1,4,3,2,{CAPTION_MARGINL},{CAPTION_MARGINR},{CAPTION_MARGINV},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text

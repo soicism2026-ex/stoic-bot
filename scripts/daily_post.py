@@ -230,7 +230,10 @@ def main():
     print(f"  quote: {content['quote'][:60]}...")
 
     hook = content["hook"].strip()
+    cta = content.get("cta", "").strip()
     spoken_text = f"{hook.rstrip('.!? ')}. {content['voiceover_text']}"
+    if cta:
+        spoken_text = f"{spoken_text} {cta}"
 
     # Voiceover once; reused across render attempts
     audio_path = ROOT / "data" / f"{today}_voice.mp3"
@@ -238,6 +241,17 @@ def main():
     print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings)")
 
     video_path = ROOT / "data" / f"{today}_reel.mp4"
+
+    # Series framing for title and description
+    day = content.get("day_number", "")
+    day_prefix = f"Day {day} | " if day else ""
+    title = f'{day_prefix}{content["quote"][:55]} — {content["author"]}'[:90].rstrip()
+    description = (
+        (f"Day {day} of daily Stoic wisdom.\n\n" if day else "")
+        + content["caption"]
+        + "\n\n"
+        + " ".join(content["hashtags"])
+    )
 
     all_qa: list = []
     current_env: dict = {}
@@ -265,13 +279,24 @@ def main():
         upload_this = qa["pass"] or (last_attempt and qa["severity"] == "low")
 
         if upload_this:
-            description = content["caption"] + "\n\n" + " ".join(content["hashtags"])
-            title = f'{content["quote"][:70]} | {content["author"]}'
             upload_result = publish_short(
                 video_path=video_path, title=title,
                 description=description, tags=content["hashtags"],
             )
             print(f"  published: {upload_result.get('url', 'unknown')}")
+
+            # Post engagement question as a (manually-pinnable) comment
+            pinned_q = content.get("pinned_comment", "").strip()
+            if pinned_q and upload_result.get("video_id"):
+                try:
+                    from publish import post_comment
+                    post_comment(upload_result["video_id"], pinned_q)
+                except Exception as e:
+                    print(
+                        f"  [comment] failed — re-run auth_setup.py to add "
+                        f"force-ssl scope, then update YOUTUBE_REFRESH_TOKEN: {e}",
+                        file=sys.stderr,
+                    )
 
             if qa["issues"]:
                 _append_qa_log(today, attempt, qa["issues"], qa["severity"], uploaded=True)
