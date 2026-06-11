@@ -39,6 +39,17 @@ THEME_QUERIES = [
 ]
 DEFAULT_QUERY = "cinematic dark nature"
 
+
+def _bg_offset() -> int:
+    """Offset for the deterministic-by-date pick. Set by the QA retry loop
+    (REEL_BG_OFFSET=attempt) so a failed render gets a different clip on retry.
+    Read at call time, not import time, because daily_post.py changes it
+    between attempts without reimporting this module."""
+    try:
+        return int(os.environ.get("REEL_BG_OFFSET", "0"))
+    except ValueError:
+        return 0
+
 # Dark colour palettes (hex) for synthetic backgrounds, keyed by theme keyword.
 _SYNTHETIC_COLOURS = {
     "mortality":    "0x0b0c1e",
@@ -70,7 +81,7 @@ def _rotate_local() -> Path:
             f"No background clips in {BG_DIR}. Drop a few royalty-free vertical "
             f"MP4s there (Pexels Videos)."
         )
-    return clips[date.today().toordinal() % len(clips)]
+    return clips[(date.today().toordinal() + _bg_offset()) % len(clips)]
 
 
 def _pick_vertical_file(video: dict) -> str | None:
@@ -110,8 +121,9 @@ def _fetch_from_pexels(theme: str, out_path: Path) -> Path:
     if not videos:
         raise RuntimeError(f"Pexels returned no videos for '{query}'")
 
-    # deterministic-by-date choice so it's varied but reproducible per day
-    video = videos[date.today().toordinal() % len(videos)]
+    # deterministic-by-date choice so it's varied but reproducible per day;
+    # the retry loop shifts the pick via REEL_BG_OFFSET
+    video = videos[(date.today().toordinal() + _bg_offset()) % len(videos)]
     link = _pick_vertical_file(video)
     if not link:
         raise RuntimeError("No suitable vertical MP4 in chosen Pexels result")
@@ -154,7 +166,7 @@ def _fetch_from_pixabay(theme: str, out_path: Path) -> Path:
     if not pool:
         raise RuntimeError(f"Pixabay returned no videos for '{query}'")
 
-    pick = pool[date.today().toordinal() % len(pool)]
+    pick = pool[(date.today().toordinal() + _bg_offset()) % len(pool)]
     url = None
     for size in ("large", "medium", "small"):
         v = pick.get("videos", {}).get(size, {})

@@ -44,10 +44,10 @@ jobs:
             strategy improvement to retention or CTR. Never repeat or revert a
             change already listed in IMPROVEMENTS.md.
 
-            Verify the pipeline still works: run `python src/main.py` with
-            REEL_CAPTIONS=0 and a stub audio if ElevenLabs credentials are
-            unavailable — the goal is confirming the render step doesn't crash,
-            not a full end-to-end run.
+            Verify the pipeline still works: set REEL_CAPTIONS=0, synthesize a
+            short stub audio with `ffmpeg -f lavfi -i sine=duration=10 /tmp/stub.mp3`,
+            then run `python -c "import sys; sys.path.insert(0,'src'); from render import render_reel; from pathlib import Path; render_reel('Test quote', 'Test Author', Path('/tmp/stub.mp3'), Path('/tmp/test_out.mp4'), theme='discipline', word_timings=[], hook='Test hook')"`.
+            Success means the file exists and is > 0 bytes.
 
             Append what you changed and why (with today's date) to
             IMPROVEMENTS.md.

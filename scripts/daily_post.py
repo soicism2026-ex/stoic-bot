@@ -52,11 +52,17 @@ def _apply_corrections(env: dict, issues: list, attempt: int) -> dict:
         env["REEL_HOOK_FONTSIZE"] = str(max(hook_fs - 15, 60))
 
     if "contrast" in joined or "unreadable" in joined:
-        # Force a darker colour grade by bumping brightness down
-        env["_FORCE_DARKER"] = "1"
+        # Darken the grade so white text reads (render.py subtracts this
+        # from the eq brightness)
+        darken = float(env.get("REEL_EXTRA_DARKEN", "0"))
+        env["REEL_EXTRA_DARKEN"] = f"{min(darken + 0.08, 0.30):.2f}"
+        # ...and try a different clip — contrast failures are usually the
+        # background's fault
+        env["REEL_BG_OFFSET"] = str(attempt)
 
-    if "frozen" in joined or "black frame" in joined:
-        env["_RETRY_BG"] = "1"
+    if "frozen" in joined or "black frame" in joined or "tone" in joined or "mismatch" in joined:
+        # Shift the deterministic background pick so the retry gets a new clip
+        env["REEL_BG_OFFSET"] = str(attempt)
 
     if "desync" in joined or "sync" in joined or "mispronounce" in joined:
         # Shift caption vertical margin slightly
@@ -204,6 +210,11 @@ def _add_to_backup_bank(today: str):
             "tags": content["hashtags"],
             "created": today,
             "qa_issues": qa.get("issues", []),
+            # kept so a backup upload can be logged to posts.csv like a normal
+            # post (rotation history + quote dedup stay accurate)
+            "theme": content["theme"],
+            "quote": content["quote"],
+            "author": content["author"],
         }
         (BACKUPS_DIR / f"{today}_bk_reel.json").write_text(
             json.dumps(meta, indent=2), encoding="utf-8"
@@ -324,6 +335,17 @@ def main():
                 )
                 used_backup = True
                 print(f"  [backup] published: {upload_result.get('url', 'unknown')}")
+                # Log it like a normal post so rotation history, quote dedup,
+                # and the day counter stay accurate. Older metadata files may
+                # lack these fields — fall back to placeholders.
+                log_post(
+                    date=today,
+                    theme=bk_meta.get("theme", "backup"),
+                    quote=bk_meta.get("quote", bk_meta["title"]),
+                    author=bk_meta.get("author", ""),
+                    caption=bk_meta["description"],
+                    publish_result=upload_result,
+                )
                 _remove_backup(bk_meta_file)
             else:
                 print("  [backup] bank empty — no upload today", file=sys.stderr)

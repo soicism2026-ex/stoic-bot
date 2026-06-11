@@ -46,6 +46,10 @@ HOOK_HOLD = float(os.environ.get("REEL_HOOK_HOLD", "2.2"))      # seconds fully 
 HOOK_FONTSIZE = int(os.environ.get("REEL_HOOK_FONTSIZE", "94"))
 HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFC83C")      # amber
 
+# Extra darkening on top of the date-rotated grade. Set by the QA retry loop
+# (scripts/daily_post.py) when a render fails on text contrast.
+EXTRA_DARKEN = float(os.environ.get("REEL_EXTRA_DARKEN", "0"))
+
 # Hook sound preset — read from env, then data/hook_preset file, then default.
 # Updated weekly by scripts/update_hook_sound.py.
 # Presets: bass_impact | cinematic | whoosh | minimal
@@ -81,17 +85,17 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
     preset = _read_hook_preset()
 
     if preset == "cinematic":
-        h1 = f"sine=frequency=65:duration={dur},volume='min(1,T/0.8)*0.45':eval=frame"
-        h2 = f"sine=frequency=130:duration={dur},volume='min(0.9,T/0.6)*0.3':eval=frame"
-        h3 = f"sine=frequency=195:duration={dur},volume='min(0.7,T/0.45)*0.18':eval=frame"
+        h1 = f"sine=frequency=65:duration={dur},volume='min(1,t/0.8)*0.45':eval=frame"
+        h2 = f"sine=frequency=130:duration={dur},volume='min(0.9,t/0.6)*0.3':eval=frame"
+        h3 = f"sine=frequency=195:duration={dur},volume='min(0.7,t/0.45)*0.18':eval=frame"
         texture = (
             f"anoisesrc=d={dur}:c=pink:a=0.35,"
             "bandpass=f=800:width_type=h:w=1600,"
-            f"volume='min(0.4,T/0.9)':eval=frame"
+            f"volume='min(0.4,t/0.9)':eval=frame"
         )
         hit = (
             f"sine=frequency=52:duration={dur},"
-            f"volume='if(lt(T,0.02),T/0.02,max(0,1-(T-0.02)/0.65))':eval=frame"
+            f"volume='if(lt(t,0.02),t/0.02,max(0,1-(t-0.02)/0.65))':eval=frame"
         )
         fc = (
             f"{h1}[h1];{h2}[h2];{h3}[h3];{texture}[tx];{hit}[ht];"
@@ -102,11 +106,11 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
     elif preset == "minimal":
         tone = (
             f"sine=frequency=880:duration={dur},"
-            f"volume='if(lt(T,0.008),T/0.008,exp(-T*3.5))':eval=frame"
+            f"volume='if(lt(t,0.008),t/0.008,exp(-t*3.5))':eval=frame"
         )
         overtone = (
             f"sine=frequency=1760:duration={dur},"
-            f"volume='if(lt(T,0.008),T/0.008,exp(-T*5.0))*0.28':eval=frame"
+            f"volume='if(lt(t,0.008),t/0.008,exp(-t*5.0))*0.28':eval=frame"
         )
         fc = (
             f"{tone}[t1];{overtone}[t2];"
@@ -118,11 +122,11 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
         swell = (
             f"anoisesrc=d={dur}:c=pink:a=0.6,"
             "highpass=f=350,lowpass=f=6500,"
-            f"volume='min(1,T/0.55)*max(0,1-(T-0.55)/{dur - 0.55:.3f})':eval=frame"
+            f"volume='min(1,t/0.55)*max(0,1-(t-0.55)/{dur - 0.55:.3f})':eval=frame"
         )
         impact = (
             f"sine=frequency=85:duration={dur},"
-            "volume='max(0,1-T/0.9)':eval=frame"
+            "volume='max(0,1-t/0.9)':eval=frame"
         )
         fc = (
             f"{swell}[wh];{impact}[im];"
@@ -134,20 +138,20 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
         sweep = (
             f"anoisesrc=d={dur}:c=pink:a=0.65,"
             "bandpass=f=1200:width_type=h:w=2000,"
-            f"volume='min(1,T/0.5)*max(0,1-(T-0.5)/0.2)':eval=frame"
+            f"volume='min(1,t/0.5)*max(0,1-(t-0.5)/0.2)':eval=frame"
         )
         bass = (
             f"sine=frequency=58:duration={dur},"
-            f"volume='if(lt(T,0.04),T/0.04,max(0,1-(T-0.04)/0.72))':eval=frame"
+            f"volume='if(lt(t,0.04),t/0.04,max(0,1-(t-0.04)/0.72))':eval=frame"
         )
         snap = (
             f"anoisesrc=d={dur}:c=white:a=1.0,"
             "highpass=f=6000,lowpass=f=18000,"
-            "volume='max(0,1.0-T/0.05)':eval=frame"
+            "volume='max(0,1.0-t/0.05)':eval=frame"
         )
         mid = (
             f"sine=frequency=116:duration={dur},"
-            f"volume='if(lt(T,0.03),T/0.03,max(0,1-(T-0.03)/0.5))*0.35':eval=frame"
+            f"volume='if(lt(t,0.03),t/0.03,max(0,1-(t-0.03)/0.5))*0.35':eval=frame"
         )
         fc = (
             f"{sweep}[sw];{bass}[bs];{snap}[sn];{mid}[md];"
@@ -362,7 +366,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
         f"crop={W}:{H}",
         zoompan,
-        f"eq=brightness={br}:saturation={sat}:contrast={con}",
+        f"eq=brightness={br - EXTRA_DARKEN}:saturation={sat}:contrast={con}",
     ]
 
     if show_quote:
