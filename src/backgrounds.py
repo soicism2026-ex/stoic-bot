@@ -26,18 +26,18 @@ PIXABAY_VIDEO_URL = "https://pixabay.com/api/videos/"
 # Themes from content.py are full phrases ("mortality/memento mori",
 # "control vs acceptance", ...), so we match by substring keyword.
 THEME_QUERIES = [
-    ("mortality", "dark storm clouds"),
-    ("discipline", "cold mountain peak"),
-    ("time", "flowing river"),
-    ("control", "calm ocean"),
-    ("virtue", "ancient temple"),
-    ("wisdom", "misty forest"),
-    ("resilience", "rocky coastline"),
-    ("purpose", "mountain sunrise"),
-    ("impermanence", "autumn leaves"),
-    ("justice", "thunderstorm"),
+    ("mortality", "dark clouds storm dramatic"),
+    ("discipline", "mountain peak snow"),
+    ("time", "river flowing water"),
+    ("control", "ocean waves calm"),
+    ("virtue", "ancient temple ruins"),
+    ("wisdom", "misty forest trees"),
+    ("resilience", "rocky coastline waves"),
+    ("purpose", "mountain sunrise sky"),
+    ("impermanence", "autumn leaves falling"),
+    ("justice", "lightning thunderstorm"),
 ]
-DEFAULT_QUERY = "cinematic dark nature"
+DEFAULT_QUERY = "nature cinematic dark"
 
 
 def _bg_offset() -> int:
@@ -85,18 +85,26 @@ def _rotate_local() -> Path:
 
 
 def _pick_vertical_file(video: dict) -> str | None:
-    """Pick the best vertical MP4 link from a Pexels video result."""
-    files = [
+    """Pick the best vertical MP4 link from a Pexels video result.
+
+    Prefers portrait video_files (height >= width); if none exist (some Pexels
+    portrait videos only have landscape-dimensioned file variants) falls back to
+    any MP4 — the search was already filtered with orientation=portrait so the
+    video itself is vertical.
+    """
+    all_mp4 = [
         f for f in video.get("video_files", [])
-        if f.get("file_type") == "video/mp4"
-        and f.get("link")
-        and (f.get("height") or 0) >= (f.get("width") or 0)  # portrait/square
+        if f.get("file_type") == "video/mp4" and f.get("link")
     ]
-    if not files:
+    if not all_mp4:
         return None
+
+    portrait = [f for f in all_mp4 if (f.get("height") or 0) >= (f.get("width") or 0)]
+    pool = portrait or all_mp4  # fall back to any MP4 if no portrait variants
+
     # prefer something close to 1920 tall but not absurdly huge
-    files.sort(key=lambda f: abs((f.get("height") or 0) - 1920))
-    return files[0]["link"]
+    pool.sort(key=lambda f: abs((f.get("height") or 0) - 1920))
+    return pool[0]["link"]
 
 
 def _fetch_from_pexels(theme: str, out_path: Path) -> Path:
@@ -111,8 +119,7 @@ def _fetch_from_pexels(theme: str, out_path: Path) -> Path:
         params={
             "query": query,
             "orientation": "portrait",
-            "size": "medium",
-            "per_page": 15,
+            "per_page": 80,   # max allowed; size=medium removed — too restrictive
         },
         timeout=30,
     )
