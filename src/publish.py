@@ -16,13 +16,6 @@ include #Shorts in the title or description (we add it to the description).
 import os
 from pathlib import Path
 
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
-
-CLIENT_ID = os.environ["YOUTUBE_CLIENT_ID"]
-CLIENT_SECRET = os.environ["YOUTUBE_CLIENT_SECRET"]
-REFRESH_TOKEN = os.environ["YOUTUBE_REFRESH_TOKEN"]
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 
 # 22 = People & Blogs. 27 = Education. Either fits Stoic content.
@@ -30,12 +23,14 @@ CATEGORY_ID = os.environ.get("YOUTUBE_CATEGORY_ID", "22")
 
 
 def _service():
+    from google.oauth2.credentials import Credentials
+    from googleapiclient.discovery import build
     creds = Credentials(
         token=None,
-        refresh_token=REFRESH_TOKEN,
+        refresh_token=os.environ["YOUTUBE_REFRESH_TOKEN"],
         token_uri=TOKEN_URI,
-        client_id=CLIENT_ID,
-        client_secret=CLIENT_SECRET,
+        client_id=os.environ["YOUTUBE_CLIENT_ID"],
+        client_secret=os.environ["YOUTUBE_CLIENT_SECRET"],
         scopes=[
             "https://www.googleapis.com/auth/youtube.upload",
             "https://www.googleapis.com/auth/youtube.readonly",
@@ -69,6 +64,7 @@ def publish_short(video_path: Path, title: str, description: str,
         },
     }
 
+    from googleapiclient.http import MediaFileUpload
     media = MediaFileUpload(str(video_path), mimetype="video/mp4",
                             resumable=True, chunksize=-1)
     req = yt.videos().insert(part="snippet,status", body=body, media_body=media)

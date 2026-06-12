@@ -12,12 +12,6 @@ import csv
 import datetime
 from pathlib import Path
 
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
-
-CLIENT_ID = os.environ["YOUTUBE_CLIENT_ID"]
-CLIENT_SECRET = os.environ["YOUTUBE_CLIENT_SECRET"]
-REFRESH_TOKEN = os.environ["YOUTUBE_REFRESH_TOKEN"]
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -28,9 +22,13 @@ MAX_VIDEOS = 15
 
 
 def _service():
+    from google.oauth2.credentials import Credentials
+    from googleapiclient.discovery import build
     creds = Credentials(
-        token=None, refresh_token=REFRESH_TOKEN, token_uri=TOKEN_URI,
-        client_id=CLIENT_ID, client_secret=CLIENT_SECRET,
+        token=None, refresh_token=os.environ["YOUTUBE_REFRESH_TOKEN"],
+        token_uri=TOKEN_URI,
+        client_id=os.environ["YOUTUBE_CLIENT_ID"],
+        client_secret=os.environ["YOUTUBE_CLIENT_SECRET"],
         scopes=["https://www.googleapis.com/auth/youtube.readonly"],
     )
     return build("youtube", "v3", credentials=creds, cache_discovery=False)

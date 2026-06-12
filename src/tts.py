@@ -20,7 +20,6 @@ from pathlib import Path
 
 import requests
 
-ELEVEN_API_KEY = os.environ["ELEVENLABS_API_KEY"]
 # Default voice "Adam" (deep, calm). Override with ELEVENLABS_VOICE_ID secret.
 VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")
 
@@ -39,7 +38,7 @@ WordTiming = tuple  # (word: str, start: float, end: float)
 def synthesize_voice(text: str, out_path: Path) -> tuple:
     """Synthesize `text` to `out_path`. Returns (out_path, word_timings)."""
     headers = {
-        "xi-api-key": ELEVEN_API_KEY,
+        "xi-api-key": os.environ["ELEVENLABS_API_KEY"],
         "Content-Type": "application/json",
     }
     payload = {
