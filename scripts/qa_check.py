@@ -52,8 +52,13 @@ def transcribe_audio(video_path: Path) -> str:
         segments, _ = model.transcribe(str(audio_path), beam_size=1)
         return " ".join(seg.text.strip() for seg in segments)
     except ImportError:
-        import whisper
-        return whisper.load_model("tiny").transcribe(str(audio_path))["text"].strip()
+        try:
+            import whisper
+            return whisper.load_model("tiny").transcribe(str(audio_path))["text"].strip()
+        except Exception:
+            return ""
+    except Exception:
+        return ""
     finally:
         audio_path.unlink(missing_ok=True)
 
