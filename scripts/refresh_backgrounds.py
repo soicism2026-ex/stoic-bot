@@ -22,12 +22,15 @@ from backgrounds import THEME_QUERIES, DEFAULT_QUERY  # noqa: E402
 TARGET = 5   # new videos to download per run
 QUERIES = [q for _, q in THEME_QUERIES] + [
     DEFAULT_QUERY,
-    "forest mist vertical",
-    "mountain fog vertical",
-    "ocean waves vertical",
-    "ancient ruins dramatic",
-    "candle flame dark",
-    "rain window night",
+    "forest mist fog",
+    "mountain fog clouds",
+    "ocean waves sunset",
+    "ancient ruins stone",
+    "candle flame fire",
+    "rain window dark",
+    "desert sand dunes",
+    "waterfall rocks nature",
+    "snow winter cold",
 ]
 
 
@@ -76,7 +79,7 @@ def from_pexels(queries: list, known: set, limit: int) -> int:
                     "https://api.pexels.com/videos/search",
                     headers={"Authorization": key},
                     params={"query": query, "orientation": "portrait",
-                            "per_page": 15, "page": page},
+                            "per_page": 80, "page": page},
                     timeout=30,
                 )
                 resp.raise_for_status()
