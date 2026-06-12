@@ -26,13 +26,14 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 SCOPES = [
     "https://www.googleapis.com/auth/youtube.upload",
     "https://www.googleapis.com/auth/youtube.readonly",
+    # force-ssl enables commentThreads.insert (automated pinned comments)
+    "https://www.googleapis.com/auth/youtube.force-ssl",
 ]
 
 
 def main():
     flow = InstalledAppFlow.from_client_secrets_file("client_secret.json", SCOPES)
-    creds = flow.run_local_server(port=0, prompt="consent",
-                                  access_type="offline")
+    creds = flow.run_console()
     print("\n=== COPY THESE INTO GITHUB SECRETS ===")
     print("YOUTUBE_CLIENT_ID     =", creds.client_id)
     print("YOUTUBE_CLIENT_SECRET =", creds.client_secret)

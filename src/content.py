@@ -68,7 +68,7 @@ THEMES = [
     "adversity as training",
 ]
 
-SYSTEM = """You are the content engine for a faceless Stoicism Instagram Reels \
+SYSTEM = """You are the content engine for a faceless Stoicism YouTube Shorts \
 account. Your job is to produce ONE short-form video script per call.
 
 Rules:
@@ -89,7 +89,15 @@ Punchy and plain; no author name, no quotation marks, no hashtags. It must set u
 quote's idea WITHOUT quoting or restating the passage.
 - Voiceover script: 18-35 seconds spoken (~45-90 words). It is spoken right AFTER the \
 hook, so flow naturally into the idea and do NOT repeat the hook line. Plain, grounded, \
-masculine-neutral tone. No hashtags in the voiceover.
+masculine-neutral tone. No hashtags in the voiceover. End a sentence before the CTA.
+- CTA: 1-2 spoken sentences for the very last moment of the voiceover. Reference the \
+next day's theme (provided in the user message) naturally — give a REASON to follow, \
+not just "subscribe". Under 25 words. Vary the phrasing across days. \
+Example: "Tomorrow: Marcus Aurelius on anger. Follow for your daily Stoic dose."
+- Pinned comment: an engagement question posted as the pinned comment under the video. \
+Must feel genuinely curious, tied to today's theme, and drive real replies — not \
+hollow engagement bait. Under 20 words. \
+Example: "Which Stoic idea has changed how you actually live — not just think?"
 - Caption: 1-2 sentences that reframe the idea for daily life + one soft question \
 to drive comments.
 - Hashtags: 8-12, mixing broad (#stoicism #discipline) and mid-size niche tags.
@@ -101,6 +109,8 @@ Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
   "author": "<the exact author name you were assigned>",
   "hook": "...",
   "voiceover_text": "...",
+  "cta": "...",
+  "pinned_comment": "...",
   "caption": "...",
   "hashtags": ["#...", "..."]
 }"""
@@ -146,10 +156,18 @@ def _pick_rotation(rows: list[dict]) -> tuple[str, str]:
     return author, theme
 
 
+def _pick_next_theme(rows: list, current_theme: str) -> str:
+    """Predict tomorrow's theme for the CTA (simulate today's post being logged)."""
+    recent = [r["theme"] for r in reversed(rows) if r.get("theme")]
+    return _pick_least_recent(THEMES, [current_theme] + recent, block_last=3)
+
+
 def generate_content() -> dict:
     rows = _load_rows()
     used_quotes = [r["quote"] for r in rows if r.get("quote")]
     required_author, required_theme = _pick_rotation(rows)
+    day_number = len(rows) + 1
+    next_theme = _pick_next_theme(rows, required_theme)
 
     avoid_block = ""
     if used_quotes:
@@ -165,6 +183,7 @@ def generate_content() -> dict:
         f"Required author: {required_author}\n"
         f"Draw the quote from: {SOURCE_HINTS[required_author]}.\n"
         f"Required theme: {required_theme}\n"
+        f"Tomorrow's theme (for the CTA): {next_theme}\n"
         f"Pick a genuine, lesser-known passage that cuts differently from anything "
         f"on the avoid list."
         f"{avoid_block}"
@@ -172,7 +191,7 @@ def generate_content() -> dict:
 
     msg = client.messages.create(
         model=MODEL,
-        max_tokens=1000,
+        max_tokens=1200,
         temperature=1.0,
         system=SYSTEM,
         messages=[{"role": "user", "content": user_msg}],
@@ -182,8 +201,11 @@ def generate_content() -> dict:
         raw = raw.split("```")[1].lstrip("json").strip()
     data = json.loads(raw)
 
-    required = {"theme", "quote", "author", "hook", "voiceover_text", "caption", "hashtags"}
+    required = {"theme", "quote", "author", "hook", "voiceover_text",
+                "cta", "pinned_comment", "caption", "hashtags"}
     missing = required - data.keys()
     if missing:
         raise ValueError(f"Claude response missing keys: {missing}")
+
+    data["day_number"] = day_number
     return data

@@ -1,23 +1,18 @@
-name: daily-short
+name: Refresh assets
 
 on:
   schedule:
-    # 16:00 UTC = 12:00 ET. Midday/early-afternoon posting tends to do well.
-    - cron: "0 16 * * *"
+    - cron: "0 4 * * 6"   # Saturdays 04:00 UTC — off-peak, before Mon auto-improve
   workflow_dispatch: {}
 
 permissions:
   contents: write
-  issues: write
 
 jobs:
-  post:
+  refresh:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install ffmpeg + fonts
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu
 
       - uses: actions/setup-python@v5
         with:
@@ -26,24 +21,24 @@ jobs:
       - name: Install deps
         run: pip install -r requirements.txt
 
-      - name: Run self-healing post pipeline
+      - name: Update hook-sound preset
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/update_hook_sound.py
+
+      - name: Download fresh background videos
+        env:
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
-        run: python scripts/daily_post.py
+        run: python scripts/refresh_backgrounds.py
 
-      - name: Commit log and backups
+      - name: Commit new assets
         run: |
           git config user.name "stoic-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/posts.csv QA_LOG.md backups/
-          git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
+          git add data/hook_preset assets/backgrounds/
+          git diff --staged --quiet || git commit -m "assets: refresh backgrounds + hook preset $(date -u +%F)"
           git push
