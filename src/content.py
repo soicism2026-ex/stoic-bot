@@ -21,8 +21,6 @@ from pathlib import Path
 
 import anthropic
 
-client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-
 MODEL = "claude-opus-4-8"
 
 # Resolve posts.csv relative to the repo root so it is read reliably no matter
@@ -189,6 +187,7 @@ def generate_content() -> dict:
         f"{avoid_block}"
     )
 
+    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     msg = client.messages.create(
         model=MODEL,
         max_tokens=1200,

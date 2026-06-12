@@ -18,8 +18,6 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 import anthropic
-from google.oauth2.credentials import Credentials
-from googleapiclient.discovery import build
 
 ROOT = Path(__file__).resolve().parent.parent
 PRESET_FILE = ROOT / "data" / "hook_preset"
@@ -35,6 +33,8 @@ DESCRIPTIONS = {
 
 
 def _yt_service():
+    from google.oauth2.credentials import Credentials
+    from googleapiclient.discovery import build
     creds = Credentials(
         token=None,
         refresh_token=os.environ["YOUTUBE_REFRESH_TOKEN"],
