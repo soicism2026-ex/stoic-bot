@@ -12,6 +12,8 @@ import json
 import urllib.request
 import urllib.parse
 
+import requests as _requests
+
 PASS = "\033[32mPASS\033[0m"
 FAIL = "\033[31mFAIL\033[0m"
 SKIP = "\033[33mSKIP\033[0m"
@@ -112,53 +114,60 @@ def check_youtube() -> bool:
 
 
 def check_pexels() -> bool:
+    """Optional — pipeline falls back to Pixabay/synthetic if Pexels is unavailable."""
     key = os.environ.get("PEXELS_API_KEY", "")
     if not key:
-        print(f"  [{SKIP}] PEXELS_API_KEY — not set (synthetic background fallback active)")
-        return True  # optional
-    try:
-        req = urllib.request.Request(
-            "https://api.pexels.com/videos/search?query=nature&per_page=1",
-            headers={"Authorization": key},
-        )
-        with urllib.request.urlopen(req, timeout=10) as r:
-            data = json.loads(r.read())
-        total = data.get("total_results", 0)
-        print(f"  [{PASS}] PEXELS_API_KEY — {total:,} videos available")
+        print(f"  [{SKIP}] PEXELS_API_KEY — not set (Pixabay/synthetic fallback active)")
         return True
+    try:
+        resp = _requests.get(
+            "https://api.pexels.com/videos/search",
+            headers={"Authorization": key},
+            params={"query": "nature", "per_page": 1},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        total = resp.json().get("total_results", 0)
+        print(f"  [{PASS}] PEXELS_API_KEY — {total:,} videos available")
     except Exception as e:
-        print(f"  [{FAIL}] PEXELS_API_KEY — {e}")
-        return False
+        # Pexels is optional — warn but never block the pipeline
+        print(f"  [{SKIP}] PEXELS_API_KEY — unreachable ({e}); Pixabay/synthetic fallback will be used")
+    return True
 
 
 def check_pixabay() -> bool:
+    """Optional — pipeline falls back to synthetic backgrounds if Pixabay is unavailable."""
     key = os.environ.get("PIXABAY_API_KEY", "")
     if not key:
-        print(f"  [{SKIP}] PIXABAY_API_KEY — not set (Pexels/synthetic fallback active)")
-        return True  # optional
-    try:
-        url = f"https://pixabay.com/api/videos/?key={key}&q=nature&per_page=3"
-        with urllib.request.urlopen(url, timeout=10) as r:
-            data = json.loads(r.read())
-        total = data.get("totalHits", 0)
-        print(f"  [{PASS}] PIXABAY_API_KEY — {total:,} videos available")
+        print(f"  [{SKIP}] PIXABAY_API_KEY — not set (synthetic fallback active)")
         return True
+    try:
+        resp = _requests.get(
+            "https://pixabay.com/api/videos/",
+            params={"key": key, "q": "nature", "per_page": 3},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        total = resp.json().get("totalHits", 0)
+        print(f"  [{PASS}] PIXABAY_API_KEY — {total:,} videos available")
     except Exception as e:
-        print(f"  [{FAIL}] PIXABAY_API_KEY — {e}")
-        return False
+        # Pixabay is optional — warn but never block the pipeline
+        print(f"  [{SKIP}] PIXABAY_API_KEY — unreachable ({e}); synthetic fallback will be used")
+    return True
 
 
 def main():
     print("=== Secrets pre-flight check ===")
-    results = [
+    # Required: Anthropic, ElevenLabs, YouTube. Pexels/Pixabay are optional.
+    required = [
         check_anthropic(),
         check_elevenlabs(),
         check_youtube(),
-        check_pexels(),
-        check_pixabay(),
     ]
+    check_pexels()
+    check_pixabay()
     print("================================")
-    failures = sum(1 for r in results if not r)
+    failures = sum(1 for r in required if not r)
     if failures:
         print(f"FAILED: {failures} required key(s) invalid. Fix secrets before proceeding.")
         sys.exit(1)
