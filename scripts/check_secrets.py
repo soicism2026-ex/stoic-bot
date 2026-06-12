@@ -42,8 +42,10 @@ def check_anthropic() -> bool:
 def check_elevenlabs() -> bool:
     key = os.environ.get("ELEVENLABS_API_KEY", "")
     if not key:
-        print(f"  [{FAIL}] ELEVENLABS_API_KEY — not set")
-        return False
+        # Not passed by this workflow — skip rather than fail so auto-improve
+        # (which doesn't use TTS) doesn't block on a key it never needs.
+        print(f"  [{SKIP}] ELEVENLABS_API_KEY — not set (skipping for this workflow)")
+        return True
     try:
         req = urllib.request.Request(
             "https://api.elevenlabs.io/v1/user",
