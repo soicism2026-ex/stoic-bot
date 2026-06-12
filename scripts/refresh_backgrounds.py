@@ -171,10 +171,10 @@ def main():
 
     known = _known_hashes()
 
-    n = from_pexels(QUERIES, known, TARGET)
+    n = from_pixabay(QUERIES, known, TARGET)
     remaining = TARGET - n
     if remaining > 0:
-        n += from_pixabay(QUERIES, known, remaining)
+        n += from_pexels(QUERIES, known, remaining)
 
     after = len(list(BG_DIR.glob("*.mp4")))
     print(f"[refresh_backgrounds] added {n} new videos; library now: {after}")

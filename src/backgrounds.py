@@ -2,8 +2,8 @@
 Background video sourcing for the daily Short.
 
 Source chain (first that succeeds wins):
-  1. Pexels  — fresh, theme-matched vertical clip (PEXELS_API_KEY)
-  2. Pixabay — second free API (PIXABAY_API_KEY, optional)
+  1. Pixabay — portrait clip, works reliably from GitHub Actions (PIXABAY_API_KEY)
+  2. Pexels  — secondary source; free-tier keys may 403 from cloud IPs (PEXELS_API_KEY)
   3. Synthetic — ffmpeg lavfi dark-gradient; always available, no network needed
   4. Local rotation — assets/backgrounds/ deterministic fallback
 
@@ -232,8 +232,8 @@ def fetch_background(theme: str, out_path: Path) -> Path:
     query = _search_term(theme)
 
     for label, fn in [
-        ("PEXELS",    lambda: _fetch_from_pexels(theme, out_path)),
         ("PIXABAY",   lambda: _fetch_from_pixabay(theme, out_path)),
+        ("PEXELS",    lambda: _fetch_from_pexels(theme, out_path)),
         ("SYNTHETIC", lambda: _fetch_synthetic(theme, out_path)),
     ]:
         try:
