@@ -5,34 +5,23 @@ Asks Claude for one day's Stoic Reel: a real public-domain Stoic quote, a short
 voiceover script, an engagement caption, and hashtags. Returns structured JSON.
 
 Variety is enforced on three axes so the feed never fixates on one voice or idea:
-- Author rotation draws from a broad roster of genuine Stoics (not just the three
-  most famous), and is history-aware so no author repeats on consecutive days or
-  within a short window.
+- Author rotation favours the Big 3 (Marcus Aurelius, Seneca, Epictetus) on 3 of
+  every 5 days — analytics show they outperform obscure Stoics by 2-4x — while
+  still cycling the wider roster so content stays diverse.
 - Theme rotation spreads across topics, least-recently-used first.
-- Previously used quotes are read from posts.csv and injected into the prompt with
-  explicit no-reuse / no-paraphrase instructions.
+- Previously used quotes are read from posts.csv and injected as a hard block list.
 """
 import csv
-import datetime
 import json
 import os
 import sys
 from pathlib import Path
 
-import anthropic
-
 MODEL = "claude-opus-4-8"
 
-# Resolve posts.csv relative to the repo root so it is read reliably no matter
-# what the working directory is under GitHub Actions. POSTS_CSV can override it.
 ROOT = Path(__file__).resolve().parent.parent
 LOG = Path(os.environ.get("POSTS_CSV", ROOT / "data" / "posts.csv"))
 
-# A broad roster of genuine Stoics. Each maps to the real, public-domain
-# source(s) where their surviving words are preserved, so the model can ground
-# every quote in an actual text instead of inventing one. These are all
-# historically attested; fragmentary authors are paired with the collections
-# that record their genuine sayings.
 SOURCE_HINTS = {
     "Marcus Aurelius": "Meditations",
     "Seneca": "Letters to Lucilius and the moral essays (On the Shortness of Life, On Anger, etc.)",
@@ -42,24 +31,24 @@ SOURCE_HINTS = {
     "Cleanthes": "the Hymn to Zeus and fragments in Stobaeus and Diogenes Laertius",
     "Chrysippus": "fragments and sayings in Diogenes Laertius and Stobaeus",
     "Hierocles": "the Elements of Ethics and the fragments on social duties (oikeiosis)",
-    "Hecato of Rhodes": "ethical maxims quoted by Seneca in the Letters",
     "Cato the Younger": "the Stoic statesman's sayings recorded in Plutarch's Life of Cato the Younger",
-    "Posidonius": "fragments on ethics and the passions preserved by Galen, Seneca and Stobaeus",
-    "Panaetius": "On Duties (the basis of Cicero's De Officiis) and fragments in Stobaeus",
-    "Aristo of Chios": "ethical fragments preserved in Diogenes Laertius and Stobaeus",
-    "Diogenes of Babylon": "fragments preserved in Cicero and Stobaeus",
 }
-AUTHORS = list(SOURCE_HINTS)
+
+# Analytics signal: Big 3 consistently get 900–1050 views vs 200–600 for the
+# full roster. Post from them on 3 of every 5 days; cycle the wider roster the
+# other 2 days for variety.
+BIG3 = ["Marcus Aurelius", "Seneca", "Epictetus"]
+AUTHORS = list(SOURCE_HINTS)   # full rotation for the other 2 days
 
 THEMES = [
     "discipline",
     "mortality/memento mori",
     "control vs acceptance",
+    "ego",
+    "resilience",
     "anger",
     "desire",
-    "resilience",
     "time",
-    "ego",
     "fear",
     "friendship",
     "duty/justice",
@@ -79,7 +68,8 @@ guessing.
 phrasing of a real passage is fine, but it must preserve the author's actual meaning \
 and wording; do not turn it into a new aphorism. Attribute to the correct author.
 - Draw from the full breadth of the author's work, not only their most famous lines. \
-Favor lesser-known but genuine passages over over-quoted "greatest hits."
+Favor lesser-known but genuine passages over over-quoted "greatest hits." This is \
+especially important: the channel's audience has already seen the most famous lines.
 - Hook: a 3-7 word scroll-stopping opener — a blunt claim or provocative question \
 (e.g. "You are already dying." / "Stop waiting to live."). It is spoken first and \
 flashed large on screen in the opening seconds to grab attention before the swipe. \
@@ -89,13 +79,14 @@ quote's idea WITHOUT quoting or restating the passage.
 hook, so flow naturally into the idea and do NOT repeat the hook line. Plain, grounded, \
 masculine-neutral tone. No hashtags in the voiceover. End a sentence before the CTA.
 - CTA: 1-2 spoken sentences for the very last moment of the voiceover. Reference the \
-next day's theme (provided in the user message) naturally — give a REASON to follow, \
-not just "subscribe". Under 25 words. Vary the phrasing across days. \
+next day's theme naturally — give a REASON to follow, not just "subscribe". \
+Under 25 words. Vary the phrasing across days. \
 Example: "Tomorrow: Marcus Aurelius on anger. Follow for your daily Stoic dose."
-- Pinned comment: an engagement question posted as the pinned comment under the video. \
-Must feel genuinely curious, tied to today's theme, and drive real replies — not \
-hollow engagement bait. Under 20 words. \
-Example: "Which Stoic idea has changed how you actually live — not just think?"
+- Pinned comment: a short, personal, slightly uncomfortable question that makes \
+viewers stop and actually answer — tied directly to today's quote and theme. \
+It should feel like something a friend would ask, not a YouTube engagement prompt. \
+Under 20 words. Make it specific to the quote's idea. \
+Example for discipline: "What's the one habit you keep starting and abandoning — and what's your real excuse?"
 - Caption: 1-2 sentences that reframe the idea for daily life + one soft question \
 to drive comments.
 - Hashtags: 8-12, mixing broad (#stoicism #discipline) and mid-size niche tags.
@@ -115,7 +106,6 @@ Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
 
 
 def _load_rows() -> list[dict]:
-    """Return all logged post rows (oldest first). Warns loudly if missing."""
     if not LOG.exists():
         print(
             f"WARNING: posts.csv not found at {LOG} — repeat-avoidance history is "
@@ -128,17 +118,16 @@ def _load_rows() -> list[dict]:
 
 
 def _pick_least_recent(options: list[str], history: list[str], block_last: int) -> str:
-    """Pick the least-recently-used option, blocking the most recent ones.
+    """Pick the least-recently-used option, blocking the most recent N entries.
 
-    `history` is most-recent-first. Options never used rank as most stale, so
-    fresh authors/themes get used before anything cycles back. Ties break by
-    `options` order, making the choice deterministic for a given history.
+    history is most-recent-first. Never-used options rank as most stale.
+    Ties break by position in `options` (lower index wins), making the
+    choice deterministic for a given history.
     """
     blocked = set(history[:block_last])
     candidates = [o for o in options if o not in blocked] or list(options)
 
     def staleness(o: str) -> int:
-        # Lower history index = more recent; never-used = most stale.
         return history.index(o) if o in history else len(history) + 1
 
     return max(candidates, key=lambda o: (staleness(o), -options.index(o)))
@@ -147,34 +136,52 @@ def _pick_least_recent(options: list[str], history: list[str], block_last: int) 
 def _pick_rotation(rows: list[dict]) -> tuple[str, str]:
     recent_authors = [r["author"] for r in reversed(rows) if r.get("author")]
     recent_themes = [r["theme"] for r in reversed(rows) if r.get("theme")]
-    # Block the last 2 authors -> no Stoic repeats within any 3-day window.
-    author = _pick_least_recent(AUTHORS, recent_authors, block_last=2)
-    # Block the last 3 themes so ideas don't cluster.
+
+    # 3 out of every 5 days: pick from Big 3 (MA, Seneca, Epictetus).
+    # Analytics show they average 900-1050 views vs 200-600 for lesser-known Stoics.
+    day_index = len(rows)
+    if day_index % 5 < 3:
+        author = _pick_least_recent(BIG3, recent_authors, block_last=1)
+    else:
+        # Full roster on the other 2 days, excluding anyone just posted.
+        author = _pick_least_recent(AUTHORS, recent_authors, block_last=2)
+
     theme = _pick_least_recent(THEMES, recent_themes, block_last=3)
     return author, theme
 
 
 def _pick_next_theme(rows: list, current_theme: str) -> str:
-    """Predict tomorrow's theme for the CTA (simulate today's post being logged)."""
     recent = [r["theme"] for r in reversed(rows) if r.get("theme")]
     return _pick_least_recent(THEMES, [current_theme] + recent, block_last=3)
 
 
 def generate_content() -> dict:
+    import anthropic
     rows = _load_rows()
     used_quotes = [r["quote"] for r in rows if r.get("quote")]
     required_author, required_theme = _pick_rotation(rows)
     day_number = len(rows) + 1
     next_theme = _pick_next_theme(rows, required_theme)
 
+    # Build a hard block list, highlighting any quotes by today's author so the
+    # model knows it must pick a completely different passage from the same source.
+    author_used = [q for i, q in enumerate(used_quotes)
+                   if rows[i].get("author") == required_author]
     avoid_block = ""
     if used_quotes:
         quoted = "\n".join(f'- "{q}"' for q in used_quotes[-80:])
         avoid_block = (
-            "\n\nQuotes already used — do NOT repeat, paraphrase, or recycle the "
-            "core metaphor of any of these:\n"
+            "\n\nCRITICAL — quotes already used on this channel. You MUST NOT repeat, "
+            "paraphrase, or use the core idea of ANY quote on this list:\n"
             f"{quoted}"
         )
+        if author_used:
+            author_quoted = "\n".join(f'- "{q}"' for q in author_used)
+            avoid_block += (
+                f"\n\nQuotes already used from {required_author} specifically — "
+                f"you MUST pick a DIFFERENT passage from the same source:\n"
+                f"{author_quoted}"
+            )
 
     user_msg = (
         f"Generate today's Stoic Reel.\n"
