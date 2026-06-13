@@ -7,46 +7,48 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Karaoke,DejaVu Sans,64,&H0030B8FF,&H0030B8FF,&H00000000,&H90000000,-1,0,0,0,100,100,2,0,1,4,3,2,150,150,180,1
+Style: Karaoke,DejaVu Sans,64,&H0030B8FF,&H0030B8FF,&H00000000,&H90000000,-1,0,0,0,100,100,2,0,1,4,3,2,150,150,340,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:00.00,0:00:00.63,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Your duties
-Dialogue: 0,0:00:00.55,0:00:01.45,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}define you.
-Dialogue: 0,0:00:02.15,0:00:03.06,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Epictetus taught
-Dialogue: 0,0:00:02.96,0:00:03.29,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}that you
-Dialogue: 0,0:00:03.21,0:00:03.75,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}are not
-Dialogue: 0,0:00:03.78,0:00:04.63,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}one role,
-Dialogue: 0,0:00:04.55,0:00:05.20,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}but many
-Dialogue: 0,0:00:05.29,0:00:06.47,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}— son,
-Dialogue: 0,0:00:06.56,0:00:08.14,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}neighbor, citizen,
-Dialogue: 0,0:00:08.23,0:00:08.87,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}friend.
-Dialogue: 0,0:00:09.70,0:00:10.46,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Each carries
-Dialogue: 0,0:00:10.38,0:00:11.47,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}an obligation.
-Dialogue: 0,0:00:12.16,0:00:12.85,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Justice is
-Dialogue: 0,0:00:12.78,0:00:13.49,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}simply paying
-Dialogue: 0,0:00:13.41,0:00:13.75,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}what you
-Dialogue: 0,0:00:13.72,0:00:14.17,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}owe in
-Dialogue: 0,0:00:14.14,0:00:14.56,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}each of
-Dialogue: 0,0:00:14.49,0:00:15.01,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}these.
-Dialogue: 0,0:00:15.59,0:00:15.99,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}When you
-Dialogue: 0,0:00:15.94,0:00:16.57,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}neglect what
-Dialogue: 0,0:00:16.48,0:00:17.01,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}you owe
-Dialogue: 0,0:00:16.93,0:00:17.74,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}another person,
-Dialogue: 0,0:00:17.66,0:00:18.03,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}you don't
-Dialogue: 0,0:00:17.95,0:00:18.57,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}just fail
-Dialogue: 0,0:00:18.51,0:00:18.93,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}them.
-Dialogue: 0,0:00:19.13,0:00:19.63,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}You fail
-Dialogue: 0,0:00:19.56,0:00:19.88,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}to be
-Dialogue: 0,0:00:19.79,0:00:20.13,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}who you
-Dialogue: 0,0:00:20.11,0:00:21.16,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}actually are.
-Dialogue: 0,0:00:21.73,0:00:22.44,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Stop asking
-Dialogue: 0,0:00:22.36,0:00:22.90,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}what others
-Dialogue: 0,0:00:22.85,0:00:23.33,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}owe you,
-Dialogue: 0,0:00:23.23,0:00:23.63,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}and look
-Dialogue: 0,0:00:23.58,0:00:24.01,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}hard at
-Dialogue: 0,0:00:23.93,0:00:24.31,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}what you
-Dialogue: 0,0:00:24.26,0:00:24.89,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}owe them.
-Dialogue: 0,0:00:25.22,0:00:25.79,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}That is
-Dialogue: 0,0:00:25.73,0:00:26.48,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}where character
-Dialogue: 0,0:00:26.42,0:00:27.37,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}is built.
+Dialogue: 0,0:00:00.00,0:00:00.49,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Life is
+Dialogue: 0,0:00:00.43,0:00:01.05,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}a wrestling
+Dialogue: 0,0:00:00.97,0:00:01.59,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}match.
+Dialogue: 0,0:00:02.17,0:00:03.07,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Marcus Aurelius
+Dialogue: 0,0:00:02.98,0:00:03.61,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}said living
+Dialogue: 0,0:00:03.55,0:00:04.04,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}is more
+Dialogue: 0,0:00:03.96,0:00:04.75,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}like wrestling
+Dialogue: 0,0:00:04.68,0:00:05.64,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}than dancing.
+Dialogue: 0,0:00:06.22,0:00:06.90,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}A dancer
+Dialogue: 0,0:00:06.85,0:00:07.97,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}rehearses smooth,
+Dialogue: 0,0:00:07.88,0:00:09.10,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}predictable steps.
+Dialogue: 0,0:00:09.68,0:00:10.32,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}A wrestler
+Dialogue: 0,0:00:10.26,0:00:10.87,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}braces for
+Dialogue: 0,0:00:10.80,0:00:11.24,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}the blow
+Dialogue: 0,0:00:11.19,0:00:11.60,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}he didn't
+Dialogue: 0,0:00:11.50,0:00:12.34,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}see coming,
+Dialogue: 0,0:00:12.47,0:00:13.48,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}stays planted,
+Dialogue: 0,0:00:13.40,0:00:14.11,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}and adapts
+Dialogue: 0,0:00:14.02,0:00:14.30,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}in the
+Dialogue: 0,0:00:14.22,0:00:14.85,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}moment.
+Dialogue: 0,0:00:15.54,0:00:16.15,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}That's the
+Dialogue: 0,0:00:16.09,0:00:16.74,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}skill that
+Dialogue: 0,0:00:16.69,0:00:17.99,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}actually matters.
+Dialogue: 0,0:00:18.68,0:00:19.08,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}You won't
+Dialogue: 0,0:00:18.98,0:00:19.25,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}get a
+Dialogue: 0,0:00:19.19,0:00:20.35,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}clean, scripted
+Dialogue: 0,0:00:20.30,0:00:20.95,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}life.
+Dialogue: 0,0:00:21.43,0:00:21.88,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}You'll get
+Dialogue: 0,0:00:21.80,0:00:22.83,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}sudden losses,
+Dialogue: 0,0:00:22.75,0:00:24.22,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}betrayals, things
+Dialogue: 0,0:00:24.12,0:00:24.52,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}that hit
+Dialogue: 0,0:00:24.42,0:00:24.73,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}out of
+Dialogue: 0,0:00:24.68,0:00:25.39,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}nowhere.
+Dialogue: 0,0:00:26.22,0:00:26.90,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Stop training
+Dialogue: 0,0:00:26.82,0:00:27.12,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}for the
+Dialogue: 0,0:00:27.04,0:00:27.73,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}dance.
+Dialogue: 0,0:00:28.42,0:00:28.97,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Train to
+Dialogue: 0,0:00:28.90,0:00:29.65,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}stay standing
+Dialogue: 0,0:00:29.57,0:00:29.98,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}when you're
+Dialogue: 0,0:00:29.88,0:00:30.41,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}knocked off
+Dialogue: 0,0:00:30.35,0:00:31.22,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}balance.
