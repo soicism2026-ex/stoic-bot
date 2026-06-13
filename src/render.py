@@ -27,7 +27,20 @@ from datetime import date
 from backgrounds import fetch_background
 
 ROOT = Path(__file__).resolve().parent.parent
+
+# Primary font: sans-serif for hook and captions (punchy, modern energy).
 FONT = os.environ.get("REEL_FONT", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")
+
+# Quote font: serif for a classical / stone-inscription feel matching Stoic aesthetics.
+QUOTE_FONT = os.environ.get(
+    "REEL_QUOTE_FONT",
+    "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf",
+)
+
+# Color palette — all env-overridable.
+QUOTE_COLOR  = os.environ.get("REEL_QUOTE_COLOR",  "0xF0E6C8")  # warm parchment
+AUTHOR_COLOR = os.environ.get("REEL_AUTHOR_COLOR", "0xC9A055")  # antique bronze/gold
+DIVIDER_COLOR = os.environ.get("REEL_DIVIDER_COLOR", "0xA08040") # darker bronze for divider
 
 # Karaoke caption controls (all optional, sensible defaults).
 CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False")
@@ -44,7 +57,7 @@ HOOK_TEXT_ON = os.environ.get("REEL_HOOK_TEXT", "1") not in ("0", "false", "Fals
 HOOK_SOUND_ON = os.environ.get("REEL_HOOK_SOUND", "1") not in ("0", "false", "False")
 HOOK_HOLD = float(os.environ.get("REEL_HOOK_HOLD", "2.2"))      # seconds fully shown
 HOOK_FONTSIZE = int(os.environ.get("REEL_HOOK_FONTSIZE", "94"))
-HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFC83C")      # amber
+HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFB830")      # warm amber/gold
 
 # Extra darkening on top of the date-rotated grade. Set by the QA retry loop
 # (scripts/daily_post.py) when a render fails on text contrast.
@@ -252,10 +265,12 @@ def _build_ass(word_timings: list, out_path: Path) -> Path:
     """Write a karaoke .ass file for the given word timings. Returns the path."""
     lines = _group_lines(word_timings)
 
-    # PrimaryColour = amber (active/spoken), SecondaryColour = soft white (upcoming).
-    # ASS colors are &HAABBGGRR (alpha, blue, green, red).
-    primary = "&H0020C0FF"     # amber
-    secondary = "&H00F5F5F5"   # soft white
+    # PrimaryColour = warm gold (active/spoken), SecondaryColour = parchment (upcoming).
+    # ASS colors are &HAABBGGRR (alpha=00 is fully opaque, then blue, green, red).
+    # #FFB830 (warm amber gold) → BGR: B=0x30, G=0xB8, R=0xFF → &H0030B8FF
+    # #E8DCC8 (warm parchment)  → BGR: B=0xC8, G=0xDC, R=0xE8 → &H00C8DCE8
+    primary = "&H0030B8FF"     # warm amber gold (active word)
+    secondary = "&H00C8DCE8"   # warm parchment (upcoming words)
     outline = "&H00000000"     # black
     back = "&H80000000"        # shadow / box
 
@@ -380,21 +395,34 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         else:
             quote_alpha = "1"
 
+        # Quote lines — serif font, warm parchment color.
         for i, line in enumerate(quote_lines):
             offset = i * LINE_H - half_block
             line_y = f"{center_expr}{offset:+d}"
             vf_parts.append(
-                f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
-                f"fontcolor=white:fontsize={QUOTE_FONTSIZE}:"
+                f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
+                f"text='{_escape(line)}':"
+                f"fontcolor={QUOTE_COLOR}:fontsize={QUOTE_FONTSIZE}:"
                 f"x=(w-text_w)/2:y={line_y}:"
-                f"box=0:shadowcolor=black@0.7:shadowx=3:shadowy=3:"
+                f"box=0:shadowcolor=black@0.85:shadowx=4:shadowy=4:"
                 f"alpha='{quote_alpha}'"
             )
+
+        # Thin gold divider line between quote block and author.
+        divider_y = f"{center_expr}+{half_block + 18}"
         vf_parts.append(
-            f"drawtext=fontfile='{FONT}':text='{author_txt}':"
-            f"fontcolor=white@0.85:fontsize=44:"
+            f"drawbox=x=(w-240)/2:y={divider_y}:w=240:h=2:"
+            f"color={DIVIDER_COLOR}@0.85:t=fill"
+        )
+
+        # Author — antique bronze, all-caps, slightly smaller than quote.
+        author_upper = _escape(f"— {author.upper()}")
+        vf_parts.append(
+            f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
+            f"text='{author_upper}':"
+            f"fontcolor={AUTHOR_COLOR}:fontsize=38:"
             f"x=(w-text_w)/2:y={author_y}:"
-            f"shadowcolor=black@0.6:shadowx=2:shadowy=2:"
+            f"shadowcolor=black@0.8:shadowx=3:shadowy=3:"
             f"alpha='{quote_alpha}'"
         )
 
