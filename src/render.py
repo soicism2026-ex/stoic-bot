@@ -262,17 +262,20 @@ def _group_lines(word_timings: list, max_words: int = 2, pause: float = 0.55) ->
 
 
 def _build_ass(word_timings: list, out_path: Path) -> Path:
-    """Write a karaoke .ass file for the given word timings. Returns the path."""
+    """Write a .ass subtitle file with animated per-chunk captions.
+
+    Each 2-word chunk pops in with a scale animation (115%→100% over 150ms)
+    and a quick fade-in/out. This replaces the old karaoke color sweep with
+    actual motion — more engaging and consistent with viral Shorts style.
+    """
     lines = _group_lines(word_timings)
 
-    # PrimaryColour = warm gold (active/spoken), SecondaryColour = parchment (upcoming).
-    # ASS colors are &HAABBGGRR (alpha=00 is fully opaque, then blue, green, red).
-    # #FFB830 (warm amber gold) → BGR: B=0x30, G=0xB8, R=0xFF → &H0030B8FF
-    # #E8DCC8 (warm parchment)  → BGR: B=0xC8, G=0xDC, R=0xE8 → &H00C8DCE8
-    primary = "&H0030B8FF"     # warm amber gold (active word)
-    secondary = "&H00C8DCE8"   # warm parchment (upcoming words)
-    outline = "&H00000000"     # black
-    back = "&H80000000"        # shadow / box
+    # Warm amber gold throughout — motion is the visual cue, not color sweep.
+    # ASS colors: &HAABBGGRR (AA=00 fully opaque, then Blue, Green, Red).
+    # #FFB830 → BGR: B=0x30, G=0xB8, R=0xFF → &H0030B8FF
+    primary = "&H0030B8FF"
+    outline = "&H00000000"  # black outline
+    back = "&H90000000"     # slightly opaque shadow backing
 
     header = f"""[Script Info]
 ScriptType: v4.00+
@@ -283,7 +286,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{secondary},{outline},{back},-1,0,0,0,100,100,0,0,1,4,3,2,{CAPTION_MARGINL},{CAPTION_MARGINR},{CAPTION_MARGINV},1
+Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{primary},{outline},{back},-1,0,0,0,100,100,2,0,1,4,3,2,{CAPTION_MARGINL},{CAPTION_MARGINR},{CAPTION_MARGINV},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -291,18 +294,18 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
     events = []
     for line in lines:
-        start = line[0][1]
-        end = line[-1][2]
-        parts = []
-        for j, (word, w_start, w_end) in enumerate(line):
-            # Hold the highlight until the next word begins so the sweep tracks
-            # the voice; last word uses its own end.
-            nxt = line[j + 1][1] if j + 1 < len(line) else w_end
-            dur_cs = max(1, int(round((nxt - w_start) * 100)))
-            parts.append(f"{{\\kf{dur_cs}}}{_ass_escape(word)} ")
-        text = "".join(parts).rstrip()
+        # Appear just before the first word; linger briefly after the last.
+        start = max(0.0, line[0][1] - 0.06)
+        end = line[-1][2] + 0.06
+        text = " ".join(_ass_escape(w[0].strip()) for w in line)
+
+        # \\fscx115\\fscy115  — start at 115% scale (the "pop")
+        # \\t(0,150,...)      — animate to 100% over the first 150ms
+        # \\fad(120,80)       — 120ms fade-in, 80ms fade-out
+        anim = r"{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}"
         events.append(
-            f"Dialogue: 0,{_ass_time(start)},{_ass_time(end)},Karaoke,,0,0,0,,{text}"
+            f"Dialogue: 0,{_ass_time(start)},{_ass_time(end)},"
+            f"Karaoke,,0,0,0,,{anim}{text}"
         )
 
     out_path.write_text(header + "\n".join(events) + "\n", encoding="utf-8")
