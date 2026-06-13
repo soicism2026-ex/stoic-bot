@@ -65,13 +65,14 @@ EXTRA_DARKEN = float(os.environ.get("REEL_EXTRA_DARKEN", "0"))
 
 # Hook sound preset — read from env, then data/hook_preset file, then default.
 # Updated weekly by scripts/update_hook_sound.py.
-# Presets: bass_impact | cinematic | whoosh | minimal
+# Presets: meditative | bass_impact | cinematic | whoosh | minimal
 _HOOK_PRESET_FILE = ROOT / "data" / "hook_preset"
 def _read_hook_preset() -> str:
     p = os.environ.get("REEL_HOOK_SOUND_PRESET", "").strip()
     if not p and _HOOK_PRESET_FILE.exists():
         p = _HOOK_PRESET_FILE.read_text(encoding="utf-8").strip()
-    return p if p in ("bass_impact", "cinematic", "whoosh", "minimal") else "bass_impact"
+    valid = ("meditative", "bass_impact", "cinematic", "whoosh", "minimal")
+    return p if p in valid else "meditative"
 
 W, H = 1080, 1920
 
@@ -89,15 +90,46 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
 
     Preset selected by _read_hook_preset() (env → data/hook_preset file → default).
 
-    bass_impact  — sub-bass punch + transient snap; dominates in modern motivation/
-                   philosophy Shorts and is updated weekly from YouTube trend data.
+    meditative   — singing-bowl tone bed: warm fundamental + overtones, slow swell,
+                   shimmer from detuning, reverb tail. Runs ~5s softly under the
+                   whole intro for contemplative gravitas (default, on-brand).
+    bass_impact  — sub-bass punch + transient snap; modern motivation/hype energy.
     cinematic    — orchestral harmonic swell → dramatic hit; serious/philosophical.
     whoosh       — original pink-noise swell + low sine; broadly neutral.
     minimal      — clean struck tone + overtone; calm/educational aesthetic.
     """
     preset = _read_hook_preset()
 
-    if preset == "cinematic":
+    if preset == "meditative":
+        # A singing-bowl bed: a warm fundamental plus an inharmonic overtone set
+        # (the ~2.7x partial gives bowls their characteristic shimmer). A second
+        # tone detuned by ~1.3 Hz beats slowly against the fundamental for a
+        # living, breathing shimmer. Each partial swells in then releases over
+        # the full duration (triangle envelope via min(rise, fall)). A gentle
+        # echo adds air/space, and a soft limiter tames the sum.
+        dur = max(dur, 5.0)
+
+        def _bed(freq, amp, attack):
+            fall = dur - attack
+            return (
+                f"sine=frequency={freq}:duration={dur},"
+                f"volume='min(t/{attack:.2f},max(0,1-(t-{attack:.2f})/{fall:.2f}))*{amp}'"
+                ":eval=frame"
+            )
+
+        f0    = _bed(174.0, 1.00, 0.9)    # fundamental (F3, calming)
+        f0b   = _bed(175.3, 0.70, 1.0)    # detuned partner → slow ~1.3 Hz beating
+        octv  = _bed(348.0, 0.55, 1.1)    # octave warmth
+        part  = _bed(470.0, 0.26, 1.3)    # ~2.7x bowl partial (shimmer)
+        high  = _bed(587.0, 0.13, 1.5)    # faint upper sparkle
+        fc = (
+            f"{f0}[a];{f0b}[b];{octv}[c];{part}[d];{high}[e];"
+            "[a][b][c][d][e]amix=inputs=5:duration=longest,"
+            "aecho=0.8:0.85:55|95:0.30|0.20,"
+            f"afade=t=out:st={dur-0.8:.3f}:d=0.8,volume=1.8,alimiter=limit=0.9"
+        )
+
+    elif preset == "cinematic":
         h1 = f"sine=frequency=65:duration={dur},volume='min(1,t/0.8)*0.45':eval=frame"
         h2 = f"sine=frequency=130:duration={dur},volume='min(0.9,t/0.6)*0.3':eval=frame"
         h3 = f"sine=frequency=195:duration={dur},volume='min(0.7,t/0.45)*0.18':eval=frame"
