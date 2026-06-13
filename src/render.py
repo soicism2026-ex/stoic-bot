@@ -47,7 +47,7 @@ CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False"
 CAPTIONS_ONLY = os.environ.get("REEL_CAPTIONS_ONLY", "0") not in ("0", "false", "False")
 CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
 CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "64"))
-CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "180"))
+CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "340"))
 CAPTION_MARGINL = int(os.environ.get("REEL_CAPTION_MARGINL", "150"))
 CAPTION_MARGINR = int(os.environ.get("REEL_CAPTION_MARGINR", "150"))
 
