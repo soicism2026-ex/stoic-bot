@@ -34,7 +34,7 @@ CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False"
 CAPTIONS_ONLY = os.environ.get("REEL_CAPTIONS_ONLY", "0") not in ("0", "false", "False")
 CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
 CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "64"))
-CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "470"))
+CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "180"))
 CAPTION_MARGINL = int(os.environ.get("REEL_CAPTION_MARGINL", "150"))
 CAPTION_MARGINR = int(os.environ.get("REEL_CAPTION_MARGINR", "150"))
 
@@ -225,7 +225,7 @@ def _ass_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace("{", "(").replace("}", ")")
 
 
-def _group_lines(word_timings: list, max_words: int = 3, pause: float = 0.55) -> list:
+def _group_lines(word_timings: list, max_words: int = 2, pause: float = 0.55) -> list:
     """Group (word, start, end) into caption lines of 1-max_words words.
 
     Breaks on: reaching max_words, a silence gap > `pause` before the next word,
@@ -370,6 +370,16 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     ]
 
     if show_quote:
+        # Fade the quote in as the hook fades out so only one primary text is
+        # on screen at a time. If no hook is shown, appear from the start.
+        if hook and HOOK_TEXT_ON:
+            hook_fade = 0.4
+            quote_appear = HOOK_HOLD          # start fading in when hook starts fading
+            quote_fade_dur = hook_fade + 0.2  # slightly longer for a softer entrance
+            quote_alpha = f"min(1,max(0,(t-{quote_appear})/{quote_fade_dur:.2f}))"
+        else:
+            quote_alpha = "1"
+
         for i, line in enumerate(quote_lines):
             offset = i * LINE_H - half_block
             line_y = f"{center_expr}{offset:+d}"
@@ -377,13 +387,15 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
                 f"fontcolor=white:fontsize={QUOTE_FONTSIZE}:"
                 f"x=(w-text_w)/2:y={line_y}:"
-                f"box=0:shadowcolor=black@0.6:shadowx=3:shadowy=3"
+                f"box=0:shadowcolor=black@0.7:shadowx=3:shadowy=3:"
+                f"alpha='{quote_alpha}'"
             )
         vf_parts.append(
             f"drawtext=fontfile='{FONT}':text='{author_txt}':"
             f"fontcolor=white@0.85:fontsize=44:"
             f"x=(w-text_w)/2:y={author_y}:"
-            f"shadowcolor=black@0.6:shadowx=2:shadowy=2"
+            f"shadowcolor=black@0.6:shadowx=2:shadowy=2:"
+            f"alpha='{quote_alpha}'"
         )
 
     # Hook card: big, bold, scroll-stopping text flashed over the opening, then
