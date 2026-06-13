@@ -22,22 +22,22 @@ TOKEN_URI = "https://oauth2.googleapis.com/token"
 CATEGORY_ID = os.environ.get("YOUTUBE_CATEGORY_ID", "22")
 
 
-def _service():
+def _service(extra_scopes: list[str] | None = None):
     from google.oauth2.credentials import Credentials
     from googleapiclient.discovery import build
+    scopes = [
+        "https://www.googleapis.com/auth/youtube.upload",
+        "https://www.googleapis.com/auth/youtube.readonly",
+    ]
+    if extra_scopes:
+        scopes.extend(extra_scopes)
     creds = Credentials(
         token=None,
         refresh_token=os.environ["YOUTUBE_REFRESH_TOKEN"],
         token_uri=TOKEN_URI,
         client_id=os.environ["YOUTUBE_CLIENT_ID"],
         client_secret=os.environ["YOUTUBE_CLIENT_SECRET"],
-        scopes=[
-            "https://www.googleapis.com/auth/youtube.upload",
-            "https://www.googleapis.com/auth/youtube.readonly",
-            # force-ssl is needed for commentThreads.insert.
-            # Re-run auth_setup.py to generate a refresh token that includes it.
-            "https://www.googleapis.com/auth/youtube.force-ssl",
-        ],
+        scopes=scopes,
     )
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
@@ -85,19 +85,22 @@ def post_comment(video_id: str, text: str) -> str:
     """Post a top-level comment on the video and return the comment thread ID.
 
     Requires the refresh token to include the youtube.force-ssl scope.
-    Re-run auth_setup.py (which now requests that scope) if you get a 403.
-    Pinning the comment must be done manually in YouTube Studio — the public
-    Data API v3 does not expose a pin endpoint.
+    Returns an empty string (skips silently) if the token lacks that scope.
+    Re-run auth_setup.py to generate a refresh token that includes force-ssl.
     """
-    yt = _service()
-    body = {
-        "snippet": {
-            "videoId": video_id,
-            "topLevelComment": {"snippet": {"textOriginal": text}},
+    try:
+        yt = _service(extra_scopes=["https://www.googleapis.com/auth/youtube.force-ssl"])
+        body = {
+            "snippet": {
+                "videoId": video_id,
+                "topLevelComment": {"snippet": {"textOriginal": text}},
+            }
         }
-    }
-    resp = yt.commentThreads().insert(part="snippet", body=body).execute()
-    thread_id = resp.get("id", "")
-    print(f"  [comment] posted thread {thread_id}")
-    print("  [comment] → pin it in YouTube Studio: Comments → ⋮ → Pin comment")
-    return thread_id
+        resp = yt.commentThreads().insert(part="snippet", body=body).execute()
+        thread_id = resp.get("id", "")
+        print(f"  [comment] posted thread {thread_id}")
+        print("  [comment] → pin it in YouTube Studio: Comments → ⋮ → Pin comment")
+        return thread_id
+    except Exception as e:
+        print(f"  [comment] skipped — token may lack force-ssl scope: {e}")
+        return ""
