@@ -23,21 +23,37 @@ BG_DIR = ROOT / "assets" / "backgrounds"
 PEXELS_SEARCH_URL = "https://api.pexels.com/videos/search"
 PIXABAY_VIDEO_URL = "https://pixabay.com/api/videos/"
 
-# Themes from content.py are full phrases ("mortality/memento mori",
-# "control vs acceptance", ...), so we match by substring keyword.
-THEME_QUERIES = [
-    ("mortality", "dark clouds storm dramatic"),
-    ("discipline", "mountain peak snow"),
-    ("time", "river flowing water"),
-    ("control", "ocean waves calm"),
-    ("virtue", "ancient temple ruins"),
-    ("wisdom", "misty forest trees"),
-    ("resilience", "rocky coastline waves"),
-    ("purpose", "mountain sunrise sky"),
-    ("impermanence", "autumn leaves falling"),
-    ("justice", "lightning thunderstorm"),
+# Each theme maps to 3 query options that rotate by date (+ bg_offset).
+# This means consecutive days with the same theme still get visually different
+# results, and themes that previously all fell to "nature cinematic dark" now
+# have their own distinctive visual identity.
+THEME_QUERY_POOLS: dict[str, list[str]] = {
+    "mortality":    ["dark storm clouds dramatic", "graveyard fog night", "hourglass sand dark"],
+    "discipline":   ["mountain snow peak sunrise", "lone athlete dark training", "glacier ice landscape"],
+    "time":         ["river flowing long exposure", "pocket watch vintage bokeh", "sand dunes desert light"],
+    "control":      ["calm ocean horizon minimal", "zen garden stones water", "still lake reflection mist"],
+    "virtue":       ["ancient temple stone ruins", "marble columns architecture", "classical roman arch"],
+    "wisdom":       ["misty forest ancient trees", "old library books candlelight", "stone philosopher statue"],
+    "resilience":   ["rocky coastline crashing waves", "lone tree in storm roots", "broken cliff erosion"],
+    "purpose":      ["mountain summit sunrise sky", "lighthouse beacon dark sea", "compass wilderness trail"],
+    "impermanence": ["autumn leaves falling wind", "cherry blossom petals drift", "candle flame close dark"],
+    "justice":      ["lightning thunderstorm dramatic", "stone courthouse columns", "scales balance gold"],
+    # Previously fell to default — now have their own visuals:
+    "ego":          ["shadow figure dramatic portrait", "lone silhouette cliff edge", "mirror reflection dark"],
+    "anger":        ["fire flames dark dramatic", "crashing ocean storm waves", "volcanic eruption lava"],
+    "desire":       ["golden hour horizon ocean", "flame candle bokeh warm", "sunset desert dunes"],
+    "fear":         ["dark forest mist fog", "cave entrance light beam", "storm clouds approaching"],
+    "friendship":   ["two silhouettes sunset walk", "bonfire night gathering", "handshake bridge connection"],
+    "adversity":    ["lone climber mountain storm", "broken road perseverance", "bare tree winter landscape"],
+}
+
+# Fallback pool — used only if no keyword matches. Three options so even the
+# fallback rotates rather than always looking the same.
+DEFAULT_QUERIES = [
+    "ancient ruins atmospheric dark",
+    "dramatic landscape cinematic",
+    "dark nature contemplative fog",
 ]
-DEFAULT_QUERY = "nature cinematic dark"
 
 
 def _bg_offset() -> int:
@@ -49,6 +65,10 @@ def _bg_offset() -> int:
         return int(os.environ.get("REEL_BG_OFFSET", "0"))
     except ValueError:
         return 0
+
+# For refresh_backgrounds.py backward-compat — flat list of all queries.
+THEME_QUERIES = [(kw, qs[0]) for kw, qs in THEME_QUERY_POOLS.items()]
+DEFAULT_QUERY = DEFAULT_QUERIES[0]
 
 # Dark colour palettes (hex) for synthetic backgrounds, keyed by theme keyword.
 _SYNTHETIC_COLOURS = {
@@ -62,15 +82,23 @@ _SYNTHETIC_COLOURS = {
     "purpose":      "0x12100a",
     "impermanence": "0x0e0c0a",
     "justice":      "0x140a0a",
+    "ego":          "0x10100a",
+    "anger":        "0x180808",
+    "desire":       "0x140c08",
+    "fear":         "0x080810",
+    "friendship":   "0x0a0e14",
+    "adversity":    "0x0c0c0c",
 }
 
 
 def _search_term(theme: str) -> str:
+    """Return a query string for the given theme, rotating through options by date."""
     t = (theme or "").lower()
-    for keyword, query in THEME_QUERIES:
+    day = date.today().toordinal() + _bg_offset()
+    for keyword, queries in THEME_QUERY_POOLS.items():
         if keyword in t:
-            return query
-    return DEFAULT_QUERY
+            return queries[day % len(queries)]
+    return DEFAULT_QUERIES[day % len(DEFAULT_QUERIES)]
 
 
 def _rotate_local() -> Path:
