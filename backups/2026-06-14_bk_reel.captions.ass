@@ -1,0 +1,51 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Karaoke,DejaVu Sans,64,&H0030B8FF,&H0030B8FF,&H00000000,&H90000000,-1,0,0,0,100,100,2,0,1,4,3,2,150,150,340,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:00.65,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Your status
+Dialogue: 0,0:00:00.59,0:00:01.07,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}is not
+Dialogue: 0,0:00:01.01,0:00:01.66,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}yours.
+Dialogue: 0,0:00:02.05,0:00:02.57,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}We spend
+Dialogue: 0,0:00:02.49,0:00:03.03,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}our lives
+Dialogue: 0,0:00:02.97,0:00:03.62,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}decorating the
+Dialogue: 0,0:00:03.53,0:00:04.39,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}wrong house.
+Dialogue: 0,0:00:04.71,0:00:05.44,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}The titles,
+Dialogue: 0,0:00:05.34,0:00:05.89,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}the money,
+Dialogue: 0,0:00:05.80,0:00:06.38,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}the image
+Dialogue: 0,0:00:06.29,0:00:06.91,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}we polish
+Dialogue: 0,0:00:06.84,0:00:07.42,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}for others
+Dialogue: 0,0:00:07.35,0:00:08.22,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}to admire.
+Dialogue: 0,0:00:09.22,0:00:10.22,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Musonius saw
+Dialogue: 0,0:00:10.16,0:00:10.81,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}through it.
+Dialogue: 0,0:00:11.13,0:00:11.67,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}He taught
+Dialogue: 0,0:00:11.57,0:00:11.94,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}that what
+Dialogue: 0,0:00:11.86,0:00:12.44,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}you gather
+Dialogue: 0,0:00:12.39,0:00:13.35,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}outside yourself
+Dialogue: 0,0:00:13.28,0:00:13.63,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}can be
+Dialogue: 0,0:00:13.59,0:00:14.17,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}lost in
+Dialogue: 0,0:00:14.08,0:00:14.78,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}a moment,
+Dialogue: 0,0:00:15.10,0:00:15.55,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}but what
+Dialogue: 0,0:00:15.47,0:00:16.00,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}you build
+Dialogue: 0,0:00:15.94,0:00:16.89,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}inside cannot
+Dialogue: 0,0:00:16.82,0:00:17.63,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}be taken.
+Dialogue: 0,0:00:18.32,0:00:18.86,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}So stop
+Dialogue: 0,0:00:18.82,0:00:19.59,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}ornamenting your
+Dialogue: 0,0:00:19.51,0:00:20.47,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}reputation.
+Dialogue: 0,0:00:20.95,0:00:21.71,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Build something
+Dialogue: 0,0:00:21.63,0:00:21.96,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}in your
+Dialogue: 0,0:00:21.91,0:00:22.88,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}soul instead.
+Dialogue: 0,0:00:23.72,0:00:24.13,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}That is
+Dialogue: 0,0:00:24.05,0:00:24.59,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}the only
+Dialogue: 0,0:00:24.53,0:00:24.95,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}thing that
+Dialogue: 0,0:00:24.87,0:00:25.43,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}was ever
+Dialogue: 0,0:00:25.40,0:00:26.18,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}actually yours
+Dialogue: 0,0:00:26.11,0:00:26.95,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}to keep.
