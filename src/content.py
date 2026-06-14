@@ -5,9 +5,10 @@ Asks Claude for one day's Stoic Reel: a real public-domain Stoic quote, a short
 voiceover script, an engagement caption, and hashtags. Returns structured JSON.
 
 Variety is enforced on three axes so the feed never fixates on one voice or idea:
-- Author rotation favours the Big 3 (Marcus Aurelius, Seneca, Epictetus) on 3 of
-  every 5 days — analytics show they outperform obscure Stoics by 2-4x — while
-  still cycling the wider roster so content stays diverse.
+- Author rotation favours the Big 5 (Marcus Aurelius, Seneca, Epictetus, Musonius Rufus,
+  Zeno of Citium) on 4 of every 5 days — all consistently hit 900–1055 views.
+  Chrysippus (~640v) fills every 5th slot for variety. Cleanthes (224v), Hierocles,
+  and Cato the Younger removed after underperforming.
 - Theme rotation spreads across topics, least-recently-used first.
 - Previously used quotes are read from posts.csv and injected as a hard block list.
 """
@@ -28,17 +29,17 @@ SOURCE_HINTS = {
     "Epictetus": "Discourses and the Enchiridion (as recorded by Arrian)",
     "Musonius Rufus": "the Lectures and Sayings preserved by Stobaeus",
     "Zeno of Citium": "sayings and doctrines preserved in Diogenes Laertius, Lives VII",
-    "Cleanthes": "the Hymn to Zeus and fragments in Stobaeus and Diogenes Laertius",
     "Chrysippus": "fragments and sayings in Diogenes Laertius and Stobaeus",
-    "Hierocles": "the Elements of Ethics and the fragments on social duties (oikeiosis)",
-    "Cato the Younger": "the Stoic statesman's sayings recorded in Plutarch's Life of Cato the Younger",
 }
 
-# Analytics signal: Big 3 consistently get 900–1050 views vs 200–600 for the
-# full roster. Post from them on 3 of every 5 days; cycle the wider roster the
-# other 2 days for variety.
-BIG3 = ["Marcus Aurelius", "Seneca", "Epictetus"]
-AUTHORS = list(SOURCE_HINTS)   # full rotation for the other 2 days
+# Analytics signal (14+ days, 18 videos):
+#   Big 5 (MA, Seneca, Epictetus, Musonius Rufus, Zeno) all hit 900–1055 views.
+#   Chrysippus averages ~640 views — decent for variety once per rotation.
+#   Cleanthes (224v), Hierocles, Cato the Younger all underperform; removed.
+# Strategy: 4 of every 5 days from the Big 5; 1 of 5 days Chrysippus for variety.
+BIG5 = ["Marcus Aurelius", "Seneca", "Epictetus", "Musonius Rufus", "Zeno of Citium"]
+DIVERSE = ["Chrysippus"]
+AUTHORS = BIG5 + DIVERSE
 
 THEMES = [
     "discipline",
@@ -137,14 +138,13 @@ def _pick_rotation(rows: list[dict]) -> tuple[str, str]:
     recent_authors = [r["author"] for r in reversed(rows) if r.get("author")]
     recent_themes = [r["theme"] for r in reversed(rows) if r.get("theme")]
 
-    # 3 out of every 5 days: pick from Big 3 (MA, Seneca, Epictetus).
-    # Analytics show they average 900-1050 views vs 200-600 for lesser-known Stoics.
+    # 4 out of every 5 days: pick from Big 5 (all 900–1055v avg).
+    # Every 5th day: Chrysippus for variety (~640v).
     day_index = len(rows)
-    if day_index % 5 < 3:
-        author = _pick_least_recent(BIG3, recent_authors, block_last=1)
+    if day_index % 5 < 4:
+        author = _pick_least_recent(BIG5, recent_authors, block_last=1)
     else:
-        # Full roster on the other 2 days, excluding anyone just posted.
-        author = _pick_least_recent(AUTHORS, recent_authors, block_last=2)
+        author = _pick_least_recent(DIVERSE, recent_authors, block_last=1)
 
     theme = _pick_least_recent(THEMES, recent_themes, block_last=3)
     return author, theme
