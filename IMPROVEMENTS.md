@@ -9,6 +9,8 @@ Format per entry:
 
 ---
 
+- **2026-06-14** — `src/content.py` + `scripts/daily_post.py`: Double-post prevention and roster tightening. After 18 videos across 14 days: (1) The workflow fired 2–4× per day on many days (manual dispatch + scheduled cron), flooding the channel and burning through author rotation — fixed by adding a one-post-per-day guard in `daily_post.py` that exits cleanly if `posts.csv` already has a today entry. (2) Musonius Rufus (1,050v peak) and Zeno of Citium (938v) consistently match the original Big 3 — promoted to the top pool, now "Big 5". (3) Cleanthes (224v final, 4 days old), Hierocles, and Cato the Younger underperformed and were removed from SOURCE_HINTS. (4) Rotation changed from "3 of 5 days Big 3 / 2 of 5 full roster" → "4 of 5 days Big 5 / every 5th day Chrysippus (~640v)". Expected average views/post rises from ~700 to ~900+.
+
 - **2026-06-13** — `src/content.py`: Analytics-driven author weighting. After 8 days
   of data (13 videos, 8,189 views total), Marcus Aurelius / Seneca / Epictetus
   consistently reach 900-1050 views while lesser-known Stoics (Cleanthes, Chrysippus)
