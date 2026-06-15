@@ -77,7 +77,7 @@ def _apply_corrections(env: dict, issues: list, attempt: int) -> dict:
 def _render_with_env(
     env_overrides: dict, *,
     quote: str, author: str, audio_path: Path, out_path: Path,
-    theme: str, word_timings: list, hook: str,
+    theme: str, word_timings: list, hook: str, callout_words: list = None,
 ) -> Path:
     """Set env overrides, reload render module constants, call render_reel."""
     saved = {}
@@ -92,7 +92,7 @@ def _render_with_env(
         return render_mod.render_reel(
             quote=quote, author=author, audio_path=audio_path,
             out_path=out_path, theme=theme, word_timings=word_timings,
-            hook=hook,
+            hook=hook, callout_words=callout_words or [],
         )
     finally:
         for k, orig in saved.items():
@@ -196,6 +196,7 @@ def _add_to_backup_bank(today: str):
             quote=content["quote"], author=content["author"],
             audio_path=audio_path, out_path=video_path,
             theme=content["theme"], word_timings=word_timings, hook=hook,
+            callout_words=content.get("callout_words", []),
         )
 
         qa = run_qa(video_path, content["quote"])
@@ -292,6 +293,7 @@ def main():
             quote=content["quote"], author=content["author"],
             audio_path=audio_path, out_path=video_path,
             theme=content["theme"], word_timings=word_timings, hook=hook,
+            callout_words=content.get("callout_words", []),
         )
 
         print(f"  [attempt {attempt}] QA check...")

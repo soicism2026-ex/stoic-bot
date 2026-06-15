@@ -83,7 +83,9 @@ RIGHT register (use these as models — do not repeat them verbatim): \
 "You're running from yourself." / "The clock is running." \
 WRONG register (avoid): "Time is precious." (cliché) / "What's holding you back?" \
 (too soft/generic) / "Wisdom from Marcus Aurelius." (never reference the author).
-- Voiceover script: 18-35 seconds spoken (~45-90 words). It is spoken right AFTER the \
+- Voiceover script: 20-27 seconds spoken (~50-68 words). Cut straight from the hook to \
+the hard truth — no warm-up, no throat-clearing, no re-stating the obvious. Tighter is \
+better: if you can land the point in 55 words, stop there. It is spoken right AFTER the \
 hook, so flow naturally into the idea and do NOT repeat the hook line. Plain, grounded, \
 masculine-neutral tone. No hashtags in the voiceover. End a sentence before the CTA.
 - CTA: 1-2 spoken sentences for the very last moment of the voiceover. Reference the \
@@ -98,6 +100,11 @@ Example for discipline: "What's the one habit you keep starting and abandoning �
 - Caption: 1-2 sentences that reframe the idea for daily life + one soft question \
 to drive comments.
 - Hashtags: 8-12, mixing broad (#stoicism #discipline) and mid-size niche tags.
+- callout_words: 2-4 concrete nouns or short phrases from the voiceover that name a \
+tangible thing the viewer can picture — e.g. "house", "status", "anger", "time", \
+"body". These will flash large on screen as the word is spoken to keep the eye moving. \
+Pick words that appear verbatim in voiceover_text. Avoid abstract words like "virtue" \
+or "wisdom" — only concrete, punchy nouns.
 
 Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
 {
@@ -109,7 +116,8 @@ Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
   "cta": "...",
   "pinned_comment": "...",
   "caption": "...",
-  "hashtags": ["#...", "..."]
+  "hashtags": ["#...", "..."],
+  "callout_words": ["word1", "word2"]
 }"""
 
 
@@ -221,7 +229,7 @@ def generate_content() -> dict:
     data = json.loads(raw)
 
     required = {"theme", "quote", "author", "hook", "voiceover_text",
-                "cta", "pinned_comment", "caption", "hashtags"}
+                "cta", "pinned_comment", "caption", "hashtags", "callout_words"}
     missing = required - data.keys()
     if missing:
         raise ValueError(f"Claude response missing keys: {missing}")

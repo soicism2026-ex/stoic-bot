@@ -344,9 +344,43 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return out_path
 
 
+def _callout_overlays(word_timings: list, callout_words: list) -> list:
+    """Return drawtext filters that flash each callout word large on screen."""
+    if not word_timings or not callout_words:
+        return []
+    timing_map: dict[str, tuple] = {}
+    for entry in word_timings:
+        word, start, end = entry[0], float(entry[1]), float(entry[2])
+        key = word.strip(".,!?;:\"'").lower()
+        if key not in timing_map:
+            timing_map[key] = (start, end)
+    filters = []
+    for cw in callout_words:
+        key = cw.strip(".,!?;:\"'").lower()
+        if key not in timing_map:
+            continue
+        start, end = timing_map[key]
+        fade = 0.08
+        alpha_expr = (
+            f"if(lt(t,{start+fade:.3f}),(t-{start:.3f})/{fade},"
+            f"if(gt(t,{end-fade:.3f}),({end:.3f}-t)/{fade},1))"
+        )
+        filters.append(
+            f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
+            f"text='{_escape(cw.upper())}':"
+            f"fontcolor=white:fontsize=112:"
+            f"x=(w-text_w)/2:y=(h/2)+80:"
+            f"borderw=9:bordercolor=black@0.95:"
+            f"shadowcolor=black@0.8:shadowx=5:shadowy=5:"
+            f"alpha='{alpha_expr}':"
+            f"enable='between(t,{start:.3f},{end:.3f})'"
+        )
+    return filters
+
+
 def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 theme: str = "", word_timings: list = None,
-                hook: str = "") -> Path:
+                hook: str = "", callout_words: list = None) -> Path:
     # Mix an attention "whoosh" under the opening before anything else so the
     # rest of the pipeline just sees a normal audio track. Never let it break a
     # run: on any failure fall back to the raw voiceover.
@@ -481,6 +515,9 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 f"alpha='if(lt(t,{HOOK_HOLD}),1,max(0,1-(t-{HOOK_HOLD})/{fade}))':"
                 f"enable='lt(t,{HOOK_HOLD + fade})'"
             )
+
+    # flash callout words (concrete nouns) centered on screen when spoken
+    vf_parts.extend(_callout_overlays(word_timings or [], callout_words or []))
 
     # burn in karaoke captions last so they sit on top
     ass_path = None
