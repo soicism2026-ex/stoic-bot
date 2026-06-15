@@ -53,7 +53,7 @@ jobs:
           # Set PROMO_ENABLED to "0" to disable all promo behaviour.
           PROMO_ENABLED: "1"
           PROMO_PRODUCT_NAME: "The Stoic Reset"
-          PROMO_PITCH: "Put Stoicism into practice — my 30-day Stoic journal"
+          PROMO_PITCH: "FREE this month only — The Stoic Reset, my 30-day Stoic journal"
           PROMO_URL: "https://soicism.gumroad.com/l/cslosv"
           PROMO_COMMENT: "1"
           # PROMO_CTA_VARIATIONS: pipe-delimited (|) list of 3-5 CTA strings.
