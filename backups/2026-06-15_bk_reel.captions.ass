@@ -1,0 +1,50 @@
+[Script Info]
+ScriptType: v4.00+
+PlayResX: 1080
+PlayResY: 1920
+WrapStyle: 0
+ScaledBorderAndShadow: yes
+
+[V4+ Styles]
+Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
+Style: Karaoke,DejaVu Sans,64,&H0030B8FF,&H0030B8FF,&H00000000,&H90000000,-1,0,0,0,100,100,2,0,1,4,3,2,150,150,340,1
+
+[Events]
+Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
+Dialogue: 0,0:00:00.00,0:00:00.44,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}You just
+Dialogue: 0,0:00:00.37,0:00:00.85,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}follow the
+Dialogue: 0,0:00:00.76,0:00:01.35,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}crowd.
+Dialogue: 0,0:00:02.34,0:00:03.23,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Chrysippus once
+Dialogue: 0,0:00:03.14,0:00:03.59,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}said that
+Dialogue: 0,0:00:03.50,0:00:03.79,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}if he
+Dialogue: 0,0:00:03.71,0:00:04.33,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}had followed
+Dialogue: 0,0:00:04.24,0:00:05.02,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}the crowd,
+Dialogue: 0,0:00:05.11,0:00:05.73,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}he never
+Dialogue: 0,0:00:05.64,0:00:06.03,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}would have
+Dialogue: 0,0:00:05.93,0:00:06.41,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}taken up
+Dialogue: 0,0:00:06.34,0:00:07.08,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}philosophy at
+Dialogue: 0,0:00:07.00,0:00:07.55,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}all.
+Dialogue: 0,0:00:08.54,0:00:09.51,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Discipline begins
+Dialogue: 0,0:00:09.42,0:00:09.95,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}the moment
+Dialogue: 0,0:00:09.87,0:00:10.34,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}you stop
+Dialogue: 0,0:00:10.30,0:00:10.74,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}letting the
+Dialogue: 0,0:00:10.66,0:00:11.66,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}majority decide
+Dialogue: 0,0:00:11.57,0:00:11.96,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}how you
+Dialogue: 0,0:00:11.92,0:00:12.45,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}live.
+Dialogue: 0,0:00:13.28,0:00:13.88,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Most people
+Dialogue: 0,0:00:13.79,0:00:14.50,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}drift wherever
+Dialogue: 0,0:00:14.43,0:00:14.93,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}the current
+Dialogue: 0,0:00:14.85,0:00:15.51,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}pulls them,
+Dialogue: 0,0:00:15.60,0:00:16.19,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}then wonder
+Dialogue: 0,0:00:16.11,0:00:16.49,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}why they
+Dialogue: 0,0:00:16.43,0:00:16.81,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}end up
+Dialogue: 0,0:00:16.76,0:00:17.43,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}nowhere.
+Dialogue: 0,0:00:18.61,0:00:19.33,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}The disciplined
+Dialogue: 0,0:00:19.26,0:00:19.96,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}man chooses
+Dialogue: 0,0:00:19.87,0:00:20.54,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}his direction
+Dialogue: 0,0:00:20.48,0:00:21.80,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}deliberately, even
+Dialogue: 0,0:00:21.72,0:00:22.41,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}when everyone
+Dialogue: 0,0:00:22.31,0:00:22.80,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}around him
+Dialogue: 0,0:00:22.74,0:00:23.22,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}is going
+Dialogue: 0,0:00:23.15,0:00:23.60,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}the easy
+Dialogue: 0,0:00:23.54,0:00:24.26,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}way.
