@@ -99,7 +99,6 @@ def post_comment(video_id: str, text: str) -> str:
         resp = yt.commentThreads().insert(part="snippet", body=body).execute()
         thread_id = resp.get("id", "")
         print(f"  [comment] posted thread {thread_id}")
-        print("  [comment] → pin it in YouTube Studio: Comments → ⋮ → Pin comment")
         return thread_id
     except Exception as e:
         print(f"  [comment] skipped — token may lack force-ssl scope: {e}")

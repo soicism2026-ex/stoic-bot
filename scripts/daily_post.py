@@ -312,7 +312,7 @@ def main():
             )
             print(f"  published: {upload_result.get('url', 'unknown')}")
 
-            # Post engagement question as a (manually-pinnable) comment
+            # Post engagement question as a comment
             pinned_q = content.get("pinned_comment", "").strip()
             if pinned_q and upload_result.get("video_id"):
                 try:
@@ -331,7 +331,7 @@ def main():
                 try:
                     from publish import post_comment
                     post_comment(upload_result["video_id"], promo_txt)
-                    print("  [promo] comment posted — pin it in YouTube Studio if desired")
+                    print("  [promo] comment posted")
                 except Exception as e:
                     print(f"  [promo] comment skipped: {e}", file=sys.stderr)
 

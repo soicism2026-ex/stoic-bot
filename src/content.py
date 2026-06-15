@@ -13,6 +13,7 @@ Variety is enforced on three axes so the feed never fixates on one voice or idea
 - Previously used quotes are read from posts.csv and injected as a hard block list.
 """
 import csv
+import datetime
 import json
 import os
 import sys
@@ -71,11 +72,17 @@ and wording; do not turn it into a new aphorism. Attribute to the correct author
 - Draw from the full breadth of the author's work, not only their most famous lines. \
 Favor lesser-known but genuine passages over over-quoted "greatest hits." This is \
 especially important: the channel's audience has already seen the most famous lines.
-- Hook: a 3-7 word scroll-stopping opener — a blunt claim or provocative question \
-(e.g. "You are already dying." / "Stop waiting to live."). It is spoken first and \
-flashed large on screen in the opening seconds to grab attention before the swipe. \
-Punchy and plain; no author name, no quotation marks, no hashtags. It must set up the \
-quote's idea WITHOUT quoting or restating the passage.
+- Hook: 3–5 words. A blunt, second-person accusation or uncomfortable truth — not a \
+question, not an inspirational phrase, not a summary. It must make the viewer feel \
+slightly called out the instant it appears. The hook is spoken first and flashed large \
+on screen; it must set up the quote's idea WITHOUT quoting or restating the passage. \
+No author name, no quotation marks, no hashtags, no ellipsis. \
+RIGHT register (use these as models — do not repeat them verbatim): \
+"You're wasting your life." / "Your ego is the problem." / "You chose this." / \
+"Nothing lasts." / "You already know." / "Stop performing discipline." / \
+"You're running from yourself." / "The clock is running." \
+WRONG register (avoid): "Time is precious." (cliché) / "What's holding you back?" \
+(too soft/generic) / "Wisdom from Marcus Aurelius." (never reference the author).
 - Voiceover script: 18-35 seconds spoken (~45-90 words). It is spoken right AFTER the \
 hook, so flow naturally into the idea and do NOT repeat the hook line. Plain, grounded, \
 masculine-neutral tone. No hashtags in the voiceover. End a sentence before the CTA.
@@ -160,7 +167,13 @@ def generate_content() -> dict:
     rows = _load_rows()
     used_quotes = [r["quote"] for r in rows if r.get("quote")]
     required_author, required_theme = _pick_rotation(rows)
-    day_number = len(rows) + 1
+    # Day number = calendar days since the first post, so it never shifts when
+    # videos are unlisted or when the pipeline runs twice in a day.
+    if rows:
+        channel_start = datetime.date.fromisoformat(rows[0]["date"])
+    else:
+        channel_start = datetime.date.today()
+    day_number = (datetime.date.today() - channel_start).days + 1
     next_theme = _pick_next_theme(rows, required_theme)
 
     # Build a hard block list, highlighting any quotes by today's author so the
