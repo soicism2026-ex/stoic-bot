@@ -84,9 +84,13 @@ src/
   render.py           — ffmpeg: background, Ken Burns, hook card, karaoke captions, hook sound
   backgrounds.py      — Pexels → Pixabay → synthetic lavfi → local rotation
   publish.py          — YouTube upload + comment posting (OAuth)
+  promo.py            — product CTA injection for descriptions and comments (PROMO_*)
   analytics.py        — YouTube Data API stats pull
   logbook.py          — posts.csv append
   auth_setup.py       — one-time OAuth token generator (run locally)
+
+tests/
+  test_promo.py       — unit tests for promo CTA rotation and enable/disable logic
 
 scripts/
   daily_post.py       — main orchestrator: render → QA → retry → upload → backup
@@ -156,6 +160,59 @@ The hook sound is synthesised entirely from ffmpeg lavfi (no binary assets). Upd
 | YouTube Data API | Free (10,000 quota units/day; daily upload uses ~100) |
 | Pexels / Pixabay | Free |
 | GitHub Actions | Free (public repo) |
+
+---
+
+## Product promo / monetisation link
+
+The bot can automatically append a product CTA to every video description and post a promo comment after each upload. All copy lives in the workflow YAML — no code changes needed to update the link or copy.
+
+### Enable / disable
+
+Set `PROMO_ENABLED` in `.github/workflows/daily-short.yml`:
+
+```yaml
+PROMO_ENABLED: "1"   # "0" to disable everything with no side-effects
+```
+
+### Config options
+
+| Variable | Default | Description |
+|---|---|---|
+| `PROMO_ENABLED` | `0` | Master toggle (`1` = on, `0` = off) |
+| `PROMO_PRODUCT_NAME` | `The Stoic Reset` | Product name (for reference) |
+| `PROMO_PITCH` | `Put Stoicism into practice — my 30-day Stoic journal` | One-line pitch (for reference) |
+| `PROMO_URL` | `https://soicism.gumroad.com/l/cslosv` | Gumroad (or any) link included in every CTA |
+| `PROMO_COMMENT` | `1` | Post the CTA as a comment after upload (`0` to skip) |
+| `PROMO_CTA_VARIATIONS` | *(built-in 3 defaults)* | Pipe-delimited (`\|`) list of 3–5 CTA strings. Rotates daily. Leave unset to use the defaults in `src/promo.py`. |
+
+### Description output (when enabled)
+
+The CTA is appended after the hashtags with a `---` separator:
+
+```
+Day 18 of daily Stoic wisdom.
+
+Where in your life is ego blocking your growth?
+
+#stoicism #epictetus ... #Shorts
+
+---
+📓 Put Stoicism into practice — The Stoic Reset, my 30-day journal:
+https://soicism.gumroad.com/l/cslosv
+```
+
+### Custom CTA variations
+
+To override the three built-in CTAs, add `PROMO_CTA_VARIATIONS` to the workflow env with variations separated by `|`:
+
+```yaml
+PROMO_CTA_VARIATIONS: "📓 Get The Stoic Reset journal:\nhttps://soicism.gumroad.com/l/cslosv|📖 30 days of Stoic practice:\nhttps://soicism.gumroad.com/l/cslosv"
+```
+
+### Required YouTube API scopes
+
+No new scopes are needed. Comment posting (`PROMO_COMMENT=1`) uses `youtube.force-ssl`, which is already requested by `auth_setup.py`. **Pinning** is not available via the YouTube Data API — to pin the promo comment, go to YouTube Studio → Comments → ⋮ → Pin.
 
 ---
 

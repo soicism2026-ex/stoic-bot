@@ -27,6 +27,7 @@ from tts import synthesize_voice          # noqa: E402
 from publish import publish_short         # noqa: E402
 from logbook import log_post              # noqa: E402
 import render as render_mod               # noqa: E402
+import promo                              # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
 
@@ -207,7 +208,10 @@ def _add_to_backup_bank(today: str):
         meta = {
             "filename": video_name,
             "title": f'{content["quote"][:70]} | {content["author"]}',
-            "description": content["caption"] + "\n\n" + " ".join(content["hashtags"]),
+            "description": (
+                content["caption"] + "\n\n" + " ".join(content["hashtags"])
+                + promo.description_block()
+            ),
             "tags": content["hashtags"],
             "created": today,
             "qa_issues": qa.get("issues", []),
@@ -273,6 +277,7 @@ def main():
         + content["caption"]
         + "\n\n"
         + " ".join(content["hashtags"])
+        + promo.description_block()
     )
 
     all_qa: list = []
@@ -319,6 +324,16 @@ def main():
                         f"force-ssl scope, then update YOUTUBE_REFRESH_TOKEN: {e}",
                         file=sys.stderr,
                     )
+
+            # Post promo CTA as a second comment when enabled
+            promo_txt = promo.comment_text()
+            if promo_txt and upload_result.get("video_id"):
+                try:
+                    from publish import post_comment
+                    post_comment(upload_result["video_id"], promo_txt)
+                    print("  [promo] comment posted — pin it in YouTube Studio if desired")
+                except Exception as e:
+                    print(f"  [promo] comment skipped: {e}", file=sys.stderr)
 
             if qa["issues"]:
                 _append_qa_log(today, attempt, qa["issues"], qa["severity"], uploaded=True)
