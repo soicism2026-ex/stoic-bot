@@ -22,14 +22,14 @@ PROMO_COMMENT_ENABLED = os.environ.get("PROMO_COMMENT", "1") not in ("0", "false
 PROMO_PRODUCT_NAME = os.environ.get("PROMO_PRODUCT_NAME", "The Stoic Reset")
 PROMO_PITCH = os.environ.get(
     "PROMO_PITCH",
-    "Put Stoicism into practice — my 30-day Stoic journal",
+    "FREE this month only — The Stoic Reset, my 30-day Stoic journal",
 )
 PROMO_URL = os.environ.get("PROMO_URL", "https://soicism.gumroad.com/l/cslosv")
 
 _DEFAULT_CTAS = [
-    "📓 Put Stoicism into practice — The Stoic Reset, my 30-day journal:\n{url}",
-    "📖 Go deeper with The Stoic Reset — a 30-day Stoic journal built around quotes like this:\n{url}",
-    "🪨 Daily Stoic practice in 5 minutes. The Stoic Reset journal:\n{url}",
+    "📓 FREE this month only — The Stoic Reset, my 30-day Stoic journal. Grab it before the price goes up:\n{url}",
+    "📖 I'm giving away The Stoic Reset journal for free — but only for June. 30 days to rebuild your mindset:\n{url}",
+    "🪨 The Stoic Reset is free right now. A 30-day journal to put quotes like this into daily practice:\n{url}",
 ]
 
 
