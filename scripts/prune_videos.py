@@ -138,6 +138,8 @@ def main():
             print(f"  [error] {vid}: {e}", file=sys.stderr)
 
     print(f"[prune] {ACTION}d {done}/{len(candidates)} videos")
+    if done > 0:
+        print("[prune] run 'python scripts/sync_video_titles.py' to re-number remaining videos")
 
 
 if __name__ == "__main__":
