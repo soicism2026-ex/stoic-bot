@@ -27,14 +27,27 @@ from datetime import date
 from backgrounds import fetch_background
 
 ROOT = Path(__file__).resolve().parent.parent
+
+# Primary font: sans-serif for hook and captions (punchy, modern energy).
 FONT = os.environ.get("REEL_FONT", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")
+
+# Quote font: serif for a classical / stone-inscription feel matching Stoic aesthetics.
+QUOTE_FONT = os.environ.get(
+    "REEL_QUOTE_FONT",
+    "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf",
+)
+
+# Color palette — all env-overridable.
+QUOTE_COLOR  = os.environ.get("REEL_QUOTE_COLOR",  "0xF0E6C8")  # warm parchment
+AUTHOR_COLOR = os.environ.get("REEL_AUTHOR_COLOR", "0xC9A055")  # antique bronze/gold
+DIVIDER_COLOR = os.environ.get("REEL_DIVIDER_COLOR", "0xA08040") # darker bronze for divider
 
 # Karaoke caption controls (all optional, sensible defaults).
 CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False")
 CAPTIONS_ONLY = os.environ.get("REEL_CAPTIONS_ONLY", "0") not in ("0", "false", "False")
 CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
 CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "64"))
-CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "470"))
+CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "340"))
 CAPTION_MARGINL = int(os.environ.get("REEL_CAPTION_MARGINL", "150"))
 CAPTION_MARGINR = int(os.environ.get("REEL_CAPTION_MARGINR", "150"))
 
@@ -44,7 +57,7 @@ HOOK_TEXT_ON = os.environ.get("REEL_HOOK_TEXT", "1") not in ("0", "false", "Fals
 HOOK_SOUND_ON = os.environ.get("REEL_HOOK_SOUND", "1") not in ("0", "false", "False")
 HOOK_HOLD = float(os.environ.get("REEL_HOOK_HOLD", "2.2"))      # seconds fully shown
 HOOK_FONTSIZE = int(os.environ.get("REEL_HOOK_FONTSIZE", "94"))
-HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFC83C")      # amber
+HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFB830")      # warm amber/gold
 
 # Extra darkening on top of the date-rotated grade. Set by the QA retry loop
 # (scripts/daily_post.py) when a render fails on text contrast.
@@ -52,13 +65,14 @@ EXTRA_DARKEN = float(os.environ.get("REEL_EXTRA_DARKEN", "0"))
 
 # Hook sound preset — read from env, then data/hook_preset file, then default.
 # Updated weekly by scripts/update_hook_sound.py.
-# Presets: bass_impact | cinematic | whoosh | minimal
+# Presets: meditative | bass_impact | cinematic | whoosh | minimal
 _HOOK_PRESET_FILE = ROOT / "data" / "hook_preset"
 def _read_hook_preset() -> str:
     p = os.environ.get("REEL_HOOK_SOUND_PRESET", "").strip()
     if not p and _HOOK_PRESET_FILE.exists():
         p = _HOOK_PRESET_FILE.read_text(encoding="utf-8").strip()
-    return p if p in ("bass_impact", "cinematic", "whoosh", "minimal") else "bass_impact"
+    valid = ("meditative", "bass_impact", "cinematic", "whoosh", "minimal")
+    return p if p in valid else "meditative"
 
 W, H = 1080, 1920
 
@@ -76,15 +90,46 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
 
     Preset selected by _read_hook_preset() (env → data/hook_preset file → default).
 
-    bass_impact  — sub-bass punch + transient snap; dominates in modern motivation/
-                   philosophy Shorts and is updated weekly from YouTube trend data.
+    meditative   — singing-bowl tone bed: warm fundamental + overtones, slow swell,
+                   shimmer from detuning, reverb tail. Runs ~5s softly under the
+                   whole intro for contemplative gravitas (default, on-brand).
+    bass_impact  — sub-bass punch + transient snap; modern motivation/hype energy.
     cinematic    — orchestral harmonic swell → dramatic hit; serious/philosophical.
     whoosh       — original pink-noise swell + low sine; broadly neutral.
     minimal      — clean struck tone + overtone; calm/educational aesthetic.
     """
     preset = _read_hook_preset()
 
-    if preset == "cinematic":
+    if preset == "meditative":
+        # A singing-bowl bed: a warm fundamental plus an inharmonic overtone set
+        # (the ~2.7x partial gives bowls their characteristic shimmer). A second
+        # tone detuned by ~1.3 Hz beats slowly against the fundamental for a
+        # living, breathing shimmer. Each partial swells in then releases over
+        # the full duration (triangle envelope via min(rise, fall)). A gentle
+        # echo adds air/space, and a soft limiter tames the sum.
+        dur = max(dur, 5.0)
+
+        def _bed(freq, amp, attack):
+            fall = dur - attack
+            return (
+                f"sine=frequency={freq}:duration={dur},"
+                f"volume='min(t/{attack:.2f},max(0,1-(t-{attack:.2f})/{fall:.2f}))*{amp}'"
+                ":eval=frame"
+            )
+
+        f0    = _bed(174.0, 1.00, 0.9)    # fundamental (F3, calming)
+        f0b   = _bed(175.3, 0.70, 1.0)    # detuned partner → slow ~1.3 Hz beating
+        octv  = _bed(348.0, 0.55, 1.1)    # octave warmth
+        part  = _bed(470.0, 0.26, 1.3)    # ~2.7x bowl partial (shimmer)
+        high  = _bed(587.0, 0.13, 1.5)    # faint upper sparkle
+        fc = (
+            f"{f0}[a];{f0b}[b];{octv}[c];{part}[d];{high}[e];"
+            "[a][b][c][d][e]amix=inputs=5:duration=longest,"
+            "aecho=0.8:0.85:55|95:0.30|0.20,"
+            f"afade=t=out:st={dur-0.8:.3f}:d=0.8,volume=1.8,alimiter=limit=0.9"
+        )
+
+    elif preset == "cinematic":
         h1 = f"sine=frequency=65:duration={dur},volume='min(1,t/0.8)*0.45':eval=frame"
         h2 = f"sine=frequency=130:duration={dur},volume='min(0.9,t/0.6)*0.3':eval=frame"
         h3 = f"sine=frequency=195:duration={dur},volume='min(0.7,t/0.45)*0.18':eval=frame"
@@ -225,7 +270,7 @@ def _ass_escape(text: str) -> str:
     return text.replace("\\", "\\\\").replace("{", "(").replace("}", ")")
 
 
-def _group_lines(word_timings: list, max_words: int = 3, pause: float = 0.55) -> list:
+def _group_lines(word_timings: list, max_words: int = 2, pause: float = 0.55) -> list:
     """Group (word, start, end) into caption lines of 1-max_words words.
 
     Breaks on: reaching max_words, a silence gap > `pause` before the next word,
@@ -249,15 +294,20 @@ def _group_lines(word_timings: list, max_words: int = 3, pause: float = 0.55) ->
 
 
 def _build_ass(word_timings: list, out_path: Path) -> Path:
-    """Write a karaoke .ass file for the given word timings. Returns the path."""
+    """Write a .ass subtitle file with animated per-chunk captions.
+
+    Each 2-word chunk pops in with a scale animation (115%→100% over 150ms)
+    and a quick fade-in/out. This replaces the old karaoke color sweep with
+    actual motion — more engaging and consistent with viral Shorts style.
+    """
     lines = _group_lines(word_timings)
 
-    # PrimaryColour = amber (active/spoken), SecondaryColour = soft white (upcoming).
-    # ASS colors are &HAABBGGRR (alpha, blue, green, red).
-    primary = "&H0020C0FF"     # amber
-    secondary = "&H00F5F5F5"   # soft white
-    outline = "&H00000000"     # black
-    back = "&H80000000"        # shadow / box
+    # Warm amber gold throughout — motion is the visual cue, not color sweep.
+    # ASS colors: &HAABBGGRR (AA=00 fully opaque, then Blue, Green, Red).
+    # #FFB830 → BGR: B=0x30, G=0xB8, R=0xFF → &H0030B8FF
+    primary = "&H0030B8FF"
+    outline = "&H00000000"  # black outline
+    back = "&H90000000"     # slightly opaque shadow backing
 
     header = f"""[Script Info]
 ScriptType: v4.00+
@@ -268,7 +318,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{secondary},{outline},{back},-1,0,0,0,100,100,0,0,1,4,3,2,{CAPTION_MARGINL},{CAPTION_MARGINR},{CAPTION_MARGINV},1
+Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{primary},{outline},{back},-1,0,0,0,100,100,2,0,1,4,3,2,{CAPTION_MARGINL},{CAPTION_MARGINR},{CAPTION_MARGINV},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -276,18 +326,18 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
     events = []
     for line in lines:
-        start = line[0][1]
-        end = line[-1][2]
-        parts = []
-        for j, (word, w_start, w_end) in enumerate(line):
-            # Hold the highlight until the next word begins so the sweep tracks
-            # the voice; last word uses its own end.
-            nxt = line[j + 1][1] if j + 1 < len(line) else w_end
-            dur_cs = max(1, int(round((nxt - w_start) * 100)))
-            parts.append(f"{{\\kf{dur_cs}}}{_ass_escape(word)} ")
-        text = "".join(parts).rstrip()
+        # Appear just before the first word; linger briefly after the last.
+        start = max(0.0, line[0][1] - 0.06)
+        end = line[-1][2] + 0.06
+        text = " ".join(_ass_escape(w[0].strip()) for w in line)
+
+        # \\fscx115\\fscy115  — start at 115% scale (the "pop")
+        # \\t(0,150,...)      — animate to 100% over the first 150ms
+        # \\fad(120,80)       — 120ms fade-in, 80ms fade-out
+        anim = r"{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}"
         events.append(
-            f"Dialogue: 0,{_ass_time(start)},{_ass_time(end)},Karaoke,,0,0,0,,{text}"
+            f"Dialogue: 0,{_ass_time(start)},{_ass_time(end)},"
+            f"Karaoke,,0,0,0,,{anim}{text}"
         )
 
     out_path.write_text(header + "\n".join(events) + "\n", encoding="utf-8")
@@ -370,20 +420,45 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     ]
 
     if show_quote:
+        # Fade the quote in as the hook fades out so only one primary text is
+        # on screen at a time. If no hook is shown, appear from the start.
+        if hook and HOOK_TEXT_ON:
+            hook_fade = 0.4
+            quote_appear = HOOK_HOLD          # start fading in when hook starts fading
+            quote_fade_dur = hook_fade + 0.2  # slightly longer for a softer entrance
+            quote_alpha = f"min(1,max(0,(t-{quote_appear})/{quote_fade_dur:.2f}))"
+        else:
+            quote_alpha = "1"
+
+        # Quote lines — serif font, warm parchment color.
         for i, line in enumerate(quote_lines):
             offset = i * LINE_H - half_block
             line_y = f"{center_expr}{offset:+d}"
             vf_parts.append(
-                f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
-                f"fontcolor=white:fontsize={QUOTE_FONTSIZE}:"
+                f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
+                f"text='{_escape(line)}':"
+                f"fontcolor={QUOTE_COLOR}:fontsize={QUOTE_FONTSIZE}:"
                 f"x=(w-text_w)/2:y={line_y}:"
-                f"box=0:shadowcolor=black@0.6:shadowx=3:shadowy=3"
+                f"box=0:shadowcolor=black@0.85:shadowx=4:shadowy=4:"
+                f"alpha='{quote_alpha}'"
             )
+
+        # Thin gold divider line between quote block and author.
+        divider_y = f"{center_expr}+{half_block + 18}"
         vf_parts.append(
-            f"drawtext=fontfile='{FONT}':text='{author_txt}':"
-            f"fontcolor=white@0.85:fontsize=44:"
+            f"drawbox=x=(w-240)/2:y={divider_y}:w=240:h=2:"
+            f"color={DIVIDER_COLOR}@0.85:t=fill"
+        )
+
+        # Author — antique bronze, all-caps, slightly smaller than quote.
+        author_upper = _escape(f"— {author.upper()}")
+        vf_parts.append(
+            f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
+            f"text='{author_upper}':"
+            f"fontcolor={AUTHOR_COLOR}:fontsize=38:"
             f"x=(w-text_w)/2:y={author_y}:"
-            f"shadowcolor=black@0.6:shadowx=2:shadowy=2"
+            f"shadowcolor=black@0.8:shadowx=3:shadowy=3:"
+            f"alpha='{quote_alpha}'"
         )
 
     # Hook card: big, bold, scroll-stopping text flashed over the opening, then

@@ -10,6 +10,7 @@ After the loop:
 After a successful normal upload: if backup bank < 3 videos, render+QA one
 evergreen short and add it to the bank.
 """
+import csv
 import importlib
 import json
 import os
@@ -26,6 +27,7 @@ from tts import synthesize_voice          # noqa: E402
 from publish import publish_short         # noqa: E402
 from logbook import log_post              # noqa: E402
 import render as render_mod               # noqa: E402
+import promo                              # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
 
@@ -206,7 +208,10 @@ def _add_to_backup_bank(today: str):
         meta = {
             "filename": video_name,
             "title": f'{content["quote"][:70]} | {content["author"]}',
-            "description": content["caption"] + "\n\n" + " ".join(content["hashtags"]),
+            "description": (
+                content["caption"] + "\n\n" + " ".join(content["hashtags"])
+                + promo.description_block()
+            ),
             "tags": content["hashtags"],
             "created": today,
             "qa_issues": qa.get("issues", []),
@@ -232,6 +237,16 @@ def _add_to_backup_bank(today: str):
 def main():
     today = datetime.date.today().isoformat()
     print(f"[{today}] daily_post starting")
+
+    # One post per day: if posts.csv already has an entry for today, a second
+    # workflow trigger (manual dispatch + scheduled) would flood the channel and
+    # break author-rotation cadence. Exit cleanly instead.
+    _posts_csv = ROOT / "data" / "posts.csv"
+    if _posts_csv.exists():
+        with open(_posts_csv, newline="", encoding="utf-8") as _f:
+            if any(row.get("date") == today for row in csv.DictReader(_f)):
+                print(f"[{today}] already posted today — skipping duplicate run")
+                return
 
     BACKUPS_DIR.mkdir(exist_ok=True)
 
@@ -262,6 +277,7 @@ def main():
         + content["caption"]
         + "\n\n"
         + " ".join(content["hashtags"])
+        + promo.description_block()
     )
 
     all_qa: list = []
@@ -296,7 +312,7 @@ def main():
             )
             print(f"  published: {upload_result.get('url', 'unknown')}")
 
-            # Post engagement question as a (manually-pinnable) comment
+            # Post engagement question as a comment
             pinned_q = content.get("pinned_comment", "").strip()
             if pinned_q and upload_result.get("video_id"):
                 try:
@@ -308,6 +324,16 @@ def main():
                         f"force-ssl scope, then update YOUTUBE_REFRESH_TOKEN: {e}",
                         file=sys.stderr,
                     )
+
+            # Post promo CTA as a second comment when enabled
+            promo_txt = promo.comment_text()
+            if promo_txt and upload_result.get("video_id"):
+                try:
+                    from publish import post_comment
+                    post_comment(upload_result["video_id"], promo_txt)
+                    print("  [promo] comment posted")
+                except Exception as e:
+                    print(f"  [promo] comment skipped: {e}", file=sys.stderr)
 
             if qa["issues"]:
                 _append_qa_log(today, attempt, qa["issues"], qa["severity"], uploaded=True)

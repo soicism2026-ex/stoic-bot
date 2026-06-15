@@ -49,12 +49,35 @@ jobs:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          # Product promo — edit these to update copy without touching code.
+          # Set PROMO_ENABLED to "0" to disable all promo behaviour.
+          PROMO_ENABLED: "1"
+          PROMO_PRODUCT_NAME: "The Stoic Reset"
+          PROMO_PITCH: "FREE this month only — The Stoic Reset, my 30-day Stoic journal"
+          PROMO_URL: "https://soicism.gumroad.com/l/cslosv"
+          PROMO_COMMENT: "1"
+          # PROMO_CTA_VARIATIONS: pipe-delimited (|) list of 3-5 CTA strings.
+          # Leave unset to use the three built-in defaults from src/promo.py.
         run: python scripts/daily_post.py
+
+      - name: Fetch analytics
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python src/analytics.py
+
+      - name: Prune low-performing videos
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/prune_videos.py
 
       - name: Commit log and backups
         run: |
           git config user.name "stoic-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/posts.csv QA_LOG.md backups/
+          git add data/posts.csv data/analytics.csv QA_LOG.md backups/
           git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
           git push

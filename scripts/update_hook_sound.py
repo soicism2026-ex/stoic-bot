@@ -23,8 +23,9 @@ ROOT = Path(__file__).resolve().parent.parent
 PRESET_FILE = ROOT / "data" / "hook_preset"
 ANALYTICS_CSV = ROOT / "data" / "analytics.csv"
 
-PRESETS = ["bass_impact", "cinematic", "whoosh", "minimal"]
+PRESETS = ["meditative", "bass_impact", "cinematic", "whoosh", "minimal"]
 DESCRIPTIONS = {
+    "meditative":  "Singing-bowl tone bed under the whole intro; contemplative, calm gravitas — the channel's signature Stoic sound.",
     "bass_impact": "Sub-bass punch + transient snap; heavy, modern, hype/motivation energy.",
     "cinematic":   "Orchestral harmonic swell → dramatic hit; serious, philosophical depth.",
     "whoosh":      "Pink-noise rising whoosh + soft low sine; broadly neutral.",
@@ -142,14 +143,14 @@ def recommend(trending: list, own_analytics: list) -> str:
 
     try:
         result = json.loads(raw.strip())
-        preset = result.get("preset", "bass_impact")
+        preset = result.get("preset", "meditative")
         if preset not in PRESETS:
-            preset = "bass_impact"
+            preset = "meditative"
         print(f"  [hook] → '{preset}': {result.get('reason', '')}")
         return preset
     except Exception:
         print(f"  [hook] parse failed ({raw[:80]}); keeping current", file=sys.stderr)
-        return PRESET_FILE.read_text(encoding="utf-8").strip() if PRESET_FILE.exists() else "bass_impact"
+        return PRESET_FILE.read_text(encoding="utf-8").strip() if PRESET_FILE.exists() else "meditative"
 
 
 def main():

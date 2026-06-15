@@ -7,35 +7,43 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Karaoke,DejaVu Sans,64,&H0020C0FF,&H00F5F5F5,&H00000000,&H80000000,-1,0,0,0,100,100,0,0,1,4,3,2,150,150,470,1
+Style: Karaoke,DejaVu Sans,64,&H0030B8FF,&H0030B8FF,&H00000000,&H90000000,-1,0,0,0,100,100,2,0,1,4,3,2,150,150,340,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
-Dialogue: 0,0:00:00.00,0:00:00.42,Karaoke,,0,0,0,,{\kf27}Want {\kf8}to {\kf7}be
-Dialogue: 0,0:00:00.46,0:00:00.88,Karaoke,,0,0,0,,{\kf42}loved?
-Dialogue: 0,0:00:01.81,0:00:02.48,Karaoke,,0,0,0,,{\kf24}Do {\kf43}this.
-Dialogue: 0,0:00:03.17,0:00:03.99,Karaoke,,0,0,0,,{\kf17}We {\kf28}chase {\kf37}friendship
-Dialogue: 0,0:00:04.04,0:00:04.62,Karaoke,,0,0,0,,{\kf15}like {\kf14}it's {\kf29}something
-Dialogue: 0,0:00:04.74,0:00:05.57,Karaoke,,0,0,0,,{\kf33}owed {\kf17}to {\kf34}us.
-Dialogue: 0,0:00:06.07,0:00:06.58,Karaoke,,0,0,0,,{\kf24}We {\kf22}wait {\kf5}to
-Dialogue: 0,0:00:06.63,0:00:08.01,Karaoke,,0,0,0,,{\kf15}be {\kf59}noticed, {\kf64}chosen,
-Dialogue: 0,0:00:08.05,0:00:08.79,Karaoke,,0,0,0,,{\kf74}included.
-Dialogue: 0,0:00:09.59,0:00:10.41,Karaoke,,0,0,0,,{\kf21}But {\kf43}Hecato {\kf19}gives
-Dialogue: 0,0:00:10.46,0:00:11.32,Karaoke,,0,0,0,,{\kf15}the {\kf48}simplest {\kf23}cure
-Dialogue: 0,0:00:11.37,0:00:12.45,Karaoke,,0,0,0,,{\kf19}for {\kf65}loneliness {\kf24}ever
-Dialogue: 0,0:00:12.49,0:00:12.98,Karaoke,,0,0,0,,{\kf49}written.
-Dialogue: 0,0:00:13.66,0:00:14.56,Karaoke,,0,0,0,,{\kf28}There's {\kf17}no {\kf44}trick,
-Dialogue: 0,0:00:14.73,0:00:15.77,Karaoke,,0,0,0,,{\kf22}no {\kf67}secret, {\kf14}no
-Dialogue: 0,0:00:15.84,0:00:16.37,Karaoke,,0,0,0,,{\kf53}charm.
-Dialogue: 0,0:00:16.80,0:00:17.19,Karaoke,,0,0,0,,{\kf17}If {\kf11}you {\kf12}want
-Dialogue: 0,0:00:17.22,0:00:17.83,Karaoke,,0,0,0,,{\kf9}to {\kf14}be {\kf38}loved,
-Dialogue: 0,0:00:18.04,0:00:18.94,Karaoke,,0,0,0,,{\kf35}love {\kf55}first.
-Dialogue: 0,0:00:19.63,0:00:20.54,Karaoke,,0,0,0,,{\kf29}Give {\kf16}the {\kf45}loyalty
-Dialogue: 0,0:00:20.60,0:00:21.23,Karaoke,,0,0,0,,{\kf14}you {\kf50}crave.
-Dialogue: 0,0:00:21.93,0:00:22.64,Karaoke,,0,0,0,,{\kf35}Show {\kf13}up {\kf23}before
-Dialogue: 0,0:00:22.67,0:00:23.20,Karaoke,,0,0,0,,{\kf17}you're {\kf26}shown {\kf9}up
-Dialogue: 0,0:00:23.25,0:00:23.60,Karaoke,,0,0,0,,{\kf35}for.
-Dialogue: 0,0:00:24.04,0:00:24.75,Karaoke,,0,0,0,,{\kf21}The {\kf32}bond {\kf17}you're
-Dialogue: 0,0:00:24.78,0:00:25.34,Karaoke,,0,0,0,,{\kf34}waiting {\kf15}on {\kf8}is
-Dialogue: 0,0:00:25.43,0:00:26.01,Karaoke,,0,0,0,,{\kf19}one {\kf20}you're {\kf20}meant
-Dialogue: 0,0:00:26.04,0:00:26.80,Karaoke,,0,0,0,,{\kf13}to {\kf63}build.
+Dialogue: 0,0:00:00.00,0:00:00.46,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}You own
+Dialogue: 0,0:00:00.37,0:00:01.36,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}almost nothing.
+Dialogue: 0,0:00:01.62,0:00:02.22,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Think about
+Dialogue: 0,0:00:02.18,0:00:02.79,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}everything you
+Dialogue: 0,0:00:02.73,0:00:03.57,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}call yours.
+Dialogue: 0,0:00:03.69,0:00:04.41,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Your house,
+Dialogue: 0,0:00:04.33,0:00:04.95,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}your money,
+Dialogue: 0,0:00:04.86,0:00:06.04,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}your reputation.
+Dialogue: 0,0:00:07.03,0:00:07.76,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Fortune can
+Dialogue: 0,0:00:07.68,0:00:08.37,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}take all
+Dialogue: 0,0:00:08.31,0:00:08.68,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}of it
+Dialogue: 0,0:00:08.64,0:00:08.94,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}in an
+Dialogue: 0,0:00:08.88,0:00:09.74,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}afternoon.
+Dialogue: 0,0:00:10.74,0:00:11.68,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Seneca reminds
+Dialogue: 0,0:00:11.62,0:00:12.58,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Lucilius that
+Dialogue: 0,0:00:12.49,0:00:13.08,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}the one
+Dialogue: 0,0:00:13.00,0:00:13.88,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}thing truly
+Dialogue: 0,0:00:13.85,0:00:14.53,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}ours is
+Dialogue: 0,0:00:14.48,0:00:15.54,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}time, the
+Dialogue: 0,0:00:15.47,0:00:16.27,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}most fleeting
+Dialogue: 0,0:00:16.22,0:00:16.95,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}and slippery
+Dialogue: 0,0:00:16.89,0:00:17.56,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}possession of
+Dialogue: 0,0:00:17.50,0:00:18.04,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}all.
+Dialogue: 0,0:00:18.37,0:00:18.75,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}Yet we
+Dialogue: 0,0:00:18.70,0:00:19.19,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}guard our
+Dialogue: 0,0:00:19.14,0:00:19.74,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}coins and
+Dialogue: 0,0:00:19.68,0:00:20.16,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}hand our
+Dialogue: 0,0:00:20.10,0:00:20.60,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}hours to
+Dialogue: 0,0:00:20.55,0:00:21.06,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}anyone who
+Dialogue: 0,0:00:21.01,0:00:21.71,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}asks.
+Dialogue: 0,0:00:22.29,0:00:23.08,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}We postpone
+Dialogue: 0,0:00:23.01,0:00:23.67,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}living, and
+Dialogue: 0,0:00:23.61,0:00:24.08,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}while we
+Dialogue: 0,0:00:24.03,0:00:24.66,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}wait, the
+Dialogue: 0,0:00:24.60,0:00:25.57,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}days quietly
+Dialogue: 0,0:00:25.52,0:00:26.39,Karaoke,,0,0,0,,{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}run out.
