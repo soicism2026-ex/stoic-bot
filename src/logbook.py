@@ -8,10 +8,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 LOG = ROOT / "data" / "posts.csv"
 
-FIELDS = ["date", "theme", "author", "quote", "caption", "video_url", "video_id"]
+FIELDS = ["date", "theme", "author", "quote", "caption", "video_url", "video_id",
+          "voice_name", "music_track"]
 
 
-def log_post(date, theme, quote, author, caption, publish_result):
+def log_post(date, theme, quote, author, caption, publish_result,
+             voice_name: str = "", music_track: str = ""):
     new = not LOG.exists()
     with open(LOG, "a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)
@@ -25,4 +27,6 @@ def log_post(date, theme, quote, author, caption, publish_result):
             "caption": caption.replace("\n", " / "),
             "video_url": publish_result.get("url", ""),
             "video_id": publish_result.get("video_id", ""),
+            "voice_name": voice_name,
+            "music_track": music_track,
         })

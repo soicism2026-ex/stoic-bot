@@ -10,18 +10,40 @@ captions in render.py. We prefer ElevenLabs' /with-timestamps endpoint for real
 per-character timing (folded up to words); if that is unavailable or fails we
 fall back to the plain endpoint and estimate timing by distributing words across
 the measured audio duration weighted by word length — so a run never breaks.
+
+Voice pool: three voices chosen for the Stoic niche (deep, measured, authoritative).
+Rotates analytics-weighted once each voice has ≥5 posts of view data; uses LRU
+equal rotation before that.  George (British, deep) is the default opener.
 """
 import base64
+import csv
 import json
 import os
 import re
 import subprocess
+from datetime import date
 from pathlib import Path
 
 import requests
 
-# Default voice "Adam" (deep, calm). Override with ELEVENLABS_VOICE_ID secret.
-VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "pNInz6obpgDQGcFmaJgB")
+# ---------------------------------------------------------------------------
+# Voice pool
+# ---------------------------------------------------------------------------
+
+# Three ElevenLabs voices suited to deep, authoritative Stoic content.
+# George: British, gravelly, commanding — top pick for this niche.
+# Daniel: British, calm and professorial.
+# Brian: American, deep and measured.
+VOICE_POOL = [
+    {"name": "George", "id": "JBFqnCBsd6RMkjVDRZzb"},
+    {"name": "Daniel", "id": "onwK4e9ZLuTAKqWW03F9"},
+    {"name": "Brian",  "id": "nPczCjzI2devNBz1zQrb"},
+]
+
+# Single-voice override: ELEVENLABS_VOICE_ID still works as a hard override.
+_VOICE_ID_OVERRIDE = os.environ.get("ELEVENLABS_VOICE_ID", "").strip()
+
+MIN_POSTS_FOR_WEIGHT = 5  # posts per voice before analytics-weighting kicks in
 
 # Voice / model settings stay configurable via env (defaults match prior values).
 MODEL_ID = os.environ.get("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
@@ -35,8 +57,69 @@ VOICE_SETTINGS = {
 WordTiming = tuple  # (word: str, start: float, end: float)
 
 
-def synthesize_voice(text: str, out_path: Path) -> tuple:
+def _load_analytics() -> dict[str, int]:
+    """Return {video_id: peak_views} from data/analytics.csv."""
+    ROOT = Path(__file__).resolve().parent.parent
+    path = ROOT / "data" / "analytics.csv"
+    if not path.exists():
+        return {}
+    peak: dict[str, int] = {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            vid = row.get("video_id", "").strip()
+            v = int(row.get("views") or 0)
+            if vid and v > peak.get(vid, 0):
+                peak[vid] = v
+    return peak
+
+
+def pick_voice(rows: list[dict]) -> dict:
+    """Return a voice from VOICE_POOL using analytics-weighted selection.
+
+    Strategy:
+      - Hard override: if ELEVENLABS_VOICE_ID is set, use it directly.
+      - Exploration (< MIN_POSTS_FOR_WEIGHT data per voice): LRU rotation.
+      - Exploitation (enough data): block most-recent, pick highest avg-views.
+    """
+    if _VOICE_ID_OVERRIDE:
+        # Honour legacy single-voice override; synthesize name from pool.
+        for v in VOICE_POOL:
+            if v["id"] == _VOICE_ID_OVERRIDE:
+                return v
+        return {"name": "Custom", "id": _VOICE_ID_OVERRIDE}
+
+    analytics = _load_analytics()
+
+    def avg_views(voice_name: str) -> float | None:
+        matching = [r for r in rows
+                    if r.get("voice_name") == voice_name and r.get("video_id")]
+        if len(matching) < MIN_POSTS_FOR_WEIGHT:
+            return None
+        return sum(analytics.get(r["video_id"], 0) for r in matching) / len(matching)
+
+    avgs = {v["name"]: avg_views(v["name"]) for v in VOICE_POOL}
+
+    recent_voices = [r.get("voice_name") for r in reversed(rows) if r.get("voice_name")]
+    block = recent_voices[0] if recent_voices else None
+
+    # Exploration: at least one voice lacks enough data → LRU.
+    if any(val is None for val in avgs.values()):
+        candidates = [v for v in VOICE_POOL if v["name"] != block] or VOICE_POOL
+        return candidates[date.today().toordinal() % len(candidates)]
+
+    # Exploitation: pick highest avg-views, blocking most recent.
+    candidates = [v for v in VOICE_POOL if v["name"] != block] or VOICE_POOL
+    return max(candidates, key=lambda v: avgs.get(v["name"], 0))
+
+
+# ---------------------------------------------------------------------------
+# Synthesis
+# ---------------------------------------------------------------------------
+
+def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     """Synthesize `text` to `out_path`. Returns (out_path, word_timings)."""
+    vid = voice_id or (_VOICE_ID_OVERRIDE if _VOICE_ID_OVERRIDE else VOICE_POOL[0]["id"])
+
     headers = {
         "xi-api-key": os.environ["ELEVENLABS_API_KEY"],
         "Content-Type": "application/json",
@@ -49,7 +132,7 @@ def synthesize_voice(text: str, out_path: Path) -> tuple:
 
     # Preferred path: with-timestamps -> real per-character alignment.
     try:
-        url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}/with-timestamps"
+        url = f"https://api.elevenlabs.io/v1/text-to-speech/{vid}/with-timestamps"
         resp = requests.post(url, headers={**headers, "Accept": "application/json"},
                              json=payload, timeout=120)
         resp.raise_for_status()
@@ -62,13 +145,12 @@ def synthesize_voice(text: str, out_path: Path) -> tuple:
         timings = _words_from_alignment(text, alignment)
         if timings:
             return out_path, timings
-        # Audio is good but no usable alignment — keep it, estimate timing.
         return out_path, _estimate_timings(text, _audio_duration(out_path))
-    except Exception as e:  # noqa: BLE001 — never let TTS take the whole run down
+    except Exception as e:  # noqa: BLE001
         print(f"  tts: with-timestamps unavailable ({e}); falling back to plain endpoint")
 
     # Fallback: plain endpoint, estimate timing from measured duration.
-    url = f"https://api.elevenlabs.io/v1/text-to-speech/{VOICE_ID}"
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{vid}"
     resp = requests.post(url, headers={**headers, "Accept": "audio/mpeg"},
                          json=payload, timeout=120)
     resp.raise_for_status()

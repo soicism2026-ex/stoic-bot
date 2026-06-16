@@ -23,11 +23,12 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from content import generate_content      # noqa: E402 (after sys.path)
-from tts import synthesize_voice          # noqa: E402
+from tts import synthesize_voice, pick_voice  # noqa: E402
 from publish import publish_short         # noqa: E402
 from logbook import log_post              # noqa: E402
 import render as render_mod               # noqa: E402
 import promo                              # noqa: E402
+import music as music_mod                 # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
 
@@ -78,6 +79,7 @@ def _render_with_env(
     env_overrides: dict, *,
     quote: str, author: str, audio_path: Path, out_path: Path,
     theme: str, word_timings: list, hook: str, callout_words: list = None,
+    music_path: Path = None,
 ) -> Path:
     """Set env overrides, reload render module constants, call render_reel."""
     saved = {}
@@ -93,6 +95,7 @@ def _render_with_env(
             quote=quote, author=author, audio_path=audio_path,
             out_path=out_path, theme=theme, word_timings=word_timings,
             hook=hook, callout_words=callout_words or [],
+            music_path=music_path,
         )
     finally:
         for k, orig in saved.items():
@@ -191,12 +194,14 @@ def _add_to_backup_bank(today: str):
 
         video_name = f"{today}_bk_reel.mp4"
         video_path = BACKUPS_DIR / video_name
+        bk_music = music_mod.fetch_music(music_track, ROOT / "data" / f"{today}_bk_music.mp3")
         importlib.reload(render_mod)
         render_mod.render_reel(
             quote=content["quote"], author=content["author"],
             audio_path=audio_path, out_path=video_path,
             theme=content["theme"], word_timings=word_timings, hook=hook,
             callout_words=content.get("callout_words", []),
+            music_path=bk_music,
         )
 
         qa = run_qa(video_path, content["quote"])
@@ -256,6 +261,18 @@ def main():
     print(f"  theme: {content['theme']}")
     print(f"  quote: {content['quote'][:60]}...")
 
+    # Analytics-weighted voice and music selection
+    from content import _load_rows as _load_post_rows
+    post_rows = _load_post_rows()
+    voice = pick_voice(post_rows)
+    print(f"  voice: {voice['name']} ({voice['id']})")
+    music_track = music_mod.pick_music(post_rows)
+    music_path = music_mod.fetch_music(music_track, ROOT / "data" / f"{today}_music.mp3")
+    if music_path:
+        print(f"  music: {music_track['name']} → {music_path.name}")
+    else:
+        print(f"  music: {music_track['name']} unavailable — no background music today")
+
     hook = content["hook"].strip()
     cta = content.get("cta", "").strip()
     spoken_text = f"{hook.rstrip('.!? ')}. {content['voiceover_text']}"
@@ -264,7 +281,7 @@ def main():
 
     # Voiceover once; reused across render attempts
     audio_path = ROOT / "data" / f"{today}_voice.mp3"
-    audio_path, word_timings = synthesize_voice(spoken_text, audio_path)
+    audio_path, word_timings = synthesize_voice(spoken_text, audio_path, voice_id=voice["id"])
     print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings)")
 
     video_path = ROOT / "data" / f"{today}_reel.mp4"
@@ -294,6 +311,7 @@ def main():
             audio_path=audio_path, out_path=video_path,
             theme=content["theme"], word_timings=word_timings, hook=hook,
             callout_words=content.get("callout_words", []),
+            music_path=music_path,
         )
 
         print(f"  [attempt {attempt}] QA check...")
@@ -344,6 +362,8 @@ def main():
                 date=today, theme=content["theme"], quote=content["quote"],
                 author=content["author"], caption=description,
                 publish_result=upload_result,
+                voice_name=voice["name"],
+                music_track=music_track["name"],
             )
             print("  logged. done.")
             break
@@ -373,6 +393,8 @@ def main():
                     author=bk_meta.get("author", ""),
                     caption=bk_meta["description"],
                     publish_result=upload_result,
+                    voice_name=bk_meta.get("voice_name", ""),
+                    music_track=bk_meta.get("music_track", ""),
                 )
                 _remove_backup(bk_meta_file)
             else:

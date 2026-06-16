@@ -76,6 +76,13 @@ def _read_hook_preset() -> str:
 
 W, H = 1080, 1920
 
+# Background music volume (0.0-1.0).  Overridable; read at call time.
+def _music_volume() -> float:
+    try:
+        return float(os.environ.get("MUSIC_VOLUME", "0.07"))
+    except ValueError:
+        return 0.07
+
 
 def _audio_duration(audio_path: Path) -> float:
     out = subprocess.check_output([
@@ -380,7 +387,8 @@ def _callout_overlays(word_timings: list, callout_words: list) -> list:
 
 def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 theme: str = "", word_timings: list = None,
-                hook: str = "", callout_words: list = None) -> Path:
+                hook: str = "", callout_words: list = None,
+                music_path: Path = None) -> Path:
     # Mix an attention "whoosh" under the opening before anything else so the
     # rest of the pipeline just sees a normal audio track. Never let it break a
     # run: on any failure fall back to the raw voiceover.
@@ -528,18 +536,43 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
 
     vf = ",".join(vf_parts)
 
-    cmd = [
-        "ffmpeg", "-y",
-        "-stream_loop", "-1", "-i", str(bg),   # loop bg to cover audio length
-        "-i", str(audio_for_render),
-        "-t", f"{dur:.2f}",
-        "-vf", vf,
-        "-map", "0:v", "-map", "1:a",
-        "-c:v", "libx264", "-preset", "medium", "-crf", "20",
-        "-c:a", "aac", "-b:a", "192k",
-        "-pix_fmt", "yuv420p",
-        "-r", "30",
-        str(out_path),
-    ]
+    if music_path and Path(music_path).exists():
+        # Mix background music at low volume under the voiceover.
+        # Use filter_complex to handle both video chain and audio mixing in one pass.
+        vol = _music_volume()
+        filter_complex = (
+            f"[0:v]{vf}[vout];"
+            f"[1:a]volume=1.0[voice];"
+            f"[2:a]volume={vol}[music];"
+            f"[voice][music]amix=inputs=2:duration=first:dropout_transition=2[aout]"
+        )
+        cmd = [
+            "ffmpeg", "-y",
+            "-stream_loop", "-1", "-i", str(bg),
+            "-i", str(audio_for_render),
+            "-stream_loop", "-1", "-i", str(music_path),
+            "-t", f"{dur:.2f}",
+            "-filter_complex", filter_complex,
+            "-map", "[vout]", "-map", "[aout]",
+            "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+            "-c:a", "aac", "-b:a", "192k",
+            "-pix_fmt", "yuv420p",
+            "-r", "30",
+            str(out_path),
+        ]
+    else:
+        cmd = [
+            "ffmpeg", "-y",
+            "-stream_loop", "-1", "-i", str(bg),
+            "-i", str(audio_for_render),
+            "-t", f"{dur:.2f}",
+            "-vf", vf,
+            "-map", "0:v", "-map", "1:a",
+            "-c:v", "libx264", "-preset", "medium", "-crf", "20",
+            "-c:a", "aac", "-b:a", "192k",
+            "-pix_fmt", "yuv420p",
+            "-r", "30",
+            str(out_path),
+        ]
     subprocess.run(cmd, check=True, capture_output=True)
     return out_path
