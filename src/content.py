@@ -74,31 +74,39 @@ Favor lesser-known but genuine passages over over-quoted "greatest hits." This i
 especially important: the channel's audience has already seen the most famous lines.
 - Hook: 3–5 words. A blunt, second-person accusation or uncomfortable truth — not a \
 question, not an inspirational phrase, not a summary. It must make the viewer feel \
-slightly called out the instant it appears. The hook is spoken first and flashed large \
-on screen; it must set up the quote's idea WITHOUT quoting or restating the passage. \
+personally called out the instant it appears, as if the channel knows exactly what \
+they are doing wrong RIGHT NOW. The hook is spoken first and flashed large on screen; \
+it must set up the quote's idea WITHOUT quoting or restating the passage. \
 No author name, no quotation marks, no hashtags, no ellipsis. \
 RIGHT register (use these as models — do not repeat them verbatim): \
 "You're wasting your life." / "Your ego is the problem." / "You chose this." / \
 "Nothing lasts." / "You already know." / "Stop performing discipline." / \
-"You're running from yourself." / "The clock is running." \
-WRONG register (avoid): "Time is precious." (cliché) / "What's holding you back?" \
-(too soft/generic) / "Wisdom from Marcus Aurelius." (never reference the author).
+"You're running from yourself." / "The clock is running." / "You call that discipline." \
+WRONG register (avoid all of these): "Time is precious." (cliché) / \
+"What's holding you back?" (too soft) / "Wisdom from Marcus Aurelius." (never name author) / \
+anything with "This Stoic quote..." / anything that sounds like an introduction.
 - Voiceover script: 20-27 seconds spoken (~50-68 words). Cut straight from the hook to \
 the hard truth — no warm-up, no throat-clearing, no re-stating the obvious. Tighter is \
-better: if you can land the point in 55 words, stop there. It is spoken right AFTER the \
-hook, so flow naturally into the idea and do NOT repeat the hook line. Plain, grounded, \
-masculine-neutral tone. No hashtags in the voiceover. End a sentence before the CTA.
-- CTA: 1-2 spoken sentences for the very last moment of the voiceover. Reference the \
-next day's theme naturally — give a REASON to follow, not just "subscribe". \
-Under 25 words. Vary the phrasing across days. \
+better: if you can land the point in 55 words, stop there. SPECIFICITY is the key \
+differentiator from every competitor: instead of "you waste time" write "you check your \
+phone 80 times a day and call it research." Name concrete things — the scroll, the \
+meeting, the gym session you skipped, the excuse. Speak to someone who knows they are \
+failing but hasn't admitted it yet. It is spoken right AFTER the hook, so flow naturally \
+into the idea and do NOT repeat the hook line. Plain, grounded, masculine-neutral tone. \
+No hashtags in the voiceover. End a sentence before the CTA.
+- CTA: 1-2 spoken sentences for the very last moment of the voiceover. The last line \
+must loop back to the opening feeling — end on a note that makes someone want to \
+watch from the start again (creates rewatch loops which the algorithm rewards). \
+Reference the next day's theme naturally. Under 25 words. Vary the phrasing. \
 Example: "Tomorrow: Marcus Aurelius on anger. Follow for your daily Stoic dose."
-- Pinned comment: a short, personal, slightly uncomfortable question that makes \
-viewers stop and actually answer — tied directly to today's quote and theme. \
-It should feel like something a friend would ask, not a YouTube engagement prompt. \
-Under 20 words. Make it specific to the quote's idea. \
+- Pinned comment: a short, personal, slightly uncomfortable question that forces a \
+specific answer — tied directly to today's quote. NOT "what do you think?" or \
+"have you ever experienced this?" — those generate nothing. Ask something that requires \
+the viewer to name a specific person, habit, excuse, or moment in their own life. \
+Under 20 words. \
 Example for discipline: "What's the one habit you keep starting and abandoning — and what's your real excuse?"
-- Caption: 1-2 sentences that reframe the idea for daily life + one soft question \
-to drive comments.
+- Caption: 1-2 sentences that reframe the idea for daily life + one specific question \
+(name a concrete scenario) to drive comments.
 - Hashtags: 8-12, mixing broad (#stoicism #discipline) and mid-size niche tags.
 - callout_words: 2-4 concrete nouns or short phrases from the voiceover that name a \
 tangible thing the viewer can picture — e.g. "house", "status", "anger", "time", \

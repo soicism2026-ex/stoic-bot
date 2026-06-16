@@ -9,6 +9,8 @@ Format per entry:
 
 ---
 
+- **2026-06-16** — `src/content.py`: Competitive analysis of top Stoicism Shorts channels (ApertureThinking, StoicWisdomQuotes, BrainyCore) identified the "stoic kitsch" problem — generic hooks, same 8 recycled quotes, no specificity, padded length. Sharpened hook prompt to require personal callout energy ("you call that discipline" register). Added explicit specificity rule to voiceover: name concrete things (the scroll, the skipped gym session) not abstract ideas. CTA must loop back to opening feeling to engineer rewatches. Pinned comment must force naming a specific person/habit/moment, not generic engagement bait.
+
 - **2026-06-16** — `src/tts.py` + `src/music.py` (new) + `src/render.py` + `src/logbook.py` + `scripts/daily_post.py`: Voice pool (George/Daniel/Brian — all deep/authoritative, British or American) replaces single "Adam" voice. Background music (dark ambient, ancient minimal, focus underscore) fetched from Pixabay and mixed at −23 dB under voiceover. Both voice and music rotate analytics-weighted: equal LRU while gathering data, then shift toward the option with highest average views once each has ≥5 posts. `voice_name` and `music_track` logged to posts.csv for tracking.
 
 - **2026-06-15** — `src/content.py` + `src/render.py` + `scripts/daily_post.py`: Voiceover tightened from 18–35 s to 20–27 s (~50–68 words) with explicit "cut to the hard truth, no padding" directive. Added `callout_words` field to content JSON — Claude picks 2–4 concrete nouns from the voiceover (e.g. "house", "anger") that flash large (112 px, centered) on screen exactly when spoken, driven by ElevenLabs word-level timings. This keeps the viewer's eye moving on list-style content and matches the visual pacing of high-retention Shorts.
