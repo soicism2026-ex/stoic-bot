@@ -24,7 +24,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from content import generate_content      # noqa: E402 (after sys.path)
 from tts import synthesize_voice, pick_voice  # noqa: E402
-from publish import publish_short         # noqa: E402
+from publish import publish_short, set_thumbnail  # noqa: E402
 from logbook import log_post              # noqa: E402
 import render as render_mod               # noqa: E402
 import promo                              # noqa: E402
@@ -286,16 +286,35 @@ def main():
 
     video_path = ROOT / "data" / f"{today}_reel.mp4"
 
-    # Series framing for title and description
+    # ---------------------------------------------------------------------------
+    # Metadata — optimised for discovery and click-through
+    # ---------------------------------------------------------------------------
     day = content.get("day_number", "")
-    day_prefix = f"Day {day} | " if day else ""
-    title = f'{day_prefix}{content["quote"][:55]} — {content["author"]}'[:90].rstrip()
+    hook_clean = hook.rstrip(".!? ")
+
+    # Title: hook-first (the scroll-stopper) + author (trust signal) + niche tags.
+    # "Day N" moves to the description — it's for loyal fans, not new viewers.
+    title = f'"{hook_clean}" — {content["author"]} | Stoicism'[:90].rstrip()
+
+    # Expanded tags: hashtag list + author/niche SEO terms the algorithm uses
+    # for topic matching.  YouTube allows up to 500 chars total.
+    base_tags = [t.lstrip("#") for t in content["hashtags"]]
+    seo_tags = [
+        "stoicism", "stoic philosophy", "stoic quotes", "stoic wisdom",
+        "daily stoicism", "stoic mindset", "ancient wisdom",
+        content["author"].lower(),
+        content["author"].split()[0].lower(),  # e.g. "marcus" standalone
+        content["theme"].replace("/", " ").replace(" ", ""),
+        "motivation", "self improvement", "philosophy", "mindset",
+    ]
+    all_tags = list(dict.fromkeys(base_tags + seo_tags))[:30]  # dedup, cap at 30
+
     description = (
-        (f"Day {day} of daily Stoic wisdom.\n\n" if day else "")
-        + content["caption"]
-        + "\n\n"
-        + " ".join(content["hashtags"])
-        + promo.description_block()
+        f'{hook_clean}.\n\n'
+        f'{"Day " + str(day) + " of daily Stoic wisdom." + chr(10) + chr(10) if day else ""}'
+        f'{content["caption"]}\n\n'
+        f'{" ".join(content["hashtags"])}'
+        f'{promo.description_block()}'
     )
 
     all_qa: list = []
@@ -328,9 +347,26 @@ def main():
         if upload_this:
             upload_result = publish_short(
                 video_path=video_path, title=title,
-                description=description, tags=content["hashtags"],
+                description=description, tags=all_tags,
             )
             print(f"  published: {upload_result.get('url', 'unknown')}")
+
+            # Custom thumbnail — hook text on cinematic background.
+            # Shown in the Shorts shelf and channel page BEFORE clicking.
+            vid_id = upload_result.get("video_id")
+            if vid_id:
+                bg_path_for_thumb = video_path.with_suffix(".bg.mp4")
+                thumb_path = video_path.with_suffix(".thumb.jpg")
+                if bg_path_for_thumb.exists():
+                    try:
+                        t = render_mod.generate_thumbnail(
+                            hook=hook, author=content["author"],
+                            bg_path=bg_path_for_thumb, out_path=thumb_path,
+                        )
+                        if t and t.exists():
+                            set_thumbnail(vid_id, thumb_path)
+                    except Exception as e:
+                        print(f"  [thumbnail] skipped: {e}", file=sys.stderr)
 
             # Post engagement question as a comment
             pinned_q = content.get("pinned_comment", "").strip()

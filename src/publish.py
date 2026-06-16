@@ -81,6 +81,26 @@ def publish_short(video_path: Path, title: str, description: str,
     }
 
 
+def set_thumbnail(video_id: str, thumb_path) -> bool:
+    """Upload a custom thumbnail image for the video.
+
+    Requires youtube.force-ssl scope (same token used for post_comment).
+    Returns True on success, False on any failure (non-blocking).
+    """
+    try:
+        from googleapiclient.http import MediaFileUpload
+        yt = _service(extra_scopes=["https://www.googleapis.com/auth/youtube.force-ssl"])
+        yt.thumbnails().set(
+            videoId=video_id,
+            media_body=MediaFileUpload(str(thumb_path), mimetype="image/jpeg"),
+        ).execute()
+        print(f"  [thumbnail] set for {video_id}")
+        return True
+    except Exception as e:
+        print(f"  [thumbnail] upload failed: {e}", file=__import__("sys").stderr)
+        return False
+
+
 def post_comment(video_id: str, text: str) -> str:
     """Post a top-level comment on the video and return the comment thread ID.
 

@@ -351,6 +351,69 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return out_path
 
 
+def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) -> Path:
+    """Generate a 1080x1920 JPEG thumbnail — hook text on cinematic background.
+
+    The thumbnail shows in the Shorts shelf, channel grid, and search results
+    BEFORE the viewer clicks.  Hook text is the primary draw; author is the
+    trust signal.  No quote text — that's the reward for watching.
+    """
+    hook_lines = textwrap.wrap(hook.upper(), width=14) or [hook.upper()]
+    HOOK_FS = 110
+    HOOK_LINE_H = HOOK_FS + 16
+    h_half = (len(hook_lines) * HOOK_LINE_H) // 2
+
+    vf_parts = [
+        f"scale={W}:{H}:force_original_aspect_ratio=increase",
+        f"crop={W}:{H}",
+        f"eq=brightness=-0.22:saturation=0.7:contrast=1.15",
+        f"vignette=PI/3.5:eval=init",
+    ]
+
+    for i, line in enumerate(hook_lines):
+        offset = i * HOOK_LINE_H - h_half
+        line_y = f"(h/2)-120{offset:+d}"
+        vf_parts.append(
+            f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
+            f"text='{_escape(line)}':"
+            f"fontcolor=white:fontsize={HOOK_FS}:"
+            f"x=(w-text_w)/2:y={line_y}:"
+            f"borderw=9:bordercolor=black@0.92:"
+            f"shadowcolor=black@0.75:shadowx=4:shadowy=4"
+        )
+
+    author_y = f"(h/2)+{h_half + 60}"
+    vf_parts.append(
+        f"drawbox=x=(w-220)/2:y=(h/2)+{h_half + 42}:w=220:h=2:"
+        f"color={DIVIDER_COLOR}@0.85:t=fill"
+    )
+    vf_parts.append(
+        f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
+        f"text='{_escape(f'— {author.upper()}')}':"
+        f"fontcolor={AUTHOR_COLOR}:fontsize=44:"
+        f"x=(w-text_w)/2:y={author_y}:"
+        f"shadowcolor=black@0.8:shadowx=3:shadowy=3"
+    )
+
+    vf = ",".join(vf_parts)
+
+    cmd = [
+        "ffmpeg", "-y",
+        "-ss", "1.0",           # skip first second (often motion blur / fade-in)
+        "-i", str(bg_path),
+        "-vframes", "1",
+        "-vf", vf,
+        "-q:v", "2",            # JPEG quality (2=excellent, 31=worst)
+        str(out_path),
+    ]
+    try:
+        subprocess.run(cmd, check=True, capture_output=True)
+        return out_path
+    except Exception as e:
+        print(f"  [thumbnail] generation failed: {e}", file=__import__("sys").stderr)
+        return None
+
+
 def _callout_overlays(word_timings: list, callout_words: list) -> list:
     """Return drawtext filters that flash each callout word large on screen."""
     if not word_timings or not callout_words:
