@@ -59,12 +59,27 @@ def main():
         return
 
     if not args.dry_run:
-        yt = _service()
-        yt.videos().update(
-            part="status",
-            body={"id": vid, "status": {"privacyStatus": "unlisted"}},
-        ).execute()
-        print(f"[remove] unlisted {vid} on YouTube")
+        try:
+            yt = _service()
+            yt.videos().update(
+                part="status",
+                body={"id": vid, "status": {"privacyStatus": "unlisted"}},
+            ).execute()
+            print(f"[remove] unlisted {vid} on YouTube")
+        except Exception as e:
+            # videos.update requires the youtube.force-ssl scope. If the
+            # refresh token was issued before that scope was added to
+            # auth_setup.py, Google rejects it at refresh time with
+            # invalid_scope rather than at the API call — non-fatal here so
+            # a repost can still proceed; unlist manually in YouTube Studio
+            # and re-run src/auth_setup.py to mint a token that covers it.
+            print(
+                f"[remove] could not unlist {vid} on YouTube ({e}) — "
+                f"continuing without unlisting. Re-run src/auth_setup.py to "
+                f"refresh YOUTUBE_REFRESH_TOKEN with the force-ssl scope, "
+                f"then unlist {vid} manually in the meantime.",
+                file=sys.stderr,
+            )
 
     if matched:
         fieldnames = list(rows[0].keys())
