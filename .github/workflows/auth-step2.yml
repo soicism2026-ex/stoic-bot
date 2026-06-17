@@ -1,0 +1,91 @@
+name: "YouTube OAuth - Step 2: Exchange Code + Save Token"
+
+on:
+  workflow_dispatch:
+    inputs:
+      auth_input:
+        description: "Full redirect URL or just the code= value from Step 1"
+        required: true
+
+jobs:
+  exchange:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install google-auth-oauthlib
+
+      - name: Exchange code for refresh token
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          AUTH_INPUT: ${{ inputs.auth_input }}
+        run: |
+          python3 - << 'PYEOF'
+          import os, urllib.parse
+          from google_auth_oauthlib.flow import InstalledAppFlow
+
+          cfg = {"installed": {
+              "client_id": os.environ["YOUTUBE_CLIENT_ID"],
+              "client_secret": os.environ["YOUTUBE_CLIENT_SECRET"],
+              "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+              "token_uri": "https://oauth2.googleapis.com/token",
+              "redirect_uris": ["http://localhost"],
+          }}
+          scopes = [
+              "https://www.googleapis.com/auth/youtube.upload",
+              "https://www.googleapis.com/auth/youtube.readonly",
+              "https://www.googleapis.com/auth/youtube.force-ssl",
+          ]
+
+          raw = os.environ["AUTH_INPUT"].strip()
+          if "code=" in raw:
+              qs = urllib.parse.parse_qs(urllib.parse.urlparse(raw).query)
+              code = qs["code"][0]
+          else:
+              code = raw
+
+          flow = InstalledAppFlow.from_client_config(cfg, scopes)
+          flow.redirect_uri = "http://localhost"
+          flow.fetch_token(code=code)
+          token = flow.credentials.refresh_token
+
+          if not token:
+              raise RuntimeError(
+                  "No refresh_token returned. Revoke app access at "
+                  "myaccount.google.com/permissions then re-run Step 1."
+              )
+
+          out_dir = "/tmp/token-out"
+          os.makedirs(out_dir, exist_ok=True)
+          with open(f"{out_dir}/YOUTUBE_REFRESH_TOKEN.txt", "w") as f:
+              f.write(token)
+
+          print("Token obtained successfully. Saved to artifact (see below).")
+          PYEOF
+
+      - name: Upload token as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: new-youtube-refresh-token
+          path: /tmp/token-out/
+          retention-days: 1
+
+      - name: Summary
+        run: |
+          cat >> $GITHUB_STEP_SUMMARY << 'EOF'
+          ## Step 2 complete
+
+          The new refresh token is in the **artifact** below (only visible to
+          authenticated GitHub users with access to this repo — not public).
+
+          **Next steps:**
+          1. Scroll down to **Artifacts** on this run page
+          2. Download `new-youtube-refresh-token`
+          3. Open `YOUTUBE_REFRESH_TOKEN.txt` inside the zip
+          4. Copy the token value
+          5. Go to repo **Settings → Secrets → Actions** → click `YOUTUBE_REFRESH_TOKEN` → paste the new value
+          6. Come back here and **delete this workflow run** (⋯ menu top-right) to clean up the artifact
+          EOF
