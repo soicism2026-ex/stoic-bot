@@ -39,7 +39,7 @@ THEME_QUERY_POOLS: dict[str, list[str]] = {
     "impermanence": ["autumn leaves falling wind", "cherry blossom petals drift", "candle flame close dark"],
     "justice":      ["lightning thunderstorm dramatic", "stone courthouse columns", "scales balance gold"],
     # Previously fell to default — now have their own visuals:
-    "ego":          ["shadow figure dramatic portrait", "lone silhouette cliff edge", "mirror reflection dark"],
+    "ego":          ["broken mirror shards dark", "crown gold dark dramatic", "storm dark clouds power"],
     "anger":        ["fire flames dark dramatic", "crashing ocean storm waves", "volcanic eruption lava"],
     "desire":       ["golden hour horizon ocean", "flame candle bokeh warm", "sunset desert dunes"],
     "fear":         ["dark forest mist fog", "cave entrance light beam", "storm clouds approaching"],
