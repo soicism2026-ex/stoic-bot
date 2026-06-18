@@ -1,0 +1,39 @@
+name: ci
+
+# Lightweight gate for pull requests so auto-merge has a required check to wait
+# on. Compiles every Python file (catches syntax errors) and validates that all
+# workflow YAML parses. No secrets, no network — fast and always runnable.
+on:
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Byte-compile all Python
+        run: python -m compileall -q src scripts
+
+      - name: Validate workflow YAML
+        run: |
+          python - <<'PY'
+          import glob, sys, yaml
+          bad = []
+          for f in glob.glob(".github/workflows/*.y*ml"):
+              try:
+                  yaml.safe_load(open(f))
+              except Exception as e:
+                  bad.append(f"{f}: {e}")
+          if bad:
+              print("\n".join(bad)); sys.exit(1)
+          print("all workflow YAML valid")
+          PY
