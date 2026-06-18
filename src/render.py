@@ -352,47 +352,73 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) -> Path:
-    """Generate a 1080x1920 JPEG thumbnail — hook text on cinematic background.
+    """Generate a 1080x1920 JPEG thumbnail — bold hook on a cinematic frame.
 
-    The thumbnail shows in the Shorts shelf, channel grid, and search results
-    BEFORE the viewer clicks.  Hook text is the primary draw; author is the
-    trust signal.  No quote text — that's the reward for watching.
+    Built to stop the scroll in the Shorts shelf, channel grid and search:
+      - a dramatic darkened, high-contrast frame with a vignette (premium feel)
+      - a top + bottom gradient-style scrim so the type always reads
+      - a soft dark panel behind the hook so the gold text pops as if designed
+      - the hook in large gold caps with a heavy outline and drop shadow
+      - a gold accent rule + the author beneath as the trust signal
+    The frame is pulled from the pre-caption .bg.mp4, so NONE of the burned-in
+    quote/caption text from the video leaks into the thumbnail.
     """
-    hook_lines = textwrap.wrap(hook.upper(), width=14) or [hook.upper()]
-    HOOK_FS = 110
-    HOOK_LINE_H = HOOK_FS + 16
-    h_half = (len(hook_lines) * HOOK_LINE_H) // 2
+    hook_lines = textwrap.wrap(hook.upper(), width=13) or [hook.upper()]
+    HOOK_FS = 122
+    HOOK_LINE_H = HOOK_FS + 22
+    block_h = len(hook_lines) * HOOK_LINE_H
+    h_half = block_h // 2
+
+    # Hook sits slightly above centre so the background subject stays visible.
+    center_y = "(h/2)-90"
 
     vf_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
         f"crop={W}:{H}",
-        f"eq=brightness=-0.22:saturation=0.7:contrast=1.15",
-        f"vignette=PI/3.5:eval=init",
+        # Vivid-but-moody cinematic grade.
+        "eq=brightness=-0.10:saturation=0.85:contrast=1.24",
+        "vignette=PI/4:eval=init",
+        # Overall dark wash for cohesion + contrast against the text.
+        f"drawbox=x=0:y=0:w={W}:h={H}:color=black@0.16:t=fill",
+        # Heavier scrims top and bottom (where channel name / view count sit).
+        f"drawbox=x=0:y=0:w={W}:h=360:color=black@0.34:t=fill",
+        f"drawbox=x=0:y={H - 420}:w={W}:h=420:color=black@0.40:t=fill",
     ]
 
+    # Soft panel behind the hook block so the gold type reads on any frame.
+    pad = 64
+    band_y = f"{center_y}-{h_half + pad // 2}"
+    band_h = block_h + pad
+    vf_parts.append(
+        f"drawbox=x=0:y={band_y}:w={W}:h={band_h}:color=black@0.40:t=fill"
+    )
+
+    # Hook — large, bold, warm gold, heavy black outline + drop shadow.
     for i, line in enumerate(hook_lines):
         offset = i * HOOK_LINE_H - h_half
-        line_y = f"(h/2)-120{offset:+d}"
+        line_y = f"{center_y}{offset:+d}"
         vf_parts.append(
             f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
             f"text='{_escape(line)}':"
-            f"fontcolor=white:fontsize={HOOK_FS}:"
+            f"fontcolor=0xFFC838:fontsize={HOOK_FS}:"
             f"x=(w-text_w)/2:y={line_y}:"
-            f"borderw=9:bordercolor=black@0.92:"
-            f"shadowcolor=black@0.75:shadowx=4:shadowy=4"
+            f"borderw=10:bordercolor=black@0.95:"
+            f"shadowcolor=black@0.85:shadowx=5:shadowy=6"
         )
 
-    author_y = f"(h/2)+{h_half + 60}"
+    # Gold accent rule + author attribution beneath the hook block.
+    rule_y = f"{center_y}+{h_half + 48}"
     vf_parts.append(
-        f"drawbox=x=(w-220)/2:y=(h/2)+{h_half + 42}:w=220:h=2:"
-        f"color={DIVIDER_COLOR}@0.85:t=fill"
+        f"drawbox=x=(w-280)/2:y={rule_y}:w=280:h=4:"
+        f"color={AUTHOR_COLOR}@0.95:t=fill"
     )
+    author_y = f"{center_y}+{h_half + 86}"
     vf_parts.append(
         f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
         f"text='{_escape(f'— {author.upper()}')}':"
-        f"fontcolor={AUTHOR_COLOR}:fontsize=44:"
+        f"fontcolor={AUTHOR_COLOR}:fontsize=48:"
         f"x=(w-text_w)/2:y={author_y}:"
-        f"shadowcolor=black@0.8:shadowx=3:shadowy=3"
+        f"shadowcolor=black@0.85:shadowx=3:shadowy=3"
     )
 
     vf = ",".join(vf_parts)
