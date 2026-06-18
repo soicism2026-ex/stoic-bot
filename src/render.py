@@ -352,84 +352,77 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) -> Path:
-    """Generate a 1080x1920 JPEG thumbnail — bold hook on a cinematic frame.
+    """Generate a 1080x1920 JPEG thumbnail designed to be legible at any scale.
 
-    Built to stop the scroll in the Shorts shelf, channel grid and search:
-      - a dramatic darkened, high-contrast frame with a vignette (premium feel)
-      - a top + bottom gradient-style scrim so the type always reads
-      - a soft dark panel behind the hook so the gold text pops as if designed
-      - the hook in large gold caps with a heavy outline and drop shadow
-      - a gold accent rule + the author beneath as the trust signal
-    The frame is pulled from the pre-caption .bg.mp4, so NONE of the burned-in
-    quote/caption text from the video leaks into the thumbnail.
+    Layout (top → bottom):
+      - cinematic background, minimally darkened so the footage is visible
+      - full-width opaque gold stripe spanning the centre third — the anchor
+        that makes every thumbnail instantly recognisable in the Shorts grid
+        even at 90px wide, where dark-on-dark designs turn grey
+      - hook text in large black caps on the gold stripe (max contrast)
+      - author credit in small gold caps on dark band just below the stripe
+      - heavy black scrims at top + bottom so YouTube's UI chrome reads
     """
-    hook_lines = textwrap.wrap(hook.upper(), width=13) or [hook.upper()]
-    HOOK_FS = 122
-    HOOK_LINE_H = HOOK_FS + 22
+    hook_lines = textwrap.wrap(hook.upper(), width=14) or [hook.upper()]
+    HOOK_FS = 118
+    HOOK_LINE_H = HOOK_FS + 18
     block_h = len(hook_lines) * HOOK_LINE_H
-    h_half = block_h // 2
 
-    # Hook sits slightly above centre so the background subject stays visible.
-    center_y = "(h/2)-90"
+    # Stripe sits slightly above centre; compute all positions as integers
+    # because ffmpeg drawbox does NOT evaluate expressions like "(h/2)-N".
+    STRIPE_PAD_V = 52
+    AUTHOR_H     = 80
+    stripe_h     = block_h + STRIPE_PAD_V * 2 + AUTHOR_H
+    stripe_y     = H // 2 - stripe_h // 2 - 60
 
     vf_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
         f"crop={W}:{H}",
-        # Vivid-but-moody cinematic grade.
-        "eq=brightness=-0.10:saturation=0.85:contrast=1.24",
-        "vignette=PI/4:eval=init",
-        # Overall dark wash for cohesion + contrast against the text.
-        f"drawbox=x=0:y=0:w={W}:h={H}:color=black@0.16:t=fill",
-        # Heavier scrims top and bottom (where channel name / view count sit).
-        f"drawbox=x=0:y=0:w={W}:h=360:color=black@0.34:t=fill",
-        f"drawbox=x=0:y={H - 420}:w={W}:h=420:color=black@0.40:t=fill",
+        "eq=brightness=0.02:saturation=1.08:contrast=1.12",
+        "vignette=PI/5:eval=init",
+        f"drawbox=x=0:y=0:w={W}:h=280:color=black@0.65:t=fill",
+        f"drawbox=x=0:y={H - 320}:w={W}:h=320:color=black@0.65:t=fill",
     ]
 
-    # Soft panel behind the hook block so the gold type reads on any frame.
-    pad = 64
-    band_y = f"{center_y}-{h_half + pad // 2}"
-    band_h = block_h + pad
+    # Full-width opaque gold stripe — the visual anchor at any thumbnail size.
     vf_parts.append(
-        f"drawbox=x=0:y={band_y}:w={W}:h={band_h}:color=black@0.40:t=fill"
+        f"drawbox=x=0:y={stripe_y}:w={W}:h={stripe_h}:color=0xFFB830@1.0:t=fill"
+    )
+    vf_parts.append(
+        f"drawbox=x=0:y={stripe_y}:w={W}:h=6:color=black@0.80:t=fill"
+    )
+    vf_parts.append(
+        f"drawbox=x=0:y={stripe_y + stripe_h - 6}:w={W}:h=6:color=black@0.80:t=fill"
     )
 
-    # Hook — large, bold, warm gold, heavy black outline + drop shadow.
+    # Hook text — black on gold, maximum contrast.
     for i, line in enumerate(hook_lines):
-        offset = i * HOOK_LINE_H - h_half
-        line_y = f"{center_y}{offset:+d}"
+        line_y = stripe_y + STRIPE_PAD_V + i * HOOK_LINE_H
         vf_parts.append(
             f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
             f"text='{_escape(line)}':"
-            f"fontcolor=0xFFC838:fontsize={HOOK_FS}:"
-            f"x=(w-text_w)/2:y={line_y}:"
-            f"borderw=10:bordercolor=black@0.95:"
-            f"shadowcolor=black@0.85:shadowx=5:shadowy=6"
+            f"fontcolor=black:fontsize={HOOK_FS}:"
+            f"x=(w-text_w)/2:y={line_y}"
         )
 
-    # Gold accent rule + author attribution beneath the hook block.
-    rule_y = f"{center_y}+{h_half + 48}"
-    vf_parts.append(
-        f"drawbox=x=(w-280)/2:y={rule_y}:w=280:h=4:"
-        f"color={AUTHOR_COLOR}@0.95:t=fill"
-    )
-    author_y = f"{center_y}+{h_half + 86}"
+    # Author line in dark brown inside the stripe.
+    author_y = stripe_y + STRIPE_PAD_V + block_h + 14
     vf_parts.append(
         f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
         f"text='{_escape(f'— {author.upper()}')}':"
-        f"fontcolor={AUTHOR_COLOR}:fontsize=48:"
-        f"x=(w-text_w)/2:y={author_y}:"
-        f"shadowcolor=black@0.85:shadowx=3:shadowy=3"
+        f"fontcolor=0x5C3A00:fontsize=46:"
+        f"x=(w-text_w)/2:y={author_y}"
     )
 
     vf = ",".join(vf_parts)
 
     cmd = [
         "ffmpeg", "-y",
-        "-ss", "1.0",           # skip first second (often motion blur / fade-in)
+        "-ss", "1.5",
         "-i", str(bg_path),
         "-vframes", "1",
         "-vf", vf,
-        "-q:v", "2",            # JPEG quality (2=excellent, 31=worst)
+        "-q:v", "4",            # JPEG quality 4 ≈ 90% — good quality, stays under 2MB YouTube limit
         str(out_path),
     ]
     try:
