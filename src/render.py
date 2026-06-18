@@ -429,7 +429,7 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
         "-i", str(bg_path),
         "-vframes", "1",
         "-vf", vf,
-        "-q:v", "2",            # JPEG quality (2=excellent, 31=worst)
+        "-q:v", "4",            # JPEG quality 4 ≈ 90% — good quality, stays under 2MB YouTube limit
         str(out_path),
     ]
     try:

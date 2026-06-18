@@ -87,17 +87,28 @@ def set_thumbnail(video_id: str, thumb_path) -> bool:
     Requires youtube.force-ssl scope (same token used for post_comment).
     Returns True on success, False on any failure (non-blocking).
     """
+    import sys as _sys
+    thumb_path = __import__("pathlib").Path(thumb_path)
+    size_mb = thumb_path.stat().st_size / 1_048_576 if thumb_path.exists() else 0
+    if size_mb > 2.0:
+        print(
+            f"  [thumbnail] SKIP {video_id} — file {size_mb:.1f}MB exceeds YouTube 2MB limit",
+            file=_sys.stderr,
+        )
+        return False
     try:
         from googleapiclient.http import MediaFileUpload
         yt = _service(extra_scopes=["https://www.googleapis.com/auth/youtube.force-ssl"])
-        yt.thumbnails().set(
+        resp = yt.thumbnails().set(
             videoId=video_id,
             media_body=MediaFileUpload(str(thumb_path), mimetype="image/jpeg"),
         ).execute()
-        print(f"  [thumbnail] set for {video_id}")
+        items = resp.get("items", [{}])
+        url = (items[0].get("maxres") or items[0].get("high") or {}).get("url", "?")
+        print(f"  [thumbnail] set for {video_id}  ({size_mb:.2f}MB)  url={url[:70]}")
         return True
     except Exception as e:
-        print(f"  [thumbnail] upload failed: {e}", file=__import__("sys").stderr)
+        print(f"  [thumbnail] upload failed: {e}", file=_sys.stderr)
         return False
 
 
