@@ -101,6 +101,37 @@ def set_thumbnail(video_id: str, thumb_path) -> bool:
         return False
 
 
+def update_video_title(video_id: str, title: str) -> bool:
+    """Update a published video's title, preserving its other snippet fields.
+
+    videos.update replaces the WHOLE `snippet` part you send (and categoryId is
+    required), so we fetch the current snippet first and swap only the title.
+    Requires the youtube.force-ssl scope. Returns True on success, False on any
+    failure (non-blocking so a batch never aborts on one video).
+    """
+    import sys
+    try:
+        yt = _service(extra_scopes=["https://www.googleapis.com/auth/youtube.force-ssl"])
+        resp = yt.videos().list(part="snippet", id=video_id).execute()
+        items = resp.get("items", [])
+        if not items:
+            print(f"  [title] {video_id} not found / not owned", file=sys.stderr)
+            return False
+        snippet = items[0]["snippet"]
+        if snippet.get("title") == title:
+            print(f"  [title] {video_id} already set — skipping")
+            return True
+        snippet["title"] = title[:100]
+        yt.videos().update(
+            part="snippet", body={"id": video_id, "snippet": snippet}
+        ).execute()
+        print(f"  [title] updated {video_id}: {title}")
+        return True
+    except Exception as e:
+        print(f"  [title] update failed for {video_id}: {e}", file=sys.stderr)
+        return False
+
+
 def post_comment(video_id: str, text: str) -> str:
     """Post a top-level comment on the video and return the comment thread ID.
 
