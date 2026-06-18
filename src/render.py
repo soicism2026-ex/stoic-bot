@@ -368,21 +368,19 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
     HOOK_LINE_H = HOOK_FS + 18
     block_h = len(hook_lines) * HOOK_LINE_H
 
-    # Stripe sits slightly above centre; author line lives just below it.
-    STRIPE_PAD_V = 52   # padding above/below the text block inside the stripe
-    AUTHOR_H     = 80   # height reserved for the author line below the stripe
+    # Stripe sits slightly above centre; compute all positions as integers
+    # because ffmpeg drawbox does NOT evaluate expressions like "(h/2)-N".
+    STRIPE_PAD_V = 52
+    AUTHOR_H     = 80
     stripe_h     = block_h + STRIPE_PAD_V * 2 + AUTHOR_H
-    stripe_y     = f"(h/2)-{stripe_h // 2 + 60}"   # shift slightly up
+    stripe_y     = H // 2 - stripe_h // 2 - 60
 
     vf_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
         f"crop={W}:{H}",
-        # Lighter grade — let the background breathe and show colour.
         "eq=brightness=0.02:saturation=1.08:contrast=1.12",
         "vignette=PI/5:eval=init",
-        # Top scrim: channel name / avatar area.
         f"drawbox=x=0:y=0:w={W}:h=280:color=black@0.65:t=fill",
-        # Bottom scrim: view count / like icons area.
         f"drawbox=x=0:y={H - 320}:w={W}:h=320:color=black@0.65:t=fill",
     ]
 
@@ -390,19 +388,16 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
     vf_parts.append(
         f"drawbox=x=0:y={stripe_y}:w={W}:h={stripe_h}:color=0xFFB830@1.0:t=fill"
     )
-
-    # Thin black rule at top edge of stripe for definition.
     vf_parts.append(
         f"drawbox=x=0:y={stripe_y}:w={W}:h=6:color=black@0.80:t=fill"
     )
-    # Thin black rule at bottom edge of stripe.
     vf_parts.append(
-        f"drawbox=x=0:y={stripe_y}+{stripe_h - 6}:w={W}:h=6:color=black@0.80:t=fill"
+        f"drawbox=x=0:y={stripe_y + stripe_h - 6}:w={W}:h=6:color=black@0.80:t=fill"
     )
 
-    # Hook text — black on gold, no outline needed (already max contrast).
+    # Hook text — black on gold, maximum contrast.
     for i, line in enumerate(hook_lines):
-        line_y = f"{stripe_y}+{STRIPE_PAD_V + i * HOOK_LINE_H}"
+        line_y = stripe_y + STRIPE_PAD_V + i * HOOK_LINE_H
         vf_parts.append(
             f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
             f"text='{_escape(line)}':"
@@ -410,8 +405,8 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
             f"x=(w-text_w)/2:y={line_y}"
         )
 
-    # Author line in dark gold caps on the lower part of the stripe.
-    author_y = f"{stripe_y}+{STRIPE_PAD_V + block_h + 14}"
+    # Author line in dark brown inside the stripe.
+    author_y = stripe_y + STRIPE_PAD_V + block_h + 14
     vf_parts.append(
         f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
         f"text='{_escape(f'— {author.upper()}')}':"
