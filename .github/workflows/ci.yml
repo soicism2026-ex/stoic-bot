@@ -23,6 +23,9 @@ jobs:
       - name: Byte-compile all Python
         run: python -m compileall -q src scripts
 
+      - name: Install PyYAML
+        run: pip install pyyaml
+
       - name: Validate workflow YAML
         run: |
           python - <<'PY'
