@@ -57,10 +57,9 @@ VOICE_SETTINGS = {
     "use_speaker_boost": os.environ.get("ELEVENLABS_SPEAKER_BOOST", "1") not in ("0", "false", "False"),
 }
 
-# Highest-fidelity audio the account tier allows. 192 kbps @ 44.1 kHz needs a
-# Creator+ tier; set ELEVENLABS_OUTPUT_FORMAT=mp3_44100_128 to dial down if the
-# API rejects 192 on a lower tier.
-OUTPUT_FORMAT = os.environ.get("ELEVENLABS_OUTPUT_FORMAT", "mp3_44100_192")
+# 128 kbps @ 44.1 kHz works on all ElevenLabs tiers including Starter.
+# Override via ELEVENLABS_OUTPUT_FORMAT=mp3_44100_192 on Creator+ accounts.
+OUTPUT_FORMAT = os.environ.get("ELEVENLABS_OUTPUT_FORMAT", "mp3_44100_128")
 
 WordTiming = tuple  # (word: str, start: float, end: float)
 
@@ -127,7 +126,17 @@ def pick_voice(rows: list[dict]) -> dict:
 def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     """Synthesize `text` to `out_path`. Returns (out_path, word_timings)."""
     vid = voice_id or (_VOICE_ID_OVERRIDE if _VOICE_ID_OVERRIDE else VOICE_POOL[0]["id"])
+    return _synthesize_with_voice(text, out_path, vid, fallback_to_default=True)
 
+
+def _synthesize_with_voice(text: str, out_path: Path, vid: str,
+                            fallback_to_default: bool = False) -> tuple:
+    """Inner synthesis — tries with-timestamps then plain endpoint for `vid`.
+
+    If both return 403 (voice not available on this account tier) and
+    fallback_to_default is True, retries with George (VOICE_POOL[0]) before
+    raising so a single gated voice never breaks the pipeline.
+    """
     headers = {
         "xi-api-key": os.environ["ELEVENLABS_API_KEY"],
         "Content-Type": "application/json",
@@ -159,13 +168,21 @@ def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
         print(f"  tts: with-timestamps unavailable ({e}); falling back to plain endpoint")
 
     # Fallback: plain endpoint, estimate timing from measured duration.
-    url = f"https://api.elevenlabs.io/v1/text-to-speech/{vid}"
-    resp = requests.post(url, headers={**headers, "Accept": "audio/mpeg"},
-                         params={"output_format": OUTPUT_FORMAT},
-                         json=payload, timeout=120)
-    resp.raise_for_status()
-    out_path.write_bytes(resp.content)
-    return out_path, _estimate_timings(text, _audio_duration(out_path))
+    try:
+        url = f"https://api.elevenlabs.io/v1/text-to-speech/{vid}"
+        resp = requests.post(url, headers={**headers, "Accept": "audio/mpeg"},
+                             params={"output_format": OUTPUT_FORMAT},
+                             json=payload, timeout=120)
+        resp.raise_for_status()
+        out_path.write_bytes(resp.content)
+        return out_path, _estimate_timings(text, _audio_duration(out_path))
+    except requests.HTTPError as e:
+        if e.response is not None and e.response.status_code == 403 and fallback_to_default:
+            default_vid = VOICE_POOL[0]["id"]
+            if vid != default_vid:
+                print(f"  tts: voice {vid} returned 403 (not on this tier); retrying with {VOICE_POOL[0]['name']}")
+                return _synthesize_with_voice(text, out_path, default_vid, fallback_to_default=False)
+        raise
 
 
 def _tokenize(text: str) -> list:

@@ -35,23 +35,26 @@ PIXABAY_VIDEO_URL = "https://pixabay.com/api/videos/"
 # Every query is dark, dramatic and classical so the gold text + grade reads.
 THEME_QUERY_POOLS: dict[str, list[str]] = {
     # ---- marble & ruins register ----
-    "mortality":    ["marble bust statue dramatic shadow", "ancient roman ruins fog dark", "candle flame skull dark still"],
-    "time":         ["weathered marble columns decay", "crumbling ancient ruins clouds", "stone hourglass dust slow motion"],
-    "control":      ["still reflecting pool temple dark", "marble statue calm rain", "zen stone monolith mist"],
-    "virtue":       ["roman marble statue noble light", "greek temple golden hour dark", "carved stone philosopher bust"],
-    "wisdom":       ["ancient library candlelight stone", "marble bust shadow contemplative", "old manuscripts dark desk candle"],
-    "impermanence": ["crumbling statue erosion moss", "ash embers floating dark", "withered ruins overgrown fog"],
-    "justice":      ["marble scales statue dramatic", "roman senate columns shafts light", "stone lawgiver statue storm"],
-    "friendship":   ["two marble statues facing dark", "roman columns warm sunset", "ancient stone relief carving"],
+    # Queries deliberately avoid terms that return human figures ("bust", "statue",
+    # "figure", "warrior", "climber") — Pixabay's semantic search surfaces classical
+    # reclining/standing figures for those terms. Keep to architecture, fire, nature.
+    "mortality":    ["roman stone pillars dramatic shadow dark", "ancient roman ruins fog dark", "candle flame dark dramatic still"],
+    "time":         ["weathered marble columns decay dark", "crumbling ancient ruins storm clouds", "stone archway dust mist dark"],
+    "control":      ["still reflecting pool temple dark", "rain falling stone temple dark", "zen stone monolith mist"],
+    "virtue":       ["roman stone columns noble dramatic light", "greek temple golden hour dark", "ancient stone inscription tablet dark"],
+    "wisdom":       ["ancient library candlelight stone", "stone archway shadow contemplative dark", "old manuscripts dark desk candle"],
+    "impermanence": ["crumbling stone wall erosion moss dark", "ash embers floating dark", "withered ruins overgrown fog"],
+    "justice":      ["marble scales balance dramatic dark", "roman columns shafts light dark", "ancient columns storm dramatic dark"],
+    "friendship":   ["roman stone archway warm light dark", "roman columns warm sunset", "ancient stone relief carving dark"],
     # ---- storm & forge register ----
-    "discipline":   ["blacksmith forge sparks dark", "lone warrior training storm rain", "solitary snow mountain ascent"],
-    "resilience":   ["lone tree lightning storm", "waves crashing black rocks dark", "figure standing wind storm"],
-    "purpose":      ["mountain summit storm clouds", "lighthouse dark stormy sea", "blacksmith forging blade embers"],
-    "ego":          ["shattered marble bust dark", "broken statue ruins shadow", "storm clouds lone crown dark"],
-    "anger":        ["molten forge fire sparks dark", "volcanic lava flow night", "violent stormy sea waves"],
-    "desire":       ["fire embers slow motion dark", "golden flame shadow black", "molten gold pour dark"],
-    "fear":         ["dark stormy forest fog", "lightning night sky dramatic", "shadow figure dark corridor"],
-    "adversity":    ["blizzard lone climber dark", "blacksmith hammer anvil sparks", "rough sea storm cliff rocks"],
+    "discipline":   ["blacksmith forge sparks dark dramatic", "lightning storm dramatic rain dark", "mountain peak blizzard dark stormy"],
+    "resilience":   ["lone tree lightning storm dark", "waves crashing black rocks dark", "wind storm dark dramatic cliffs"],
+    "purpose":      ["mountain summit storm clouds dark", "lighthouse dark stormy sea", "blacksmith hammer anvil sparks dark"],
+    "ego":          ["shattered stone dark dramatic ruins", "crumbling stone ruins shadow dark", "storm clouds dramatic dark sky"],
+    "anger":        ["molten forge fire sparks dark", "volcanic lava flow night dramatic", "violent stormy sea waves dark"],
+    "desire":       ["fire embers slow motion dark", "golden flame shadow black dramatic", "molten gold pour dark"],
+    "fear":         ["dark stormy forest fog dramatic", "lightning night sky dramatic", "dark stone corridor fog dramatic"],
+    "adversity":    ["blizzard mountain cliff dark ice storm", "blacksmith hammer anvil sparks", "rough sea storm cliff rocks dark"],
 }
 
 # Fallback pool — used only if no keyword matches. Three options so even the
@@ -59,7 +62,7 @@ THEME_QUERY_POOLS: dict[str, list[str]] = {
 DEFAULT_QUERIES = [
     "ancient marble ruins atmospheric dark",
     "dramatic storm clouds cinematic dark",
-    "classical stone statue shadow fog",
+    "classical stone columns shadow fog dark",
 ]
 
 
@@ -163,7 +166,8 @@ def _fetch_from_pexels(theme: str, out_path: Path) -> Path:
         params={
             "query": query,
             "orientation": "portrait",
-            "per_page": 80,   # max allowed; size=medium removed — too restrictive
+            "per_page": 80,
+            "content_filter": "high",  # Pexels strict content filter
         },
         timeout=30,
     )
@@ -201,7 +205,14 @@ def _fetch_from_pixabay(theme: str, out_path: Path) -> Path:
     query = _search_term(theme)
     resp = requests.get(
         PIXABAY_VIDEO_URL,
-        params={"key": api_key, "q": query, "per_page": 20, "order": "popular"},
+        params={
+            "key": api_key,
+            "q": query,
+            "per_page": 20,
+            "order": "popular",
+            "safesearch": "true",   # block adult/inappropriate content
+            "video_type": "film",   # actual footage, not animation
+        },
         timeout=30,
     )
     resp.raise_for_status()
