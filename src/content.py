@@ -60,62 +60,57 @@ THEMES = [
 SYSTEM = """You are the content engine for a faceless Stoicism YouTube Shorts \
 account. Your job is to produce ONE short-form video script per call.
 
-Rules:
-- Use only genuine, public-domain Stoic material. Quote a passage that is actually \
-attested in the assigned author's surviving texts or fragments. NEVER fabricate, \
-invent, or misattribute a quote. If you are not certain a line is genuinely the \
-assigned author's, choose a different real passage from the same author rather than \
-guessing.
-- The quote must be punchy and fit on screen in under ~25 words. Lightly modernized \
-phrasing of a real passage is fine, but it must preserve the author's actual meaning \
-and wording; do not turn it into a new aphorism. Attribute to the correct author.
-- Draw from the full breadth of the author's work, not only their most famous lines. \
-Favor lesser-known but genuine passages over over-quoted "greatest hits." This is \
-especially important: the channel's audience has already seen the most famous lines.
-- Hook: 3–5 words. A blunt, second-person accusation or uncomfortable truth — not a \
-question, not an inspirational phrase, not a summary. It must make the viewer feel \
-personally called out the instant it appears, as if the channel knows exactly what \
-they are doing wrong RIGHT NOW. The hook is spoken first and flashed large on screen; \
-it must set up the quote's idea WITHOUT quoting or restating the passage. \
-No author name, no quotation marks, no hashtags, no ellipsis. \
-RIGHT register (use these as models — do not repeat them verbatim): \
-"You're wasting your life." / "Your ego is the problem." / "You chose this." / \
-"Nothing lasts." / "You already know." / "Stop performing discipline." / \
-"You're running from yourself." / "The clock is running." / "You call that discipline." \
-WRONG register (avoid all of these): "Time is precious." (cliché) / \
-"What's holding you back?" (too soft) / "Wisdom from Marcus Aurelius." (never name author) / \
-anything with "This Stoic quote..." / anything that sounds like an introduction.
-- Voiceover script: 20-27 seconds spoken (~50-68 words). Cut straight from the hook to \
-the hard truth — no warm-up, no throat-clearing, no re-stating the obvious. Tighter is \
-better: if you can land the point in 55 words, stop there. SPECIFICITY is the key \
-differentiator from every competitor: instead of "you waste time" write "you check your \
-phone 80 times a day and call it research." Name concrete things — the scroll, the \
-meeting, the gym session you skipped, the excuse. Speak to someone who knows they are \
-failing but hasn't admitted it yet. It is spoken right AFTER the hook, so flow naturally \
-into the idea and do NOT repeat the hook line. Plain, grounded, masculine-neutral tone. \
-No hashtags in the voiceover. End a sentence before the CTA.
-- CTA: 1-2 spoken sentences for the very last moment of the voiceover. The last line \
-must loop back to the opening feeling — end on a note that makes someone want to \
-watch from the start again (creates rewatch loops which the algorithm rewards). \
-Reference the next day's theme naturally. Under 25 words. Vary the phrasing. \
-Example: "Tomorrow: Marcus Aurelius on anger. Follow for your daily Stoic dose."
-- Pinned comment: a short, personal, slightly uncomfortable question that forces a \
-specific answer — tied directly to today's quote. NOT "what do you think?" or \
-"have you ever experienced this?" — those generate nothing. Ask something that requires \
-the viewer to name a specific person, habit, excuse, or moment in their own life. \
-Under 20 words. \
-Example for discipline: "What's the one habit you keep starting and abandoning — and what's your real excuse?"
-- Caption: 1-2 sentences that reframe the idea for daily life + one specific question \
-(name a concrete scenario) to drive comments.
+You will be told the FORMAT for this post: "quote" (classic single-quote format) \
+or "list" (numbered rules / habits / things — currently viral on Stoic channels).
+
+Rules that apply to ALL formats:
+- Use only genuine, public-domain Stoic material. NEVER fabricate, invent, or \
+misattribute a quote. If you are not certain a line is genuinely the assigned \
+author's, choose a different real passage rather than guessing.
+- author: always the exact author name you were assigned.
+- CTA: 1-2 spoken sentences at the very end. Last line loops back to the opening \
+feeling (creates rewatch loops). Reference the next day's theme naturally. Under 25 \
+words. Vary the phrasing.
+- Pinned comment: short, personal, slightly uncomfortable question that forces a \
+specific answer tied to today's content. NOT "what do you think?" Ask something that \
+requires naming a specific person, habit, or moment. Under 20 words.
+- Caption: 1-2 sentences that reframe the idea for daily life + one specific question.
 - Hashtags: 8-12, mixing broad (#stoicism #discipline) and mid-size niche tags.
-- callout_words: 2-4 concrete nouns or short phrases from the voiceover that name a \
-tangible thing the viewer can picture — e.g. "house", "status", "anger", "time", \
-"body". These will flash large on screen as the word is spoken to keep the eye moving. \
-Pick words that appear verbatim in voiceover_text. Avoid abstract words like "virtue" \
-or "wisdom" — only concrete, punchy nouns.
+- callout_words: 2-4 concrete nouns that appear verbatim in voiceover_text. They \
+flash large on screen when spoken. Concrete only — "phone", "anger", "body", not \
+"virtue" or "wisdom".
+
+FORMAT "quote" rules:
+- quote: a real attested passage, punchy, under ~25 words. Lightly modernized phrasing \
+is fine but preserve the author's actual meaning. Favor lesser-known genuine passages \
+over over-quoted greatest hits.
+- hook: 3–5 words. A blunt, second-person accusation or uncomfortable truth. Must make \
+the viewer feel personally called out. Set up the quote's idea WITHOUT quoting or \
+naming the author. No quotation marks, no hashtags, no ellipsis. \
+RIGHT: "You're wasting your life." / "Your ego is the problem." / "Stop performing \
+discipline." / "You're running from yourself." \
+WRONG: "Time is precious." (cliché) / "What's holding you back?" (too soft) / \
+"Wisdom from Marcus Aurelius." (never name author in hook)
+- voiceover_text: 20-27 seconds (~50-68 words). Cut straight from hook to hard truth. \
+SPECIFICITY wins: not "you waste time" but "you check your phone 80 times a day and \
+call it research." Speak to someone who knows they're failing but hasn't admitted it. \
+Do NOT repeat the hook. Plain, grounded, masculine-neutral. No hashtags.
+
+FORMAT "list" rules:
+- hook: 4-7 words naming the list in a scroll-stopping way. Written to make the \
+viewer instantly curious what's on the list. Do NOT name the author. No question \
+mark. Examples: "5 Rules He Never Broke" / "3 Habits Stoics Never Skip" / \
+"7 Things Stoics Never Do" / "5 Moves Weak Men Make"
+- quote: the single most powerful rule / habit from your list, written as a crisp \
+standalone sentence (this appears on screen as the text overlay)
+- voiceover_text: reads through the numbered list as fast, punchy declarations. \
+Pattern: "Rule 1: [crisp rule]. Rule 2: [crisp rule]..." (or "Number 1:", \
+"First:", etc. — vary it naturally). Each rule is 1-2 tight sentences. \
+Total 20-30 seconds / 50-75 words. No filler, no warm-up.
 
 Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
 {
+  "format": "quote" | "list",
   "theme": "...",
   "quote": "...",
   "author": "<the exact author name you were assigned>",
@@ -178,11 +173,18 @@ def _pick_next_theme(rows: list, current_theme: str) -> str:
     return _pick_least_recent(THEMES, [current_theme] + recent, block_last=3)
 
 
+def _pick_format(rows: list[dict]) -> str:
+    """Rotate content format: 2 quote posts then 1 list post, repeating."""
+    ROTATION = ["quote", "quote", "list"]
+    return ROTATION[len(rows) % len(ROTATION)]
+
+
 def generate_content() -> dict:
     import anthropic
     rows = _load_rows()
     used_quotes = [r["quote"] for r in rows if r.get("quote")]
     required_author, required_theme = _pick_rotation(rows)
+    content_format = _pick_format(rows)
     # Day number = calendar days since the first post, so it never shifts when
     # videos are unlisted or when the pipeline runs twice in a day.
     if rows:
@@ -214,6 +216,7 @@ def generate_content() -> dict:
 
     user_msg = (
         f"Generate today's Stoic Reel.\n"
+        f"FORMAT: {content_format}\n"
         f"Required author: {required_author}\n"
         f"Draw the quote from: {SOURCE_HINTS[required_author]}.\n"
         f"Required theme: {required_theme}\n"
@@ -236,7 +239,7 @@ def generate_content() -> dict:
         raw = raw.split("```")[1].lstrip("json").strip()
     data = json.loads(raw)
 
-    required = {"theme", "quote", "author", "hook", "voiceover_text",
+    required = {"format", "theme", "quote", "author", "hook", "voiceover_text",
                 "cta", "pinned_comment", "caption", "hashtags", "callout_words"}
     missing = required - data.keys()
     if missing:

@@ -566,9 +566,21 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
 
     dur = _audio_duration(audio_for_render) + 1.0  # small tail
 
-    # fresh Pexels clip (theme-matched) with safe local fallback
-    bg_path = Path(out_path).with_suffix(".bg.mp4")
-    bg = fetch_background(theme, bg_path)
+    # Fetch multiple background clips for dynamic B-roll variety.
+    # Default: 3 clips (one cut every ~10s). Override via REEL_BG_CLIPS.
+    n_bg = max(1, int(os.environ.get("REEL_BG_CLIPS", "3")))
+    bg_clips = []
+    base_offset = int(os.environ.get("REEL_BG_OFFSET", "0"))
+    for _i in range(n_bg):
+        # Space picks 7 apart so consecutive clips look visually distinct.
+        os.environ["REEL_BG_OFFSET"] = str(base_offset + _i * 7)
+        _clip_path = (
+            Path(out_path).with_suffix(".bg.mp4") if _i == 0
+            else Path(out_path).with_suffix(f".bg{_i}.mp4")
+        )
+        bg_clips.append(fetch_background(theme, _clip_path))
+    os.environ["REEL_BG_OFFSET"] = str(base_offset)  # restore
+    bg = bg_clips[0]  # clip 0 = .bg.mp4, referenced by thumbnail code
 
     quote_lines = textwrap.wrap(quote, width=24) or [quote]
     author_txt = _escape(f"— {author}")
@@ -710,11 +722,32 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # Thin gold frame + corner brackets, drawn on top of everything.
     vf_parts.extend(_frame_overlays())
 
-    # Build the video filtergraph: enhance the footage, then draw overlays.
-    #   [0:v] geometry+grade -> [graded] -> (bloom/grain) -> [enh] -> overlays -> [vout]
-    pre = ",".join(pre_parts)
+    # Build the video filtergraph.
+    # Multi-clip B-roll: scale/crop each clip, concat, then apply
+    # zoompan/grade/overlays on the concatenated stream.
+    # Single-clip: original chain unchanged.
     overlay_chain = ",".join(vf_parts)
-    segs = [f"[0:v]{pre}[graded]"]
+    if n_bg > 1:
+        seg_dur = dur / n_bg
+        geo = (
+            f"scale={W}:{H}:force_original_aspect_ratio=increase,"
+            f"crop={W}:{H}"
+        )
+        bg_segs = [
+            f"[{_i}:v]{geo},trim=0:end={seg_dur:.3f},setpts=PTS-STARTPTS[bgseg{_i}]"
+            for _i in range(n_bg)
+        ]
+        refs = "".join(f"[bgseg{_i}]" for _i in range(n_bg))
+        bg_segs.append(f"{refs}concat=n={n_bg}:v=1[rawbg]")
+        # pre_parts[:2] = scale+crop (done per-clip above); [2:] = zoompan+grade
+        post_geo = ",".join(pre_parts[2:])
+        segs = [
+            *bg_segs,
+            f"[rawbg]{post_geo}[graded]",
+        ]
+    else:
+        segs = [f"[0:v]{','.join(pre_parts)}[graded]"]
+
     if ENHANCE_ON:
         segs.append(_enhance_graph("graded", "enh"))
         last = "enh"
@@ -725,21 +758,29 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     )
     vgraph = ";".join(segs)
 
-    inputs = ["-stream_loop", "-1", "-i", str(bg), "-i", str(audio_for_render)]
+    # Input list: all bg clips (stream-looped so every clip fills its segment),
+    # then audio, then optional music. Audio index = number of bg clips.
+    clip_inputs: list = []
+    for _clip in bg_clips:
+        clip_inputs += ["-stream_loop", "-1", "-i", str(_clip)]
+    audio_in = len(bg_clips)
+    inputs = [*clip_inputs, "-i", str(audio_for_render)]
+
     if music_path and Path(music_path).exists():
         # Mix background music at low volume under the voiceover.
         vol = _music_volume()
+        music_in = audio_in + 1
         filter_complex = (
             f"{vgraph};"
-            f"[1:a]volume=1.0[voice];"
-            f"[2:a]volume={vol}[music];"
+            f"[{audio_in}:a]volume=1.0[voice];"
+            f"[{music_in}:a]volume={vol}[music];"
             f"[voice][music]amix=inputs=2:duration=first:dropout_transition=2[aout]"
         )
         inputs += ["-stream_loop", "-1", "-i", str(music_path)]
         audio_map = ["-map", "[aout]"]
     else:
         filter_complex = vgraph
-        audio_map = ["-map", "1:a"]
+        audio_map = ["-map", f"{audio_in}:a"]
 
     cmd = [
         "ffmpeg", "-y",
