@@ -63,6 +63,35 @@ HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFB830")      # warm amber/gol
 # (scripts/daily_post.py) when a render fails on text contrast.
 EXTRA_DARKEN = float(os.environ.get("REEL_EXTRA_DARKEN", "0"))
 
+# ---------------------------------------------------------------------------
+# Cinematic enhancement — pushes raw stock footage toward an After-Effects /
+# Topaz "graded and finished" look entirely inside ffmpeg:
+#   denoise (clean compression artefacts) → sharpen (Topaz-style crispness)
+#   → contrast curve + grade → bloom/glow (highlights bleed softly) → film grain
+#   → vignette + a thin gold frame with corner brackets.
+# All tunable via env; disable the whole chain with REEL_ENHANCE=0 for fast debug.
+# ---------------------------------------------------------------------------
+ENHANCE_ON = os.environ.get("REEL_ENHANCE", "1") not in ("0", "false", "False")
+
+# Denoise / sharpen — luma & chroma spatial+temporal denoise, then unsharp.
+ENH_DENOISE = os.environ.get("REEL_DENOISE", "hqdn3d=2:1.5:3:2.5")
+ENH_SHARPEN = os.environ.get("REEL_SHARPEN", "unsharp=5:5:0.8:5:5:0.0")
+# Film grain strength (0 disables). Subtle by default — texture, not noise.
+ENH_GRAIN = int(os.environ.get("REEL_GRAIN", "6"))
+# Bloom/glow: blur a copy and screen it back over the base for a soft highlight
+# bleed. Sigma = blur radius, brightness lift on the glow layer, screen opacity.
+GLOW_SIGMA   = float(os.environ.get("REEL_GLOW_SIGMA", "22"))
+GLOW_BRIGHT  = float(os.environ.get("REEL_GLOW_BRIGHT", "0.05"))
+GLOW_OPACITY = float(os.environ.get("REEL_GLOW_OPACITY", "0.45"))
+
+# Encode quality — "all-in": slow preset + low CRF for a near-master 1080p Short.
+X264_PRESET = os.environ.get("REEL_X264_PRESET", "slower")
+X264_CRF    = os.environ.get("REEL_CRF", "16")
+
+# Thin gold frame + corner brackets (the "premium" border).
+FRAME_ON     = os.environ.get("REEL_FRAME", "1") not in ("0", "false", "False")
+FRAME_COLOR  = os.environ.get("REEL_FRAME_COLOR", "0xC9A055")
+
 # Hook sound preset — read from env, then data/hook_preset file, then default.
 # Updated weekly by scripts/update_hook_sound.py.
 # Presets: meditative | bass_impact | cinematic | whoosh | minimal
@@ -378,6 +407,12 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
     vf_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
         f"crop={W}:{H}",
+    ]
+    # Same cinematic enhancement as the video, so the footage behind the stripe
+    # is crisp and graded rather than soft raw stock.
+    if ENHANCE_ON:
+        vf_parts += [ENH_SHARPEN, "curves=preset=increase_contrast"]
+    vf_parts += [
         "eq=brightness=0.02:saturation=1.08:contrast=1.12",
         "vignette=PI/5:eval=init",
         f"drawbox=x=0:y=0:w={W}:h=280:color=black@0.65:t=fill",
@@ -413,6 +448,9 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
         f"fontcolor=0x5C3A00:fontsize=46:"
         f"x=(w-text_w)/2:y={author_y}"
     )
+
+    # Gold corner-bracket frame — matches the video for a consistent brand look.
+    vf_parts.extend(_frame_overlays())
 
     vf = ",".join(vf_parts)
 
@@ -465,6 +503,49 @@ def _callout_overlays(word_timings: list, callout_words: list) -> list:
             f"enable='between(t,{start:.3f},{end:.3f})'"
         )
     return filters
+
+
+def _frame_overlays() -> list:
+    """Thin gold frame with corner brackets — a premium 'designed' border.
+
+    Drawn last so it sits on top of everything. Static (no animation) because
+    drawbox can't ramp alpha over time; the brackets read as intentional design
+    at any thumbnail size.
+    """
+    if not FRAME_ON:
+        return []
+    I = 34          # inset from the edge
+    L = 110         # bracket arm length
+    T = 6           # line thickness
+    c = f"{FRAME_COLOR}@0.85"
+    corners = [
+        # (x, y) of each arm for the four corners
+        (I, I, L, T), (I, I, T, L),                         # top-left
+        (W - I - L, I, L, T), (W - I - T, I, T, L),         # top-right
+        (I, H - I - T, L, T), (I, H - I - L, T, L),         # bottom-left
+        (W - I - L, H - I - T, L, T), (W - I - T, H - I - L, T, L),  # bottom-right
+    ]
+    return [
+        f"drawbox=x={x}:y={y}:w={w}:h={h}:color={c}:t=fill"
+        for (x, y, w, h) in corners
+    ]
+
+
+def _enhance_graph(src_label: str, out_label: str) -> str:
+    """Return a filtergraph segment that takes [src_label] and emits [out_label]
+    after the full cinematic enhancement chain (denoise → sharpen → grade is
+    applied by the caller before this; here we add bloom → grain).
+
+    Bloom needs to split the stream, blur one copy and screen it back, which is
+    why enhancement lives in filter_complex rather than a simple -vf chain.
+    """
+    grain = f",noise=alls={ENH_GRAIN}:allf=t" if ENH_GRAIN > 0 else ""
+    return (
+        f"[{src_label}]split[base][glowsrc];"
+        f"[glowsrc]gblur=sigma={GLOW_SIGMA},eq=brightness={GLOW_BRIGHT}[glow];"
+        f"[base][glow]blend=all_mode=screen:all_opacity={GLOW_OPACITY}"
+        f"{grain},vignette=PI/4.5[{out_label}]"
+    )
 
 
 def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
@@ -536,12 +617,24 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={W}x{H}:fps=30"
     )
 
-    vf_parts = [
+    # Pre-overlay chain: geometry + motion + cinematic enhancement + grade,
+    # applied to the raw clip BEFORE any text is drawn (so denoise/sharpen/bloom
+    # work on footage, not on the gold type). Bloom itself is added later via
+    # _enhance_graph because it needs to split the stream.
+    pre_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
         f"crop={W}:{H}",
         zoompan,
-        f"eq=brightness={br - EXTRA_DARKEN}:saturation={sat}:contrast={con}",
     ]
+    if ENHANCE_ON:
+        pre_parts += [ENH_DENOISE, ENH_SHARPEN, "curves=preset=increase_contrast"]
+    pre_parts.append(
+        f"eq=brightness={br - EXTRA_DARKEN}:saturation={sat}:contrast={con}"
+    )
+
+    # Overlay filters (quote, hook, captions, frame) drawn on top, after the
+    # enhancement chain has finished grading the footage.
+    vf_parts: list = []
 
     if show_quote:
         # Fade the quote in as the hook fades out so only one primary text is
@@ -616,45 +709,51 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         _build_ass(word_timings, ass_path)
         vf_parts.append(f"ass='{_escape_filter_path(ass_path)}'")
 
-    vf = ",".join(vf_parts)
+    # Thin gold frame + corner brackets, drawn on top of everything.
+    vf_parts.extend(_frame_overlays())
 
+    # Build the video filtergraph: enhance the footage, then draw overlays.
+    #   [0:v] geometry+grade -> [graded] -> (bloom/grain) -> [enh] -> overlays -> [vout]
+    pre = ",".join(pre_parts)
+    overlay_chain = ",".join(vf_parts)
+    segs = [f"[0:v]{pre}[graded]"]
+    if ENHANCE_ON:
+        segs.append(_enhance_graph("graded", "enh"))
+        last = "enh"
+    else:
+        last = "graded"
+    segs.append(
+        f"[{last}]{overlay_chain}[vout]" if overlay_chain else f"[{last}]copy[vout]"
+    )
+    vgraph = ";".join(segs)
+
+    inputs = ["-stream_loop", "-1", "-i", str(bg), "-i", str(audio_for_render)]
     if music_path and Path(music_path).exists():
         # Mix background music at low volume under the voiceover.
-        # Use filter_complex to handle both video chain and audio mixing in one pass.
         vol = _music_volume()
         filter_complex = (
-            f"[0:v]{vf}[vout];"
+            f"{vgraph};"
             f"[1:a]volume=1.0[voice];"
             f"[2:a]volume={vol}[music];"
             f"[voice][music]amix=inputs=2:duration=first:dropout_transition=2[aout]"
         )
-        cmd = [
-            "ffmpeg", "-y",
-            "-stream_loop", "-1", "-i", str(bg),
-            "-i", str(audio_for_render),
-            "-stream_loop", "-1", "-i", str(music_path),
-            "-t", f"{dur:.2f}",
-            "-filter_complex", filter_complex,
-            "-map", "[vout]", "-map", "[aout]",
-            "-c:v", "libx264", "-preset", "medium", "-crf", "20",
-            "-c:a", "aac", "-b:a", "192k",
-            "-pix_fmt", "yuv420p",
-            "-r", "30",
-            str(out_path),
-        ]
+        inputs += ["-stream_loop", "-1", "-i", str(music_path)]
+        audio_map = ["-map", "[aout]"]
     else:
-        cmd = [
-            "ffmpeg", "-y",
-            "-stream_loop", "-1", "-i", str(bg),
-            "-i", str(audio_for_render),
-            "-t", f"{dur:.2f}",
-            "-vf", vf,
-            "-map", "0:v", "-map", "1:a",
-            "-c:v", "libx264", "-preset", "medium", "-crf", "20",
-            "-c:a", "aac", "-b:a", "192k",
-            "-pix_fmt", "yuv420p",
-            "-r", "30",
-            str(out_path),
-        ]
+        filter_complex = vgraph
+        audio_map = ["-map", "1:a"]
+
+    cmd = [
+        "ffmpeg", "-y",
+        *inputs,
+        "-t", f"{dur:.2f}",
+        "-filter_complex", filter_complex,
+        "-map", "[vout]", *audio_map,
+        "-c:v", "libx264", "-preset", X264_PRESET, "-crf", X264_CRF,
+        "-c:a", "aac", "-b:a", "192k",
+        "-pix_fmt", "yuv420p",
+        "-r", "30",
+        str(out_path),
+    ]
     subprocess.run(cmd, check=True, capture_output=True)
     return out_path

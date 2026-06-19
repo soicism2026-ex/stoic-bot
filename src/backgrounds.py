@@ -27,32 +27,39 @@ PIXABAY_VIDEO_URL = "https://pixabay.com/api/videos/"
 # This means consecutive days with the same theme still get visually different
 # results, and themes that previously all fell to "nature cinematic dark" now
 # have their own distinctive visual identity.
+# Hard Stoic symbolism, split by register:
+#   MARBLE/RUINS (contemplative, timeless) — wisdom, virtue, mortality, time,
+#     control, justice, friendship, impermanence
+#   STORM/FORGE (intense, brooding) — resilience, anger, adversity, fear,
+#     desire, ego, discipline, purpose
+# Every query is dark, dramatic and classical so the gold text + grade reads.
 THEME_QUERY_POOLS: dict[str, list[str]] = {
-    "mortality":    ["dark storm clouds dramatic", "graveyard fog night", "hourglass sand dark"],
-    "discipline":   ["mountain snow peak sunrise", "lone athlete dark training", "glacier ice landscape"],
-    "time":         ["river flowing long exposure", "pocket watch vintage bokeh", "sand dunes desert light"],
-    "control":      ["calm ocean horizon minimal", "zen garden stones water", "still lake reflection mist"],
-    "virtue":       ["ancient temple stone ruins", "marble columns architecture", "classical roman arch"],
-    "wisdom":       ["misty forest ancient trees", "old library books candlelight", "stone philosopher statue"],
-    "resilience":   ["rocky coastline crashing waves", "lone tree in storm roots", "broken cliff erosion"],
-    "purpose":      ["mountain summit sunrise sky", "lighthouse beacon dark sea", "compass wilderness trail"],
-    "impermanence": ["autumn leaves falling wind", "cherry blossom petals drift", "candle flame close dark"],
-    "justice":      ["lightning thunderstorm dramatic", "stone courthouse columns", "scales balance gold"],
-    # Previously fell to default — now have their own visuals:
-    "ego":          ["broken mirror shards dark", "crown gold dark dramatic", "storm dark clouds power"],
-    "anger":        ["fire flames dark dramatic", "crashing ocean storm waves", "volcanic eruption lava"],
-    "desire":       ["golden hour horizon ocean", "flame candle bokeh warm", "sunset desert dunes"],
-    "fear":         ["dark forest mist fog", "cave entrance light beam", "storm clouds approaching"],
-    "friendship":   ["two silhouettes sunset walk", "bonfire night gathering", "handshake bridge connection"],
-    "adversity":    ["lone climber mountain storm", "broken road perseverance", "bare tree winter landscape"],
+    # ---- marble & ruins register ----
+    "mortality":    ["marble bust statue dramatic shadow", "ancient roman ruins fog dark", "candle flame skull dark still"],
+    "time":         ["weathered marble columns decay", "crumbling ancient ruins clouds", "stone hourglass dust slow motion"],
+    "control":      ["still reflecting pool temple dark", "marble statue calm rain", "zen stone monolith mist"],
+    "virtue":       ["roman marble statue noble light", "greek temple golden hour dark", "carved stone philosopher bust"],
+    "wisdom":       ["ancient library candlelight stone", "marble bust shadow contemplative", "old manuscripts dark desk candle"],
+    "impermanence": ["crumbling statue erosion moss", "ash embers floating dark", "withered ruins overgrown fog"],
+    "justice":      ["marble scales statue dramatic", "roman senate columns shafts light", "stone lawgiver statue storm"],
+    "friendship":   ["two marble statues facing dark", "roman columns warm sunset", "ancient stone relief carving"],
+    # ---- storm & forge register ----
+    "discipline":   ["blacksmith forge sparks dark", "lone warrior training storm rain", "solitary snow mountain ascent"],
+    "resilience":   ["lone tree lightning storm", "waves crashing black rocks dark", "figure standing wind storm"],
+    "purpose":      ["mountain summit storm clouds", "lighthouse dark stormy sea", "blacksmith forging blade embers"],
+    "ego":          ["shattered marble bust dark", "broken statue ruins shadow", "storm clouds lone crown dark"],
+    "anger":        ["molten forge fire sparks dark", "volcanic lava flow night", "violent stormy sea waves"],
+    "desire":       ["fire embers slow motion dark", "golden flame shadow black", "molten gold pour dark"],
+    "fear":         ["dark stormy forest fog", "lightning night sky dramatic", "shadow figure dark corridor"],
+    "adversity":    ["blizzard lone climber dark", "blacksmith hammer anvil sparks", "rough sea storm cliff rocks"],
 }
 
 # Fallback pool — used only if no keyword matches. Three options so even the
 # fallback rotates rather than always looking the same.
 DEFAULT_QUERIES = [
-    "ancient ruins atmospheric dark",
-    "dramatic landscape cinematic",
-    "dark nature contemplative fog",
+    "ancient marble ruins atmospheric dark",
+    "dramatic storm clouds cinematic dark",
+    "classical stone statue shadow fog",
 ]
 
 
@@ -130,8 +137,17 @@ def _pick_vertical_file(video: dict) -> str | None:
     portrait = [f for f in all_mp4 if (f.get("height") or 0) >= (f.get("width") or 0)]
     pool = portrait or all_mp4  # fall back to any MP4 if no portrait variants
 
-    # prefer something close to 1920 tall but not absurdly huge
-    pool.sort(key=lambda f: abs((f.get("height") or 0) - 1920))
+    # Quality-first: pick the highest-resolution variant up to 4K tall. Stock 4K
+    # downscaled to 1080p is far crisper than a native-1080p file, so we deliberately
+    # prefer the largest source the enhancement chain can sharpen from. Files taller
+    # than ~4K are skipped (huge download, no visible gain after the 1080p crop).
+    MAX_H = 3840
+
+    def _res(f: dict) -> int:
+        h = f.get("height") or 0
+        return h if h <= MAX_H else -1   # over-4K ranks below everything usable
+
+    pool.sort(key=_res, reverse=True)
     return pool[0]["link"]
 
 

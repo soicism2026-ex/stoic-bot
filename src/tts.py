@@ -45,14 +45,22 @@ _VOICE_ID_OVERRIDE = os.environ.get("ELEVENLABS_VOICE_ID", "").strip()
 
 MIN_POSTS_FOR_WEIGHT = 5  # posts per voice before analytics-weighting kicks in
 
-# Voice / model settings stay configurable via env (defaults match prior values).
+# Voice / model settings stay configurable via env.
+# eleven_multilingual_v2 is ElevenLabs' highest-fidelity model. Settings are tuned
+# for Stoic gravitas: high stability for a steady, authoritative read; raised style
+# for weight and emotion; full similarity + speaker boost for a rich, present voice.
 MODEL_ID = os.environ.get("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
 VOICE_SETTINGS = {
-    "stability": float(os.environ.get("ELEVENLABS_STABILITY", "0.55")),
-    "similarity_boost": float(os.environ.get("ELEVENLABS_SIMILARITY_BOOST", "0.75")),
-    "style": float(os.environ.get("ELEVENLABS_STYLE", "0.25")),
+    "stability": float(os.environ.get("ELEVENLABS_STABILITY", "0.60")),
+    "similarity_boost": float(os.environ.get("ELEVENLABS_SIMILARITY_BOOST", "0.85")),
+    "style": float(os.environ.get("ELEVENLABS_STYLE", "0.40")),
     "use_speaker_boost": os.environ.get("ELEVENLABS_SPEAKER_BOOST", "1") not in ("0", "false", "False"),
 }
+
+# Highest-fidelity audio the account tier allows. 192 kbps @ 44.1 kHz needs a
+# Creator+ tier; set ELEVENLABS_OUTPUT_FORMAT=mp3_44100_128 to dial down if the
+# API rejects 192 on a lower tier.
+OUTPUT_FORMAT = os.environ.get("ELEVENLABS_OUTPUT_FORMAT", "mp3_44100_192")
 
 WordTiming = tuple  # (word: str, start: float, end: float)
 
@@ -134,6 +142,7 @@ def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     try:
         url = f"https://api.elevenlabs.io/v1/text-to-speech/{vid}/with-timestamps"
         resp = requests.post(url, headers={**headers, "Accept": "application/json"},
+                             params={"output_format": OUTPUT_FORMAT},
                              json=payload, timeout=120)
         resp.raise_for_status()
         data = resp.json()
@@ -152,6 +161,7 @@ def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     # Fallback: plain endpoint, estimate timing from measured duration.
     url = f"https://api.elevenlabs.io/v1/text-to-speech/{vid}"
     resp = requests.post(url, headers={**headers, "Accept": "audio/mpeg"},
+                         params={"output_format": OUTPUT_FORMAT},
                          json=payload, timeout=120)
     resp.raise_for_status()
     out_path.write_bytes(resp.content)
