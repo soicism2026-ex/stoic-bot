@@ -390,55 +390,64 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
     """Generate a 1080x1920 JPEG thumbnail designed to be legible at any scale.
 
     Layout (top → bottom):
-      - cinematic background, minimally darkened so the footage is visible
-      - full-width opaque gold stripe spanning the centre third — the anchor
-        that makes every thumbnail instantly recognisable in the Shorts grid
-        even at 90px wide, where dark-on-dark designs turn grey
+      - cinematic background, heavily darkened outside the gold zone
+      - full-width opaque gold stripe spanning at least 40% of the frame —
+        sized so it's unmistakably gold even at 90×160 px in the Shorts grid
       - hook text in large black caps on the gold stripe (max contrast)
-      - author credit in small gold caps on dark band just below the stripe
-      - heavy black scrims at top + bottom so YouTube's UI chrome reads
+      - author credit in dark brown below the hook text, inside the stripe
+      - near-black scrims at top + bottom (85% opacity) to frame the gold
     """
     hook_lines = textwrap.wrap(hook.upper(), width=14) or [hook.upper()]
     HOOK_FS = 118
     HOOK_LINE_H = HOOK_FS + 18
     block_h = len(hook_lines) * HOOK_LINE_H
 
-    # Stripe sits slightly above centre; compute all positions as integers
-    # because ffmpeg drawbox does NOT evaluate expressions like "(h/2)-N".
-    STRIPE_PAD_V = 52
-    AUTHOR_H     = 80
-    stripe_h     = block_h + STRIPE_PAD_V * 2 + AUTHOR_H
-    stripe_y     = H // 2 - stripe_h // 2 - 60
+    # Stripe: at least 40% of the frame height so it reads at any thumbnail
+    # size. Compute all positions as integers — ffmpeg drawbox does NOT
+    # evaluate string expressions like "(h/2)-N" and silently treats them as 0.
+    STRIPE_PAD_V = 80
+    AUTHOR_H     = 90
+    STRIPE_MIN_H = int(H * 0.40)   # 768 px — 40% of 1920
+    stripe_h     = max(STRIPE_MIN_H, block_h + STRIPE_PAD_V * 2 + AUTHOR_H)
+    stripe_y     = H // 2 - stripe_h // 2
+
+    # Top and bottom scrims cover everything outside the gold stripe so the
+    # background footage is nearly black there, maximising gold contrast.
+    top_scrim_h    = stripe_y
+    bottom_scrim_y = stripe_y + stripe_h
+    bottom_scrim_h = H - bottom_scrim_y
 
     vf_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
         f"crop={W}:{H}",
     ]
-    # Same cinematic enhancement as the video, so the footage behind the stripe
-    # is crisp and graded rather than soft raw stock.
     if ENHANCE_ON:
         vf_parts += [ENH_SHARPEN, "curves=preset=increase_contrast"]
     vf_parts += [
-        "eq=brightness=0.02:saturation=1.08:contrast=1.12",
-        "vignette=PI/5:eval=init",
-        f"drawbox=x=0:y=0:w={W}:h=280:color=black@0.65:t=fill",
-        f"drawbox=x=0:y={H - 320}:w={W}:h=320:color=black@0.65:t=fill",
+        "eq=brightness=-0.05:saturation=0.9:contrast=1.15",
+        "vignette=PI/4:eval=init",
+        # Near-black scrims above and below the gold stripe (85% opacity).
+        f"drawbox=x=0:y=0:w={W}:h={top_scrim_h}:color=black@0.85:t=fill",
+        f"drawbox=x=0:y={bottom_scrim_y}:w={W}:h={bottom_scrim_h}:color=black@0.85:t=fill",
     ]
 
-    # Full-width opaque gold stripe — the visual anchor at any thumbnail size.
+    # Full-width opaque gold stripe.
     vf_parts.append(
         f"drawbox=x=0:y={stripe_y}:w={W}:h={stripe_h}:color=0xFFB830@1.0:t=fill"
     )
+    # Thin black border lines at the edges of the stripe for definition.
     vf_parts.append(
-        f"drawbox=x=0:y={stripe_y}:w={W}:h=6:color=black@0.80:t=fill"
+        f"drawbox=x=0:y={stripe_y}:w={W}:h=8:color=black@0.90:t=fill"
     )
     vf_parts.append(
-        f"drawbox=x=0:y={stripe_y + stripe_h - 6}:w={W}:h=6:color=black@0.80:t=fill"
+        f"drawbox=x=0:y={stripe_y + stripe_h - 8}:w={W}:h=8:color=black@0.90:t=fill"
     )
 
     # Hook text — black on gold, maximum contrast.
+    # Centre the text block vertically inside the stripe.
+    text_block_top = stripe_y + (stripe_h - block_h - AUTHOR_H) // 2
     for i, line in enumerate(hook_lines):
-        line_y = stripe_y + STRIPE_PAD_V + i * HOOK_LINE_H
+        line_y = text_block_top + i * HOOK_LINE_H
         vf_parts.append(
             f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
             f"text='{_escape(line)}':"
@@ -446,16 +455,16 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
             f"x=(w-text_w)/2:y={line_y}"
         )
 
-    # Author line in dark brown inside the stripe.
-    author_y = stripe_y + STRIPE_PAD_V + block_h + 14
+    # Author line in dark brown below the hook text, inside the stripe.
+    author_y = text_block_top + block_h + 16
     vf_parts.append(
         f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
         f"text='{_escape(f'— {author.upper()}')}':"
-        f"fontcolor=0x5C3A00:fontsize=46:"
+        f"fontcolor=0x5C3A00:fontsize=50:"
         f"x=(w-text_w)/2:y={author_y}"
     )
 
-    # Gold corner-bracket frame — matches the video for a consistent brand look.
+    # Gold corner-bracket frame — consistent brand look across videos.
     vf_parts.extend(_frame_overlays())
 
     vf = ",".join(vf_parts)
@@ -466,7 +475,7 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
         "-i", str(bg_path),
         "-vframes", "1",
         "-vf", vf,
-        "-q:v", "4",            # JPEG quality 4 ≈ 90% — good quality, stays under 2MB YouTube limit
+        "-q:v", "4",
         str(out_path),
     ]
     try:
