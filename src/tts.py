@@ -32,11 +32,13 @@ import requests
 
 # Three ElevenLabs voices suited to deep, authoritative Stoic content.
 # George: British, gravelly, commanding — top pick for this niche.
-# Daniel: British, calm and professorial.
-# Brian: American, deep and measured.
+# Adam:   American, very deep narrator — the closest to the dominant Stoic
+#         voice style that dominates high-view Shorts in this category.
+# Brian:  American, deep and measured.
+# Daniel removed: British but too calm/professorial for assertive delivery.
 VOICE_POOL = [
     {"name": "George", "id": "JBFqnCBsd6RMkjVDRZzb"},
-    {"name": "Daniel", "id": "onwK4e9ZLuTAKqWW03F9"},
+    {"name": "Adam",   "id": "pNInz6obpgDQGcFmaJgB"},
     {"name": "Brian",  "id": "nPczCjzI2devNBz1zQrb"},
 ]
 
@@ -51,9 +53,14 @@ MIN_POSTS_FOR_WEIGHT = 5  # posts per voice before analytics-weighting kicks in
 # for weight and emotion; full similarity + speaker boost for a rich, present voice.
 MODEL_ID = os.environ.get("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
 VOICE_SETTINGS = {
-    "stability": float(os.environ.get("ELEVENLABS_STABILITY", "0.60")),
-    "similarity_boost": float(os.environ.get("ELEVENLABS_SIMILARITY_BOOST", "0.85")),
-    "style": float(os.environ.get("ELEVENLABS_STYLE", "0.40")),
+    # stability 0.72: measured and consistent — the voice doesn't waver or
+    # vary pitch, which reads as authoritative rather than conversational.
+    "stability": float(os.environ.get("ELEVENLABS_STABILITY", "0.72")),
+    # similarity_boost 0.90: stay tightly on the deep character of the voice.
+    "similarity_boost": float(os.environ.get("ELEVENLABS_SIMILARITY_BOOST", "0.90")),
+    # style 0.20: minimal theatrical expression — flat, weighty, declarative.
+    # Higher style adds upward inflections that undermine the dominant register.
+    "style": float(os.environ.get("ELEVENLABS_STYLE", "0.20")),
     "use_speaker_boost": os.environ.get("ELEVENLABS_SPEAKER_BOOST", "1") not in ("0", "false", "False"),
 }
 
