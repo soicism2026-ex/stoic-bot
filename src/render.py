@@ -387,35 +387,26 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) -> Path:
-    """Generate a 1080x1920 JPEG thumbnail designed to be legible at any scale.
+    """Generate a 1080x1920 JPEG thumbnail matching the proven viral Stoic style:
+    dark cinematic footage, large white caps hook text, key punchline word(s)
+    in bright yellow — no stripe, no box, just bold text on dark mood footage.
 
-    Layout (top → bottom):
-      - cinematic background, heavily darkened outside the gold zone
-      - full-width opaque gold stripe spanning at least 40% of the frame —
-        sized so it's unmistakably gold even at 90×160 px in the Shorts grid
-      - hook text in large black caps on the gold stripe (max contrast)
-      - author credit in dark brown below the hook text, inside the stripe
-      - near-black scrims at top + bottom (85% opacity) to frame the gold
+    Layout:
+      - Heavily darkened background (footage reads as atmosphere, not scene)
+      - Hook text centred in the upper-middle: all-caps white with thick black
+        outline, LAST LINE in yellow — the punchline / key phrase
+      - Small author credit near the bottom in muted white
     """
-    hook_lines = textwrap.wrap(hook.upper(), width=14) or [hook.upper()]
-    HOOK_FS = 118
-    HOOK_LINE_H = HOOK_FS + 18
-    block_h = len(hook_lines) * HOOK_LINE_H
+    hook_lines = textwrap.wrap(hook.upper(), width=13) or [hook.upper()]
+    HOOK_FS   = 112            # large enough to pop at 90px thumbnail width
+    HOOK_LINE_H = HOOK_FS + 16
+    n_lines   = len(hook_lines)
+    block_h   = n_lines * HOOK_LINE_H
 
-    # Stripe: at least 40% of the frame height so it reads at any thumbnail
-    # size. Compute all positions as integers — ffmpeg drawbox does NOT
-    # evaluate string expressions like "(h/2)-N" and silently treats them as 0.
-    STRIPE_PAD_V = 80
-    AUTHOR_H     = 90
-    STRIPE_MIN_H = int(H * 0.40)   # 768 px — 40% of 1920
-    stripe_h     = max(STRIPE_MIN_H, block_h + STRIPE_PAD_V * 2 + AUTHOR_H)
-    stripe_y     = H // 2 - stripe_h // 2
-
-    # Top and bottom scrims cover everything outside the gold stripe so the
-    # background footage is nearly black there, maximising gold contrast.
-    top_scrim_h    = stripe_y
-    bottom_scrim_y = stripe_y + stripe_h
-    bottom_scrim_h = H - bottom_scrim_y
+    # Centre the text block in the upper 55% of the frame so it reads like
+    # a poster headline without interfering with the author credit below.
+    text_centre_y = int(H * 0.42)
+    text_block_top = text_centre_y - block_h // 2
 
     vf_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
@@ -423,48 +414,40 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
     ]
     if ENHANCE_ON:
         vf_parts += [ENH_SHARPEN, "curves=preset=increase_contrast"]
+    # Dark, moody grade — footage is texture/atmosphere, not a scene.
     vf_parts += [
-        "eq=brightness=-0.05:saturation=0.9:contrast=1.15",
-        "vignette=PI/4:eval=init",
-        # Near-black scrims above and below the gold stripe (85% opacity).
-        f"drawbox=x=0:y=0:w={W}:h={top_scrim_h}:color=black@0.85:t=fill",
-        f"drawbox=x=0:y={bottom_scrim_y}:w={W}:h={bottom_scrim_h}:color=black@0.85:t=fill",
+        "eq=brightness=-0.18:saturation=0.75:contrast=1.20",
+        "vignette=PI/3.5:eval=init",
+        # Semi-transparent dark overlay across the full frame for legibility.
+        f"drawbox=x=0:y=0:w={W}:h={H}:color=black@0.42:t=fill",
     ]
 
-    # Full-width opaque gold stripe.
-    vf_parts.append(
-        f"drawbox=x=0:y={stripe_y}:w={W}:h={stripe_h}:color=0xFFB830@1.0:t=fill"
-    )
-    # Thin black border lines at the edges of the stripe for definition.
-    vf_parts.append(
-        f"drawbox=x=0:y={stripe_y}:w={W}:h=8:color=black@0.90:t=fill"
-    )
-    vf_parts.append(
-        f"drawbox=x=0:y={stripe_y + stripe_h - 8}:w={W}:h=8:color=black@0.90:t=fill"
-    )
-
-    # Hook text — black on gold, maximum contrast.
-    # Centre the text block vertically inside the stripe.
-    text_block_top = stripe_y + (stripe_h - block_h - AUTHOR_H) // 2
+    # Hook text: white for all lines except the last (punchline = yellow).
     for i, line in enumerate(hook_lines):
-        line_y = text_block_top + i * HOOK_LINE_H
+        is_punchline = (i == n_lines - 1)
+        color    = "0xFFE000" if is_punchline else "white"
+        fontsize = HOOK_FS + 8 if is_punchline else HOOK_FS
+        line_y   = text_block_top + i * HOOK_LINE_H
         vf_parts.append(
             f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
             f"text='{_escape(line)}':"
-            f"fontcolor=black:fontsize={HOOK_FS}:"
-            f"x=(w-text_w)/2:y={line_y}"
+            f"fontcolor={color}:fontsize={fontsize}:"
+            f"x=(w-text_w)/2:y={line_y}:"
+            f"borderw=9:bordercolor=black@0.95:"
+            f"shadowcolor=black@0.70:shadowx=4:shadowy=4"
         )
 
-    # Author line in dark brown below the hook text, inside the stripe.
-    author_y = text_block_top + block_h + 16
+    # Author credit — small, muted, bottom quarter of the frame.
+    author_y = H - 220
     vf_parts.append(
         f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
         f"text='{_escape(f'— {author.upper()}')}':"
-        f"fontcolor=0x5C3A00:fontsize=50:"
-        f"x=(w-text_w)/2:y={author_y}"
+        f"fontcolor=white@0.65:fontsize=44:"
+        f"x=(w-text_w)/2:y={author_y}:"
+        f"borderw=5:bordercolor=black@0.80"
     )
 
-    # Gold corner-bracket frame — consistent brand look across videos.
+    # Thin gold corner brackets — minimal brand mark.
     vf_parts.extend(_frame_overlays())
 
     vf = ",".join(vf_parts)
