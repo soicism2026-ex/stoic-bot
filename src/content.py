@@ -97,13 +97,21 @@ call it research." Speak to someone who knows they're failing but hasn't admitte
 Do NOT repeat the hook. Plain, grounded, masculine-neutral. No hashtags.
 
 FORMAT "list" rules:
-- hook: 4-7 words naming the list in a scroll-stopping way. Written to make the \
-viewer instantly curious what's on the list. Do NOT name the author. No question \
-mark. Examples: "5 Rules He Never Broke" / "3 Habits Stoics Never Skip" / \
-"7 Things Stoics Never Do" / "5 Moves Weak Men Make"
+- hook: 4-8 words. PERSONAL and second-person — promise the VIEWER a benefit or \
+call out a flaw they have. The viewer must instantly feel "this is about ME and what \
+I get." NEVER name the author (most viewers don't know who Marcus Aurelius or Seneca \
+are — naming them loses the people we most want to reach). No question mark. \
+RIGHT register: "5 Rules That Make You Untouchable" / "5 Habits That Build Real \
+Discipline" / "7 Things You Must Stop Doing" / "5 Rules to Master Your Mind" / \
+"Follow These 5 Rules to Never Be Weak Again" / "3 Habits That Make Men Respect You" \
+WRONG register (avoid — impersonal / name-drop): "5 Rules He Never Broke" / \
+"3 Habits Stoics Never Skip" / "Marcus Aurelius's 5 Rules" / "7 Stoic Principles" \
+The list is grounded in the assigned author's real teachings, but the hook sells the \
+RESULT to the viewer, not the philosopher.
 - quote: the single most powerful rule / habit from your list, written as a crisp \
 standalone sentence (this appears on screen as the text overlay)
 - voiceover_text: reads through the numbered list as fast, punchy declarations. \
+Speak directly to the viewer in second person where it fits. \
 Pattern: "Rule 1: [crisp rule]. Rule 2: [crisp rule]..." (or "Number 1:", \
 "First:", etc. — vary it naturally). Each rule is 1-2 tight sentences. \
 Total 20-30 seconds / 50-75 words. No filler, no warm-up.
