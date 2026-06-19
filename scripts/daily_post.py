@@ -10,7 +10,6 @@ After the loop:
 After a successful normal upload: if backup bank < 3 videos, render+QA one
 evergreen short and add it to the bank.
 """
-import csv
 import importlib
 import json
 import os
@@ -22,9 +21,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from content import generate_content      # noqa: E402 (after sys.path)
+from content import generate_content, _load_rows as _load_post_rows  # noqa: E402
 from tts import synthesize_voice, pick_voice  # noqa: E402
-from publish import publish_short, set_thumbnail  # noqa: E402
+from publish import publish_short, set_thumbnail, post_comment  # noqa: E402
 from logbook import log_post              # noqa: E402
 import render as render_mod               # noqa: E402
 import promo                              # noqa: E402
@@ -182,7 +181,7 @@ def _remove_backup(meta_file: Path):
     meta_file.unlink(missing_ok=True)
 
 
-def _add_to_backup_bank(today: str):
+def _add_to_backup_bank(today: str, music_track: dict):
     """Render, QA, and store one evergreen short in the backup bank."""
     print("  [backup] rendering evergreen short...")
     try:
@@ -195,7 +194,6 @@ def _add_to_backup_bank(today: str):
         video_name = f"{today}_bk_reel.mp4"
         video_path = BACKUPS_DIR / video_name
         bk_music = music_mod.fetch_music(music_track, ROOT / "data" / f"{today}_bk_music.mp3")
-        importlib.reload(render_mod)
         render_mod.render_reel(
             quote=content["quote"], author=content["author"],
             audio_path=audio_path, out_path=video_path,
@@ -244,26 +242,22 @@ def main():
     today = datetime.date.today().isoformat()
     print(f"[{today}] daily_post starting")
 
-    # One post per day: if posts.csv already has an entry for today, a second
-    # workflow trigger (manual dispatch + scheduled) would flood the channel and
-    # break author-rotation cadence. Exit cleanly instead.
-    _posts_csv = ROOT / "data" / "posts.csv"
-    if _posts_csv.exists():
-        with open(_posts_csv, newline="", encoding="utf-8") as _f:
-            if any(row.get("date") == today for row in csv.DictReader(_f)):
-                print(f"[{today}] already posted today — skipping duplicate run")
-                return
-
     BACKUPS_DIR.mkdir(exist_ok=True)
+
+    # Analytics-weighted voice and music selection; also used for duplicate-run
+    # guard (check if today already has an entry in posts.csv).
+    post_rows = _load_post_rows()
+    if any(r.get("date") == today for r in post_rows):
+        # One post per day: a second workflow trigger (manual dispatch +
+        # scheduled) would flood the channel and break author-rotation cadence.
+        print(f"[{today}] already posted today — skipping duplicate run")
+        return
 
     # Generate content once (quote generation logic untouched)
     content = generate_content()
     print(f"  theme: {content['theme']}")
     print(f"  quote: {content['quote'][:60]}...")
 
-    # Analytics-weighted voice and music selection
-    from content import _load_rows as _load_post_rows
-    post_rows = _load_post_rows()
     voice = pick_voice(post_rows)
     print(f"  voice: {voice['name']} ({voice['id']})")
     music_track = music_mod.pick_music(post_rows)
@@ -370,10 +364,9 @@ def main():
 
             # Post engagement question as a comment
             pinned_q = content.get("pinned_comment", "").strip()
-            if pinned_q and upload_result.get("video_id"):
+            if pinned_q and vid_id:
                 try:
-                    from publish import post_comment
-                    post_comment(upload_result["video_id"], pinned_q)
+                    post_comment(vid_id, pinned_q)
                 except Exception as e:
                     print(
                         f"  [comment] failed — re-run auth_setup.py to add "
@@ -383,10 +376,9 @@ def main():
 
             # Post promo CTA as a second comment when enabled
             promo_txt = promo.comment_text()
-            if promo_txt and upload_result.get("video_id"):
+            if promo_txt and vid_id:
                 try:
-                    from publish import post_comment
-                    post_comment(upload_result["video_id"], promo_txt)
+                    post_comment(vid_id, promo_txt)
                     print("  [promo] comment posted")
                 except Exception as e:
                     print(f"  [promo] comment skipped: {e}", file=sys.stderr)
@@ -455,7 +447,7 @@ def main():
         count = _count_backups()
         if count < BACKUP_MIN:
             print(f"  [backup bank] {count}/{BACKUP_MIN} — adding one...")
-            _add_to_backup_bank(today)
+            _add_to_backup_bank(today, music_track)
 
 
 if __name__ == "__main__":

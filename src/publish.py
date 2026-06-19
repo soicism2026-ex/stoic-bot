@@ -14,6 +14,7 @@ To be classified as a Short, the video must be vertical and <= 3 minutes and
 include #Shorts in the title or description (we add it to the description).
 """
 import os
+import sys
 from pathlib import Path
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
@@ -87,13 +88,12 @@ def set_thumbnail(video_id: str, thumb_path) -> bool:
     Requires youtube.force-ssl scope (same token used for post_comment).
     Returns True on success, False on any failure (non-blocking).
     """
-    import sys as _sys
-    thumb_path = __import__("pathlib").Path(thumb_path)
+    thumb_path = Path(thumb_path)
     size_mb = thumb_path.stat().st_size / 1_048_576 if thumb_path.exists() else 0
     if size_mb > 2.0:
         print(
             f"  [thumbnail] SKIP {video_id} — file {size_mb:.1f}MB exceeds YouTube 2MB limit",
-            file=_sys.stderr,
+            file=sys.stderr,
         )
         return False
     try:
@@ -108,7 +108,7 @@ def set_thumbnail(video_id: str, thumb_path) -> bool:
         print(f"  [thumbnail] set for {video_id}  ({size_mb:.2f}MB)  url={url[:70]}")
         return True
     except Exception as e:
-        print(f"  [thumbnail] upload failed: {e}", file=_sys.stderr)
+        print(f"  [thumbnail] upload failed: {e}", file=sys.stderr)
         return False
 
 
