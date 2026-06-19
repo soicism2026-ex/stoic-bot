@@ -351,6 +351,7 @@ def main():
             if vid_id:
                 bg_path_for_thumb = video_path.with_suffix(".bg.mp4")
                 thumb_path = video_path.with_suffix(".thumb.jpg")
+                print(f"  [thumbnail] bg exists={bg_path_for_thumb.exists()} path={bg_path_for_thumb.name}")
                 if bg_path_for_thumb.exists():
                     try:
                         t = render_mod.generate_thumbnail(
@@ -358,9 +359,17 @@ def main():
                             bg_path=bg_path_for_thumb, out_path=thumb_path,
                         )
                         if t and t.exists():
-                            set_thumbnail(vid_id, thumb_path)
+                            size_kb = t.stat().st_size // 1024
+                            print(f"  [thumbnail] generated {t.name} ({size_kb}KB) — uploading...")
+                            ok = set_thumbnail(vid_id, thumb_path)
+                            if not ok:
+                                print("  [thumbnail] upload returned False — check force-ssl scope in YOUTUBE_REFRESH_TOKEN", file=sys.stderr)
+                        else:
+                            print("  [thumbnail] generate_thumbnail returned None — check font paths and ffmpeg errors above", file=sys.stderr)
                     except Exception as e:
                         print(f"  [thumbnail] skipped: {e}", file=sys.stderr)
+                else:
+                    print(f"  [thumbnail] bg.mp4 not found — skipping thumbnail upload", file=sys.stderr)
 
             # Post engagement question as a comment
             pinned_q = content.get("pinned_comment", "").strip()

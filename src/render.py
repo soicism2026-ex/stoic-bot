@@ -32,10 +32,16 @@ ROOT = Path(__file__).resolve().parent.parent
 FONT = os.environ.get("REEL_FONT", "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")
 
 # Quote font: serif for a classical / stone-inscription feel matching Stoic aesthetics.
+# Falls back to FONT (DejaVu) if the liberation package isn't installed on the runner.
 QUOTE_FONT = os.environ.get(
     "REEL_QUOTE_FONT",
     "/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf",
 )
+if not os.path.exists(QUOTE_FONT):
+    import glob as _glob
+    _serif = (_glob.glob("/usr/share/fonts/**/*Serif*Bold*.ttf", recursive=True)
+              + _glob.glob("/usr/share/fonts/**/*serif*bold*.ttf", recursive=True))
+    QUOTE_FONT = _serif[0] if _serif else FONT
 
 # Color palette — all env-overridable.
 QUOTE_COLOR  = os.environ.get("REEL_QUOTE_COLOR",  "0xF0E6C8")  # warm parchment
