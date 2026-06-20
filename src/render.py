@@ -396,19 +396,18 @@ def _group_lines(word_timings: list, max_words: int = 2, pause: float = 0.55) ->
 
 
 def _build_ass(word_timings: list, out_path: Path) -> Path:
-    """Write a .ass subtitle file with dramatic per-word captions.
+    """Write a .ass subtitle file with impactful 2-word karaoke captions.
 
-    Each word appears as a single "stamp" — starts oversized and blurry (like
-    a burst of light), snaps into crisp focus over 140ms, then lingers.
-    Style: white text, thick black outline, gold shadow offset = premium Stoic
-    look matching the gold frame/hook brand.  All caps for maximum impact.
+    2 words at a time gives a natural reading rhythm without the chaotic
+    single-word flash. Each chunk is guaranteed at least 600ms on screen so
+    fast speech still reads clearly. Chunks never overlap — end is clamped to
+    just before the next chunk starts. Style: white text, thick black outline,
+    gold shadow — premium Stoic brand.  All caps for impact.
     """
-    lines = _group_lines(word_timings, max_words=1)
+    lines = _group_lines(word_timings, max_words=2)
 
-    # ASS colors: &HAABBGGRR (AA=00 fully opaque)
-    # White body text:  &H00FFFFFF
-    # Black outline:    &H00000000
-    # Gold shadow:      #FFB830 → BGR B=30, G=B8, R=FF → &H0030B8FF
+    # ASS colors: &HAABBGGRR
+    # White: &H00FFFFFF  Black outline: &H00000000  Gold shadow #FFB830: &H0030B8FF
     primary = "&H00FFFFFF"
     outline = "&H00000000"
     shadow  = "&H0030B8FF"
@@ -428,19 +427,22 @@ Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{primary},{outline},{
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
 
-    events = []
-    for line in lines:
-        # Flash in just before the word is spoken; linger well past the end
-        # so fast speech still gives the viewer time to read it.
-        start = max(0.0, line[0][1] - 0.05)
-        end   = max(line[-1][2] + 0.22, start + 0.42)
-        text  = " ".join(_ass_escape(w[0].strip().upper()) for w in line)
+    # Pre-compute start times for each chunk so we can clamp endings.
+    chunk_starts = [max(0.0, line[0][1] - 0.05) for line in lines]
 
-        # Light-burst stamp-in:
-        #   \blur9\fscx155\fscy155  — start oversized and blurry (like a light flash)
-        #   \t(0,140,\blur0.3\fscx100\fscy100)  — snap to sharp/full-size in 140ms
-        #   \fad(25,220)  — almost-instant flash in, gentle linger fade-out
-        anim = r"{\blur9\fscx155\fscy155\t(0,140,\blur0.3\fscx100\fscy100)\fad(25,220)}"
+    events = []
+    for i, line in enumerate(lines):
+        start = chunk_starts[i]
+        # Minimum 600ms on screen; clamp to just before next chunk appears.
+        natural_end = line[-1][2] + 0.15
+        min_end     = start + 0.60
+        next_start  = chunk_starts[i + 1] - 0.04 if i + 1 < len(lines) else float("inf")
+        end = min(max(natural_end, min_end), next_start)
+
+        text = " ".join(_ass_escape(w[0].strip().upper()) for w in line)
+
+        # Scale pop 120%→100% over 120ms + gentle fade out — readable, not chaotic.
+        anim = r"{\fscx120\fscy120\t(0,120,\fscx100\fscy100)\fad(60,180)}"
         events.append(
             f"Dialogue: 0,{_ass_time(start)},{_ass_time(end)},"
             f"Karaoke,,0,0,0,,{anim}{text}"

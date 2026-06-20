@@ -182,8 +182,8 @@ def _pick_next_theme(rows: list, current_theme: str) -> str:
 
 
 def _pick_format(rows: list[dict]) -> str:
-    """Rotate content format: 2 quote posts then 1 list post, repeating."""
-    ROTATION = ["quote", "quote", "list"]
+    """Rotate content format: 3 personal quote posts then 1 list post."""
+    ROTATION = ["quote", "quote", "quote", "list"]
     return ROTATION[len(rows) % len(ROTATION)]
 
 
