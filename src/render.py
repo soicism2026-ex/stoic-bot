@@ -52,10 +52,10 @@ DIVIDER_COLOR = os.environ.get("REEL_DIVIDER_COLOR", "0xA08040") # darker bronze
 CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False")
 CAPTIONS_ONLY = os.environ.get("REEL_CAPTIONS_ONLY", "0") not in ("0", "false", "False")
 CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
-CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "64"))
-CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "520"))
-CAPTION_MARGINL = int(os.environ.get("REEL_CAPTION_MARGINL", "150"))
-CAPTION_MARGINR = int(os.environ.get("REEL_CAPTION_MARGINR", "150"))
+CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "92"))
+CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "620"))
+CAPTION_MARGINL = int(os.environ.get("REEL_CAPTION_MARGINL", "80"))
+CAPTION_MARGINR = int(os.environ.get("REEL_CAPTION_MARGINR", "80"))
 
 # Hook controls — the scroll-stopping opener. A big text card flashes for the
 # first few seconds and an attention "whoosh" sound is mixed under the start.
@@ -277,6 +277,66 @@ def _mix_intro_sound(voice_path: Path, hook_path: Path, out_path: Path) -> Path:
     return out_path
 
 
+def _make_word_click_track(word_timings: list, dur: float, out_path: Path) -> Path:
+    """Write a WAV with a bass-thud impact at every word onset.
+
+    Uses only stdlib (wave + struct + math) — no numpy or scipy required.
+    The thuds are kept short (60ms) and soft so they feel like a subliminal
+    "punch" under the caption rather than a distracting noise.
+    """
+    import wave, struct, math
+
+    SR = 44100
+    n_samples = int((dur + 0.5) * SR)
+    track = [0.0] * n_samples
+
+    # Short bass thud: 65 Hz fundamental + 130 Hz warmth + 2.2 kHz snap transient
+    thud_n = int(0.06 * SR)
+    thud = []
+    for i in range(thud_n):
+        t = i / SR
+        env = math.exp(-t * 50)
+        val = (
+            math.sin(2 * math.pi * 65   * t) * env * 0.55 +
+            math.sin(2 * math.pi * 130  * t) * env * 0.22 +
+            math.sin(2 * math.pi * 2200 * t) * math.exp(-t * 280) * 0.10
+        )
+        thud.append(val)
+
+    for _, word_start, _ in word_timings:
+        onset = int(word_start * SR)
+        for i, v in enumerate(thud):
+            idx = onset + i
+            if idx < n_samples:
+                track[idx] = max(-1.0, min(1.0, track[idx] + v))
+
+    with wave.open(str(out_path), "w") as wf:
+        wf.setnchannels(2)
+        wf.setsampwidth(2)
+        wf.setframerate(SR)
+        wf.writeframes(b"".join(
+            struct.pack("<hh", int(v * 32767), int(v * 32767))
+            for v in track
+        ))
+    return out_path
+
+
+def _mix_word_clicks(voice_path: Path, click_path: Path, out_path: Path) -> Path:
+    """Blend per-word impact thuds under the voice at low volume."""
+    fc = (
+        "[0:a]volume=1.0[v];[1:a]volume=0.22[c];"
+        "[v][c]amix=inputs=2:duration=first:dropout_transition=0,"
+        "volume=1.3,alimiter=limit=0.95[a]"
+    )
+    subprocess.run(
+        ["ffmpeg", "-y", "-i", str(voice_path), "-i", str(click_path),
+         "-filter_complex", fc, "-map", "[a]",
+         "-c:a", "aac", "-b:a", "192k", str(out_path)],
+        check=True, capture_output=True,
+    )
+    return out_path
+
+
 def _escape(text: str) -> str:
     # escape for ffmpeg drawtext
     return (text.replace("\\", "\\\\").replace(":", "\\:")
@@ -336,20 +396,22 @@ def _group_lines(word_timings: list, max_words: int = 2, pause: float = 0.55) ->
 
 
 def _build_ass(word_timings: list, out_path: Path) -> Path:
-    """Write a .ass subtitle file with animated per-chunk captions.
+    """Write a .ass subtitle file with dramatic per-word captions.
 
-    Each 2-word chunk pops in with a scale animation (115%→100% over 150ms)
-    and a quick fade-in/out. This replaces the old karaoke color sweep with
-    actual motion — more engaging and consistent with viral Shorts style.
+    Each word appears as a single "stamp" — starts oversized and blurry (like
+    a burst of light), snaps into crisp focus over 140ms, then lingers.
+    Style: white text, thick black outline, gold shadow offset = premium Stoic
+    look matching the gold frame/hook brand.  All caps for maximum impact.
     """
-    lines = _group_lines(word_timings)
+    lines = _group_lines(word_timings, max_words=1)
 
-    # Warm amber gold throughout — motion is the visual cue, not color sweep.
-    # ASS colors: &HAABBGGRR (AA=00 fully opaque, then Blue, Green, Red).
-    # #FFB830 → BGR: B=0x30, G=0xB8, R=0xFF → &H0030B8FF
-    primary = "&H0030B8FF"
-    outline = "&H00000000"  # black outline
-    back = "&H90000000"     # slightly opaque shadow backing
+    # ASS colors: &HAABBGGRR (AA=00 fully opaque)
+    # White body text:  &H00FFFFFF
+    # Black outline:    &H00000000
+    # Gold shadow:      #FFB830 → BGR B=30, G=B8, R=FF → &H0030B8FF
+    primary = "&H00FFFFFF"
+    outline = "&H00000000"
+    shadow  = "&H0030B8FF"
 
     header = f"""[Script Info]
 ScriptType: v4.00+
@@ -360,7 +422,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{primary},{outline},{back},-1,0,0,0,100,100,2,0,1,4,3,2,{CAPTION_MARGINL},{CAPTION_MARGINR},{CAPTION_MARGINV},1
+Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{primary},{outline},{shadow},-1,0,0,0,100,100,3,0,1,6,4,2,{CAPTION_MARGINL},{CAPTION_MARGINR},{CAPTION_MARGINV},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -368,15 +430,17 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
     events = []
     for line in lines:
-        # Appear just before the first word; linger briefly after the last.
-        start = max(0.0, line[0][1] - 0.06)
-        end = line[-1][2] + 0.06
-        text = " ".join(_ass_escape(w[0].strip()) for w in line)
+        # Flash in just before the word is spoken; linger well past the end
+        # so fast speech still gives the viewer time to read it.
+        start = max(0.0, line[0][1] - 0.05)
+        end   = max(line[-1][2] + 0.22, start + 0.42)
+        text  = " ".join(_ass_escape(w[0].strip().upper()) for w in line)
 
-        # \\fscx115\\fscy115  — start at 115% scale (the "pop")
-        # \\t(0,150,...)      — animate to 100% over the first 150ms
-        # \\fad(120,80)       — 120ms fade-in, 80ms fade-out
-        anim = r"{\fscx115\fscy115\t(0,150,\fscx100\fscy100)\fad(120,80)}"
+        # Light-burst stamp-in:
+        #   \blur9\fscx155\fscy155  — start oversized and blurry (like a light flash)
+        #   \t(0,140,\blur0.3\fscx100\fscy100)  — snap to sharp/full-size in 140ms
+        #   \fad(25,220)  — almost-instant flash in, gentle linger fade-out
+        anim = r"{\blur9\fscx155\fscy155\t(0,140,\blur0.3\fscx100\fscy100)\fad(25,220)}"
         events.append(
             f"Dialogue: 0,{_ass_time(start)},{_ass_time(end)},"
             f"Karaoke,,0,0,0,,{anim}{text}"
@@ -563,6 +627,18 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             audio_for_render = mixed
         except Exception as e:  # noqa: BLE001
             print(f"  hook sound unavailable ({e}); using plain voiceover")
+
+    # Mix a subtle bass-thud at every word onset so captions have audio impact.
+    if word_timings and CAPTIONS_ON:
+        try:
+            _pre_dur = _audio_duration(audio_for_render) + 1.0
+            click_wav = Path(out_path).with_suffix(".clicks.wav")
+            _make_word_click_track(word_timings, _pre_dur, click_wav)
+            mixed_click = Path(out_path).with_suffix(".mixclick.m4a")
+            _mix_word_clicks(audio_for_render, click_wav, mixed_click)
+            audio_for_render = mixed_click
+        except Exception as e:  # noqa: BLE001
+            print(f"  word click track failed ({e}); skipping")
 
     dur = _audio_duration(audio_for_render) + 1.0  # small tail
 

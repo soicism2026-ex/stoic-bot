@@ -1,21 +1,25 @@
 """
-Text-to-speech via ElevenLabs.
+Text-to-speech via edge-tts (Microsoft Neural — free, no API key required).
 
-Isolated on purpose: to switch to OpenAI TTS (much cheaper) or a free engine,
-you only rewrite synthesize_voice() and nothing else in the project changes.
+edge-tts uses the same engine as Azure Cognitive Services Neural TTS but at
+zero cost through the Edge browser TTS endpoint.  No account, no key, no rate
+limits at our posting frequency.
+
+ElevenLabs is retained as an optional upgrade: set ELEVENLABS_API_KEY +
+ELEVENLABS_VOICE_ID to override the free engine on any run.
 
 synthesize_voice() returns (audio_path, word_timings) where word_timings is a
 list of (word, start_seconds, end_seconds). The timings drive the karaoke
-captions in render.py. We prefer ElevenLabs' /with-timestamps endpoint for real
-per-character timing (folded up to words); if that is unavailable or fails we
-fall back to the plain endpoint and estimate timing by distributing words across
-the measured audio duration weighted by word length — so a run never breaks.
+captions in render.py.
 
-Voice pool: three voices chosen for the Stoic niche (deep, measured, authoritative).
+Voice pool — three deep Microsoft Neural voices tuned for the Stoic niche:
+  Guy         — deep, dominant American; closest to high-view Stoic Shorts style
+  Ryan        — deep British, measured and philosophical
+  Christopher — authoritative American, confident narrator register
 Rotates analytics-weighted once each voice has ≥5 posts of view data; uses LRU
-equal rotation before that.  George (British, deep) is the default opener.
+equal rotation before that.
 """
-import base64
+import asyncio
 import csv
 import json
 import os
@@ -27,46 +31,21 @@ from pathlib import Path
 import requests
 
 # ---------------------------------------------------------------------------
-# Voice pool
+# Voice pool — edge-tts Microsoft Neural (free)
 # ---------------------------------------------------------------------------
 
-# Three ElevenLabs voices suited to deep, authoritative Stoic content.
-# George: British, gravelly, commanding — top pick for this niche.
-# Adam:   American, very deep narrator — the closest to the dominant Stoic
-#         voice style that dominates high-view Shorts in this category.
-# Brian:  American, deep and measured.
-# Daniel removed: British but too calm/professorial for assertive delivery.
 VOICE_POOL = [
-    {"name": "George", "id": "JBFqnCBsd6RMkjVDRZzb"},
-    {"name": "Adam",   "id": "pNInz6obpgDQGcFmaJgB"},
-    {"name": "Brian",  "id": "nPczCjzI2devNBz1zQrb"},
+    {"name": "Guy",         "id": "en-US-GuyNeural"},
+    {"name": "Ryan",        "id": "en-GB-RyanNeural"},
+    {"name": "Christopher", "id": "en-US-ChristopherNeural"},
 ]
 
-# Single-voice override: ELEVENLABS_VOICE_ID still works as a hard override.
-_VOICE_ID_OVERRIDE = os.environ.get("ELEVENLABS_VOICE_ID", "").strip()
+# Optional ElevenLabs override: set both ELEVENLABS_API_KEY and
+# ELEVENLABS_VOICE_ID to bypass edge-tts for a specific run.
+_EL_KEY      = os.environ.get("ELEVENLABS_API_KEY", "").strip()
+_EL_VOICE_ID = os.environ.get("ELEVENLABS_VOICE_ID", "").strip()
 
-MIN_POSTS_FOR_WEIGHT = 5  # posts per voice before analytics-weighting kicks in
-
-# Voice / model settings stay configurable via env.
-# eleven_multilingual_v2 is ElevenLabs' highest-fidelity model. Settings are tuned
-# for Stoic gravitas: high stability for a steady, authoritative read; raised style
-# for weight and emotion; full similarity + speaker boost for a rich, present voice.
-MODEL_ID = os.environ.get("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
-VOICE_SETTINGS = {
-    # stability 0.72: measured and consistent — the voice doesn't waver or
-    # vary pitch, which reads as authoritative rather than conversational.
-    "stability": float(os.environ.get("ELEVENLABS_STABILITY", "0.72")),
-    # similarity_boost 0.90: stay tightly on the deep character of the voice.
-    "similarity_boost": float(os.environ.get("ELEVENLABS_SIMILARITY_BOOST", "0.90")),
-    # style 0.20: minimal theatrical expression — flat, weighty, declarative.
-    # Higher style adds upward inflections that undermine the dominant register.
-    "style": float(os.environ.get("ELEVENLABS_STYLE", "0.20")),
-    "use_speaker_boost": os.environ.get("ELEVENLABS_SPEAKER_BOOST", "1") not in ("0", "false", "False"),
-}
-
-# 128 kbps @ 44.1 kHz works on all ElevenLabs tiers including Starter.
-# Override via ELEVENLABS_OUTPUT_FORMAT=mp3_44100_192 on Creator+ accounts.
-OUTPUT_FORMAT = os.environ.get("ELEVENLABS_OUTPUT_FORMAT", "mp3_44100_128")
+MIN_POSTS_FOR_WEIGHT = 5
 
 WordTiming = tuple  # (word: str, start: float, end: float)
 
@@ -91,17 +70,9 @@ def pick_voice(rows: list[dict]) -> dict:
     """Return a voice from VOICE_POOL using analytics-weighted selection.
 
     Strategy:
-      - Hard override: if ELEVENLABS_VOICE_ID is set, use it directly.
       - Exploration (< MIN_POSTS_FOR_WEIGHT data per voice): LRU rotation.
       - Exploitation (enough data): block most-recent, pick highest avg-views.
     """
-    if _VOICE_ID_OVERRIDE:
-        # Honour legacy single-voice override; synthesize name from pool.
-        for v in VOICE_POOL:
-            if v["id"] == _VOICE_ID_OVERRIDE:
-                return v
-        return {"name": "Custom", "id": _VOICE_ID_OVERRIDE}
-
     analytics = _load_analytics()
 
     def avg_views(voice_name: str) -> float | None:
@@ -112,112 +83,148 @@ def pick_voice(rows: list[dict]) -> dict:
         return sum(analytics.get(r["video_id"], 0) for r in matching) / len(matching)
 
     avgs = {v["name"]: avg_views(v["name"]) for v in VOICE_POOL}
-
     recent_voices = [r.get("voice_name") for r in reversed(rows) if r.get("voice_name")]
     block = recent_voices[0] if recent_voices else None
 
-    # Exploration: at least one voice lacks enough data → LRU.
     if any(val is None for val in avgs.values()):
         candidates = [v for v in VOICE_POOL if v["name"] != block] or VOICE_POOL
         return candidates[date.today().toordinal() % len(candidates)]
 
-    # Exploitation: pick highest avg-views, blocking most recent.
     candidates = [v for v in VOICE_POOL if v["name"] != block] or VOICE_POOL
     return max(candidates, key=lambda v: avgs.get(v["name"], 0))
 
 
 # ---------------------------------------------------------------------------
-# Synthesis
+# edge-tts synthesis (primary)
 # ---------------------------------------------------------------------------
 
-def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
-    """Synthesize `text` to `out_path`. Returns (out_path, word_timings)."""
-    vid = voice_id or (_VOICE_ID_OVERRIDE if _VOICE_ID_OVERRIDE else VOICE_POOL[0]["id"])
-    return _synthesize_with_voice(text, out_path, vid, fallback_to_default=True)
+async def _edge_stream(text: str, out_path: Path, voice_id: str) -> list:
+    """Async core: stream edge-tts, collect audio + word boundaries."""
+    import edge_tts  # lazy import keeps startup fast when EL override is used
+
+    communicate = edge_tts.Communicate(text, voice_id, rate="-5%", pitch="-8Hz")
+    audio_chunks: list[bytes] = []
+    word_timings: list[tuple] = []
+
+    async for chunk in communicate.stream():
+        if chunk["type"] == "audio":
+            audio_chunks.append(chunk["data"])
+        elif chunk["type"] == "WordBoundary":
+            # Microsoft reports offsets in 100-nanosecond ticks
+            start = chunk["offset"] / 1e7
+            dur   = chunk["duration"] / 1e7
+            word_timings.append((chunk["text"], start, start + dur))
+
+    out_path.write_bytes(b"".join(audio_chunks))
+    return word_timings
 
 
-def _synthesize_with_voice(text: str, out_path: Path, vid: str,
-                            fallback_to_default: bool = False) -> tuple:
-    """Inner synthesis — tries with-timestamps then plain endpoint for `vid`.
-
-    If both return 403 (voice not available on this account tier) and
-    fallback_to_default is True, retries with George (VOICE_POOL[0]) before
-    raising so a single gated voice never breaks the pipeline.
-    """
-    headers = {
-        "xi-api-key": os.environ["ELEVENLABS_API_KEY"],
-        "Content-Type": "application/json",
-    }
-    payload = {
-        "text": text,
-        "model_id": MODEL_ID,
-        "voice_settings": VOICE_SETTINGS,
-    }
-
-    # Preferred path: with-timestamps -> real per-character alignment.
+def _synthesize_edge(text: str, out_path: Path, voice_id: str) -> tuple:
+    """Run edge-tts synthesis and return (out_path, word_timings)."""
     try:
-        url = f"https://api.elevenlabs.io/v1/text-to-speech/{vid}/with-timestamps"
+        loop = asyncio.get_event_loop()
+        if loop.is_closed():
+            raise RuntimeError("loop closed")
+        timings = loop.run_until_complete(_edge_stream(text, out_path, voice_id))
+    except RuntimeError:
+        timings = asyncio.run(_edge_stream(text, out_path, voice_id))
+
+    if not timings:
+        timings = _estimate_timings(text, _audio_duration(out_path))
+    return out_path, timings
+
+
+# ---------------------------------------------------------------------------
+# ElevenLabs synthesis (optional upgrade)
+# ---------------------------------------------------------------------------
+
+_EL_MODEL = os.environ.get("ELEVENLABS_MODEL_ID", "eleven_multilingual_v2")
+_EL_SETTINGS = {
+    "stability":        float(os.environ.get("ELEVENLABS_STABILITY",        "0.72")),
+    "similarity_boost": float(os.environ.get("ELEVENLABS_SIMILARITY_BOOST", "0.90")),
+    "style":            float(os.environ.get("ELEVENLABS_STYLE",            "0.20")),
+    "use_speaker_boost": os.environ.get("ELEVENLABS_SPEAKER_BOOST", "1") not in ("0", "false"),
+}
+_EL_FORMAT = os.environ.get("ELEVENLABS_OUTPUT_FORMAT", "mp3_44100_128")
+
+
+def _synthesize_elevenlabs(text: str, out_path: Path, voice_id: str) -> tuple:
+    """ElevenLabs path (only called when ELEVENLABS_API_KEY + VOICE_ID are set)."""
+    headers = {"xi-api-key": _EL_KEY, "Content-Type": "application/json"}
+    payload = {"text": text, "model_id": _EL_MODEL, "voice_settings": _EL_SETTINGS}
+
+    try:
+        url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}/with-timestamps"
         resp = requests.post(url, headers={**headers, "Accept": "application/json"},
-                             params={"output_format": OUTPUT_FORMAT},
+                             params={"output_format": _EL_FORMAT},
                              json=payload, timeout=120)
         resp.raise_for_status()
+        import base64
         data = resp.json()
-        audio_b64 = data.get("audio_base64")
-        if not audio_b64:
-            raise ValueError("with-timestamps response missing audio_base64")
-        out_path.write_bytes(base64.b64decode(audio_b64))
+        out_path.write_bytes(base64.b64decode(data["audio_base64"]))
         alignment = data.get("alignment") or data.get("normalized_alignment")
         timings = _words_from_alignment(text, alignment)
         if timings:
             return out_path, timings
-        return out_path, _estimate_timings(text, _audio_duration(out_path))
-    except Exception as e:  # noqa: BLE001
-        print(f"  tts: with-timestamps unavailable ({e}); falling back to plain endpoint")
+    except Exception as e:
+        print(f"  tts: ElevenLabs with-timestamps failed ({e}); trying plain endpoint")
 
-    # Fallback: plain endpoint, estimate timing from measured duration.
     try:
-        url = f"https://api.elevenlabs.io/v1/text-to-speech/{vid}"
+        url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
         resp = requests.post(url, headers={**headers, "Accept": "audio/mpeg"},
-                             params={"output_format": OUTPUT_FORMAT},
+                             params={"output_format": _EL_FORMAT},
                              json=payload, timeout=120)
         resp.raise_for_status()
         out_path.write_bytes(resp.content)
         return out_path, _estimate_timings(text, _audio_duration(out_path))
-    except requests.HTTPError as e:
-        if e.response is not None and e.response.status_code == 403 and fallback_to_default:
-            default_vid = VOICE_POOL[0]["id"]
-            if vid != default_vid:
-                print(f"  tts: voice {vid} returned 403 (not on this tier); retrying with {VOICE_POOL[0]['name']}")
-                return _synthesize_with_voice(text, out_path, default_vid, fallback_to_default=False)
-        raise
+    except Exception as e:
+        print(f"  tts: ElevenLabs plain endpoint also failed ({e}); falling back to edge-tts")
+        return _synthesize_edge(text, out_path, VOICE_POOL[0]["id"])
 
+
+# ---------------------------------------------------------------------------
+# Public entry point
+# ---------------------------------------------------------------------------
+
+def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
+    """Synthesize `text` to `out_path`. Returns (out_path, word_timings).
+
+    Uses ElevenLabs only when both ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID
+    are set (legacy override path). Otherwise uses edge-tts for free.
+    """
+    if _EL_KEY and _EL_VOICE_ID:
+        print(f"  tts: ElevenLabs override active (voice {_EL_VOICE_ID})")
+        return _synthesize_elevenlabs(text, out_path, _EL_VOICE_ID)
+
+    vid = voice_id or VOICE_POOL[0]["id"]
+    # Resolve name for logging
+    name = next((v["name"] for v in VOICE_POOL if v["id"] == vid), vid)
+    print(f"  tts: edge-tts voice {name} ({vid})")
+    return _synthesize_edge(text, out_path, vid)
+
+
+# ---------------------------------------------------------------------------
+# Shared helpers
+# ---------------------------------------------------------------------------
 
 def _tokenize(text: str) -> list:
-    """Split into display words (keeps trailing punctuation with the word)."""
     return re.findall(r"\S+", text)
 
 
 def _words_from_alignment(text: str, alignment) -> list:
-    """Fold ElevenLabs per-character alignment into per-word (word, start, end).
-
-    alignment shape:
-      {"characters": [...], "character_start_times_seconds": [...],
-       "character_end_times_seconds": [...]}
-    """
+    """Fold ElevenLabs per-character alignment into per-word timings."""
     if not alignment:
         return []
-    chars = alignment.get("characters")
+    chars  = alignment.get("characters")
     starts = alignment.get("character_start_times_seconds")
-    ends = alignment.get("character_end_times_seconds")
+    ends   = alignment.get("character_end_times_seconds")
     if not chars or not starts or not ends:
         return []
     if not (len(chars) == len(starts) == len(ends)):
         return []
 
     timings = []
-    cur_chars = []
-    cur_start = None
-    cur_end = None
+    cur_chars, cur_start, cur_end = [], None, None
     for ch, st, en in zip(chars, starts, ends):
         if ch.isspace():
             if cur_chars:
@@ -234,14 +241,13 @@ def _words_from_alignment(text: str, alignment) -> list:
 
 
 def _estimate_timings(text: str, duration: float) -> list:
-    """Spread words across `duration`, weighted by word length (never breaks)."""
+    """Spread words across duration weighted by word length."""
     words = _tokenize(text)
     if not words:
         return []
     weights = [max(1, len(w)) for w in words]
     total = sum(weights)
-    timings = []
-    t = 0.0
+    timings, t = [], 0.0
     for w, wt in zip(words, weights):
         span = duration * (wt / total)
         timings.append((w, t, t + span))
@@ -250,12 +256,11 @@ def _estimate_timings(text: str, duration: float) -> list:
 
 
 def _audio_duration(audio_path: Path) -> float:
-    """Best-effort audio length via ffprobe; falls back to a sane default."""
     try:
         out = subprocess.check_output([
             "ffprobe", "-v", "error", "-show_entries", "format=duration",
             "-of", "json", str(audio_path),
         ])
         return float(json.loads(out)["format"]["duration"])
-    except Exception:  # noqa: BLE001
+    except Exception:
         return 20.0
