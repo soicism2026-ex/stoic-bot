@@ -24,6 +24,7 @@ sys.path.insert(0, str(ROOT / "src"))
 from content import generate_content, _load_rows as _load_post_rows  # noqa: E402
 from tts import synthesize_voice, pick_voice  # noqa: E402
 from publish import publish_short, set_thumbnail, post_comment  # noqa: E402
+import publish_instagram                    # noqa: E402
 from logbook import log_post              # noqa: E402
 import render as render_mod               # noqa: E402
 import promo                              # noqa: E402
@@ -391,6 +392,19 @@ def main():
                     print("  [promo] comment posted")
                 except Exception as e:
                     print(f"  [promo] comment skipped: {e}", file=sys.stderr)
+
+            # Cross-post the same Short to Instagram Reels (best-effort; never
+            # blocks the run). Skips silently if IG creds aren't configured.
+            try:
+                ig_caption = f"{hook_clean}.\n\n{content['caption']}"
+                ig_result = publish_instagram.publish_reel(
+                    video_path=video_path,
+                    caption=ig_caption,
+                    hashtags=content["hashtags"],
+                )
+                print(f"  [instagram] {ig_result.get('status')}")
+            except Exception as e:
+                print(f"  [instagram] cross-post skipped: {e}", file=sys.stderr)
 
             if qa["issues"]:
                 _append_qa_log(today, attempt, qa["issues"], qa["severity"], uploaded=True)

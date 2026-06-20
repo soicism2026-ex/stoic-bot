@@ -42,6 +42,8 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
         run: python scripts/check_secrets.py
 
       - name: Run self-healing post pipeline
@@ -59,6 +61,11 @@ jobs:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+          # Instagram cross-post (optional — pipeline skips if unset).
+          # IG_ACCESS_TOKEN: long-lived token for an IG Professional account.
+          # IG_USER_ID: the Instagram Business account id (numeric).
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
           # Product promo — edit these to update copy without touching code.
           # Set PROMO_ENABLED to "0" to disable all promo behaviour.
           PROMO_ENABLED: "1"

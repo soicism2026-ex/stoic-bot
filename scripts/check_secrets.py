@@ -158,9 +158,33 @@ def check_pixabay() -> bool:
     return True
 
 
+def check_instagram() -> bool:
+    """Optional — cross-post to Instagram Reels. Skips if not configured."""
+    token = os.environ.get("IG_ACCESS_TOKEN", "")
+    ig_user = os.environ.get("IG_USER_ID", "")
+    if not token or not ig_user:
+        print(f"  [{SKIP}] INSTAGRAM — IG_ACCESS_TOKEN/IG_USER_ID not set (cross-post disabled)")
+        return True
+    try:
+        resp = _requests.get(
+            f"https://graph.facebook.com/v21.0/{ig_user}",
+            params={"fields": "username,media_count", "access_token": token},
+            timeout=10,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+        uname = data.get("username", "?")
+        count = data.get("media_count", "?")
+        print(f"  [{PASS}] INSTAGRAM — @{uname} ({count} posts), token valid")
+    except Exception as e:
+        # Optional — never block the pipeline; YouTube post still proceeds.
+        print(f"  [{SKIP}] INSTAGRAM — token check failed ({e}); cross-post will be skipped")
+    return True
+
+
 def main():
     print("=== Secrets pre-flight check ===")
-    # Required: Anthropic, ElevenLabs, YouTube. Pexels/Pixabay are optional.
+    # Required: Anthropic, ElevenLabs, YouTube. Pexels/Pixabay/Instagram optional.
     required = [
         check_anthropic(),
         check_elevenlabs(),
@@ -168,6 +192,7 @@ def main():
     ]
     check_pexels()
     check_pixabay()
+    check_instagram()
     print("================================")
     failures = sum(1 for r in required if not r)
     if failures:
