@@ -729,9 +729,13 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     overlay_chain = ",".join(vf_parts)
     if n_bg > 1:
         seg_dur = dur / n_bg
+        # Normalise every clip to identical SAR, fps and pixel format BEFORE
+        # concat. Stock clips arrive with mixed sample-aspect-ratios and frame
+        # rates; the concat filter rejects mismatched segments ("Error
+        # reinitializing filters"), so this normalisation is required.
         geo = (
             f"scale={W}:{H}:force_original_aspect_ratio=increase,"
-            f"crop={W}:{H}"
+            f"crop={W}:{H},setsar=1,fps=30,format=yuv420p"
         )
         bg_segs = [
             f"[{_i}:v]{geo},trim=0:end={seg_dur:.3f},setpts=PTS-STARTPTS[bgseg{_i}]"
