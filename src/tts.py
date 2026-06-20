@@ -29,9 +29,9 @@ import requests
 # ---------------------------------------------------------------------------
 
 VOICE_POOL = [
+    {"name": "Brian",  "id": "nPczCjzI2devNBz1zQrb"},  # deep American — user preferred
     {"name": "George", "id": "JBFqnCBsd6RMkjVDRZzb"},
     {"name": "Adam",   "id": "pNInz6obpgDQGcFmaJgB"},
-    {"name": "Brian",  "id": "nPczCjzI2devNBz1zQrb"},
 ]
 
 _EL_KEY      = os.environ.get("ELEVENLABS_API_KEY", "").strip()
