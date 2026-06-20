@@ -35,6 +35,7 @@ BACKUPS_DIR = ROOT / "backups"
 QA_LOG = ROOT / "QA_LOG.md"
 MAX_ATTEMPTS = 3
 BACKUP_MIN = 3
+MAX_POSTS_PER_DAY = 4
 
 
 # ---------------------------------------------------------------------------
@@ -247,10 +248,9 @@ def main():
     # Analytics-weighted voice and music selection; also used for duplicate-run
     # guard (check if today already has an entry in posts.csv).
     post_rows = _load_post_rows()
-    if any(r.get("date") == today for r in post_rows):
-        # One post per day: a second workflow trigger (manual dispatch +
-        # scheduled) would flood the channel and break author-rotation cadence.
-        print(f"[{today}] already posted today — skipping duplicate run")
+    posts_today = sum(1 for r in post_rows if r.get("date") == today)
+    if posts_today >= MAX_POSTS_PER_DAY:
+        print(f"[{today}] already posted {posts_today}/{MAX_POSTS_PER_DAY} times today — skipping")
         return
 
     # Generate content once (quote generation logic untouched)

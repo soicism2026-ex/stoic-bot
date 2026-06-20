@@ -2,8 +2,15 @@ name: daily-short
 
 on:
   schedule:
-    # 16:00 UTC = 12:00 ET. Midday/early-afternoon posting tends to do well.
-    - cron: "0 16 * * *"
+    # 4 posts per day, spaced to hit peak hours in all major time zones:
+    # 07:00 UTC — Europe morning (9am CET, 3am ET)
+    # 12:00 UTC — US East morning (8am ET), Europe afternoon
+    # 17:00 UTC — US afternoon (1pm ET, 10am PT), Europe evening
+    # 22:00 UTC — US West evening (5pm PT), Asia/Pacific morning
+    - cron: "0 7 * * *"
+    - cron: "0 12 * * *"
+    - cron: "0 17 * * *"
+    - cron: "0 22 * * *"
   workflow_dispatch: {}
 
 permissions:
