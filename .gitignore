@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 data/*_voice.mp3
 data/*_reel.mp4
+data/improve_prompt.txt
 .env
 client_secret.json
 assets/backgrounds/*.mp4

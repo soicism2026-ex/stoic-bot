@@ -49,6 +49,7 @@ After the main post loop, the workflow runs:
 | `scripts/qa_check.py` | Video QA: frozen frames, audio desync, contrast, safe-zone clipping. Returns pass/fail + severity. |
 | `scripts/reply_to_comments.py` | Auto-replies to best viewer comments. Filters own channel by `videoOwnerChannelId == authorChannelId` (channel ID comparison, not display name). Max 5 replies/run. |
 | `scripts/rethumbnail.py` | One-off: re-generates and uploads thumbnails for all past videos. `--only-missing` skips videos that already have a `maxres` thumbnail. |
+| `scripts/improve_loop.py` | The brain of the continuous improvement loop. Joins posts.csv + analytics.csv, evaluates last run's outcome, picks next focus area, writes a data-grounded prompt to `data/improve_prompt.txt`, and saves run memory to `data/improve_state.json`. |
 | `scripts/prune_videos.py` | Unlists underperforming videos. |
 
 ---
@@ -64,7 +65,7 @@ After the main post loop, the workflow runs:
 | `backfill.yml` | manual | Re-process old posts |
 | `repost.yml` | manual | Re-upload a specific video |
 | `ci.yml` | push/PR | Run tests |
-| `auto-improve.yaml` | scheduled | Claude-powered self-improvement loop |
+| `auto-improve.yaml` | cron daily 06:00 UTC | Continuous improvement loop: runs `improve_loop.py` to pick a data-driven focus, feeds the output prompt to Claude Code Action, Claude implements the change and commits directly to main |
 
 ---
 
@@ -124,6 +125,7 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 | `data/posts.csv` | All posts: date, theme, quote, author, caption, video_url, video_id, voice_name, music_track |
 | `data/analytics.csv` | Per-video view/like/comment snapshots |
 | `data/replied_comments.csv` | Comment IDs the bot has already replied to |
+| `data/improve_state.json` | Improvement loop memory: iteration count, current focus, focus history with before/after metrics and verdicts, metrics snapshot at each focus start |
 | `backups/*.json` + `backups/*.mp4` | Evergreen backup bank (3 videos) used when QA fails |
 | `QA_LOG.md` | Per-run QA issue log |
 
