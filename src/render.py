@@ -453,26 +453,24 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) -> Path:
-    """Generate a 1080x1920 JPEG thumbnail matching the proven viral Stoic style:
-    dark cinematic footage, large white caps hook text, key punchline word(s)
-    in bright yellow — no stripe, no box, just bold text on dark mood footage.
+    """Generate a 1080x1920 JPEG thumbnail.
 
     Layout:
-      - Heavily darkened background (footage reads as atmosphere, not scene)
-      - Hook text centred in the upper-middle: all-caps white with thick black
-        outline, LAST LINE in yellow — the punchline / key phrase
-      - Small author credit near the bottom in muted white
+      - Deep dark grade + dual vignette so the video reads as atmosphere
+      - Large hook text (all-caps white) filling the centre — last line in gold
+      - Thin gold separator line below the hook block
+      - Author credit in small muted white at the bottom
+      - Gold corner brackets as brand mark
     """
-    hook_lines = textwrap.wrap(hook.upper(), width=13) or [hook.upper()]
-    HOOK_FS   = 112            # large enough to pop at 90px thumbnail width
-    HOOK_LINE_H = HOOK_FS + 16
-    n_lines   = len(hook_lines)
-    block_h   = n_lines * HOOK_LINE_H
+    HOOK_FS     = 130          # larger than before — fills the frame at grid size
+    HOOK_LINE_H = HOOK_FS + 18
+    hook_lines  = textwrap.wrap(hook.upper(), width=10) or [hook.upper()]
+    n_lines     = len(hook_lines)
+    block_h     = n_lines * HOOK_LINE_H
 
-    # Centre the text block in the upper 55% of the frame so it reads like
-    # a poster headline without interfering with the author credit below.
-    text_centre_y = int(H * 0.42)
+    text_centre_y  = int(H * 0.42)
     text_block_top = text_centre_y - block_h // 2
+    text_block_bot = text_block_top + block_h
 
     vf_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
@@ -480,40 +478,50 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
     ]
     if ENHANCE_ON:
         vf_parts += [ENH_SHARPEN, "curves=preset=increase_contrast"]
-    # Dark, moody grade — footage is texture/atmosphere, not a scene.
     vf_parts += [
-        "eq=brightness=-0.18:saturation=0.75:contrast=1.20",
-        "vignette=PI/3.5:eval=init",
-        # Semi-transparent dark overlay across the full frame for legibility.
-        f"drawbox=x=0:y=0:w={W}:h={H}:color=black@0.42:t=fill",
+        # Heavily darken so footage becomes pure atmosphere, not a recognisable scene.
+        "eq=brightness=-0.25:saturation=0.65:contrast=1.25",
+        "vignette=PI/2.8:eval=init",
+        # Second pass: dark gradient-like overlay — heavier at top/bottom, lighter
+        # in the centre. Two semi-transparent boxes approximate a vertical gradient.
+        f"drawbox=x=0:y=0:w={W}:h={H // 2}:color=black@0.30:t=fill",
+        f"drawbox=x=0:y={H // 2}:w={W}:h={H // 2}:color=black@0.38:t=fill",
+        # Middle band overlay for text legibility without fully blacking it out.
+        f"drawbox=x=0:y={text_block_top - 40}:w={W}:h={block_h + 80}:color=black@0.45:t=fill",
     ]
 
-    # Hook text: white for all lines except the last (punchline = yellow).
+    # Hook text — white with gold last line.
     for i, line in enumerate(hook_lines):
         is_punchline = (i == n_lines - 1)
-        color    = "0xFFE000" if is_punchline else "white"
-        fontsize = HOOK_FS + 8 if is_punchline else HOOK_FS
+        color    = "0xFFB830" if is_punchline else "white"   # warmer gold
+        fontsize = HOOK_FS + 10 if is_punchline else HOOK_FS
         line_y   = text_block_top + i * HOOK_LINE_H
         vf_parts.append(
             f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
             f"text='{_escape(line)}':"
             f"fontcolor={color}:fontsize={fontsize}:"
             f"x=(w-text_w)/2:y={line_y}:"
-            f"borderw=9:bordercolor=black@0.95:"
-            f"shadowcolor=black@0.70:shadowx=4:shadowy=4"
+            f"borderw=11:bordercolor=black@0.98:"
+            f"shadowcolor=black@0.80:shadowx=5:shadowy=5"
         )
 
-    # Author credit — small, muted, bottom quarter of the frame.
-    author_y = H - 220
+    # Thin gold separator below the hook block.
+    sep_y = text_block_bot + 28
+    vf_parts.append(
+        f"drawbox=x={W//2 - 120}:y={sep_y}:w=240:h=4:color=0xFFB830@0.90:t=fill"
+    )
+
+    # Author credit.
+    author_y = sep_y + 40
     vf_parts.append(
         f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
         f"text='{_escape(f'— {author.upper()}')}':"
-        f"fontcolor=white@0.65:fontsize=44:"
+        f"fontcolor=white@0.70:fontsize=46:"
         f"x=(w-text_w)/2:y={author_y}:"
-        f"borderw=5:bordercolor=black@0.80"
+        f"borderw=5:bordercolor=black@0.85"
     )
 
-    # Thin gold corner brackets — minimal brand mark.
+    # Gold corner brackets.
     vf_parts.extend(_frame_overlays())
 
     vf = ",".join(vf_parts)
