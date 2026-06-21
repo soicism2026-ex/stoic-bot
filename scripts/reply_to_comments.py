@@ -35,10 +35,6 @@ REPLY_SCOPES        = [
     "https://www.googleapis.com/auth/youtube.force-ssl",
 ]
 
-# Channel's own display names — comments from these are skipped so the bot
-# never replies to its own promo/pin comments.
-OWN_CHANNEL_NAMES = {"forged.in.stoicism", "forged in stoicism", "stoic-bot"}
-
 
 # ---------------------------------------------------------------------------
 # Helpers
@@ -128,10 +124,13 @@ def _fetch_top_comments(yt, video_id: str, replied_ids: set) -> list[dict]:
         text = snip.get("textDisplay", "").strip()
         reply_count = item["snippet"].get("totalReplyCount", 0)
 
-        author_name = snip.get("authorDisplayName", "").strip().lower()
+        # Compare channel IDs — videoOwnerChannelId is in the thread snippet
+        # and never changes name, so this is reliable unlike display-name matching.
+        video_owner_id = item["snippet"].get("videoOwnerChannelId", "")
+        commenter_id   = snip.get("authorChannelId", {}).get("value", "")
 
         # Skip: own channel comments, already replied, too short, spam, has replies
-        if author_name in OWN_CHANNEL_NAMES:
+        if video_owner_id and commenter_id and video_owner_id == commenter_id:
             continue
         if cid in replied_ids:
             continue

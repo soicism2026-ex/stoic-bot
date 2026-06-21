@@ -36,7 +36,7 @@ BACKUPS_DIR = ROOT / "backups"
 QA_LOG = ROOT / "QA_LOG.md"
 MAX_ATTEMPTS = 3
 BACKUP_MIN = 3
-MAX_POSTS_PER_DAY = 4
+MAX_POSTS_PER_DAY = 1
 
 
 # ---------------------------------------------------------------------------

@@ -49,7 +49,7 @@ AUTHOR_COLOR = os.environ.get("REEL_AUTHOR_COLOR", "0xC9A055")  # antique bronze
 DIVIDER_COLOR = os.environ.get("REEL_DIVIDER_COLOR", "0xA08040") # darker bronze for divider
 
 # Karaoke caption controls (all optional, sensible defaults).
-CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False")
+CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "0") not in ("0", "false", "False")
 CAPTIONS_ONLY = os.environ.get("REEL_CAPTIONS_ONLY", "0") not in ("0", "false", "False")
 CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
 CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "92"))
@@ -656,7 +656,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             Path(out_path).with_suffix(".bg.mp4") if _i == 0
             else Path(out_path).with_suffix(f".bg{_i}.mp4")
         )
-        bg_clips.append(fetch_background(theme, _clip_path))
+        bg_clips.append(fetch_background(theme, _clip_path, clip_idx=_i))
     os.environ["REEL_BG_OFFSET"] = str(base_offset)  # restore
     bg = bg_clips[0]  # clip 0 = .bg.mp4, referenced by thumbnail code
 

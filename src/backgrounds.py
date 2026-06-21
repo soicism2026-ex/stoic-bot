@@ -65,6 +65,25 @@ DEFAULT_QUERIES = [
     "classical stone columns shadow fog dark",
 ]
 
+# When a render uses 3 background clips, clips 1 and 2 pull from these
+# diversity pools so each clip has a distinctly different look.
+DIVERSITY_QUERIES = [
+    # Clip 1 — dramatic nature: ocean, mountains, wilderness
+    [
+        "dramatic ocean waves crashing dark cinematic",
+        "mountain peak storm clouds dark cinematic",
+        "waterfall mist dark dramatic cinematic",
+        "desert dunes wind dramatic dark",
+    ],
+    # Clip 2 — ancient stone / architecture
+    [
+        "ancient roman ruins atmospheric dark fog",
+        "stone cathedral archway shadow dark",
+        "crumbling temple stone overgrown dark",
+        "old stone monastery corridor dark",
+    ],
+]
+
 
 def _bg_offset() -> int:
     """Offset for the deterministic-by-date pick. Set by the QA retry loop
@@ -101,10 +120,17 @@ _SYNTHETIC_COLOURS = {
 }
 
 
-def _search_term(theme: str) -> str:
-    """Return a query string for the given theme, rotating through options by date."""
-    t = (theme or "").lower()
+def _search_term(theme: str, clip_idx: int = 0) -> str:
+    """Return a query string for the given theme and clip index.
+
+    clip_idx=0 uses the theme-specific query pool.
+    clip_idx>0 uses a diversity pool so consecutive clips look visually distinct.
+    """
     day = date.today().toordinal() + _bg_offset()
+    if clip_idx > 0:
+        slot = DIVERSITY_QUERIES[(clip_idx - 1) % len(DIVERSITY_QUERIES)]
+        return slot[day % len(slot)]
+    t = (theme or "").lower()
     for keyword, queries in THEME_QUERY_POOLS.items():
         if keyword in t:
             return queries[day % len(queries)]
@@ -154,12 +180,13 @@ def _pick_vertical_file(video: dict) -> str | None:
     return pool[0]["link"]
 
 
-def _fetch_from_pexels(theme: str, out_path: Path) -> Path:
+def _fetch_from_pexels(theme: str, out_path: Path, query: str = "") -> Path:
     api_key = os.environ.get("PEXELS_API_KEY")
     if not api_key:
         raise RuntimeError("PEXELS_API_KEY not set")
 
-    query = _search_term(theme)
+    if not query:
+        query = _search_term(theme)
     resp = requests.get(
         PEXELS_SEARCH_URL,
         headers={"Authorization": api_key},
@@ -196,13 +223,14 @@ def _fetch_from_pexels(theme: str, out_path: Path) -> Path:
     return out_path
 
 
-def _fetch_from_pixabay(theme: str, out_path: Path) -> Path:
+def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "") -> Path:
     """Download a portrait video from Pixabay (requires PIXABAY_API_KEY)."""
     api_key = os.environ.get("PIXABAY_API_KEY")
     if not api_key:
         raise RuntimeError("PIXABAY_API_KEY not set")
 
-    query = _search_term(theme)
+    if not query:
+        query = _search_term(theme)
     resp = requests.get(
         PIXABAY_VIDEO_URL,
         params={
@@ -276,19 +304,20 @@ def _fetch_synthetic(theme: str, out_path: Path) -> Path:
     return out_path
 
 
-def fetch_background(theme: str, out_path: Path) -> Path:
+def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     """
     Return a background clip for today's Short.
 
-    Chain: Pexels → Pixabay → Synthetic (lavfi) → Local rotation.
+    clip_idx drives visual diversity: 0=theme-specific, 1=nature, 2=architecture.
+    Chain: Pixabay → Pexels → Synthetic (lavfi) → Local rotation.
     Every stage catches its own failures so a run never breaks.
     """
     out_path = Path(out_path)
-    query = _search_term(theme)
+    query = _search_term(theme, clip_idx=clip_idx)
 
     for label, fn in [
-        ("PIXABAY",   lambda: _fetch_from_pixabay(theme, out_path)),
-        ("PEXELS",    lambda: _fetch_from_pexels(theme, out_path)),
+        ("PIXABAY",   lambda: _fetch_from_pixabay(theme, out_path, query=query)),
+        ("PEXELS",    lambda: _fetch_from_pexels(theme, out_path, query=query)),
         ("SYNTHETIC", lambda: _fetch_synthetic(theme, out_path)),
     ]:
         try:
