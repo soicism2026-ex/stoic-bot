@@ -65,3 +65,16 @@ for any recurring defects.
 - Animate the hook text in word-by-word (e.g. 'snapped' punching in) to add kinetic energy and emphasize the key word
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-06-23 19:34 UTC
+**File:** `2026-06-23_reel.mp4` | **Verdict:** `PASS`
+**Hook:** 5 Rules to Kill Endless Wanting
+**Scores:** hook_strength=7.5 | text_legibility=8.5 | pacing=6.5 | scroll_stop_potential=7.0
+**Reasoning:** Hook text '5 RULES TO KILL ENDLESS WANTING' is strong copy — numbered listicle plus the aggressive verb 'kill' creates curiosity and promises value, earning 7.5; the dramatic fiery molten visual is genuinely arresting but slightly abstract. Text legibility is high at 8.5 thanks to bold yellow caps with dark outline against dark backgrounds, though the bright molten orange in frames 3-4 reduces contrast on the lower edge. Pacing scores 6.5 — the first four hook frames are nearly identical with only subtle movement in the lava, so the opening feels visually static before the strong transition to the quote and pyramid backdrop. Scroll-stop potential is 7.0: the glowing fire and high-contrast text would catch many feeds, but the molten texture is somewhat ambiguous and not instantly tied to the Stoicism theme.
+**Issues:**
+- First four hook frames are nearly static with only minor lava movement, wasting the critical 1.5s window
+- Fiery molten background is visually striking but thematically ambiguous — doesn't immediately signal Stoicism/desire
+**Suggestions:**
+- Add a punchy motion or scale/zoom on the hook text within the first 0.5s to inject energy and stop the scroll
+- Animate the rules as a quick numbered count-up (1...5) or briefly flash a face/eyes in the hook to anchor the human/philosophical angle
+
