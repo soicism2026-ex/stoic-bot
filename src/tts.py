@@ -95,6 +95,18 @@ def pick_voice(rows: list[dict]) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# Audio validation
+# ---------------------------------------------------------------------------
+
+def _audio_ok(audio_path: Path) -> bool:
+    """Return True if the audio file exists and has meaningful content (>100 bytes)."""
+    try:
+        return audio_path.exists() and audio_path.stat().st_size > 100
+    except Exception:
+        return False
+
+
+# ---------------------------------------------------------------------------
 # edge-tts synthesis (primary)
 # ---------------------------------------------------------------------------
 
@@ -128,6 +140,12 @@ def _synthesize_edge(text: str, out_path: Path, voice_id: str) -> tuple:
         timings = loop.run_until_complete(_edge_stream(text, out_path, voice_id))
     except RuntimeError:
         timings = asyncio.run(_edge_stream(text, out_path, voice_id))
+
+    if not _audio_ok(out_path):
+        raise RuntimeError(
+            f"edge-tts produced empty audio for voice {voice_id} — "
+            "file is 0 bytes or missing. Check network connectivity to the Edge TTS endpoint."
+        )
 
     if not timings:
         timings = _estimate_timings(text, _audio_duration(out_path))
@@ -164,7 +182,7 @@ def _synthesize_elevenlabs(text: str, out_path: Path, voice_id: str) -> tuple:
         out_path.write_bytes(base64.b64decode(data["audio_base64"]))
         alignment = data.get("alignment") or data.get("normalized_alignment")
         timings = _words_from_alignment(text, alignment)
-        if timings:
+        if timings and _audio_ok(out_path):
             return out_path, timings
     except Exception as e:
         print(f"  tts: ElevenLabs with-timestamps failed ({e}); trying plain endpoint")
@@ -176,7 +194,9 @@ def _synthesize_elevenlabs(text: str, out_path: Path, voice_id: str) -> tuple:
                              json=payload, timeout=120)
         resp.raise_for_status()
         out_path.write_bytes(resp.content)
-        return out_path, _estimate_timings(text, _audio_duration(out_path))
+        if _audio_ok(out_path):
+            return out_path, _estimate_timings(text, _audio_duration(out_path))
+        raise ValueError("ElevenLabs plain endpoint returned empty audio")
     except Exception as e:
         print(f"  tts: ElevenLabs plain endpoint also failed ({e}); falling back to edge-tts")
         return _synthesize_edge(text, out_path, VOICE_POOL[0]["id"])
@@ -191,13 +211,13 @@ def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
 
     Uses ElevenLabs only when both ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID
     are set (legacy override path). Otherwise uses edge-tts for free.
+    Raises RuntimeError if synthesis completely fails.
     """
     if _EL_KEY and _EL_VOICE_ID:
         print(f"  tts: ElevenLabs override active (voice {_EL_VOICE_ID})")
         return _synthesize_elevenlabs(text, out_path, _EL_VOICE_ID)
 
     vid = voice_id or VOICE_POOL[0]["id"]
-    # Resolve name for logging
     name = next((v["name"] for v in VOICE_POOL if v["id"] == vid), vid)
     print(f"  tts: edge-tts voice {name} ({vid})")
     return _synthesize_edge(text, out_path, vid)
