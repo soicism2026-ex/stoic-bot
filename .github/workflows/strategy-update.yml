@@ -1,0 +1,62 @@
+name: Update content strategy
+
+# Runs daily at 10:00 UTC — safely ≥48 h after any upload slot (07/12/17/22 UTC).
+# Also dispatchable manually with custom window and age settings.
+on:
+  schedule:
+    - cron: "0 10 * * *"
+  workflow_dispatch:
+    inputs:
+      window_days:
+        description: "Rolling window in days (default: 21)"
+        type: number
+        default: 21
+      min_age_hours:
+        description: "Min hours after upload for metrics to settle (default: 48)"
+        type: number
+        default: 48
+      force_refetch:
+        description: "Force re-fetch analytics even if cached"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  strategy-update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # full history for git pull --rebase
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Validate secrets
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/check_secrets.py
+
+      - name: Run strategy loop
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          STRATEGY_WINDOW_DAYS: ${{ inputs.window_days || '21' }}
+          STRATEGY_MIN_AGE_HOURS: ${{ inputs.min_age_hours || '48' }}
+          # Force-refetch analytics when requested (ignores cache)
+          STRATEGY_FORCE_REFETCH: ${{ inputs.force_refetch || 'false' }}
+          STRATEGY_COMMIT: "1"
+          # Stay well inside the 10k daily Analytics API quota
+          YOUTUBE_ANALYTICS_QUOTA_BUDGET: "200"
+        run: python scripts/strategy_loop.py

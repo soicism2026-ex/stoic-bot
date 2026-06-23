@@ -132,6 +132,27 @@ Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
 }"""
 
 
+def _load_strategy() -> str:
+    """Load data/strategy.md and format it as a system-prompt addendum."""
+    strategy_path = ROOT / "data" / "strategy.md"
+    if not strategy_path.exists():
+        return ""
+    try:
+        text = strategy_path.read_text(encoding="utf-8").strip()
+        if not text or "_Version 0" in text:
+            return ""
+        return (
+            "\n\n---\n"
+            "CHANNEL PERFORMANCE STRATEGY (data-driven, auto-updated by the performance loop):\n"
+            "Use the patterns below as GUIDANCE. They reflect what actually performs well on "
+            "this channel based on real analytics. Prioritise recommendations marked as "
+            "'Top Recommendations' above your own defaults.\n\n"
+            + text
+        )
+    except Exception:
+        return ""
+
+
 def _load_rows() -> list[dict]:
     if not LOG.exists():
         print(
@@ -234,12 +255,13 @@ def generate_content() -> dict:
         f"{avoid_block}"
     )
 
+    strategy_addendum = _load_strategy()
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     msg = client.messages.create(
         model=MODEL,
         max_tokens=1200,
         temperature=1.0,
-        system=SYSTEM,
+        system=SYSTEM + strategy_addendum,
         messages=[{"role": "user", "content": user_msg}],
     )
     raw = "".join(b.text for b in msg.content if b.type == "text").strip()

@@ -123,6 +123,91 @@ IMPROVEMENTS.md       — changelog written by the auto-improve workflow
 
 ---
 
+## Closed-loop self-improvement system
+
+The bot runs two feedback loops that continuously improve content quality without human intervention.
+
+### Loop 1 — Pre-upload visual QA gate (`src/visual_qa.py`)
+
+Every rendered video is scored by Claude Opus **before** it uploads. The gate extracts six frames — four from the hook window (first 1.5 seconds, because the hook matters most) and two from the body — and scores four dimensions:
+
+| Dimension | What it measures |
+|---|---|
+| `hook_strength` | Does the opening compel a viewer to stay? |
+| `text_legibility` | Are all text overlays crisp and readable at phone size? |
+| `pacing` | Does visual rhythm match the audio pace? |
+| `scroll_stop_potential` | Would a casual scroller stop on the first frame? |
+
+Each dimension is scored 0–10. The gate returns three possible verdicts:
+
+| Verdict | Condition | Action |
+|---|---|---|
+| `pass` | All scores ≥ pass threshold | Upload normally |
+| `flag` | Some scores below pass but above fail | Log to `QA_LOG.md`, upload anyway |
+| `fail` | Any score below fail threshold | Log; retry with corrections if `VQA_BLOCK_ON_FAIL=1` |
+
+**Config knobs** (set as env vars in the workflow or locally):
+
+| Env var | Default | Description |
+|---|---|---|
+| `VQA_ENABLED` | `1` | Set to `0` to skip visual QA entirely |
+| `VQA_BLOCK_ON_FAIL` | `0` | Set to `1` to treat hard-fail as a retry trigger |
+| `VQA_HOOK_PASS` / `VQA_HOOK_FAIL` | `6.0` / `3.0` | hook_strength thresholds |
+| `VQA_TEXT_PASS` / `VQA_TEXT_FAIL` | `7.0` / `4.0` | text_legibility thresholds |
+| `VQA_PACING_PASS` / `VQA_PACING_FAIL` | `5.0` / `2.0` | pacing thresholds |
+| `VQA_SCROLL_PASS` / `VQA_SCROLL_FAIL` | `6.0` / `3.0` | scroll_stop_potential thresholds |
+
+**Run standalone for debugging:**
+
+```bash
+python src/visual_qa.py data/2026-06-23_reel.mp4 \
+  --hook "You are wasting your life." \
+  --quote "Time is not refunded." \
+  --author "Seneca" \
+  --theme "time"
+```
+
+---
+
+### Loop 2 — Post-publish performance loop (`scripts/strategy_loop.py`)
+
+Runs daily at 10:00 UTC (48+ hours after any upload) via `strategy-update.yml`. For each video in the rolling window:
+
+1. Pulls extended YouTube Analytics metrics: `avg_view_duration`, `avg_view_percentage`, `swipe_away_rate`, `estimated_minutes_watched` (via `src/youtube_analytics.py`, result cached in `data/analytics_extended.json`)
+2. Downloads each video's YouTube thumbnail for visual analysis (no re-download of MP4s)
+3. Sends the windowed dataset + thumbnails to Claude Opus
+4. Claude correlates performance across the window (not single videos, to avoid overfitting)
+5. Writes a versioned `data/strategy.md` with "what works" patterns and recommendations
+6. Commits and pushes `strategy.md` to main — version history is visible in git log
+
+**The feedback loop closes** because `src/content.py` loads `data/strategy.md` on every content generation call and appends it to the Claude system prompt. Future videos are guided by real performance data automatically.
+
+**Config knobs:**
+
+| Env var | Default | Description |
+|---|---|---|
+| `STRATEGY_WINDOW_DAYS` | `21` | Rolling analysis window in days |
+| `STRATEGY_MIN_AGE_HOURS` | `48` | Min hours after upload before including in analysis |
+| `STRATEGY_MAX_VIDEOS` | `20` | Max videos sent to Claude per analysis run |
+| `STRATEGY_MIN_VIDEOS` | `5` | Skip if fewer videos available (insufficient data) |
+| `STRATEGY_COMMIT` | `1` | Set to `0` to skip git commit (dry-run mode) |
+| `YOUTUBE_ANALYTICS_QUOTA_BUDGET` | `200` | Max Analytics API quota units per run |
+
+**Run standalone for debugging:**
+
+```bash
+# Dry run — writes strategy.md locally but doesn't commit
+STRATEGY_COMMIT=0 python scripts/strategy_loop.py
+
+# Force re-fetch analytics even if cached (useful after token re-scoping)
+STRATEGY_COMMIT=0 python src/youtube_analytics.py --window-days 21 --force
+```
+
+**YouTube Analytics API scope:**
+The extended analytics require the `yt-analytics.readonly` OAuth scope, which is **separate** from the existing scopes. If you see a 403, re-run `scripts/auth_setup.py` with the additional scope and update `YOUTUBE_REFRESH_TOKEN`. The loop fails gracefully on scope errors — it falls back to basic `views` from `analytics.csv` and still generates a strategy doc.
+
+---
+
 ## Self-healing retry logic
 
 The pipeline makes up to 3 render attempts. Between each attempt it adjusts env vars based on QA findings:

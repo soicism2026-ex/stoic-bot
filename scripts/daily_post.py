@@ -31,12 +31,19 @@ import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
+from visual_qa import run_visual_qa       # noqa: E402
 
 BACKUPS_DIR = ROOT / "backups"
 QA_LOG = ROOT / "QA_LOG.md"
 MAX_ATTEMPTS = 3
 BACKUP_MIN = 3
 MAX_POSTS_PER_DAY = 4
+
+# Visual QA config — reads env vars at import time so GitHub Actions can override
+# VQA_ENABLED=0         Skip visual QA entirely (default: 1 = enabled)
+# VQA_BLOCK_ON_FAIL=1   Treat visual-QA hard-fail as a retry trigger (default: 0 = log only)
+_VQA_ENABLED = os.environ.get("VQA_ENABLED", "1") not in ("0", "false", "False")
+_VQA_BLOCK_ON_FAIL = os.environ.get("VQA_BLOCK_ON_FAIL", "0") not in ("0", "false", "False")
 
 
 # ---------------------------------------------------------------------------
@@ -339,6 +346,20 @@ def main():
         last_attempt = (attempt == MAX_ATTEMPTS)
         upload_this = qa["pass"] or (last_attempt and qa["severity"] == "low")
 
+        # Visual QA (Claude Opus content-quality scoring) — only when technical QA
+        # passes, so we don't waste Opus API calls on renders that are already broken.
+        vqa = None
+        if _VQA_ENABLED and upload_this:
+            print(f"  [attempt {attempt}] visual QA...")
+            vqa = run_visual_qa(video_path, content)
+            print(
+                f"  [visual_qa] verdict={vqa.verdict} "
+                + " ".join(f"{k}={v:.1f}" for k, v in vqa.scores.items())
+            )
+            # Block upload only when explicitly enabled and we still have retries left
+            if vqa.verdict == "fail" and _VQA_BLOCK_ON_FAIL and not last_attempt:
+                upload_this = False
+
         if upload_this:
             upload_result = publish_short(
                 video_path=video_path, title=title,
@@ -463,6 +484,12 @@ def main():
             _open_github_issue("Daily render failed - investigate", issue_body)
         else:
             current_env = _apply_corrections(current_env, qa["issues"], attempt)
+            # Supplement with corrections derived from visual QA when it blocked upload
+            if vqa and vqa.verdict == "fail" and _VQA_BLOCK_ON_FAIL:
+                if "text_legibility" in vqa.hard_fails or "text_legibility" in vqa.flags:
+                    extra = float(current_env.get("REEL_EXTRA_DARKEN", "0"))
+                    current_env["REEL_EXTRA_DARKEN"] = f"{min(extra + 0.08, 0.30):.2f}"
+                current_env.setdefault("REEL_BG_OFFSET", str(attempt))
             print(f"  [attempt {attempt}] retrying with corrections: {current_env}")
 
     # Top up backup bank after a successful normal upload
