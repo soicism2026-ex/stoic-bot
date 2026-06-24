@@ -85,6 +85,7 @@ jobs:
         run: python src/analytics.py
 
       - name: Prune low-performing videos
+        continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
