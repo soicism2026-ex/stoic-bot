@@ -50,10 +50,9 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          # ELEVENLABS_VOICE_ID intentionally NOT set: leaving it unset lets
-          # src/tts.py rotate the deep/authoritative Stoic voice pool
-          # (George/Daniel/Brian) and weight it by analytics. Setting it would
-          # hard-pin a single voice and disable rotation.
+          # ELEVENLABS_VOICE_ID intentionally NOT set: tts.py uses edge-tts
+          # (Microsoft Neural, free) by default, rotating Guy/Ryan/Christopher.
+          # Set both ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID to override.
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -85,6 +84,7 @@ jobs:
         run: python src/analytics.py
 
       - name: Prune low-performing videos
+        continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}

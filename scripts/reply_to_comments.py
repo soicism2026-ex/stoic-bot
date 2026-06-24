@@ -103,7 +103,19 @@ def _score_comment(item: dict) -> float:
     return likes * 3 + min(length, 300)
 
 
-def _fetch_top_comments(yt, video_id: str, replied_ids: set) -> list[dict]:
+def _get_own_channel_id(yt) -> str:
+    """Fetch the authenticated channel's own ID via channels.list(mine=True)."""
+    try:
+        resp = yt.channels().list(part="id", mine=True).execute()
+        items = resp.get("items", [])
+        return items[0]["id"] if items else ""
+    except Exception as e:
+        print(f"  [comments] could not fetch own channel ID: {e}")
+        return ""
+
+
+def _fetch_top_comments(yt, video_id: str, replied_ids: set,
+                        own_channel_id: str = "") -> list[dict]:
     """Return filtered, ranked comment thread items for a single video."""
     try:
         resp = yt.commentThreads().list(
@@ -124,13 +136,17 @@ def _fetch_top_comments(yt, video_id: str, replied_ids: set) -> list[dict]:
         text = snip.get("textDisplay", "").strip()
         reply_count = item["snippet"].get("totalReplyCount", 0)
 
-        # Compare channel IDs — videoOwnerChannelId is in the thread snippet
-        # and never changes name, so this is reliable unlike display-name matching.
+        # Belt-and-suspenders own-comment filter:
+        # videoOwnerChannelId may be absent from the API response, so we also
+        # compare against the channel ID we fetched explicitly at startup.
         video_owner_id = item["snippet"].get("videoOwnerChannelId", "")
         commenter_id   = snip.get("authorChannelId", {}).get("value", "")
 
-        # Skip: own channel comments, already replied, too short, spam, has replies
-        if video_owner_id and commenter_id and video_owner_id == commenter_id:
+        is_own = (
+            (video_owner_id and commenter_id and video_owner_id == commenter_id)
+            or (own_channel_id and commenter_id and own_channel_id == commenter_id)
+        )
+        if is_own:
             continue
         if cid in replied_ids:
             continue
@@ -204,10 +220,16 @@ def main():
         print(f"  YouTube auth failed: {e}", file=sys.stderr)
         sys.exit(1)
 
+    own_channel_id = _get_own_channel_id(yt)
+    if own_channel_id:
+        print(f"  Own channel ID: {own_channel_id}")
+    else:
+        print("  Warning: could not resolve own channel ID — self-reply filter may be incomplete")
+
     # Gather candidate comments across all recent videos
     candidates: list[tuple[dict, str, str]] = []  # (item, video_id, video_title)
     for vid in video_ids:
-        items = _fetch_top_comments(yt, vid, replied_ids)
+        items = _fetch_top_comments(yt, vid, replied_ids, own_channel_id=own_channel_id)
         for item in items:
             title = item["snippet"]["topLevelComment"]["snippet"].get("videoId", vid)
             candidates.append((item, vid, vid))  # title fetched below
