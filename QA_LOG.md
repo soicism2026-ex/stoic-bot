@@ -91,3 +91,17 @@ for any recurring defects.
 - Add motion to the hook window — a punch-in zoom, a word-by-word text reveal, or a faster wave clip — so the opening 1.5s has visible momentum
 - Boost contrast on the body quote (heavier weight, stronger drop shadow or a subtle dark scrim behind the text) and consider chunking it into shorter timed lines synced to the voiceover for better readability and pacing
 
+
+## Visual QA — 2026-06-24 10:36 UTC
+**File:** `2026-06-24_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Your fear is loud.
+**Scores:** hook_strength=7.5 | text_legibility=8.0 | pacing=4.5 | scroll_stop_potential=7.0
+**Reasoning:** The hook 'YOUR FEAR IS LOUD' is punchy, relatable, and creates emotional curiosity — strong but slightly generic in the saturated Stoicism niche, so 7.5. Text legibility is good: bold yellow/orange caps with dark outline read clearly against the purple forest, though the lower body quote uses a thin serif font that is harder to read at phone size, pulling it to 8.0. Pacing is the weak point — frames 1–4 are essentially identical static shots with the same text, meaning the entire 1.5s hook window has zero visual movement or transition energy, hence 4.5. Scroll-stop potential is solid at 7.0 thanks to the moody, atmospheric purple-lit forest and high-contrast hook text, which is visually distinct enough to interrupt a feed, though it lacks a human face or motion that would push it higher.
+**Issues:**
+- Hook frames 1-4 are visually static — identical background and text for the full 1.5s opening, no movement or zoom to hold attention
+- Body quote uses a thin serif font (frames 5-6) that is lower contrast and harder to read at phone size than the bold hook caps
+**Suggestions:**
+- Add a subtle slow zoom, parallax, or light flicker to the hook frames so the opening 1.5s feels alive instead of frozen
+- Switch the body quote to a bolder, higher-contrast sans-serif or add a stronger drop shadow/background plate to match the legibility of the hook text
+**Flagged dims:** pacing
+
