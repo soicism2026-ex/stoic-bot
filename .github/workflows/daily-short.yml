@@ -50,10 +50,9 @@ jobs:
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          # ELEVENLABS_VOICE_ID intentionally NOT set: leaving it unset lets
-          # src/tts.py rotate the deep/authoritative Stoic voice pool
-          # (George/Daniel/Brian) and weight it by analytics. Setting it would
-          # hard-pin a single voice and disable rotation.
+          # ELEVENLABS_VOICE_ID intentionally NOT set: tts.py uses edge-tts
+          # (Microsoft Neural, free) by default, rotating Guy/Ryan/Christopher.
+          # Set both ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID to override.
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
@@ -92,10 +91,18 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python scripts/prune_videos.py
 
+      - name: Reply to top comments
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/reply_to_comments.py
+
       - name: Commit log and backups
         run: |
           git config user.name "stoic-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add data/posts.csv data/analytics.csv QA_LOG.md backups/
+          git add data/posts.csv data/analytics.csv data/replied_comments.csv QA_LOG.md backups/
           git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
           git push
