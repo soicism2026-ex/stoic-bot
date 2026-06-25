@@ -340,7 +340,7 @@ def _mix_word_clicks(voice_path: Path, click_path: Path, out_path: Path) -> Path
 def _escape(text: str) -> str:
     # escape for ffmpeg drawtext
     return (text.replace("\\", "\\\\").replace(":", "\\:")
-                .replace("'", "’").replace("%", "\\%"))
+                .replace("'", "'").replace("%", "\\%"))
 
 
 def _escape_filter_path(p: Path) -> str:
@@ -396,18 +396,19 @@ def _group_lines(word_timings: list, max_words: int = 2, pause: float = 0.55) ->
 
 
 def _build_ass(word_timings: list, out_path: Path) -> Path:
-    """Write a .ass subtitle file with impactful 2-word karaoke captions.
+    """Write a .ass subtitle file with dramatic per-word captions.
 
-    2 words at a time gives a natural reading rhythm without the chaotic
-    single-word flash. Each chunk is guaranteed at least 600ms on screen so
-    fast speech still reads clearly. Chunks never overlap — end is clamped to
-    just before the next chunk starts. Style: white text, thick black outline,
-    gold shadow — premium Stoic brand.  All caps for impact.
+    Each word appears as a single "stamp" — starts oversized and blurry (like
+    a burst of light), snaps into crisp focus over 140ms, then lingers.
+    Style: white text, thick black outline, gold shadow offset = premium Stoic
+    look matching the gold frame/hook brand.  All caps for maximum impact.
     """
-    lines = _group_lines(word_timings, max_words=2)
+    lines = _group_lines(word_timings, max_words=1)
 
-    # ASS colors: &HAABBGGRR
-    # White: &H00FFFFFF  Black outline: &H00000000  Gold shadow #FFB830: &H0030B8FF
+    # ASS colors: &HAABBGGRR (AA=00 fully opaque)
+    # White body text:  &H00FFFFFF
+    # Black outline:    &H00000000
+    # Gold shadow:      #FFB830 → BGR B=30, G=B8, R=FF → &H0030B8FF
     primary = "&H00FFFFFF"
     outline = "&H00000000"
     shadow  = "&H0030B8FF"
@@ -427,22 +428,19 @@ Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{primary},{outline},{
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 """
 
-    # Pre-compute start times for each chunk so we can clamp endings.
-    chunk_starts = [max(0.0, line[0][1] - 0.05) for line in lines]
-
     events = []
-    for i, line in enumerate(lines):
-        start = chunk_starts[i]
-        # Minimum 600ms on screen; clamp to just before next chunk appears.
-        natural_end = line[-1][2] + 0.15
-        min_end     = start + 0.60
-        next_start  = chunk_starts[i + 1] - 0.04 if i + 1 < len(lines) else float("inf")
-        end = min(max(natural_end, min_end), next_start)
+    for line in lines:
+        # Flash in just before the word is spoken; linger well past the end
+        # so fast speech still gives the viewer time to read it.
+        start = max(0.0, line[0][1] - 0.05)
+        end   = max(line[-1][2] + 0.22, start + 0.42)
+        text  = " ".join(_ass_escape(w[0].strip().upper()) for w in line)
 
-        text = " ".join(_ass_escape(w[0].strip().upper()) for w in line)
-
-        # Scale pop 120%→100% over 120ms + gentle fade out — readable, not chaotic.
-        anim = r"{\fscx120\fscy120\t(0,120,\fscx100\fscy100)\fad(60,180)}"
+        # Light-burst stamp-in:
+        #   \blur9\fscx155\fscy155  — start oversized and blurry (like a light flash)
+        #   \t(0,140,\blur0.3\fscx100\fscy100)  — snap to sharp/full-size in 140ms
+        #   \fad(25,220)  — almost-instant flash in, gentle linger fade-out
+        anim = r"{\blur9\fscx155\fscy155\t(0,140,\blur0.3\fscx100\fscy100)\fad(25,220)}"
         events.append(
             f"Dialogue: 0,{_ass_time(start)},{_ass_time(end)},"
             f"Karaoke,,0,0,0,,{anim}{text}"
@@ -453,24 +451,26 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) -> Path:
-    """Generate a 1080x1920 JPEG thumbnail.
+    """Generate a 1080x1920 JPEG thumbnail matching the proven viral Stoic style:
+    dark cinematic footage, large white caps hook text, key punchline word(s)
+    in bright yellow — no stripe, no box, just bold text on dark mood footage.
 
     Layout:
-      - Deep dark grade + dual vignette so the video reads as atmosphere
-      - Large hook text (all-caps white) filling the centre — last line in gold
-      - Thin gold separator line below the hook block
-      - Author credit in small muted white at the bottom
-      - Gold corner brackets as brand mark
+      - Heavily darkened background (footage reads as atmosphere, not scene)
+      - Hook text centred in the upper-middle: all-caps white with thick black
+        outline, LAST LINE in yellow — the punchline / key phrase
+      - Small author credit near the bottom in muted white
     """
-    HOOK_FS     = 130          # larger than before — fills the frame at grid size
-    HOOK_LINE_H = HOOK_FS + 18
-    hook_lines  = textwrap.wrap(hook.upper(), width=10) or [hook.upper()]
-    n_lines     = len(hook_lines)
-    block_h     = n_lines * HOOK_LINE_H
+    hook_lines = textwrap.wrap(hook.upper(), width=13) or [hook.upper()]
+    HOOK_FS   = 112            # large enough to pop at 90px thumbnail width
+    HOOK_LINE_H = HOOK_FS + 16
+    n_lines   = len(hook_lines)
+    block_h   = n_lines * HOOK_LINE_H
 
-    text_centre_y  = int(H * 0.42)
+    # Centre the text block in the upper 55% of the frame so it reads like
+    # a poster headline without interfering with the author credit below.
+    text_centre_y = int(H * 0.42)
     text_block_top = text_centre_y - block_h // 2
-    text_block_bot = text_block_top + block_h
 
     vf_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
@@ -478,50 +478,40 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
     ]
     if ENHANCE_ON:
         vf_parts += [ENH_SHARPEN, "curves=preset=increase_contrast"]
+    # Dark, moody grade — footage is texture/atmosphere, not a scene.
     vf_parts += [
-        # Heavily darken so footage becomes pure atmosphere, not a recognisable scene.
-        "eq=brightness=-0.25:saturation=0.65:contrast=1.25",
-        "vignette=PI/2.8:eval=init",
-        # Second pass: dark gradient-like overlay — heavier at top/bottom, lighter
-        # in the centre. Two semi-transparent boxes approximate a vertical gradient.
-        f"drawbox=x=0:y=0:w={W}:h={H // 2}:color=black@0.30:t=fill",
-        f"drawbox=x=0:y={H // 2}:w={W}:h={H // 2}:color=black@0.38:t=fill",
-        # Middle band overlay for text legibility without fully blacking it out.
-        f"drawbox=x=0:y={text_block_top - 40}:w={W}:h={block_h + 80}:color=black@0.45:t=fill",
+        "eq=brightness=-0.18:saturation=0.75:contrast=1.20",
+        "vignette=PI/3.5:eval=init",
+        # Semi-transparent dark overlay across the full frame for legibility.
+        f"drawbox=x=0:y=0:w={W}:h={H}:color=black@0.42:t=fill",
     ]
 
-    # Hook text — white with gold last line.
+    # Hook text: white for all lines except the last (punchline = yellow).
     for i, line in enumerate(hook_lines):
         is_punchline = (i == n_lines - 1)
-        color    = "0xFFB830" if is_punchline else "white"   # warmer gold
-        fontsize = HOOK_FS + 10 if is_punchline else HOOK_FS
+        color    = "0xFFE000" if is_punchline else "white"
+        fontsize = HOOK_FS + 8 if is_punchline else HOOK_FS
         line_y   = text_block_top + i * HOOK_LINE_H
         vf_parts.append(
             f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
             f"text='{_escape(line)}':"
             f"fontcolor={color}:fontsize={fontsize}:"
             f"x=(w-text_w)/2:y={line_y}:"
-            f"borderw=11:bordercolor=black@0.98:"
-            f"shadowcolor=black@0.80:shadowx=5:shadowy=5"
+            f"borderw=9:bordercolor=black@0.95:"
+            f"shadowcolor=black@0.70:shadowx=4:shadowy=4"
         )
 
-    # Thin gold separator below the hook block.
-    sep_y = text_block_bot + 28
-    vf_parts.append(
-        f"drawbox=x={W//2 - 120}:y={sep_y}:w=240:h=4:color=0xFFB830@0.90:t=fill"
-    )
-
-    # Author credit.
-    author_y = sep_y + 40
+    # Author credit — small, muted, bottom quarter of the frame.
+    author_y = H - 220
     vf_parts.append(
         f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
-        f"text='{_escape(f'— {author.upper()}')}':"
-        f"fontcolor=white@0.70:fontsize=46:"
+        f"text='{_escape(f'--- {author.upper()}')}':"
+        f"fontcolor=white@0.65:fontsize=44:"
         f"x=(w-text_w)/2:y={author_y}:"
-        f"borderw=5:bordercolor=black@0.85"
+        f"borderw=5:bordercolor=black@0.80"
     )
 
-    # Gold corner brackets.
+    # Thin gold corner brackets — minimal brand mark.
     vf_parts.extend(_frame_overlays())
 
     vf = ",".join(vf_parts)
@@ -608,8 +598,9 @@ def _enhance_graph(src_label: str, out_label: str) -> str:
     after the full cinematic enhancement chain (denoise → sharpen → grade is
     applied by the caller before this; here we add bloom → grain).
 
-    Bloom needs to split the stream, blur one copy and screen it back, which is
-    why enhancement lives in filter_complex rather than a simple -vf chain.
+    Bloom needs to split the stream, blur one copy and screen it back over the
+    base, which is why enhancement lives in filter_complex rather than a simple
+    -vf chain.
     """
     grain = f",noise=alls={ENH_GRAIN}:allf=t" if ENH_GRAIN > 0 else ""
     return (
@@ -669,7 +660,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     bg = bg_clips[0]  # clip 0 = .bg.mp4, referenced by thumbnail code
 
     quote_lines = textwrap.wrap(quote, width=24) or [quote]
-    author_txt = _escape(f"— {author}")
+    author_txt = _escape(f"--- {author}")
 
     day = date.today().toordinal()
 
@@ -764,7 +755,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         )
 
         # Author — antique bronze, all-caps, slightly smaller than quote.
-        author_upper = _escape(f"— {author.upper()}")
+        author_upper = _escape(f"--- {author.upper()}")
         vf_parts.append(
             f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
             f"text='{author_upper}':"

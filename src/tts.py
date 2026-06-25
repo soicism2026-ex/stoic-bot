@@ -16,7 +16,7 @@ Voice pool — three deep Microsoft Neural voices tuned for the Stoic niche:
   Guy         — deep, dominant American; closest to high-view Stoic Shorts style
   Ryan        — deep British, measured and philosophical
   Christopher — authoritative American, confident narrator register
-Rotates analytics-weighted once each voice has ≥5 posts of view data; uses LRU
+Rotates analytics-weighted once each voice has >=5 posts of view data; uses LRU
 equal rotation before that.
 """
 import asyncio
@@ -114,7 +114,7 @@ async def _edge_stream(text: str, out_path: Path, voice_id: str) -> list:
     """Async core: stream edge-tts, collect audio + word boundaries."""
     import edge_tts  # lazy import keeps startup fast when EL override is used
 
-    communicate = edge_tts.Communicate(text, voice_id, rate="-5%", pitch="-8Hz")
+    communicate = edge_tts.Communicate(text, voice_id, rate="-15%", pitch="-8Hz")
     audio_chunks: list[bytes] = []
     word_timings: list[tuple] = []
 

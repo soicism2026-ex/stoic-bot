@@ -66,7 +66,8 @@ DEFAULT_QUERIES = [
 ]
 
 # When a render uses 3 background clips, clips 1 and 2 pull from these
-# diversity pools so each clip has a distinctly different look.
+# diversity pools instead of the same theme query — guaranteeing each clip
+# has a distinctly different look (nature + architecture contrast the opener).
 DIVERSITY_QUERIES = [
     # Clip 1 — dramatic nature: ocean, mountains, wilderness
     [
@@ -123,8 +124,9 @@ _SYNTHETIC_COLOURS = {
 def _search_term(theme: str, clip_idx: int = 0) -> str:
     """Return a query string for the given theme and clip index.
 
-    clip_idx=0 uses the theme-specific query pool.
-    clip_idx>0 uses a diversity pool so consecutive clips look visually distinct.
+    clip_idx=0 uses the theme-specific query (forge/storm for anger, etc).
+    clip_idx>0 uses a diversity pool (nature, then ancient stone) so that
+    consecutive clips in the same Short look visually distinct.
     """
     day = date.today().toordinal() + _bg_offset()
     if clip_idx > 0:
@@ -309,7 +311,7 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     Return a background clip for today's Short.
 
     clip_idx drives visual diversity: 0=theme-specific, 1=nature, 2=architecture.
-    Chain: Pixabay → Pexels → Synthetic (lavfi) → Local rotation.
+    Chain: Pexels → Pixabay → Synthetic (lavfi) → Local rotation.
     Every stage catches its own failures so a run never breaks.
     """
     out_path = Path(out_path)
