@@ -16,7 +16,7 @@ Voice pool — three deep Microsoft Neural voices tuned for the Stoic niche:
   Guy         — deep, dominant American; closest to high-view Stoic Shorts style
   Ryan        — deep British, measured and philosophical
   Christopher — authoritative American, confident narrator register
-Rotates analytics-weighted once each voice has >=5 posts of view data; uses LRU
+Rotates analytics-weighted once each voice has ≥5 posts of view data; uses LRU
 equal rotation before that.
 """
 import asyncio
