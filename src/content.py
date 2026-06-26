@@ -220,7 +220,7 @@ def _pick_next_theme(rows: list, current_theme: str) -> str:
 
 
 def _pick_format(rows: list[dict]) -> str:
-    """Rotate content format: quote -> minimal -> quote -> list (repeating)."""
+    """Rotate content format: quote → minimal → quote → list (repeating)."""
     ROTATION = ["quote", "minimal", "quote", "list"]
     return ROTATION[len(rows) % len(ROTATION)]
 

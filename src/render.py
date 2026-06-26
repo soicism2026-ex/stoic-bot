@@ -143,12 +143,6 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
     preset = _read_hook_preset()
 
     if preset == "meditative":
-        # A singing-bowl bed: a warm fundamental plus an inharmonic overtone set
-        # (the ~2.7x partial gives bowls their characteristic shimmer). A second
-        # tone detuned by ~1.3 Hz beats slowly against the fundamental for a
-        # living, breathing shimmer. Each partial swells in then releases over
-        # the full duration (triangle envelope via min(rise, fall)). A gentle
-        # echo adds air/space, and a soft limiter tames the sum.
         dur = max(dur, 5.0)
 
         def _bed(freq, amp, attack):
@@ -159,11 +153,11 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
                 ":eval=frame"
             )
 
-        f0    = _bed(174.0, 1.00, 0.9)    # fundamental (F3, calming)
-        f0b   = _bed(175.3, 0.70, 1.0)    # detuned partner → slow ~1.3 Hz beating
-        octv  = _bed(348.0, 0.55, 1.1)    # octave warmth
-        part  = _bed(470.0, 0.26, 1.3)    # ~2.7x bowl partial (shimmer)
-        high  = _bed(587.0, 0.13, 1.5)    # faint upper sparkle
+        f0    = _bed(174.0, 1.00, 0.9)
+        f0b   = _bed(175.3, 0.70, 1.0)
+        octv  = _bed(348.0, 0.55, 1.1)
+        part  = _bed(470.0, 0.26, 1.3)
+        high  = _bed(587.0, 0.13, 1.5)
         fc = (
             f"{f0}[a];{f0b}[b];{octv}[c];{part}[d];{high}[e];"
             "[a][b][c][d][e]amix=inputs=5:duration=longest,"
@@ -221,7 +215,7 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
             f"afade=t=out:st={dur - 0.3:.3f}:d=0.3,volume=1.6"
         )
 
-    else:  # "bass_impact" — default; most prevalent in viral motivation Shorts
+    else:  # "bass_impact"
         sweep = (
             f"anoisesrc=d={dur}:c=pink:a=0.65,"
             "bandpass=f=1200:width_type=h:w=2000,"
@@ -255,17 +249,10 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
 
 
 def _mix_intro_sound(voice_path: Path, hook_path: Path, out_path: Path) -> Path:
-    """Overlay the hook sound under the very start of the voiceover.
-
-    Keeps the output as long as the voiceover (`duration=first`); the hook simply
-    stops contributing once it ends. The voice stays dominant so the opening
-    words remain clear. Returns the mixed audio path.
-    """
+    """Overlay the hook sound under the very start of the voiceover."""
     fc = (
         "[0:a]volume=1.0[v];[1:a]volume=0.8[h];"
         "[v][h]amix=inputs=2:duration=first:dropout_transition=0,"
-        # restore the loudness amix's averaging removed, then hard-cap so the
-        # overlap of a loud word and the whoosh can never clip.
         "volume=1.9,alimiter=limit=0.95[a]"
     )
     subprocess.run(
@@ -278,19 +265,13 @@ def _mix_intro_sound(voice_path: Path, hook_path: Path, out_path: Path) -> Path:
 
 
 def _make_word_click_track(word_timings: list, dur: float, out_path: Path) -> Path:
-    """Write a WAV with a bass-thud impact at every word onset.
-
-    Uses only stdlib (wave + struct + math) — no numpy or scipy required.
-    The thuds are kept short (60ms) and soft so they feel like a subliminal
-    "punch" under the caption rather than a distracting noise.
-    """
+    """Write a WAV with a bass-thud impact at every word onset."""
     import wave, struct, math
 
     SR = 44100
     n_samples = int((dur + 0.5) * SR)
     track = [0.0] * n_samples
 
-    # Short bass thud: 65 Hz fundamental + 130 Hz warmth + 2.2 kHz snap transient
     thud_n = int(0.06 * SR)
     thud = []
     for i in range(thud_n):
@@ -340,7 +321,7 @@ def _mix_word_clicks(voice_path: Path, click_path: Path, out_path: Path) -> Path
 def _escape(text: str) -> str:
     # escape for ffmpeg drawtext
     return (text.replace("\\", "\\\\").replace(":", "\\:")
-                .replace("'", "’").replace("%", "\\%"))
+                .replace("'", "'").replace("%", "\\%"))
 
 
 def _escape_filter_path(p: Path) -> str:
@@ -373,11 +354,7 @@ def _ass_escape(text: str) -> str:
 
 
 def _group_lines(word_timings: list, max_words: int = 2, pause: float = 0.55) -> list:
-    """Group (word, start, end) into caption lines of 1-max_words words.
-
-    Breaks on: reaching max_words, a silence gap > `pause` before the next word,
-    or sentence-ending punctuation. Each returned line is a list of timings.
-    """
+    """Group (word, start, end) into caption lines of 1-max_words words."""
     lines = []
     cur = []
     for i, wt in enumerate(word_timings):
@@ -396,19 +373,9 @@ def _group_lines(word_timings: list, max_words: int = 2, pause: float = 0.55) ->
 
 
 def _build_ass(word_timings: list, out_path: Path) -> Path:
-    """Write a .ass subtitle file with dramatic per-word captions.
-
-    Each word appears as a single "stamp" — starts oversized and blurry (like
-    a burst of light), snaps into crisp focus over 140ms, then lingers.
-    Style: white text, thick black outline, gold shadow offset = premium Stoic
-    look matching the gold frame/hook brand.  All caps for maximum impact.
-    """
+    """Write a .ass subtitle file with dramatic per-word captions."""
     lines = _group_lines(word_timings, max_words=1)
 
-    # ASS colors: &HAABBGGRR (AA=00 fully opaque)
-    # White body text:  &H00FFFFFF
-    # Black outline:    &H00000000
-    # Gold shadow:      #FFB830 → BGR B=30, G=B8, R=FF → &H0030B8FF
     primary = "&H00FFFFFF"
     outline = "&H00000000"
     shadow  = "&H0030B8FF"
@@ -430,16 +397,9 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
     events = []
     for line in lines:
-        # Flash in just before the word is spoken; linger well past the end
-        # so fast speech still gives the viewer time to read it.
         start = max(0.0, line[0][1] - 0.05)
         end   = max(line[-1][2] + 0.22, start + 0.42)
         text  = " ".join(_ass_escape(w[0].strip().upper()) for w in line)
-
-        # Light-burst stamp-in:
-        #   \blur9\fscx155\fscy155  — start oversized and blurry (like a light flash)
-        #   \t(0,140,\blur0.3\fscx100\fscy100)  — snap to sharp/full-size in 140ms
-        #   \fad(25,220)  — almost-instant flash in, gentle linger fade-out
         anim = r"{\blur9\fscx155\fscy155\t(0,140,\blur0.3\fscx100\fscy100)\fad(25,220)}"
         events.append(
             f"Dialogue: 0,{_ass_time(start)},{_ass_time(end)},"
@@ -451,24 +411,13 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
 
 
 def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) -> Path:
-    """Generate a 1080x1920 JPEG thumbnail matching the proven viral Stoic style:
-    dark cinematic footage, large white caps hook text, key punchline word(s)
-    in bright yellow — no stripe, no box, just bold text on dark mood footage.
-
-    Layout:
-      - Heavily darkened background (footage reads as atmosphere, not scene)
-      - Hook text centred in the upper-middle: all-caps white with thick black
-        outline, LAST LINE in yellow — the punchline / key phrase
-      - Small author credit near the bottom in muted white
-    """
+    """Generate a 1080x1920 JPEG thumbnail."""
     hook_lines = textwrap.wrap(hook.upper(), width=13) or [hook.upper()]
-    HOOK_FS   = 112            # large enough to pop at 90px thumbnail width
+    HOOK_FS   = 112
     HOOK_LINE_H = HOOK_FS + 16
     n_lines   = len(hook_lines)
     block_h   = n_lines * HOOK_LINE_H
 
-    # Centre the text block in the upper 55% of the frame so it reads like
-    # a poster headline without interfering with the author credit below.
     text_centre_y = int(H * 0.42)
     text_block_top = text_centre_y - block_h // 2
 
@@ -478,15 +427,12 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
     ]
     if ENHANCE_ON:
         vf_parts += [ENH_SHARPEN, "curves=preset=increase_contrast"]
-    # Dark, moody grade — footage is texture/atmosphere, not a scene.
     vf_parts += [
         "eq=brightness=-0.18:saturation=0.75:contrast=1.20",
         "vignette=PI/3.5:eval=init",
-        # Semi-transparent dark overlay across the full frame for legibility.
         f"drawbox=x=0:y=0:w={W}:h={H}:color=black@0.42:t=fill",
     ]
 
-    # Hook text: white for all lines except the last (punchline = yellow).
     for i, line in enumerate(hook_lines):
         is_punchline = (i == n_lines - 1)
         color    = "0xFFE000" if is_punchline else "white"
@@ -501,7 +447,6 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
             f"shadowcolor=black@0.70:shadowx=4:shadowy=4"
         )
 
-    # Author credit — small, muted, bottom quarter of the frame.
     author_y = H - 220
     vf_parts.append(
         f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
@@ -511,9 +456,7 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
         f"borderw=5:bordercolor=black@0.80"
     )
 
-    # Thin gold corner brackets — minimal brand mark.
     vf_parts.extend(_frame_overlays())
-
     vf = ",".join(vf_parts)
 
     cmd = [
@@ -568,24 +511,18 @@ def _callout_overlays(word_timings: list, callout_words: list) -> list:
 
 
 def _frame_overlays() -> list:
-    """Thin gold frame with corner brackets — a premium 'designed' border.
-
-    Drawn last so it sits on top of everything. Static (no animation) because
-    drawbox can't ramp alpha over time; the brackets read as intentional design
-    at any thumbnail size.
-    """
+    """Thin gold frame with corner brackets."""
     if not FRAME_ON:
         return []
-    I = 34          # inset from the edge
-    L = 110         # bracket arm length
-    T = 6           # line thickness
+    I = 34
+    L = 110
+    T = 6
     c = f"{FRAME_COLOR}@0.85"
     corners = [
-        # (x, y) of each arm for the four corners
-        (I, I, L, T), (I, I, T, L),                         # top-left
-        (W - I - L, I, L, T), (W - I - T, I, T, L),         # top-right
-        (I, H - I - T, L, T), (I, H - I - L, T, L),         # bottom-left
-        (W - I - L, H - I - T, L, T), (W - I - T, H - I - L, T, L),  # bottom-right
+        (I, I, L, T), (I, I, T, L),
+        (W - I - L, I, L, T), (W - I - T, I, T, L),
+        (I, H - I - T, L, T), (I, H - I - L, T, L),
+        (W - I - L, H - I - T, L, T), (W - I - T, H - I - L, T, L),
     ]
     return [
         f"drawbox=x={x}:y={y}:w={w}:h={h}:color={c}:t=fill"
@@ -594,13 +531,7 @@ def _frame_overlays() -> list:
 
 
 def _enhance_graph(src_label: str, out_label: str) -> str:
-    """Return a filtergraph segment that takes [src_label] and emits [out_label]
-    after the full cinematic enhancement chain (denoise → sharpen → grade is
-    applied by the caller before this; here we add bloom → grain).
-
-    Bloom needs to split the stream, blur one copy and screen it back, which is
-    why enhancement lives in filter_complex rather than a simple -vf chain.
-    """
+    """Return a filtergraph segment for bloom + grain enhancement."""
     grain = f",noise=alls={ENH_GRAIN}:allf=t" if ENH_GRAIN > 0 else ""
     return (
         f"[{src_label}]split[base][glowsrc];"
@@ -614,9 +545,6 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 theme: str = "", word_timings: list = None,
                 hook: str = "", callout_words: list = None,
                 music_path: Path = None) -> Path:
-    # Mix an attention "whoosh" under the opening before anything else so the
-    # rest of the pipeline just sees a normal audio track. Never let it break a
-    # run: on any failure fall back to the raw voiceover.
     audio_for_render = audio_path
     if HOOK_SOUND_ON:
         try:
@@ -628,7 +556,6 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         except Exception as e:  # noqa: BLE001
             print(f"  hook sound unavailable ({e}); using plain voiceover")
 
-    # Mix a subtle bass-thud at every word onset so captions have audio impact.
     if word_timings and CAPTIONS_ON:
         try:
             _pre_dur = _audio_duration(audio_for_render) + 1.0
@@ -640,15 +567,12 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         except Exception as e:  # noqa: BLE001
             print(f"  word click track failed ({e}); skipping")
 
-    dur = _audio_duration(audio_for_render) + 1.0  # small tail
+    dur = _audio_duration(audio_for_render) + 1.0
 
-    # Fetch multiple background clips for dynamic B-roll variety.
-    # Default: 3 clips (one cut every ~10s). Override via REEL_BG_CLIPS.
     n_bg = max(1, int(os.environ.get("REEL_BG_CLIPS", "3")))
     bg_clips = []
     base_offset = int(os.environ.get("REEL_BG_OFFSET", "0"))
     for _i in range(n_bg):
-        # Space picks 7 apart so consecutive clips look visually distinct.
         os.environ["REEL_BG_OFFSET"] = str(base_offset + _i * 7)
         _clip_path = (
             Path(out_path).with_suffix(".bg.mp4") if _i == 0
@@ -659,54 +583,33 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     bg = bg_clips[0]  # clip 0 = .bg.mp4, referenced by thumbnail code
 
     quote_lines = textwrap.wrap(quote, width=24) or [quote]
-    author_txt = _escape(f"— {author}")
 
     day = date.today().toordinal()
 
-    # When captions occupy the lower-middle, lift the quote card up so they don't
-    # collide; otherwise keep the original date-varied placement.
     show_quote = not (CAPTIONS_ONLY and word_timings)
     caption_band = bool(word_timings) and CAPTIONS_ON
 
-    # vary text vertical position: 0 -> centered, 1 -> upper third
     upper_third = (day % 2) == 1
-    # When captions occupy the lower-middle, park the quote/author in the upper
-    # third to clear the caption band; otherwise keep the date-varied placement.
     if caption_band or upper_third:
         center_expr = "h/3"
     else:
         center_expr = "(h/2)-80"
 
-    # Render the quote as one drawtext per wrapped line with explicit, deterministic
-    # Y offsets. Passing the wrapped quote to a single drawtext with embedded "\n"
-    # is unreliable across ffmpeg builds (the newlines collapse and the lines draw
-    # on top of each other), so we lay each line out ourselves around center_expr.
     QUOTE_FONTSIZE = 68
-    LINE_H = QUOTE_FONTSIZE + 22  # font height + line spacing
+    LINE_H = QUOTE_FONTSIZE + 22
     n_lines = len(quote_lines)
     half_block = (n_lines * LINE_H) // 2
     author_y = f"{center_expr}+{half_block + 40}"
 
-    # vary color grading by date
     br, sat, con = _GRADES[day % len(_GRADES)]
 
-    # slow Ken Burns push-in over the clip's frames.
-    # NOTE: zoompan with d>1 on a *video* input holds each input frame for d
-    # frames, which freezes the background on its first frame for the whole
-    # Short. Use d=1 (one output frame per input frame, so the clip keeps
-    # playing) and drive the zoom off `on` (the running output-frame index)
-    # rather than self-referencing `zoom`, which does not accumulate when d=1.
     total_frames = max(1, int(dur * 30))
-    zoom_inc = 0.15 / total_frames  # reach ~1.15x by the end of the clip
+    zoom_inc = 0.15 / total_frames
     zoompan = (
         f"zoompan=z='min(1.0+{zoom_inc:.6f}*on,1.15)':d=1:"
         f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={W}x{H}:fps=30"
     )
 
-    # Pre-overlay chain: geometry + motion + cinematic enhancement + grade,
-    # applied to the raw clip BEFORE any text is drawn (so denoise/sharpen/bloom
-    # work on footage, not on the gold type). Bloom itself is added later via
-    # _enhance_graph because it needs to split the stream.
     pre_parts = [
         f"scale={W}:{H}:force_original_aspect_ratio=increase",
         f"crop={W}:{H}",
@@ -718,22 +621,17 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         f"eq=brightness={br - EXTRA_DARKEN}:saturation={sat}:contrast={con}"
     )
 
-    # Overlay filters (quote, hook, captions, frame) drawn on top, after the
-    # enhancement chain has finished grading the footage.
     vf_parts: list = []
 
     if show_quote:
-        # Fade the quote in as the hook fades out so only one primary text is
-        # on screen at a time. If no hook is shown, appear from the start.
         if hook and HOOK_TEXT_ON:
             hook_fade = 0.4
-            quote_appear = HOOK_HOLD          # start fading in when hook starts fading
-            quote_fade_dur = hook_fade + 0.2  # slightly longer for a softer entrance
+            quote_appear = HOOK_HOLD
+            quote_fade_dur = hook_fade + 0.2
             quote_alpha = f"min(1,max(0,(t-{quote_appear})/{quote_fade_dur:.2f}))"
         else:
             quote_alpha = "1"
 
-        # Quote lines — serif font, warm parchment color.
         for i, line in enumerate(quote_lines):
             offset = i * LINE_H - half_block
             line_y = f"{center_expr}{offset:+d}"
@@ -746,14 +644,12 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 f"alpha='{quote_alpha}'"
             )
 
-        # Thin gold divider line between quote block and author.
         divider_y = f"{center_expr}+{half_block + 18}"
         vf_parts.append(
             f"drawbox=x=(w-240)/2:y={divider_y}:w=240:h=2:"
             f"color={DIVIDER_COLOR}@0.85:t=fill"
         )
 
-        # Author — antique bronze, all-caps, slightly smaller than quote.
         author_upper = _escape(f"— {author.upper()}")
         vf_parts.append(
             f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
@@ -764,14 +660,11 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             f"alpha='{quote_alpha}'"
         )
 
-    # Hook card: big, bold, scroll-stopping text flashed over the opening, then
-    # faded out so the clean quote is what remains. Drawn after the quote so it
-    # sits on top during those first seconds.
     if hook and HOOK_TEXT_ON:
         hook_lines = textwrap.wrap(hook.upper(), width=15) or [hook.upper()]
         HOOK_LINE_H = HOOK_FONTSIZE + 18
         h_half = (len(hook_lines) * HOOK_LINE_H) // 2
-        fade = 0.4  # seconds to fade the card out after HOOK_HOLD
+        fade = 0.4
         for i, line in enumerate(hook_lines):
             offset = i * HOOK_LINE_H - h_half
             line_y = f"(h/2)-150{offset:+d}"
@@ -785,30 +678,19 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 f"enable='lt(t,{HOOK_HOLD + fade})'"
             )
 
-    # flash callout words (concrete nouns) centered on screen when spoken
     vf_parts.extend(_callout_overlays(word_timings or [], callout_words or []))
 
-    # burn in karaoke captions last so they sit on top
     ass_path = None
     if caption_band:
         ass_path = Path(out_path).with_suffix(".captions.ass")
         _build_ass(word_timings, ass_path)
         vf_parts.append(f"ass='{_escape_filter_path(ass_path)}'")
 
-    # Thin gold frame + corner brackets, drawn on top of everything.
     vf_parts.extend(_frame_overlays())
 
-    # Build the video filtergraph.
-    # Multi-clip B-roll: scale/crop each clip, concat, then apply
-    # zoompan/grade/overlays on the concatenated stream.
-    # Single-clip: original chain unchanged.
     overlay_chain = ",".join(vf_parts)
     if n_bg > 1:
         seg_dur = dur / n_bg
-        # Normalise every clip to identical SAR, fps and pixel format BEFORE
-        # concat. Stock clips arrive with mixed sample-aspect-ratios and frame
-        # rates; the concat filter rejects mismatched segments ("Error
-        # reinitializing filters"), so this normalisation is required.
         geo = (
             f"scale={W}:{H}:force_original_aspect_ratio=increase,"
             f"crop={W}:{H},setsar=1,fps=30,format=yuv420p"
@@ -819,7 +701,6 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         ]
         refs = "".join(f"[bgseg{_i}]" for _i in range(n_bg))
         bg_segs.append(f"{refs}concat=n={n_bg}:v=1[rawbg]")
-        # pre_parts[:2] = scale+crop (done per-clip above); [2:] = zoompan+grade
         post_geo = ",".join(pre_parts[2:])
         segs = [
             *bg_segs,
@@ -838,8 +719,6 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     )
     vgraph = ";".join(segs)
 
-    # Input list: all bg clips (stream-looped so every clip fills its segment),
-    # then audio, then optional music. Audio index = number of bg clips.
     clip_inputs: list = []
     for _clip in bg_clips:
         clip_inputs += ["-stream_loop", "-1", "-i", str(_clip)]
@@ -847,7 +726,6 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     inputs = [*clip_inputs, "-i", str(audio_for_render)]
 
     if music_path and Path(music_path).exists():
-        # Mix background music at low volume under the voiceover.
         vol = _music_volume()
         music_in = audio_in + 1
         filter_complex = (

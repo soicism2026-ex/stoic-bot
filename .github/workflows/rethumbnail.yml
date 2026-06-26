@@ -1,0 +1,42 @@
+name: rethumbnail
+
+on:
+  workflow_dispatch:
+    inputs:
+      only_missing:
+        description: "Skip videos that already have a custom thumbnail"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  rethumbnail:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg + fonts
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu fonts-liberation
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Re-upload thumbnails
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: |
+          if [ "${{ inputs.only_missing }}" = "true" ]; then
+            python scripts/rethumbnail.py --only-missing
+          else
+            python scripts/rethumbnail.py
+          fi
