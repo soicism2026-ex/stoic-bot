@@ -144,3 +144,17 @@ for any recurring defects.
 - Add subtle motion or a punch-in/zoom across the hook window, or animate the text in word-by-word to create energy in the first 1.5s
 - Increase contrast/weight on the body quote (heavier font, darker text scrim) and consider revealing the quote line-by-line in sync with the voiceover
 
+
+## Visual QA — 2026-06-30 01:52 UTC
+**File:** `2026-06-30_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** You already know.
+**Scores:** hook_strength=6.5 | text_legibility=9.0 | pacing=4.5 | scroll_stop_potential=5.5
+**Reasoning:** Hook text 'You already know.' creates mild curiosity by implying a withheld truth, but it's vague and lacks immediate visual stakes — the bare purple background gives nothing arresting to anchor the scroll-stop, so hook_strength sits at 6.5. Text legibility is excellent: the bold yellow type on deep purple has strong contrast and is instantly readable at phone size (9.0). Pacing is weak: the first four hook frames are nearly identical with only faint particle drift and no animation, transition, or motion, so it feels static (4.5). Scroll-stop potential is middling — the quote payoff ('You could leave life right now') is strong, but the opening frame alone wouldn't reliably halt a thumb because it's just text on a plain gradient (5.5). The body lighthouse image in frame 6 adds welcome visual depth but arrives late.
+**Issues:**
+- Hook frames 1-4 are visually static with no motion or transition, killing pacing in the critical opening 1.5s
+- Opening frame is plain text on a flat gradient — no imagery or movement to trigger an instinctive scroll-stop
+**Suggestions:**
+- Introduce the lighthouse/background imagery earlier or add a subtle zoom/text-pop animation in the hook to create motion energy
+- Strengthen the hook copy with sharper tension, e.g. 'You're running out of time' or pair 'You already know.' with a fast visual cut to imply stakes
+**Flagged dims:** pacing, scroll_stop_potential
+
