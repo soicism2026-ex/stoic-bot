@@ -173,3 +173,17 @@ for any recurring defects.
 - Strengthen the hook with a fuller curiosity gap (e.g. 'What you dread arrives less than you fear') and add a subtle semi-transparent text backing plate over busy backgrounds to lock in legibility
 **Flagged dims:** hook_strength, scroll_stop_potential
 
+
+## Visual QA — 2026-06-30 22:10 UTC
+**File:** `2026-06-30_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Live the way things are
+**Scores:** hook_strength=5.0 | text_legibility=8.0 | pacing=3.5 | scroll_stop_potential=5.0
+**Reasoning:** Hook text 'LIVE THE WAY THINGS ARE' is bold and readable in a punchy yellow font, but the phrase is somewhat vague and incomplete-sounding — it creates mild curiosity but not an urgent question, so hook_strength sits mid-range. Text legibility is strong in the hook frames (high-contrast yellow on dark purple, heavy weight), though the body quote uses a thin serif gold font that blends into the busy waterfall mid-tones, dropping the score slightly. Pacing is weak: the first four hook frames are nearly identical with only subtle background water movement and no zoom, cut, or text animation, so it feels static. Scroll-stop potential is moderate — the waterfall visual with purple grade is aesthetically pleasing but is a common stock-style background that won't reliably halt a thumb.
+**Issues:**
+- Hook frames 1-4 are visually near-identical, creating a static, slow opening with no motion energy
+- Body quote uses a thin serif font in muted gold that loses contrast against the bright water and busy background
+**Suggestions:**
+- Add a subtle zoom-in or word-by-word text reveal across the hook window to inject motion in the critical first 1.5s
+- Swap the body quote to a heavier font with a semi-transparent dark text box behind it to guarantee legibility over the waterfall
+**Flagged dims:** hook_strength, pacing, scroll_stop_potential
+
