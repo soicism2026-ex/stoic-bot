@@ -84,33 +84,33 @@ FORMAT "quote" rules:
 - quote: a real attested passage, punchy, under 12 words. Lightly modernized phrasing \
 is fine but preserve the author's actual meaning. Favor lesser-known genuine passages \
 over over-quoted greatest hits. Short enough to read in one glance.
-- hook: 3–5 words. A blunt, second-person accusation or uncomfortable truth. Must make \
-the viewer feel personally called out. Set up the quote's idea WITHOUT quoting or \
-naming the author. No quotation marks, no hashtags, no ellipsis. \
-RIGHT: "You're wasting your life." / "Your ego is the problem." / "Stop performing \
-discipline." / "You're running from yourself." \
-WRONG: "Time is precious." (cliché) / "What's holding you back?" (too soft) / \
+- hook: 3–5 words. A calm, contemplative invitation — a quiet truth that makes the \
+viewer pause and breathe, not feel attacked. Reflective and grounding, never \
+accusatory, urgent, or clickbait. Set up the quote's idea WITHOUT quoting or naming \
+the author. No quotation marks, no hashtags, no ellipsis. \
+RIGHT: "Let it pass." / "Nothing here is yours." / "This moment is enough." / \
+"Carry less today." \
+WRONG: "You're wasting your life." (aggressive) / "Time is precious." (cliché) / \
 "Wisdom from Marcus Aurelius." (never name author in hook)
-- voiceover_text: 15-18 seconds (~35-45 words). Cut straight from hook to hard truth. \
-SPECIFICITY wins: not "you waste time" but "you check your phone 80 times a day and \
-call it research." Speak to someone who knows they're failing but hasn't admitted it. \
-Do NOT repeat the hook. Plain, grounded, masculine-neutral. No hashtags. \
-Fewer, heavier words — pause-worthy, not rapid-fire.
+- voiceover_text: 15-18 seconds (~35-45 words). A calm, measured reflection that lets \
+the quote's idea settle. Stay concrete — ground it in one ordinary, everyday moment — \
+but speak as a steady, reassuring guide: unhurried, contemplative, never scolding. \
+Do NOT repeat the hook. Plain, grounded, warm. No hashtags. \
+Fewer, heavier words — pause-worthy, meant to be felt.
 
 FORMAT "minimal" rules:
 This format is the antidote to information overload. One truth. Spoken once. \
 Every word earns its place.
 - quote: a real attested passage, 6-10 words maximum. The entire message lives in this \
 line. Favour passages that work perfectly standalone without any setup.
-- hook: 2-4 words. Ultra-short blunt tension. Creates a small gap the viewer wants to \
-fill. \
-RIGHT: "You already know." / "Stop the performance." / "This ends now." / \
-"You've been warned." \
-WRONG: Anything over 5 words, any softening language.
+- hook: 2-4 words. A soft, still phrase that opens a quiet space — gentle, grounding, \
+meditative. \
+RIGHT: "Be still." / "Let go." / "This too passes." / "Nothing is missing." \
+WRONG: Anything over 5 words; anything harsh, urgent, or accusatory.
 - voiceover_text: exactly 3 sentences, 20-28 words total. \
-Sentence 1: Restate the quote's idea as a sharp modern observation (plain, no fluff). \
-Sentence 2: Name one real, specific situation the viewer is in right now. \
-Sentence 3: A single implication — leave it hanging, no resolution. \
+Sentence 1: Restate the quote's idea as a calm, clear observation (plain, no fluff). \
+Sentence 2: Gently name one ordinary moment the viewer will recognise. \
+Sentence 3: A single quiet implication — leave it resting, unforced, no resolution. \
 No CTA language inside the voiceover (the quote is the message — let it land).
 
 FORMAT "list" rules:
@@ -221,7 +221,9 @@ def _pick_next_theme(rows: list, current_theme: str) -> str:
 
 def _pick_format(rows: list[dict]) -> str:
     """Rotate content format: quote → minimal → quote → list (repeating)."""
-    ROTATION = ["quote", "minimal", "quote", "list"]
+    # Low-cortisol / minimal-text aesthetic: lead with the "minimal" format and
+    # drop the text-heavy "list" format entirely. One calm truth per Short.
+    ROTATION = ["minimal", "quote", "minimal", "quote"]
     return ROTATION[len(rows) % len(ROTATION)]
 
 

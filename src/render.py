@@ -712,9 +712,11 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # playing) and drive the zoom off `on` (the running output-frame index)
     # rather than self-referencing `zoom`, which does not accumulate when d=1.
     total_frames = max(1, int(dur * 30))
-    zoom_inc = 0.15 / total_frames  # reach ~1.15x by the end of the clip
+    # Gentle, slow Ken Burns for a meditative feel — a barely-there drift rather
+    # than an obvious push-in (reach ~1.08x by the end instead of ~1.15x).
+    zoom_inc = 0.08 / total_frames
     zoompan = (
-        f"zoompan=z='min(1.0+{zoom_inc:.6f}*on,1.15)':d=1:"
+        f"zoompan=z='min(1.0+{zoom_inc:.6f}*on,1.08)':d=1:"
         f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={W}x{H}:fps=30"
     )
 

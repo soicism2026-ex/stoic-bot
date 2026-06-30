@@ -68,19 +68,22 @@ DEFAULT_QUERIES = [
 # When a render uses 3 background clips, clips 1 and 2 pull from these
 # diversity pools so each clip has a distinctly different look.
 DIVERSITY_QUERIES = [
-    # Clip 1 — dramatic nature: ocean, mountains, wilderness
+    # Clip 1 — serene nature: soft, slow, meditative (low-cortisol vibe).
+    # Deliberately calm (mist, dawn, soft light) rather than "crashing/storm".
     [
-        "dramatic ocean waves crashing dark cinematic",
-        "mountain peak storm clouds dark cinematic",
-        "waterfall mist dark dramatic cinematic",
-        "desert dunes wind dramatic dark",
+        "misty mountains calm dawn cinematic slow",
+        "soft clouds drifting golden light serene",
+        "calm sea horizon mist golden hour peaceful",
+        "sunlight forest fog peaceful slow cinematic",
     ],
-    # Clip 2 — ancient stone / architecture
+    # Clip 2 — classical marble statues, busts & pillars (the Stoic aesthetic
+    # the channel is going for). Curated terms that return real sculpture rather
+    # than the odd reclining figures generic "statue" searches surface.
     [
-        "ancient roman ruins atmospheric dark fog",
-        "stone cathedral archway shadow dark",
-        "crumbling temple stone overgrown dark",
-        "old stone monastery corridor dark",
+        "marble statue classical sculpture dramatic light dark",
+        "ancient greek marble bust shadow cinematic",
+        "roman marble columns pillars golden light dark",
+        "classical stone sculpture dramatic chiaroscuro dark",
     ],
 ]
 
