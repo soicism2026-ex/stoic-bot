@@ -37,7 +37,11 @@ BACKUPS_DIR = ROOT / "backups"
 QA_LOG = ROOT / "QA_LOG.md"
 MAX_ATTEMPTS = 3
 BACKUP_MIN = 3
-MAX_POSTS_PER_DAY = 1
+# DO NOT lower this below 4. The channel posts 4x/day via 4 cron slots
+# (07:00/12:00/17:00/22:00 UTC); each run posts once and this cap stops a single
+# day exceeding 4. Setting it to 1 caps the WHOLE channel at one upload per day
+# (every later run skips green). It is per-DAY total, not per-run. Keep at 4.
+MAX_POSTS_PER_DAY = 4
 
 # Visual QA config — reads env vars at import time so GitHub Actions can override
 # VQA_ENABLED=0         Skip visual QA entirely (default: 1 = enabled)
