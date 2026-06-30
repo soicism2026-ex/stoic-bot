@@ -5,6 +5,11 @@ edge-tts uses the same engine as Azure Cognitive Services Neural TTS but at
 zero cost through the Edge browser TTS endpoint.  No account, no key, no rate
 limits at our posting frequency.
 
+edge-tts depends on an undocumented Microsoft endpoint that can refuse cloud
+IPs (e.g. GitHub Actions), so gTTS (Google Translate TTS — free, no key) is a
+hard fallback: if edge-tts fails for any reason we still ship a real voiceover
+rather than a silent Short.
+
 ElevenLabs is retained as an optional upgrade: set ELEVENLABS_API_KEY +
 ELEVENLABS_VOICE_ID to override the free engine on any run.
 
@@ -16,7 +21,7 @@ Voice pool — three deep Microsoft Neural voices tuned for the Stoic niche:
   Guy         — deep, dominant American; closest to high-view Stoic Shorts style
   Ryan        — deep British, measured and philosophical
   Christopher — authoritative American, confident narrator register
-Rotates analytics-weighted once each voice has >=5 posts of view data; uses LRU
+Rotates analytics-weighted once each voice has ≥5 posts of view data; uses LRU
 equal rotation before that.
 """
 import asyncio
@@ -114,7 +119,9 @@ async def _edge_stream(text: str, out_path: Path, voice_id: str) -> list:
     """Async core: stream edge-tts, collect audio + word boundaries."""
     import edge_tts  # lazy import keeps startup fast when EL override is used
 
-    communicate = edge_tts.Communicate(text, voice_id, rate="-15%", pitch="-8Hz")
+    # rate left at default (+0%) — a previous -15% slowdown read as "too slow".
+    # Keep a small pitch drop for a deeper, more authoritative Stoic register.
+    communicate = edge_tts.Communicate(text, voice_id, rate="+0%", pitch="-8Hz")
     audio_chunks: list[bytes] = []
     word_timings: list[tuple] = []
 
@@ -150,6 +157,35 @@ def _synthesize_edge(text: str, out_path: Path, voice_id: str) -> tuple:
     if not timings:
         timings = _estimate_timings(text, _audio_duration(out_path))
     return out_path, timings
+
+
+# ---------------------------------------------------------------------------
+# gTTS synthesis (reliable fallback)
+# ---------------------------------------------------------------------------
+# edge-tts talks to an undocumented Microsoft Bing endpoint that frequently
+# refuses connections from cloud IPs (e.g. GitHub Actions) or breaks when
+# Microsoft rotates its anti-abuse token. When that happens we must still ship
+# a voiceover, so gTTS (Google Translate TTS — free, no key, served from
+# translate.google.com which is reachable from CI) is the safety net. It does
+# not return word boundaries, so timings are estimated from the audio length.
+
+def _synthesize_gtts(text: str, out_path: Path) -> tuple:
+    """Synthesize with gTTS. Returns (out_path, estimated_word_timings)."""
+    from gtts import gTTS  # lazy import — only needed when edge-tts fails
+
+    out_path = Path(out_path)
+    if out_path.suffix.lower() != ".mp3":
+        out_path = out_path.with_suffix(".mp3")
+
+    tts = gTTS(text=text, lang="en", tld="com")
+    tts.save(str(out_path))
+
+    if not _audio_ok(out_path):
+        raise RuntimeError(
+            "gTTS produced empty audio — both edge-tts and gTTS failed. "
+            "Check network connectivity to translate.google.com."
+        )
+    return out_path, _estimate_timings(text, _audio_duration(out_path))
 
 
 # ---------------------------------------------------------------------------
@@ -220,7 +256,14 @@ def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     vid = voice_id or VOICE_POOL[0]["id"]
     name = next((v["name"] for v in VOICE_POOL if v["id"] == vid), vid)
     print(f"  tts: edge-tts voice {name} ({vid})")
-    return _synthesize_edge(text, out_path, vid)
+    try:
+        return _synthesize_edge(text, out_path, vid)
+    except Exception as e:  # noqa: BLE001
+        # edge-tts is flaky from cloud IPs; never let that ship a silent Short.
+        print(f"  tts: edge-tts failed ({e}); falling back to gTTS")
+        out_path, timings = _synthesize_gtts(text, out_path)
+        print(f"  tts: gTTS fallback succeeded -> {Path(out_path).name}")
+        return out_path, timings
 
 
 # ---------------------------------------------------------------------------

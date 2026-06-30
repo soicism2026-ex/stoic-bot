@@ -57,6 +57,11 @@ CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "620"))
 CAPTION_MARGINL = int(os.environ.get("REEL_CAPTION_MARGINL", "80"))
 CAPTION_MARGINR = int(os.environ.get("REEL_CAPTION_MARGINR", "80"))
 
+# Flashing "callout" words — concrete nouns that pop up large mid-screen as
+# they're spoken. Disabled by default: viewer feedback was that the flashing
+# text is distracting and adds visual clutter. Re-enable with REEL_CALLOUTS=1.
+CALLOUTS_ON = os.environ.get("REEL_CALLOUTS", "0") not in ("0", "false", "False")
+
 # Hook controls — the scroll-stopping opener. A big text card flashes for the
 # first few seconds and an attention "whoosh" sound is mixed under the start.
 HOOK_TEXT_ON = os.environ.get("REEL_HOOK_TEXT", "1") not in ("0", "false", "False")
@@ -167,7 +172,7 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
         fc = (
             f"{f0}[a];{f0b}[b];{octv}[c];{part}[d];{high}[e];"
             "[a][b][c][d][e]amix=inputs=5:duration=longest,"
-            f"aecho=0.8:0.85:55|95:0.30|0.20,"
+            "aecho=0.8:0.85:55|95:0.30|0.20,"
             f"afade=t=out:st={dur-0.8:.3f}:d=0.8,volume=1.8,alimiter=limit=0.9"
         )
 
@@ -497,8 +502,8 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
         fontsize = HOOK_FS + 10 if is_punchline else HOOK_FS
         line_y   = text_block_top + i * HOOK_LINE_H
         vf_parts.append(
-            f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"  
-            f"text='{_escape(line)}':"  
+            f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
+            f"text='{_escape(line)}':"
             f"fontcolor={color}:fontsize={fontsize}:"
             f"x=(w-text_w)/2:y={line_y}:"
             f"borderw=11:bordercolor=black@0.98:"
@@ -514,7 +519,7 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
     # Author credit.
     author_y = sep_y + 40
     vf_parts.append(
-        f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"  
+        f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
         f"text='{_escape(f'— {author.upper()}')}':"
         f"fontcolor=white@0.70:fontsize=46:"
         f"x=(w-text_w)/2:y={author_y}:"
@@ -565,8 +570,8 @@ def _callout_overlays(word_timings: list, callout_words: list) -> list:
             f"if(gt(t,{end-fade:.3f}),({end:.3f}-t)/{fade},1))"
         )
         filters.append(
-            f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"  
-            f"text='{_escape(cw.upper())}':"  
+            f"drawtext=fontfile='{_escape_filter_path(Path(FONT))}':"
+            f"text='{_escape(cw.upper())}':"
             f"fontcolor=white:fontsize=112:"
             f"x=(w-text_w)/2:y=(h/2)+80:"
             f"borderw=9:bordercolor=black@0.95:"
@@ -748,8 +753,8 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             offset = i * LINE_H - half_block
             line_y = f"{center_expr}{offset:+d}"
             vf_parts.append(
-                f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"  
-                f"text='{_escape(line)}':"  
+                f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
+                f"text='{_escape(line)}':"
                 f"fontcolor={QUOTE_COLOR}:fontsize={QUOTE_FONTSIZE}:"
                 f"x=(w-text_w)/2:y={line_y}:"
                 f"box=0:shadowcolor=black@0.85:shadowx=4:shadowy=4:"
@@ -766,7 +771,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         # Author — antique bronze, all-caps, slightly smaller than quote.
         author_upper = _escape(f"— {author.upper()}")
         vf_parts.append(
-            f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"  
+            f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
             f"text='{author_upper}':"
             f"fontcolor={AUTHOR_COLOR}:fontsize=38:"
             f"x=(w-text_w)/2:y={author_y}:"
@@ -786,17 +791,19 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             offset = i * HOOK_LINE_H - h_half
             line_y = f"(h/2)-150{offset:+d}"
             vf_parts.append(
-                f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"  
+                f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
                 f"fontcolor={HOOK_COLOR}:fontsize={HOOK_FONTSIZE}:"
                 f"x=(w-text_w)/2:y={line_y}:"
                 f"borderw=7:bordercolor=black@0.9:"
                 f"shadowcolor=black@0.7:shadowx=3:shadowy=3:"
-                f"alpha='if(lt(t,{HOOK_HOLD}),1,max(0,1-(t-{HOOK_HOLD})/{fade}))':"  
+                f"alpha='if(lt(t,{HOOK_HOLD}),1,max(0,1-(t-{HOOK_HOLD})/{fade}))':"
                 f"enable='lt(t,{HOOK_HOLD + fade})'"
             )
 
-    # flash callout words (concrete nouns) centered on screen when spoken
-    vf_parts.extend(_callout_overlays(word_timings or [], callout_words or []))
+    # flash callout words (concrete nouns) centered on screen when spoken —
+    # off by default (distracting); enable with REEL_CALLOUTS=1.
+    if CALLOUTS_ON:
+        vf_parts.extend(_callout_overlays(word_timings or [], callout_words or []))
 
     # burn in karaoke captions last so they sit on top
     ass_path = None
