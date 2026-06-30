@@ -158,3 +158,18 @@ for any recurring defects.
 - Strengthen the hook copy with sharper tension, e.g. 'You're running out of time' or pair 'You already know.' with a fast visual cut to imply stakes
 **Flagged dims:** pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-06-30 18:45 UTC
+**File:** `2026-06-30_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Less than you fear.
+**Scores:** hook_strength=5.5 | text_legibility=8.0 | pacing=6.5 | scroll_stop_potential=5.0
+**Reasoning:** Hook strength is moderate (5.5): 'Less than you fear' creates some curiosity but it's a sentence fragment lacking context — the opening frame is a flat purple gradient with no immediate visual intrigue, so the curiosity gap isn't fully formed at frame 1. Text legibility is strong (8.0): the bold yellow hook text on dark purple has excellent contrast and is instantly readable, though the body serif quote in muted gold over the busy waterfall (frame 6) drops slightly in contrast. Pacing is decent (6.5): there's a clear visual evolution from plain gradient to the dynamic flame/liquid motion to the waterfall body shot, giving rhythm, but the first two hook frames are nearly identical and static, wasting the critical opening moment. Scroll-stop potential is middling (5.0): the flame and waterfall visuals are appealing but the very first frame a scroller sees is an empty gradient, which won't reliably halt a thumb.
+**Issues:**
+- First two hook frames are static and visually empty (plain gradient), wasting the most important 0.5s
+- Hook text is a fragment that lacks enough context to fully trigger curiosity on its own
+- Body quote serif font in muted gold loses contrast against the bright/busy waterfall in frame 6
+**Suggestions:**
+- Open frame 1 with the flame or motion element already on screen so the very first thing seen is dynamic and arresting
+- Strengthen the hook with a fuller curiosity gap (e.g. 'What you dread arrives less than you fear') and add a subtle semi-transparent text backing plate over busy backgrounds to lock in legibility
+**Flagged dims:** hook_strength, scroll_stop_potential
+
