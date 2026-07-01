@@ -187,3 +187,17 @@ for any recurring defects.
 - Swap the body quote to a heavier font with a semi-transparent dark text box behind it to guarantee legibility over the waterfall
 **Flagged dims:** hook_strength, pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-07-01 11:01 UTC
+**File:** `2026-07-01_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Need no applause.
+**Scores:** hook_strength=6.0 | text_legibility=8.5 | pacing=4.5 | scroll_stop_potential=5.5
+**Reasoning:** hook_strength: 'Need no applause.' is punchy and thematically clear, but as an isolated fragment it lacks the immediate curiosity gap or tension that stops every scroller — it reads more like a statement than a question. text_legibility: The bold yellow all-caps hook text has strong contrast against the dark purple waterfall and is instantly readable; the body serif quote is slightly thinner but still clear. pacing: The first four hook frames are nearly identical — the waterfall barely moves and the text never changes, so the opening feels static; the only real visual shift comes at the body transition to the underwater/fish scene. scroll_stop_potential: The moody purple-graded waterfall is aesthetically pleasing and the text is legible, so some viewers will pause, but there is nothing visually surprising or motion-driven in frame 1 to force a stop.
+**Issues:**
+- Hook frames 1-4 are visually static with no text animation or camera movement, wasting the critical 1.5s window
+- Purple color grade on the waterfall is heavy and slightly muddy, reducing scene clarity in shadow areas
+**Suggestions:**
+- Add a subtle text pop-in, scale, or word-by-word reveal on the hook to inject motion during the first 1.5s
+- Reframe the hook as a curiosity gap (e.g. 'Why the wise need no applause') and pair it with a faster cut to the body visual to boost perceived pace
+**Flagged dims:** pacing, scroll_stop_potential
+
