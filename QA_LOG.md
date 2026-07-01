@@ -229,3 +229,18 @@ for any recurring defects.
 - Vary the first-frame visual with a more recognisable, higher-contrast subject to boost instant scroll-stop appeal
 **Flagged dims:** hook_strength, scroll_stop_potential
 
+
+## Visual QA — 2026-07-01 22:16 UTC
+**File:** `2026-07-01_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Look no further than here
+**Scores:** hook_strength=4.5 | text_legibility=8.5 | pacing=3.0 | scroll_stop_potential=4.0
+**Reasoning:** Hook text 'LOOK NO FURTHER THAN HERE' is clear and legible in bold golden font with good contrast against the dark purple background, but it's a generic, curiosity-neutral phrase that doesn't create strong intrigue or tension about desire — it reads more like a filler statement than a scroll-stopper. Legibility scores high due to crisp, heavy typography and strong color contrast, though the vertical red bar on the left edge is distracting and slightly clipped. Pacing is weak: the first four hook frames are essentially identical with zero visual change or motion over the opening 1.5 seconds, which feels static; only the shift to the equestrian statue in frame 6 introduces visual interest. Scroll-stop potential is limited because frame 1 is just text on a flat gradient with no compelling imagery — the striking statue that would stop scrollers arrives too late in the body.
+**Issues:**
+- First four hook frames are visually static with no motion, transition, or change — dead air in the critical opening 1.5s
+- Hook phrase is generic and doesn't tie clearly to the desire/comparison theme, weakening curiosity
+- The strong visual asset (statue) appears only in the body, not the hook window where it's needed most
+**Suggestions:**
+- Move the atmospheric statue imagery into frame 1 as the hook background so the opening frame is instantly arresting
+- Rewrite the hook to something tension-driven and on-theme, e.g. 'Stop measuring your life against theirs' or 'The habit quietly stealing your hours', and animate the text entrance for motion
+**Flagged dims:** hook_strength, pacing, scroll_stop_potential
+
