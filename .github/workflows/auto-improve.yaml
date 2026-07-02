@@ -1,8 +1,14 @@
 name: Auto-improve stoic-bot
 
 on:
-  schedule:
-    - cron: "0 6 * * *"   # daily at 06:00 UTC, before the first post run
+  # PAUSED: the daily auto-run is disabled. This loop commits to main unreviewed
+  # and twice broke live posting (most recently by lowering MAX_POSTS_PER_DAY to
+  # 1, silently capping the channel at one upload/day). It can still be launched
+  # deliberately from the Actions tab (workflow_dispatch). To re-enable the daily
+  # schedule, uncomment the two lines below — but add guardrails first so it
+  # cannot touch posting cadence, the post cap, or the publish/render core.
+  # schedule:
+  #   - cron: "0 6 * * *"   # daily at 06:00 UTC, before the first post run
   workflow_dispatch: {}
 
 permissions:
