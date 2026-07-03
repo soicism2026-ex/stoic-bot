@@ -326,3 +326,17 @@ for any recurring defects.
 - Add a semi-transparent dark overlay or text box behind the quote on image backgrounds to keep contrast consistent across frames
 **Flagged dims:** pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-07-03 20:48 UTC
+**File:** `2026-07-03_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Choose it fully.
+**Scores:** hook_strength=5.5 | text_legibility=8.5 | pacing=6.0 | scroll_stop_potential=6.0
+**Reasoning:** Hook 'Choose it fully' is intriguing but vague — it lacks immediate context that would create a burning curiosity gap, so it earns a mid-range score. The fire background is visually appealing and thematically fits discipline/willpower, giving decent scroll-stop potential (6.0) since the flames add motion and warmth against a dark purple sky. Text legibility is strong: bold yellow condensed caps with good contrast in frames 1-4 (8.5), though the body serif quote in frame 6 loses contrast over the busy purple foliage. Pacing is moderate — the fire flickers and grows across frames 1-4 giving subtle motion, but the composition stays static and the abrupt shift to a forest background in frame 6 feels disconnected from the fire theme.
+**Issues:**
+- Hook text 'Choose it fully' is ambiguous without setup and doesn't specify what to choose, weakening the curiosity gap
+- Body frame 6 quote (serif, thin weight) sits over busy purple leaves with poor contrast, reducing readability
+**Suggestions:**
+- Sharpen the hook to a more concrete, tension-driven line like 'Stop forcing discipline — do THIS instead' to boost stop rate
+- Keep the fire background consistent through the body or add a dark gradient scrim behind the serif quote in frame 6 for contrast
+**Flagged dims:** hook_strength
+
