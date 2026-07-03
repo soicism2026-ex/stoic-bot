@@ -298,3 +298,17 @@ for any recurring defects.
 - Add a subtle zoom, text pop-in, or flash reveal on the hook word 'DEBT' within the first 1.5s to inject movement and emphasize the twist
 - Use a clearer, more thematically relevant visual (e.g., a crown, throne, or hand imagery) in the hook to reinforce 'power/duty' and stop the scroll faster
 
+
+## Visual QA — 2026-07-03 13:30 UTC
+**File:** `2026-07-03_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** It's training.
+**Scores:** hook_strength=6.0 | text_legibility=8.5 | pacing=6.0 | scroll_stop_potential=5.0
+**Reasoning:** The hook 'IT'S TRAINING.' is intriguing and slightly cryptic, creating some curiosity about what 'it' refers to, but the opening frames (1-2) are a plain purple gradient with no imagery — visually flat and easy to swipe past, which lowers scroll-stop potential. By frames 3-4 the atmospheric mountain/climbing footage appears, adding visual interest, but it comes a beat late for the critical opening. Text legibility is strong throughout: the gold hook text with dark outline pops against the purple, and the body quote is crisp, though the serif body font is a touch thinner and lower-contrast than ideal. Pacing is adequate — there's a transition from static gradient to moving footage and then to the quote card — but the first two identical static frames waste the crucial opening moment and make it feel slow to start.
+**Issues:**
+- First 1-2 hook frames are a plain gradient with no imagery, weakening immediate scroll-stop appeal
+- Body quote serif font is thin and lower-contrast than the bold hook text, slightly harder to read at speed
+**Suggestions:**
+- Open on the striking climbing/mountain footage from frame 3-4 immediately in frame 1 to arrest scrollers instantly
+- Increase weight or add a subtle shadow to the body quote text, and consider animating the hook text in for more early energy
+**Flagged dims:** scroll_stop_potential
+
