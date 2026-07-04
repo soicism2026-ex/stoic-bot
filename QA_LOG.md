@@ -340,3 +340,17 @@ for any recurring defects.
 - Keep the fire background consistent through the body or add a dark gradient scrim behind the serif quote in frame 6 for contrast
 **Flagged dims:** hook_strength
 
+
+## Visual QA — 2026-07-04 08:19 UTC
+**File:** `2026-07-04_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Hold it loosely
+**Scores:** hook_strength=5.5 | text_legibility=6.5 | pacing=4.0 | scroll_stop_potential=5.0
+**Reasoning:** The hook 'HOLD IT LOOSELY' is intriguing and abstract enough to create mild curiosity, but as a standalone phrase it lacks the immediate tension or stakes that make a scroller freeze — it earns a mid-range hook_strength. Text legibility is decent: the bold yellow all-caps is high-contrast against the purple background, but the busy, low-light rock/foliage texture behind it creates some visual noise that softens readability, and the body quote's thin serif font in gold on the mottled background is harder to parse at phone size. Pacing is weak — the first four hook frames are nearly identical, showing almost no movement or animation over the opening 1.5 seconds, which feels static; the body frames add a nice background change (cave to waterfall) but the transition rhythm is slow. Scroll-stop potential is moderate because the heavy purple color grade is distinctive but the frame-1 imagery (dark textured wall) is not a strong visual pattern-interrupt, and the hook text sits mid-frame without a compelling focal image.
+**Issues:**
+- Hook frames 1-4 are visually near-identical with no motion, making the opening feel frozen and killing early momentum.
+- Busy, low-contrast rock/foliage backgrounds behind the hook text and the thin serif body font reduce instant readability on small screens.
+**Suggestions:**
+- Add subtle motion in the hook window — a slow zoom, text pop-in animation, or a hard cut to a second visual — to inject pacing energy in the first 1.5s.
+- Place hook and quote text on a semi-transparent dark bar or add a stronger drop shadow/stroke so the type separates cleanly from the textured backgrounds.
+**Flagged dims:** hook_strength, text_legibility, pacing, scroll_stop_potential
+
