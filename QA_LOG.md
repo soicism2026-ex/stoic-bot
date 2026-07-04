@@ -368,3 +368,17 @@ for any recurring defects.
 - Increase quote text weight and add a subtle dark scrim behind body text so the serif remains crisp over lighter backgrounds.
 **Flagged dims:** hook_strength, pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-07-04 15:52 UTC
+**File:** `2026-07-04_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Let it be what it is
+**Scores:** hook_strength=6.0 | text_legibility=8.5 | pacing=4.0 | scroll_stop_potential=5.5
+**Reasoning:** hook_strength: 'Let it be what it is' is a clean, thematically-aligned line that hints at acceptance, but it's a passive statement rather than an intriguing question or pattern-interrupt, so it won't stop every scroller — solid mid-6. text_legibility: The bold gold hook text with heavy weight sits clearly over the purple waterfall with good contrast; the body quote in a lighter serif is still readable but slightly lower contrast where it overlaps brighter water, so 8.5. pacing: The four hook frames are nearly identical — the waterfall barely moves and there's no visual transition, cut, or motion accent, making the opening feel static; the body is equally still, so 4. scroll_stop_potential: The purple-graded waterfall is aesthetically pleasing and the framing brackets add polish, giving moderate visual interest, but nothing arresting or unexpected occurs in frame 1, landing at 5.5.
+**Issues:**
+- First 1.5s (4 hook frames) show almost no visual change — the scene reads as a static image, reducing motion-driven scroll-stopping
+- Body quote serif font has weaker contrast against the brightest waterfall highlights, slightly harder to read than the bold hook text
+**Suggestions:**
+- Add subtle motion/zoom, a text pop-in animation, or a quick cut in the hook window to create kinetic energy in the opening frames
+- Add a semi-transparent dark scrim or text shadow behind the body quote to lift contrast, and consider a stronger curiosity-driven hook line (e.g. a question) to boost stop rate
+**Flagged dims:** pacing, scroll_stop_potential
+
