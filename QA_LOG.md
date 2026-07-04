@@ -382,3 +382,17 @@ for any recurring defects.
 - Add a semi-transparent dark scrim or text shadow behind the body quote to lift contrast, and consider a stronger curiosity-driven hook line (e.g. a question) to boost stop rate
 **Flagged dims:** pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-07-04 20:36 UTC
+**File:** `2026-07-04_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Let it settle.
+**Scores:** hook_strength=6.0 | text_legibility=8.5 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** The hook text 'LET IT SETTLE.' is bold, high-contrast yellow and instantly readable, but the phrase is somewhat vague on its own and only creates curiosity if paired with the audio — a mid-tier hook (6.0). Text legibility is strong for the hook overlay (crisp yellow bold caps against dark purple), though the body quote uses a thin serif gold font that is slightly lower contrast against the busy waterfall, hence 8.5. Pacing is weak: all four hook frames are nearly identical with only subtle waterfall motion and no cuts or zoom, feeling static (4.5). Scroll-stop potential is moderate — the purple-graded waterfall is aesthetically pleasing and the big text helps, but it's a common Stoicism-visual formula that won't universally halt a scroll (6.0).
+**Issues:**
+- Hook frames 1-4 are visually near-identical, creating a static feel with no motion energy in the critical opening window
+- Body quote uses a thin serif font in gold that competes with the bright waterfall highlights, reducing contrast
+**Suggestions:**
+- Add a subtle zoom-in or push motion across the hook frames, plus a punch-in cut on the word 'SETTLE' to inject pacing energy
+- Increase body-text contrast by adding a darker semi-transparent panel or drop shadow behind the quote, or bump the font weight
+**Flagged dims:** pacing
+
