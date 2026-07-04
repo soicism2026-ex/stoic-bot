@@ -354,3 +354,17 @@ for any recurring defects.
 - Place hook and quote text on a semi-transparent dark bar or add a stronger drop shadow/stroke so the type separates cleanly from the textured backgrounds.
 **Flagged dims:** hook_strength, text_legibility, pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-07-04 11:59 UTC
+**File:** `2026-07-04_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Stay open.
+**Scores:** hook_strength=4.5 | text_legibility=8.0 | pacing=3.5 | scroll_stop_potential=4.0
+**Reasoning:** Hook text 'STAY OPEN.' is bold and legible with yellow fill and dark outline over a purple sky background, but the phrase is vague and lacks curiosity or tension — it doesn't clearly signal payoff, so it earns a moderate hook_strength. Text_legibility is strong in the hook frames (high-contrast yellow) but drops slightly in the body frames where the thin serif quote and small gold author line lose contrast against the busy purple waterfall, hence 8. Pacing is weak: the first four frames are nearly identical with only micro-shifts in background position, so the opening 1.5s feels static and repetitive. Scroll_stop_potential is low-to-moderate — the moody purple aesthetic is pleasant but the imagery is dark and undifferentiated from thousands of similar Stoic edits, giving little reason to stop.
+**Issues:**
+- Hook frames 1-4 are almost visually identical, creating a static, slow-feeling opening with no motion energy.
+- Body quote uses a thin serif font in gold that loses contrast over the bright/busy waterfall background in frame 6.
+**Suggestions:**
+- Add a motion or scale animation to the hook text (punch-in, word reveal) and vary the background across the first 1.5s to create momentum.
+- Increase quote text weight and add a subtle dark scrim behind body text so the serif remains crisp over lighter backgrounds.
+**Flagged dims:** hook_strength, pacing, scroll_stop_potential
+
