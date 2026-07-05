@@ -396,3 +396,16 @@ for any recurring defects.
 - Increase body-text contrast by adding a darker semi-transparent panel or drop shadow behind the quote, or bump the font weight
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-07-05 08:41 UTC
+**File:** `2026-07-05_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Notice what pulls you.
+**Scores:** hook_strength=6.5 | text_legibility=8.0 | pacing=6.0 | scroll_stop_potential=7.0
+**Reasoning:** Hook text 'NOTICE WHAT PULLS YOU' is intriguing and taps into a relatable psychological pull, but it's abstract enough that not every scroller will decode the payoff instantly (6.5). The bold gold sans-serif hook text is crisp and high-contrast against the dark purple/orange background, though the body quote uses a thin serif with a subtle glow that is readable but slightly lower contrast over the bright molten frame (8.0). Pacing shows subtle motion in the fiery molten visual across hook frames and a clean cut to the Christ statue in the body, but the movement is slow and the hook frames are nearly identical, limiting energy (6.0). The abstract glowing lava/heat imagery is visually distinct and moody enough to interrupt a feed, giving decent stop potential though it lacks a human face or immediately clear subject (7.0).
+**Issues:**
+- The four hook frames are nearly identical, creating a static feel with minimal visual progression in the critical opening 1.5s
+- Body quote serif font over the bright molten background in frame 5 has reduced contrast and legibility compared to the darker frame 6
+**Suggestions:**
+- Add a punchier micro-movement or zoom/text animation across the hook window so the opening feels dynamic rather than a held still
+- Give the body quote text a consistent dark semi-transparent backing plate so legibility holds across both the bright lava and darker statue backgrounds
+
