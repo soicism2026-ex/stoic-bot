@@ -409,3 +409,17 @@ for any recurring defects.
 - Add a punchier micro-movement or zoom/text animation across the hook window so the opening feels dynamic rather than a held still
 - Give the body quote text a consistent dark semi-transparent backing plate so legibility holds across both the bright lava and darker statue backgrounds
 
+
+## Visual QA — 2026-07-05 12:10 UTC
+**File:** `2026-07-05_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Face it.
+**Scores:** hook_strength=4.5 | text_legibility=8.0 | pacing=5.0 | scroll_stop_potential=5.5
+**Reasoning:** The hook 'FACE IT.' is short and punchy but too vague on its own — it creates mild intrigue without clearly signalling the resilience payoff, so it won't stop every scroller (4.5). The yellow serif text is high-contrast against the purple ocean backdrop and instantly readable in the hook frames, though the thinner body-quote font sits slightly lower in contrast over bright foam (8.0). Visually the crashing wave over the rock gives movement across frames 1-4, but the four hook frames are nearly identical with the same static text, and the body transition to a Christ statue is a scene shift but slow overall (5.0). The moody purple palette and dynamic surf are aesthetically pleasing enough to warrant a possible stop, but the imagery is a common Stoicism template that many viewers scroll past (5.5).
+**Issues:**
+- Hook 'Face it.' is too generic and doesn't preview the resilience concept
+- The four hook frames are visually near-identical, reducing perceived pacing/energy
+**Suggestions:**
+- Strengthen the hook with a tension-loaded line like 'The thing blocking you IS the way' to spark curiosity immediately
+- Add a subtle text animation (scale-up or word reveal) and a faster cut in the first 1.5s to boost pacing and scroll-stopping motion
+**Flagged dims:** hook_strength, scroll_stop_potential
+
