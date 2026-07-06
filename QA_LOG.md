@@ -464,3 +464,17 @@ for any recurring defects.
 - Boost the body quote's contrast (heavier font weight or a subtle text shadow/scrim) so it stays crisp over the lighter pink areas in frame 6
 **Flagged dims:** pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-07-06 15:32 UTC
+**File:** `2026-07-06_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Stay standing.
+**Scores:** hook_strength=6.5 | text_legibility=8.0 | pacing=4.5 | scroll_stop_potential=6.5
+**Reasoning:** Hook strength is decent at 6.5: 'STAY STANDING.' is punchy and imperative, pairing well with the moody twilight canyon, but it's a somewhat generic motivational command that won't stop every scroller and lacks a curiosity gap. Text legibility is strong at 8.0 — the bold yellow all-caps hook has good contrast against the darker lower portion of the frame, and the body quote in serif with a subtle glow is readable, though the gold-on-purple quote in frame 5 has slightly lower contrast where it overlaps the bright sky. Pacing is weak at 4.5: frames 1–4 are essentially the identical static shot with the same text, so the hook window shows almost no visual movement or change, only a soft transition into the body frames. Scroll-stop potential is 6.5 — the purple-magenta sunset over the river is genuinely atmospheric and aesthetically pleasing, which earns a probable stop, but the imagery is a common ambient-landscape style seen across the niche.
+**Issues:**
+- First 1.5s hook window is a near-static repeat of the same frame and text, creating a slow, motionless opening
+- Hook line 'STAY STANDING.' is a generic motivational command with no curiosity gap or specificity
+**Suggestions:**
+- Add subtle motion in the hook (slow push-in, parallax, or animated text entrance) to inject energy into the opening 1.5s
+- Sharpen the hook with tension or a question, e.g. 'When everything breaks you — stay standing.' to create a curiosity hook that stops more scrollers
+**Flagged dims:** pacing
+
