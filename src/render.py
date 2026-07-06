@@ -49,8 +49,13 @@ AUTHOR_COLOR = os.environ.get("REEL_AUTHOR_COLOR", "0xC9A055")  # antique bronze
 DIVIDER_COLOR = os.environ.get("REEL_DIVIDER_COLOR", "0xA08040") # darker bronze for divider
 
 # Karaoke caption controls (all optional, sensible defaults).
-CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "0") not in ("0", "false", "False")
+# ON by default: viewers want to read the narration in real time, and most
+# Shorts are watched muted — synced captions are essential for retention.
+CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False")
 CAPTIONS_ONLY = os.environ.get("REEL_CAPTIONS_ONLY", "0") not in ("0", "false", "False")
+# Per-word bass "thud" under the captions. OFF by default — it fights the calm,
+# low-cortisol vibe. Enable with REEL_WORD_CLICKS=1 if you want the punchy feel.
+WORD_CLICKS_ON = os.environ.get("REEL_WORD_CLICKS", "0") not in ("0", "false", "False")
 CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
 CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "92"))
 CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "620"))
@@ -644,7 +649,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             print(f"  hook sound unavailable ({e}); using plain voiceover")
 
     # Mix a subtle bass-thud at every word onset so captions have audio impact.
-    if word_timings and CAPTIONS_ON:
+    if word_timings and WORD_CLICKS_ON:
         try:
             _pre_dur = _audio_duration(audio_for_render) + 1.0
             click_wav = Path(out_path).with_suffix(".clicks.wav")
