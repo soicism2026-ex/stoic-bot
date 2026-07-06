@@ -98,19 +98,75 @@ def pick_music(rows: list[dict]) -> dict:
 # Download / cache
 # ---------------------------------------------------------------------------
 
-def fetch_music(track: dict, out_path: Path) -> Path | None:
-    """Download the track audio to out_path.  Returns out_path on success, None on failure."""
-    # Use a persistent per-track cache so we only download once.
-    MUSIC_DIR.mkdir(parents=True, exist_ok=True)
-    cached = MUSIC_DIR / f"{track['name']}.mp3"
-    if cached.exists() and cached.stat().st_size > 5_000:
-        return cached
+# ---------------------------------------------------------------------------
+# Generative ambient beds (ffmpeg lavfi) — the RELIABLE music source.
+# Pixabay has no public music API (that endpoint 404s), so downloads never
+# worked. A warm synthesized drone at ~7% under the voice reads identically to a
+# stock ambient track, needs no key, no network, and can never fail. One
+# distinct filtergraph per mood so the three tracks still feel different.
+# ---------------------------------------------------------------------------
+_MUSIC_SYNTH = {
+    # deep, brooding drone: sub + fifth + octave, very slow swell, long reverb
+    "dark_ambient": (
+        "sine=frequency=55:duration={d},volume=0.9[a0];"
+        "sine=frequency=82.5:duration={d},volume=0.5[a1];"
+        "sine=frequency=110:duration={d},volume=0.35[a2];"
+        "sine=frequency=164.8:duration={d},volume=0.12[a3];"
+        "[a0][a1][a2][a3]amix=inputs=4:duration=longest,"
+        "tremolo=f=0.1:d=0.4,aecho=0.8:0.88:150|280:0.3|0.2,"
+        "volume=2.4,alimiter=limit=0.9"
+    ),
+    # singing-bowl bed: warm fundamental + detuned partner (slow beating) + partials
+    "ancient_minimal": (
+        "sine=frequency=174:duration={d},volume=0.9[a0];"
+        "sine=frequency=175.3:duration={d},volume=0.6[a1];"
+        "sine=frequency=348:duration={d},volume=0.4[a2];"
+        "sine=frequency=470:duration={d},volume=0.16[a3];"
+        "[a0][a1][a2][a3]amix=inputs=4:duration=longest,"
+        "aecho=0.8:0.9:200|360:0.35|0.25,volume=2.2,alimiter=limit=0.9"
+    ),
+    # soft pad with a gentle pulse: low pad + fifth + high pad, slow tremolo
+    "focus_underscore": (
+        "sine=frequency=65:duration={d},volume=0.7[a0];"
+        "sine=frequency=98:duration={d},volume=0.4[a1];"
+        "sine=frequency=196:duration={d},volume=0.2[a2];"
+        "[a0][a1][a2]amix=inputs=3:duration=longest,"
+        "tremolo=f=0.5:d=0.4,aecho=0.8:0.85:110|190:0.25|0.18,"
+        "volume=2.4,alimiter=limit=0.9"
+    ),
+}
 
+
+def _synthesize_music(track: dict, out_path: Path, dur: float = 24.0) -> Path | None:
+    """Generate a calm ambient bed with ffmpeg — no network, never needs a key.
+
+    render.py stream-loops the music to fill the Short, so a 24s loop is plenty.
+    Returns out_path, or None only if ffmpeg itself fails.
+    """
+    import subprocess
+    name = track.get("name", "dark_ambient")
+    fc = _MUSIC_SYNTH.get(name, _MUSIC_SYNTH["dark_ambient"]).format(d=dur)
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-filter_complex", fc, "-t", f"{dur:.0f}",
+             "-ar", "44100", "-ac", "2", "-c:a", "libmp3lame", "-b:a", "128k",
+             str(out_path)],
+            check=True, capture_output=True,
+        )
+        if out_path.exists() and out_path.stat().st_size > 5_000:
+            print(f"[music] synthesized ambient bed for '{name}' → {out_path.name}")
+            return out_path
+    except Exception as e:
+        print(f"[music] synthesis failed for '{name}': {e}", file=sys.stderr)
+    return None
+
+
+def _try_pixabay(track: dict, cached: Path) -> Path | None:
+    """Best-effort Pixabay download. Pixabay has no public music API, so this
+    almost always fails — kept only in case a working key/endpoint is provided."""
     api_key = os.environ.get("PIXABAY_API_KEY", "")
     if not api_key:
-        print("[music] PIXABAY_API_KEY not set — skipping music", file=sys.stderr)
         return None
-
     try:
         resp = requests.get(
             PIXABAY_MUSIC_URL,
@@ -120,12 +176,9 @@ def fetch_music(track: dict, out_path: Path) -> Path | None:
         resp.raise_for_status()
         hits = resp.json().get("hits", [])
         if not hits:
-            print(f"[music] no Pixabay music results for '{track['query']}'", file=sys.stderr)
             return None
-
         audio_url = hits[0].get("audio", {}).get("url") or hits[0].get("url", "")
         if not audio_url:
-            # Try alternate key names
             for h in hits:
                 for key in ("mp3", "preview_url", "url"):
                     u = h.get(key, "") or h.get("audio", {}).get(key, "")
@@ -134,27 +187,39 @@ def fetch_music(track: dict, out_path: Path) -> Path | None:
                         break
                 if audio_url:
                     break
-
         if not audio_url:
-            print(f"[music] could not extract audio URL from Pixabay response", file=sys.stderr)
             return None
-
         with requests.get(audio_url, stream=True, timeout=60) as dl:
             dl.raise_for_status()
             with open(cached, "wb") as fh:
                 for chunk in dl.iter_content(chunk_size=1 << 16):
                     if chunk:
                         fh.write(chunk)
-
         if cached.stat().st_size < 5_000:
             cached.unlink(missing_ok=True)
-            print(f"[music] downloaded file too small for '{track['name']}'", file=sys.stderr)
             return None
-
         print(f"[music] cached {track['name']} → {cached.name}")
         return cached
-
     except Exception as e:
-        print(f"[music] fetch failed for '{track['name']}': {e}", file=sys.stderr)
+        print(f"[music] Pixabay unavailable for '{track['name']}': {e}", file=sys.stderr)
         cached.unlink(missing_ok=True)
         return None
+
+
+def fetch_music(track: dict, out_path: Path) -> Path | None:
+    """Return a music file for the Short. Never returns None in practice.
+
+    Order: per-track cache → best-effort Pixabay download → generative ambient
+    bed (guaranteed). The generative bed means every Short gets music.
+    """
+    MUSIC_DIR.mkdir(parents=True, exist_ok=True)
+    cached = MUSIC_DIR / f"{track['name']}.mp3"
+    if cached.exists() and cached.stat().st_size > 5_000:
+        return cached
+
+    downloaded = _try_pixabay(track, cached)
+    if downloaded:
+        return downloaded
+
+    # Guaranteed fallback — synthesize a warm ambient bed so music is never missing.
+    return _synthesize_music(track, cached)

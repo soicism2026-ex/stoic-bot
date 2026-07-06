@@ -8,3 +8,6 @@ client_secret.json
 assets/backgrounds/*.mp4
 assets/backgrounds/*.webm
 assets/backgrounds/*.mov
+
+# Generated/downloaded music beds (never commit audio)
+assets/music/*.mp3
