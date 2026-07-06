@@ -111,6 +111,41 @@ def _audio_ok(audio_path: Path) -> bool:
         return False
 
 
+def _mean_volume_db(audio_path: Path) -> float:
+    """Return the mean volume in dB via ffmpeg volumedetect.
+
+    Real speech sits around -35..-15 dB; digital silence reports about -91 dB.
+    Returns -91.0 if it can't be measured, so callers treat 'unknown' as silent.
+    """
+    try:
+        out = subprocess.run(
+            ["ffmpeg", "-i", str(audio_path), "-af", "volumedetect", "-f", "null", "-"],
+            capture_output=True, text=True,
+        )
+        m = re.search(r"mean_volume:\s*(-?\d+(?:\.\d+)?) dB", out.stderr)
+        return float(m.group(1)) if m else -91.0
+    except Exception:
+        return -91.0
+
+
+def _voice_audio_is_real(audio_path: Path, text: str) -> tuple[bool, float, float]:
+    """Guard against silent / truncated voiceovers reaching the render.
+
+    A voiceover is 'real' only if it is non-empty, long enough for the script
+    (>= ~0.1s per word, floor 1.5s), and actually audible (mean volume above
+    -50 dB — well above the ~-91 dB of silence). Returns (ok, duration, mean_dB)
+    so the caller can log the numbers either way.
+    """
+    if not _audio_ok(audio_path):
+        return False, 0.0, -91.0
+    dur = _audio_duration(audio_path)
+    mean_db = _mean_volume_db(audio_path)
+    n_words = len(_tokenize(text))
+    min_dur = max(1.5, 0.10 * n_words)
+    ok = dur >= min_dur and mean_db > -50.0
+    return ok, dur, mean_db
+
+
 # ---------------------------------------------------------------------------
 # edge-tts synthesis (primary)
 # ---------------------------------------------------------------------------
@@ -148,14 +183,20 @@ def _synthesize_edge(text: str, out_path: Path, voice_id: str) -> tuple:
     except RuntimeError:
         timings = asyncio.run(_edge_stream(text, out_path, voice_id))
 
-    if not _audio_ok(out_path):
+    ok, dur, mean_db = _voice_audio_is_real(out_path, text)
+    print(f"  tts: edge-tts audio dur={dur:.1f}s mean_vol={mean_db:.1f}dB "
+          f"({'ok' if ok else 'REJECTED — silent/truncated'})")
+    if not ok:
+        # Empty, truncated, or silent — do NOT ship it. Raising here routes
+        # synthesize_voice() to the gTTS fallback so the Short still gets a real
+        # voice instead of a silent track that quietly passes downstream checks.
         raise RuntimeError(
-            f"edge-tts produced empty audio for voice {voice_id} — "
-            "file is 0 bytes or missing. Check network connectivity to the Edge TTS endpoint."
+            f"edge-tts audio unusable for voice {voice_id} "
+            f"(dur={dur:.1f}s, mean_vol={mean_db:.1f}dB)."
         )
 
     if not timings:
-        timings = _estimate_timings(text, _audio_duration(out_path))
+        timings = _estimate_timings(text, dur)
     return out_path, timings
 
 
@@ -180,12 +221,15 @@ def _synthesize_gtts(text: str, out_path: Path) -> tuple:
     tts = gTTS(text=text, lang="en", tld="com")
     tts.save(str(out_path))
 
-    if not _audio_ok(out_path):
+    ok, dur, mean_db = _voice_audio_is_real(out_path, text)
+    print(f"  tts: gTTS audio dur={dur:.1f}s mean_vol={mean_db:.1f}dB "
+          f"({'ok' if ok else 'STILL BAD'})")
+    if not ok:
         raise RuntimeError(
-            "gTTS produced empty audio — both edge-tts and gTTS failed. "
-            "Check network connectivity to translate.google.com."
+            f"gTTS audio unusable (dur={dur:.1f}s, mean_vol={mean_db:.1f}dB) — "
+            "both edge-tts and gTTS failed to produce an audible voiceover."
         )
-    return out_path, _estimate_timings(text, _audio_duration(out_path))
+    return out_path, _estimate_timings(text, dur)
 
 
 # ---------------------------------------------------------------------------
