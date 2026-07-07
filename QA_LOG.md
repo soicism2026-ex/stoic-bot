@@ -533,3 +533,17 @@ for any recurring defects.
 - Give the smaller karaoke captions the same bold high-contrast treatment (solid fill + heavier stroke or semi-transparent box) as the main yellow caption for consistent legibility
 **Flagged dims:** hook_strength, scroll_stop_potential
 
+
+## Visual QA — 2026-07-07 19:01 UTC
+**File:** `2026-07-07_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Meet what comes
+**Scores:** hook_strength=4.5 | text_legibility=8.0 | pacing=5.0 | scroll_stop_potential=3.5
+**Reasoning:** hook_strength scores 4.5 because 'MEET WHAT COMES' is a decent, mildly intriguing phrase but the first four frames are a near-static dark purple background with no visual movement or arresting imagery to reinforce it — the curiosity is verbal only. text_legibility scores 8.0 as the yellow hook text and outlined caption words are high-contrast and readable, though the serif quote in frame 5 sits on a busy particle background and the darker gold author byline dips slightly in contrast. pacing scores 5.0 because the first three hook frames barely change (same text, same background), giving a static feel until the caption words and background shifts start in frames 3–6. scroll_stop_potential scores 3.5 since a flat purple screen with a text line is easy to swipe past; the sunset reveal in frame 6 is attractive but arrives too late to catch the scroller in the critical opening moment.
+**Issues:**
+- First 1.5s hook window is a static dark-purple screen with no imagery or motion to stop the scroll
+- The visually appealing sunset background only appears in the body (frame 6), not during the hook when it matters most
+**Suggestions:**
+- Lead with a striking visual (moving train, storm, sunset) behind the hook text from frame 1 to create immediate scroll-stop appeal
+- Add subtle text animation or a punchy word reveal in the opening frames so the hook feels dynamic rather than a frozen title card
+**Flagged dims:** hook_strength, scroll_stop_potential
+
