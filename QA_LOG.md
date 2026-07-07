@@ -519,3 +519,17 @@ for any recurring defects.
 - Open with a more visually arresting or motion-driven first frame (e.g. a subtle push-in, cooling coffee steam, or dimming light) to boost scroll-stop power beyond the text alone
 - Reduce the color-grade opacity so the pyramid detail and sky gradient read more vividly, and consolidate the duplicate captions into a single animated line
 
+
+## Visual QA — 2026-07-07 14:32 UTC
+**File:** `2026-07-07_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Set it down.
+**Scores:** hook_strength=5.5 | text_legibility=7.5 | pacing=6.0 | scroll_stop_potential=5.0
+**Reasoning:** Hook strength is moderate — 'SET IT DOWN.' is intriguing and minimalist, but without added context it lacks the immediate curiosity spike of a question or a bold claim; it reads as vague on its own. Text legibility is solid: the bold yellow uppercase caption has good contrast against the dark purple waterfall, though the lower karaoke-style captions ('WHO TRULY', 'URGE TO') use a thinner outlined gold font that is noticeably harder to read against busy water textures. Pacing is adequate — the animated word-by-word captions add rhythm and the scene transition from waterfall to sunset in the body gives visual variety, but the hook frames are near-identical so momentum feels flat in the opening. Scroll-stop potential is middling: the purple waterfall is aesthetically pleasing but it's a common Stoicism-style backdrop, so a scroller in a feed might pause but is not compelled to.
+**Issues:**
+- Hook 'SET IT DOWN.' is ambiguous without immediate payoff — unclear what is being set down in the first 1.5s
+- Secondary captions (WHO TRULY, URGE TO, TO HOLD) use low-contrast thin gold text that struggles against the busy background
+**Suggestions:**
+- Sharpen the hook with tension, e.g. 'Stop trying to be right.' or pair 'SET IT DOWN' with a subtitle that clarifies the ego angle within the first second
+- Give the smaller karaoke captions the same bold high-contrast treatment (solid fill + heavier stroke or semi-transparent box) as the main yellow caption for consistent legibility
+**Flagged dims:** hook_strength, scroll_stop_potential
+
