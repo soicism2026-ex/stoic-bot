@@ -440,6 +440,7 @@ def main():
                 publish_result=upload_result,
                 voice_name=voice["name"],
                 music_track=music_track["name"],
+                hook=content.get("hook", ""),
             )
             print("  logged. done.")
             break
@@ -471,6 +472,7 @@ def main():
                     publish_result=upload_result,
                     voice_name=bk_meta.get("voice_name", ""),
                     music_track=bk_meta.get("music_track", ""),
+                    hook=bk_meta.get("hook", ""),
                 )
                 _remove_backup(bk_meta_file)
             else:

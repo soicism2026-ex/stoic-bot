@@ -33,28 +33,28 @@ SOURCE_HINTS = {
     "Chrysippus": "fragments and sayings in Diogenes Laertius and Stobaeus",
 }
 
-# Analytics signal (14+ days, 18 videos):
-#   Big 5 (MA, Seneca, Epictetus, Musonius Rufus, Zeno) all hit 900–1055 views.
-#   Chrysippus averages ~640 views — decent for variety once per rotation.
-#   Cleanthes (224v), Hierocles, Cato the Younger all underperform; removed.
-# Strategy: 4 of every 5 days from the Big 5; 1 of 5 days Chrysippus for variety.
+# Analytics signal (67 videos — see scripts/channel_report.py):
+#   Zeno (626v), Marcus (589), Epictetus (524), Musonius (479), Seneca (439)
+#   all carry the channel. Chrysippus (370v) is the weakest active author and
+#   was DROPPED. Cleanthes/Hierocles/Cato removed earlier.
+# Strategy: rotate the Big 5 only (LRU). No low-view variety slot.
 BIG5 = ["Marcus Aurelius", "Seneca", "Epictetus", "Musonius Rufus", "Zeno of Citium"]
-DIVERSE = ["Chrysippus"]
-AUTHORS = BIG5 + DIVERSE
+AUTHORS = BIG5
 
+# Themes ranked by avg views (channel_report). 'time' (230v) and 'adversity as
+# training' (276v) owned the entire bottom of the feed and were DROPPED. anger
+# (794v), mortality (736v), friendship (615v) are the strongest and lead.
 THEMES = [
-    "discipline",
-    "mortality/memento mori",
-    "control vs acceptance",
-    "ego",
-    "resilience",
     "anger",
-    "desire",
-    "time",
-    "fear",
+    "mortality/memento mori",
     "friendship",
+    "resilience",
+    "fear",
+    "desire",
+    "discipline",
+    "ego",
     "duty/justice",
-    "adversity as training",
+    "control vs acceptance",
 ]
 
 SYSTEM = """You are the content engine for a faceless Stoicism YouTube Shorts \
@@ -202,14 +202,8 @@ def _pick_rotation(rows: list[dict]) -> tuple[str, str]:
     recent_authors = [r["author"] for r in reversed(rows) if r.get("author")]
     recent_themes = [r["theme"] for r in reversed(rows) if r.get("theme")]
 
-    # 4 out of every 5 days: pick from Big 5 (all 900–1055v avg).
-    # Every 5th day: Chrysippus for variety (~640v).
-    day_index = len(rows)
-    if day_index % 5 < 4:
-        author = _pick_least_recent(BIG5, recent_authors, block_last=1)
-    else:
-        author = _pick_least_recent(DIVERSE, recent_authors, block_last=1)
-
+    # Rotate the Big 5 only, least-recently-used (Chrysippus dropped for low views).
+    author = _pick_least_recent(BIG5, recent_authors, block_last=1)
     theme = _pick_least_recent(THEMES, recent_themes, block_last=3)
     return author, theme
 
@@ -225,6 +219,13 @@ def _pick_format(rows: list[dict]) -> str:
     # drop the text-heavy "list" format entirely. One calm truth per Short.
     ROTATION = ["minimal", "quote", "minimal", "quote"]
     return ROTATION[len(rows) % len(ROTATION)]
+
+
+def _normalize_quote(q: str) -> str:
+    """Collapse a quote to letters/digits only for robust duplicate detection
+    (ignores punctuation, casing, and 'the fates guide…' vs 'The Fates guide…')."""
+    import re
+    return re.sub(r"[^a-z0-9]+", " ", (q or "").lower()).strip()
 
 
 def generate_content() -> dict:
@@ -276,23 +277,41 @@ def generate_content() -> dict:
 
     strategy_addendum = _load_strategy()
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    msg = client.messages.create(
-        model=MODEL,
-        max_tokens=1200,
-        temperature=1.0,
-        system=SYSTEM + strategy_addendum,
-        messages=[{"role": "user", "content": user_msg}],
-    )
-    raw = "".join(b.text for b in msg.content if b.type == "text").strip()
-    if raw.startswith("```"):
-        raw = raw.split("```")[1].lstrip("json").strip()
-    data = json.loads(raw)
-
     required = {"format", "theme", "quote", "author", "hook", "voiceover_text",
                 "cta", "pinned_comment", "caption", "hashtags", "callout_words"}
-    missing = required - data.keys()
-    if missing:
-        raise ValueError(f"Claude response missing keys: {missing}")
+    used_norm = {_normalize_quote(q) for q in used_quotes}
+
+    # Dedup agent: regenerate (capped at 3) if the model returns a quote we have
+    # already shipped. A past leak let one passage post 4× (one got 4 views);
+    # this closes it without ever failing the run.
+    extra_avoid = ""
+    data = None
+    for attempt in range(3):
+        msg = client.messages.create(
+            model=MODEL,
+            max_tokens=1200,
+            temperature=1.0,
+            system=SYSTEM + strategy_addendum,
+            messages=[{"role": "user", "content": user_msg + extra_avoid}],
+        )
+        raw = "".join(b.text for b in msg.content if b.type == "text").strip()
+        if raw.startswith("```"):
+            raw = raw.split("```")[1].lstrip("json").strip()
+        data = json.loads(raw)
+        missing = required - data.keys()
+        if missing:
+            raise ValueError(f"Claude response missing keys: {missing}")
+        if _normalize_quote(data["quote"]) not in used_norm:
+            break
+        print(f"  content: duplicate quote (attempt {attempt + 1}/3) — "
+              f"regenerating: \"{data['quote'][:50]}\"", file=sys.stderr)
+        extra_avoid = (
+            f"\n\nSTOP: the quote \"{data['quote']}\" has ALREADY been posted on "
+            f"this channel. Choose a COMPLETELY different genuine passage."
+        )
+    else:
+        print("  content: still a duplicate after 3 tries — shipping it anyway "
+              "(better than failing the run)", file=sys.stderr)
 
     data["day_number"] = day_number
     return data

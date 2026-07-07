@@ -7,6 +7,9 @@
 - Trend: earlier 52 posts avg **526** → last 15 avg **374**  (DOWN 153)
   - _Caveat: newer videos are younger, so some of this gap is just age._
 
+## Retention (the signal that actually drives reach)
+- ⚠️ **Not enabled yet.** Views alone can't tell you what the algorithm rewards. Re-run `python src/auth_setup.py` (now requests `yt-analytics.readonly`), update `YOUTUBE_REFRESH_TOKEN`, and the retention agent will report avg-view-% per video here.
+
 ## Avg views by theme
 - anger                          **794v**  (n=5)
 - mortality/memento mori         **736v**  (n=5)
@@ -51,6 +54,12 @@
 
 ## ⚑ Duplicate quotes shipped
 - "It is not that we have a short time to live, but t…" posted 4× (views: 382, 4, 20, 568)
+
+## Hook-lab
+- Collecting hook data (0 posts logged so far). Once ~10+ posts carry hooks, this shows which hook lengths/styles win.
+
+## Packaging (titles)
+- Shorter titles (≤45 chars): **301v** vs longer **557v**
 
 ## Top 5
 -  1255v  Epictetus        duty/justice     Do your duty in the place where you are stat

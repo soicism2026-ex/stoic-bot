@@ -54,13 +54,14 @@ def _load_posts() -> list[dict]:
                 "video_id": r[6],
                 "voice": r[7] if len(r) > 7 else "",
                 "music": r[8] if len(r) > 8 else "",
+                "hook": r[9] if len(r) > 9 else "",
             })
     return rows
 
 
 def _peak_stats() -> dict:
     """Return {video_id: {views, likes, comments}} using the peak snapshot."""
-    peak = defaultdict(lambda: {"views": 0, "likes": 0, "comments": 0})
+    peak = defaultdict(lambda: {"views": 0, "likes": 0, "comments": 0, "title": ""})
     if not ANALYTICS.exists():
         return peak
     with open(ANALYTICS, newline="", encoding="utf-8") as f:
@@ -74,8 +75,27 @@ def _peak_stats() -> dict:
                     "views": v,
                     "likes": int(r.get("likes") or 0),
                     "comments": int(r.get("comments") or 0),
+                    "title": r.get("title", ""),
                 }
     return peak
+
+
+def _load_retention() -> dict:
+    """Return {video_id: {'pct': float, 'sec': float}} from data/retention.csv,
+    or {} if the retention agent hasn't been authorised/run yet."""
+    path = ROOT / "data" / "retention.csv"
+    if not path.exists():
+        return {}
+    out = {}
+    with open(path, newline="", encoding="utf-8") as f:
+        for r in csv.DictReader(f):
+            vid = (r.get("video_id") or "").strip()
+            if vid:
+                out[vid] = {
+                    "pct": float(r.get("avg_view_pct") or 0),
+                    "sec": float(r.get("avg_view_seconds") or 0),
+                }
+    return out
 
 
 def _avg(xs):
@@ -123,6 +143,25 @@ def build_report() -> str:
           f"last 15 avg **{_avg(recent):.0f}**  ({arrow} {abs(delta):.0f})")
         w("  - _Caveat: newer videos are younger, so some of this gap is just age._")
 
+    # Retention — the real Shorts ranking signal (needs the retention agent).
+    ret = _load_retention()
+    w("\n## Retention (the signal that actually drives reach)")
+    if not ret:
+        w("- ⚠️ **Not enabled yet.** Views alone can't tell you what the algorithm "
+          "rewards. Re-run `python src/auth_setup.py` (now requests "
+          "`yt-analytics.readonly`), update `YOUTUBE_REFRESH_TOKEN`, and the "
+          "retention agent will report avg-view-% per video here.")
+    else:
+        matched = [(p, ret[p["video_id"]]) for p in tracked if p["video_id"] in ret]
+        if matched:
+            pcts = [r["pct"] for _, r in matched]
+            w(f"- Avg view %: **{_avg(pcts):.1f}%** across {len(matched)} videos")
+            top = max(matched, key=lambda m: m[1]["pct"])
+            bot = min(matched, key=lambda m: m[1]["pct"])
+            w(f"- Best retention: **{top[1]['pct']:.0f}%** — \"{top[0]['quote'][:40]}\"")
+            w(f"- Worst retention: **{bot[1]['pct']:.0f}%** — \"{bot[0]['quote'][:40]}\"")
+            w("- _Optimise hooks/pacing for the high-retention patterns above._")
+
     # Per-dimension tables
     for dim, label in [("theme", "theme"), ("author", "author"),
                        ("voice", "voice"), ("music", "music")]:
@@ -157,6 +196,44 @@ def build_report() -> str:
         for q, ps in list(dups.items())[:6]:
             w(f"- \"{ps[0]['quote'][:50]}…\" posted {len(ps)}× "
               f"(views: {', '.join(str(views_of(p)) for p in ps)})")
+
+    # Hook-lab: hooks were only logged from the roll-out of the hook agent, so
+    # this fills in as new posts accumulate.
+    hooked = [p for p in tracked if p.get("hook")]
+    w("\n## Hook-lab")
+    if len(hooked) < MIN_N:
+        w(f"- Collecting hook data ({len(hooked)} posts logged so far). Once "
+          f"~10+ posts carry hooks, this shows which hook lengths/styles win.")
+    else:
+        buckets = {"2-3 words": [], "4-5 words": [], "6+ words": []}
+        for p in hooked:
+            n = len(p["hook"].split())
+            key = "2-3 words" if n <= 3 else ("4-5 words" if n <= 5 else "6+ words")
+            buckets[key].append(views_of(p))
+        for k, vs in buckets.items():
+            if vs:
+                w(f"- {k}: **{_avg(vs):.0f}v** avg (n={len(vs)})")
+        best = max(hooked, key=views_of)
+        w(f"- Best hook so far: \"{best['hook'][:50]}\" ({views_of(best)}v)")
+
+    # Packaging agent: do title patterns move views? Titles live in analytics.csv.
+    def title_of(p):
+        return peak.get(p["video_id"], {}).get("title", "")
+    titled = [p for p in tracked if title_of(p)]
+    if titled:
+        w("\n## Packaging (titles)")
+        day_prefix = [views_of(p) for p in titled if title_of(p).strip().lower().startswith("day ")]
+        no_prefix = [views_of(p) for p in titled if not title_of(p).strip().lower().startswith("day ")]
+        if day_prefix and no_prefix:
+            w(f"- Titles starting with \"Day N …\": **{_avg(day_prefix):.0f}v** "
+              f"(n={len(day_prefix)}) vs others **{_avg(no_prefix):.0f}v** (n={len(no_prefix)})")
+            if _avg(no_prefix) > _avg(day_prefix) * 1.15:
+                w("  - → Drop the \"Day N\" prefix; it isn't earning clicks or search.")
+        short_t = [views_of(p) for p in titled if len(title_of(p)) <= 45]
+        long_t = [views_of(p) for p in titled if len(title_of(p)) > 45]
+        if short_t and long_t:
+            w(f"- Shorter titles (≤45 chars): **{_avg(short_t):.0f}v** vs longer "
+              f"**{_avg(long_t):.0f}v**")
 
     # Top / bottom
     ts = sorted(tracked, key=views_of, reverse=True)

@@ -8,12 +8,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 LOG = ROOT / "data" / "posts.csv"
 
+# 'hook' is appended last so the Hook-lab agent (scripts/channel_report.py) can
+# analyse which hook styles drive views. Trailing position keeps older
+# positional readers and content.py's header-keyed reader working unchanged.
 FIELDS = ["date", "theme", "author", "quote", "caption", "video_url", "video_id",
-          "voice_name", "music_track"]
+          "voice_name", "music_track", "hook"]
 
 
 def log_post(date, theme, quote, author, caption, publish_result,
-             voice_name: str = "", music_track: str = ""):
+             voice_name: str = "", music_track: str = "", hook: str = ""):
     new = not LOG.exists()
     with open(LOG, "a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)
@@ -29,4 +32,5 @@ def log_post(date, theme, quote, author, caption, publish_result,
             "video_id": publish_result.get("video_id", ""),
             "voice_name": voice_name,
             "music_track": music_track,
+            "hook": (hook or "").replace("\n", " ").strip(),
         })

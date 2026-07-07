@@ -37,6 +37,13 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python src/analytics.py || echo "analytics pull failed — reporting on existing data"
 
+      - name: Pull retention (no-op until yt-analytics scope is granted)
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/retention.py || echo "retention not enabled yet"
+
       - name: Generate channel report
         run: |
           python scripts/channel_report.py --write
@@ -48,6 +55,6 @@ jobs:
           git config user.name "stoic-bot"
           git config user.email "bot@users.noreply.github.com"
           git pull --rebase origin main || true
-          git add data/channel_report.md data/analytics.csv
+          git add data/channel_report.md data/analytics.csv data/retention.csv 2>/dev/null || true
           git diff --staged --quiet || git commit -m "report: weekly channel report [skip ci]"
           git push
