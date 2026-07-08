@@ -586,3 +586,13 @@ for any recurring defects.
 - Introduce a cut or a punch-in zoom within the first 1.5s to add kinetic energy while the hook text animates in.
 - Add a subtle semi-transparent dark gradient band behind lower captions to guarantee contrast on busy backgrounds, and consider a slightly larger/bolder hook placed higher in frame.
 
+
+## Visual QA — 2026-07-08 18:20 UTC
+**File:** `2026-07-08_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Nothing has happened yet
+**Scores:** hook_strength=5.0 | text_legibility=5.0 | pacing=5.0 | scroll_stop_potential=5.0
+**Reasoning:** API error: Error code: 529 - {'type': 'error', 'error': {'type': 'overloaded_error', 'message': 'Overloaded'}, 'request_id': 'req_011Ccq41eBdH847qDg56kL1A'}
+**Issues:**
+- api_error: Error code: 529 - {'type': 'error', 'error': {'type': 'overloaded_error', 'message': 'Overloaded'}, 'request_id': 'req_011Ccq41eBdH847qDg56kL1A'}
+**Flagged dims:** api_unreachable
+
