@@ -92,7 +92,7 @@ def _render_with_env(
     env_overrides: dict, *,
     quote: str, author: str, audio_path: Path, out_path: Path,
     theme: str, word_timings: list, hook: str, callout_words: list = None,
-    music_path: Path = None,
+    music_path: Path = None, mission: str = "",
 ) -> Path:
     """Set env overrides, reload render module constants, call render_reel."""
     saved = {}
@@ -108,7 +108,7 @@ def _render_with_env(
             quote=quote, author=author, audio_path=audio_path,
             out_path=out_path, theme=theme, word_timings=word_timings,
             hook=hook, callout_words=callout_words or [],
-            music_path=music_path,
+            music_path=music_path, mission=mission,
         )
     finally:
         for k, orig in saved.items():
@@ -321,9 +321,17 @@ def main():
     ]
     all_tags = list(dict.fromkeys(base_tags + seo_tags))[:30]  # dedup, cap at 30
 
+    # Mission counter — enrols the viewer in a streak they can root for.
+    # Subscribers compound; a mission is the cheapest reason to subscribe.
+    mission_phrase = os.environ.get(
+        "MISSION_PHRASE", "posting Stoic wisdom until discipline becomes cool again"
+    )
+    mission_desc = f"Day {day} of {mission_phrase}. Subscribe to follow the streak."
+    mission_overlay = f"DAY {day} · UNTIL DISCIPLINE IS COOL AGAIN" if day else ""
+
     description = (
         f'{hook_clean}.\n\n'
-        f'{"Day " + str(day) + " of daily Stoic wisdom." + chr(10) + chr(10) if day else ""}'
+        f'{mission_desc + chr(10) + chr(10) if day else ""}'
         f'{content["caption"]}\n\n'
         f'{" ".join(content["hashtags"])}'
         f'{promo.description_block()}'
@@ -347,7 +355,7 @@ def main():
             audio_path=audio_path, out_path=video_path,
             theme=content["theme"], word_timings=word_timings, hook=hook,
             callout_words=content.get("callout_words", []),
-            music_path=music_path,
+            music_path=music_path, mission=mission_overlay,
         )
 
         print(f"  [attempt {attempt}] QA check...")
@@ -453,6 +461,7 @@ def main():
                 music_track=music_track["name"],
                 hook=content.get("hook", ""),
                 experiment=exp_name,
+                content_format=content.get("format", ""),
             )
             print("  logged. done.")
             break

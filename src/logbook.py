@@ -12,12 +12,12 @@ LOG = ROOT / "data" / "posts.csv"
 # analyse which hook styles drive views. Trailing position keeps older
 # positional readers and content.py's header-keyed reader working unchanged.
 FIELDS = ["date", "theme", "author", "quote", "caption", "video_url", "video_id",
-          "voice_name", "music_track", "hook", "experiment"]
+          "voice_name", "music_track", "hook", "experiment", "format"]
 
 
 def log_post(date, theme, quote, author, caption, publish_result,
              voice_name: str = "", music_track: str = "", hook: str = "",
-             experiment: str = ""):
+             experiment: str = "", content_format: str = ""):
     new = not LOG.exists()
     with open(LOG, "a", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=FIELDS)
@@ -35,4 +35,5 @@ def log_post(date, theme, quote, author, caption, publish_result,
             "music_track": music_track,
             "hook": (hook or "").replace("\n", " ").strip(),
             "experiment": experiment,
+            "format": content_format,
         })

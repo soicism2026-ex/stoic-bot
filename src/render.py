@@ -641,7 +641,7 @@ def _enhance_graph(src_label: str, out_label: str) -> str:
 def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 theme: str = "", word_timings: list = None,
                 hook: str = "", callout_words: list = None,
-                music_path: Path = None) -> Path:
+                music_path: Path = None, mission: str = "") -> Path:
     # Mix an attention "whoosh" under the opening before anything else so the
     # rest of the pipeline just sees a normal audio track. Never let it break a
     # run: on any failure fall back to the raw voiceover.
@@ -831,6 +831,21 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 f"alpha='if(lt(t,{HOOK_HOLD}),1,max(0,1-(t-{HOOK_HOLD})/{fade}))':"
                 f"enable='lt(t,{HOOK_HOLD + fade})'"
             )
+
+    # Mission counter — small bronze line at the top of frame ("DAY 47 · UNTIL
+    # DISCIPLINE IS COOL AGAIN"). Enrols viewers in the streak; auto-fits the
+    # phone-fullscreen safe band like the hook does.
+    if mission:
+        m_safe_w = W - 2 * SAFE_PX
+        m_fs = min(32, int(m_safe_w / (0.55 * max(len(mission), 1))))
+        vf_parts.append(
+            f"drawtext=fontfile='{_escape_filter_path(Path(QUOTE_FONT))}':"
+            f"text='{_escape(mission.upper())}':"
+            f"fontcolor={AUTHOR_COLOR}@0.9:fontsize={m_fs}:"
+            # y=265 clears the corner-bracket arms (inset 130 + arm length 110)
+            f"x=(w-text_w)/2:y=265:"
+            f"shadowcolor=black@0.8:shadowx=2:shadowy=2"
+        )
 
     # flash callout words (concrete nouns) centered on screen when spoken —
     # off by default (distracting); enable with REEL_CALLOUTS=1.

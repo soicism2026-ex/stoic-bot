@@ -56,6 +56,7 @@ def _load_posts() -> list[dict]:
                 "music": r[8] if len(r) > 8 else "",
                 "hook": r[9] if len(r) > 9 else "",
                 "experiment": r[10] if len(r) > 10 else "",
+                "format": r[11] if len(r) > 11 else "",
             })
     return rows
 
@@ -165,7 +166,8 @@ def build_report() -> str:
 
     # Per-dimension tables
     for dim, label in [("theme", "theme"), ("author", "author"),
-                       ("voice", "voice"), ("music", "music")]:
+                       ("voice", "voice"), ("music", "music"),
+                       ("format", "format (story is the viral bet)")]:
         rows = _by_dimension(tracked, views_of, dim)
         if not rows:
             continue
