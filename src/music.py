@@ -106,13 +106,17 @@ def pick_music(rows: list[dict]) -> dict:
 # distinct filtergraph per mood so the three tracks still feel different.
 # ---------------------------------------------------------------------------
 _MUSIC_SYNTH = {
+    # Each bed also mixes in a whisper of low-passed pink noise ("air") — pure
+    # sine stacks read as synthetic; the noise floor makes them feel like a
+    # recorded room, closer to real dark-ambient stock tracks.
     # deep, brooding drone: sub + fifth + octave, very slow swell, long reverb
     "dark_ambient": (
         "sine=frequency=55:duration={d},volume=0.9[a0];"
         "sine=frequency=82.5:duration={d},volume=0.5[a1];"
         "sine=frequency=110:duration={d},volume=0.35[a2];"
         "sine=frequency=164.8:duration={d},volume=0.12[a3];"
-        "[a0][a1][a2][a3]amix=inputs=4:duration=longest,"
+        "anoisesrc=d={d}:c=pink,lowpass=f=500,volume=0.05[air];"
+        "[a0][a1][a2][a3][air]amix=inputs=5:duration=longest,"
         "tremolo=f=0.1:d=0.4,aecho=0.8:0.88:150|280:0.3|0.2,"
         "volume=2.4,alimiter=limit=0.9"
     ),
@@ -122,7 +126,8 @@ _MUSIC_SYNTH = {
         "sine=frequency=175.3:duration={d},volume=0.6[a1];"
         "sine=frequency=348:duration={d},volume=0.4[a2];"
         "sine=frequency=470:duration={d},volume=0.16[a3];"
-        "[a0][a1][a2][a3]amix=inputs=4:duration=longest,"
+        "anoisesrc=d={d}:c=pink,lowpass=f=800,volume=0.04[air];"
+        "[a0][a1][a2][a3][air]amix=inputs=5:duration=longest,"
         "aecho=0.8:0.9:200|360:0.35|0.25,volume=2.2,alimiter=limit=0.9"
     ),
     # soft pad with a gentle pulse: low pad + fifth + high pad, slow tremolo
@@ -130,7 +135,8 @@ _MUSIC_SYNTH = {
         "sine=frequency=65:duration={d},volume=0.7[a0];"
         "sine=frequency=98:duration={d},volume=0.4[a1];"
         "sine=frequency=196:duration={d},volume=0.2[a2];"
-        "[a0][a1][a2]amix=inputs=3:duration=longest,"
+        "anoisesrc=d={d}:c=pink,lowpass=f=600,volume=0.045[air];"
+        "[a0][a1][a2][air]amix=inputs=4:duration=longest,"
         "tremolo=f=0.5:d=0.4,aecho=0.8:0.85:110|190:0.25|0.18,"
         "volume=2.4,alimiter=limit=0.9"
     ),

@@ -26,6 +26,7 @@ from tts import synthesize_voice, pick_voice  # noqa: E402
 from publish import publish_short, set_thumbnail, post_comment  # noqa: E402
 import publish_instagram                    # noqa: E402
 from logbook import log_post              # noqa: E402
+from experiments import pick_experiment   # noqa: E402
 import render as render_mod               # noqa: E402
 import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
@@ -300,7 +301,12 @@ def main():
 
     # Title: hook-first (the scroll-stopper) + author (trust signal) + niche tags.
     # "Day N" moves to the description — it's for loyal fans, not new viewers.
-    title = f'"{hook_clean}" — {content["author"]} | Stoicism'[:90].rstrip()
+    # The Shorts player ellipsizes long titles in its UI (platform behaviour we
+    # can't disable, and longer keyword-rich titles measurably out-view short
+    # ones) — so keep the length but trim at a WORD boundary, never mid-word.
+    title = f'"{hook_clean}" — {content["author"]} | Stoicism'
+    if len(title) > 90:
+        title = title[:90].rsplit(" ", 1)[0].rstrip(" —|")
 
     # Expanded tags: hashtag list + author/niche SEO terms the algorithm uses
     # for topic matching.  YouTube allows up to 500 chars total.
@@ -323,8 +329,13 @@ def main():
         f'{promo.description_block()}'
     )
 
+    # Experiment agent: assign this post's intro-sound + colour-grade combo.
+    # QA-retry corrections merge ON TOP of this base so the variant sticks.
+    exp_name, exp_env = pick_experiment(post_rows)
+    print(f"  experiment: {exp_name}")
+
     all_qa: list = []
-    current_env: dict = {}
+    current_env: dict = dict(exp_env)
     upload_result = None
     used_backup = False
 
@@ -441,6 +452,7 @@ def main():
                 voice_name=voice["name"],
                 music_track=music_track["name"],
                 hook=content.get("hook", ""),
+                experiment=exp_name,
             )
             print("  logged. done.")
             break

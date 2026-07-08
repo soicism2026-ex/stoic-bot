@@ -59,8 +59,14 @@ WORD_CLICKS_ON = os.environ.get("REEL_WORD_CLICKS", "0") not in ("0", "false", "
 CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
 CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "92"))
 CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "620"))
-CAPTION_MARGINL = int(os.environ.get("REEL_CAPTION_MARGINL", "80"))
-CAPTION_MARGINR = int(os.environ.get("REEL_CAPTION_MARGINR", "80"))
+# Phone-fullscreen safe zone. iPhones are ~19.5:9 — narrower than 9:16 — so the
+# Shorts player fills the screen HEIGHT and crops ~120px off EACH side of a
+# 1080-wide frame. Text/brackets outside the central band get eaten (a hook
+# rendered edge-to-edge showed as "EET WHAT COME" on device). Keep every
+# overlay inside W - 2*SAFE_PX.
+SAFE_PX = int(os.environ.get("REEL_SAFE_MARGIN", "130"))
+CAPTION_MARGINL = int(os.environ.get("REEL_CAPTION_MARGINL", "150"))
+CAPTION_MARGINR = int(os.environ.get("REEL_CAPTION_MARGINR", "150"))
 
 # Flashing "callout" words — concrete nouns that pop up large mid-screen as
 # they're spoken. Disabled by default: viewer feedback was that the flashing
@@ -596,7 +602,9 @@ def _frame_overlays() -> list:
     """
     if not FRAME_ON:
         return []
-    I = 34          # inset from the edge
+    # Inset past the phone-fullscreen crop (~120px/side) or the brackets are
+    # invisible on iPhones — they sat at 34px and were entirely cropped away.
+    I = max(SAFE_PX, 130)
     L = 110         # bracket arm length
     T = 6           # line thickness
     c = f"{FRAME_COLOR}@0.85"
@@ -678,7 +686,8 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     os.environ["REEL_BG_OFFSET"] = str(base_offset)  # restore
     bg = bg_clips[0]  # clip 0 = .bg.mp4, referenced by thumbnail code
 
-    quote_lines = textwrap.wrap(quote, width=24) or [quote]
+    # width=22 keeps the serif quote inside the phone-fullscreen safe band.
+    quote_lines = textwrap.wrap(quote, width=22) or [quote]
     author_txt = _escape(f"— {author}")
 
     day = date.today().toordinal()
@@ -739,6 +748,15 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     pre_parts.append(
         f"eq=brightness={br - EXTRA_DARKEN}:saturation={sat}:contrast={con}"
     )
+    # Experimental colour-world variants (set by src/experiments.py per post,
+    # logged to posts.csv, compared in channel_report). Env: REEL_GRADE_VARIANT.
+    _grade_variant = os.environ.get("REEL_GRADE_VARIANT", "").strip()
+    if _grade_variant == "warm_gold":
+        # candlelit bronze: warm highs, amber mids — leans into the gold text
+        pre_parts.append("colorbalance=rm=0.06:gm=0.02:bm=-0.06:rh=0.04:bh=-0.04")
+    elif _grade_variant == "obsidian":
+        # cold marble: steel-blue shadows, desaturated — statue/museum register
+        pre_parts.append("colorbalance=rs=-0.05:bs=0.07:bm=0.03,eq=saturation=0.82")
 
     # Overlay filters (quote, hook, captions, frame) drawn on top, after the
     # enhancement chain has finished grading the footage.
@@ -790,8 +808,15 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # faded out so the clean quote is what remains. Drawn after the quote so it
     # sits on top during those first seconds.
     if hook and HOOK_TEXT_ON:
-        hook_lines = textwrap.wrap(hook.upper(), width=15) or [hook.upper()]
-        HOOK_LINE_H = HOOK_FONTSIZE + 18
+        # Wrap short (12 chars) and auto-fit the fontsize so the longest line
+        # stays inside the phone-fullscreen safe band. DejaVu Sans Bold averages
+        # ~0.62em advance per char; without this, a 15-char hook at 94px rendered
+        # wider than the visible area and got cropped on iPhones.
+        hook_lines = textwrap.wrap(hook.upper(), width=12) or [hook.upper()]
+        max_chars = max(len(l) for l in hook_lines)
+        safe_w = W - 2 * SAFE_PX
+        hook_fs = min(HOOK_FONTSIZE, int(safe_w / (0.62 * max_chars)))
+        HOOK_LINE_H = hook_fs + 18
         h_half = (len(hook_lines) * HOOK_LINE_H) // 2
         fade = 0.4  # seconds to fade the card out after HOOK_HOLD
         for i, line in enumerate(hook_lines):
@@ -799,7 +824,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             line_y = f"(h/2)-150{offset:+d}"
             vf_parts.append(
                 f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
-                f"fontcolor={HOOK_COLOR}:fontsize={HOOK_FONTSIZE}:"
+                f"fontcolor={HOOK_COLOR}:fontsize={hook_fs}:"
                 f"x=(w-text_w)/2:y={line_y}:"
                 f"borderw=7:bordercolor=black@0.9:"
                 f"shadowcolor=black@0.7:shadowx=3:shadowy=3:"
@@ -878,13 +903,25 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             f"{vgraph};"
             f"[{audio_in}:a]volume=1.0[voice];"
             f"[{music_in}:a]volume={vol}[music];"
-            f"[voice][music]amix=inputs=2:duration=first:dropout_transition=2[aout]"
+            # amix averages its inputs (voice lands at ~half level), so restore
+            # loudness and hard-cap, then normalise the whole track to YouTube's
+            # -14 LUFS reference so every Short lands consistently LOUD (viewer
+            # feedback: intros felt quiet). aresample restores 44.1k — loudnorm
+            # internally upsamples to 192 kHz.
+            f"[voice][music]amix=inputs=2:duration=first:dropout_transition=2,"
+            f"volume=1.9,alimiter=limit=0.95,"
+            f"loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100[aout]"
         )
         inputs += ["-stream_loop", "-1", "-i", str(music_path)]
         audio_map = ["-map", "[aout]"]
     else:
-        filter_complex = vgraph
-        audio_map = ["-map", f"{audio_in}:a"]
+        # No music: still normalise to -14 LUFS so loudness never depends on
+        # whether the music bed happened to be available.
+        filter_complex = (
+            f"{vgraph};"
+            f"[{audio_in}:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100[aout]"
+        )
+        audio_map = ["-map", "[aout]"]
 
     cmd = [
         "ffmpeg", "-y",

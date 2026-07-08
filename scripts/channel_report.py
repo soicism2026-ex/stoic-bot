@@ -55,6 +55,7 @@ def _load_posts() -> list[dict]:
                 "voice": r[7] if len(r) > 7 else "",
                 "music": r[8] if len(r) > 8 else "",
                 "hook": r[9] if len(r) > 9 else "",
+                "experiment": r[10] if len(r) > 10 else "",
             })
     return rows
 
@@ -215,6 +216,33 @@ def build_report() -> str:
                 w(f"- {k}: **{_avg(vs):.0f}v** avg (n={len(vs)})")
         best = max(hooked, key=views_of)
         w(f"- Best hook so far: \"{best['hook'][:50]}\" ({views_of(best)}v)")
+
+    # Experiment agent: rank intro-sound + colour-grade combos as data accrues.
+    exps = [p for p in tracked if p.get("experiment")]
+    w("\n## Experiments (intro sound × colour grade)")
+    if len(exps) < MIN_N:
+        w(f"- Collecting ({len(exps)} experimental posts so far). Combos rotate "
+          f"every post; rankings appear once each combo has a few samples.")
+    else:
+        combo_views = defaultdict(list)
+        intro_views = defaultdict(list)
+        grade_views = defaultdict(list)
+        for p in exps:
+            combo_views[p["experiment"]].append(views_of(p))
+            parts = p["experiment"].split("+")
+            if len(parts) == 2:
+                intro_views[parts[0]].append(views_of(p))
+                grade_views[parts[1]].append(views_of(p))
+        for k, vs in sorted(combo_views.items(), key=lambda kv: -_avg(kv[1])):
+            w(f"- {k:22} **{_avg(vs):.0f}v** (n={len(vs)})")
+        if intro_views:
+            ranked = sorted(intro_views.items(), key=lambda kv: -_avg(kv[1]))
+            w(f"- Intro signal: **{ranked[0][0]}** leads "
+              f"({', '.join(f'{k} {_avg(v):.0f}v' for k, v in ranked)})")
+        if grade_views:
+            ranked = sorted(grade_views.items(), key=lambda kv: -_avg(kv[1]))
+            w(f"- Grade signal: **{ranked[0][0]}** leads "
+              f"({', '.join(f'{k} {_avg(v):.0f}v' for k, v in ranked)})")
 
     # Packaging agent: do title patterns move views? Titles live in analytics.csv.
     def title_of(p):
