@@ -573,3 +573,16 @@ for any recurring defects.
 - Show an actual literal visual of hands (open palms, phone in hand) in the opening frame to directly match the hook and strengthen the scroll-stop
 - Add a semi-transparent dark scrim behind the quote in body frames to keep the serif text crisp over textured backgrounds
 
+
+## Visual QA — 2026-07-08 14:02 UTC
+**File:** `2026-07-08_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Stand your ground.
+**Scores:** hook_strength=6.5 | text_legibility=8.5 | pacing=6.0 | scroll_stop_potential=6.5
+**Reasoning:** Hook 'Stand your ground.' is a solid, punchy imperative that pairs thematically with the crashing-wave-against-rock visual — a nice metaphor for resilience — but it's a fairly common Stoic phrasing and won't stop every scroller (6.5). Text legibility is strong: bold gold all-caps hook with good contrast against the darker rock, and the animated caption line reveal is crisp; the body serif quote is elegant and readable though slightly lower contrast against the busy foam (8.5). Pacing feels a touch static — the first four hook frames are the same clip with only the caption changing, so visual momentum relies entirely on text animation rather than shot changes (6.0). Scroll-stop potential is decent thanks to the golden-hour lighting and dynamic surf motion, but the composition is quite dark and the hook text lands mid-frame rather than commanding immediate attention (6.5).
+**Issues:**
+- Hook frames 1-4 reuse the same wave clip, so early visual variety is minimal and pacing feels flat during the critical opening 1.5s.
+- Body serif quote and 'SIT WITH' caption sit over busy waterfall/foam texture, slightly reducing contrast compared to the bold hook style.
+**Suggestions:**
+- Introduce a cut or a punch-in zoom within the first 1.5s to add kinetic energy while the hook text animates in.
+- Add a subtle semi-transparent dark gradient band behind lower captions to guarantee contrast on busy backgrounds, and consider a slightly larger/bolder hook placed higher in frame.
+
