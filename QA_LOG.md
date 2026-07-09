@@ -609,3 +609,17 @@ for any recurring defects.
 - Add a subtle zoom or parallax push on the background during the hook to inject motion and improve pacing
 - Increase contrast on the body quote — use a semi-transparent dark panel or heavier font weight behind the serif text for legibility
 
+
+## Visual QA — 2026-07-09 10:38 UTC
+**File:** `2026-07-09_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Choose the handle.
+**Scores:** hook_strength=5.5 | text_legibility=7.5 | pacing=6.0 | scroll_stop_potential=5.0
+**Reasoning:** The hook 'CHOOSE THE HANDLE.' is intriguing and slightly cryptic, which can spark curiosity, but out of context it reads as vague rather than immediately compelling — earning a mid hook_strength. Text_legibility is good: the bold yellow caption has strong contrast against the dark purple background and is very readable, though the thin serif 'DAY 35' banner is faint and the bottom subtitle glyphs get slightly lost over bright background elements in frames 5-6. Pacing is adequate — captions build word-by-word (HANDLE, EVERY WRONG, AND YOU) matching voiceover rhythm, but the abstract bokeh background stays fairly static through the first four frames, so momentum is only moderate. Scroll_stop_potential sits mid-low because frame 1 is atmospheric but visually ambiguous — the purple particle/bokeh imagery is pretty but doesn't clearly signal a face, motion, or dramatic tension that forces a stop.
+**Issues:**
+- Frame 1 background is abstract and unclear, weakening immediate scroll-stop impact
+- The 'DAY 35 · UNTIL DISCIPLINE IS COOL AGAIN' banner is thin and low-contrast, becoming nearly invisible over lighter frames
+**Suggestions:**
+- Open on a stronger, more recognizable visual (e.g., the statue from frame 6 or a face) to give the eye an instant anchor
+- Add a subtle drop shadow or semi-transparent bar behind the top banner and lower captions to keep them legible over bright statue/bokeh areas
+**Flagged dims:** hook_strength, scroll_stop_potential
+
