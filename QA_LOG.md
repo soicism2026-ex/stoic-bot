@@ -650,3 +650,16 @@ for any recurring defects.
 - Add subtle zoom or parallax motion to the waterfall during the hook to create movement in the first 1.5s
 - Increase contrast/weight on the top banner or move key info into the bold caption style; add a semi-transparent scrim behind the serif quote for readability
 
+
+## Visual QA — 2026-07-09 23:14 UTC
+**File:** `2026-07-09_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Say less than you know
+**Scores:** hook_strength=6.5 | text_legibility=8.0 | pacing=5.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'SAY LESS THAN YOU KNOW' is bold, centered, and creates mild curiosity around discipline/ego — decent but not a pattern interrupt that stops every scroller (6.5). Main headline text is crisp orange with strong weight and high contrast against the dark forest; however the top banner 'DAY 35 · UNTIL DISCIPLINE IS COOL AGAIN' is thin serif with poor contrast, and the body quote in serif italic over busy imagery is slightly harder to read (8.0). Pacing is weak in the hook window — frames 1–4 are nearly identical with only a faint caption change, so the opening feels static; the shift to the statue in frame 6 adds some variety (5.5). The lush waterfall visual is attractive and calming, which could earn a stop, but it's a common stock-nature aesthetic without a strong focal surprise (6.0).
+**Issues:**
+- Hook window frames 1-4 are almost visually identical — no motion or transition to build momentum in the critical opening 1.5s.
+- Top banner and serif quote text have low contrast/thin weight over busy backgrounds, reducing instant readability.
+**Suggestions:**
+- Introduce a subtle zoom, text scale-in, or word-by-word reveal across the hook frames to add energy and prevent a static open.
+- Boost the top banner and body quote with a semi-transparent dark bar or heavier font weight, and add a slight glow/stroke to keep serif text legible over the video.
+
