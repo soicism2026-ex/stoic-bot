@@ -636,3 +636,17 @@ for any recurring defects.
 - Introduce a punch-in zoom or an early cut within the hook window so the opening feels dynamic rather than static
 - Bump the top banner to a heavier font weight or add a subtle shadow to improve its legibility
 
+
+## Visual QA — 2026-07-09 18:50 UTC
+**File:** `2026-07-09_reel.mp4` | **Verdict:** `PASS`
+**Hook:** You already know.
+**Scores:** hook_strength=6.5 | text_legibility=7.0 | pacing=6.0 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'YOU ALREADY KNOW.' is punchy and creates mild curiosity gap, but doesn't specify what — it leans on progressive reveal (KNOW / DEATH IS) which works but the opening frame alone is somewhat vague, hence 6.5. The bold yellow caption with drop shadow reads well against the purple waterfall backdrop and the animated subtitles are legible, but the thin serif top banner ('DAY 35 · UNTIL DISCIPLINE IS COOL AGAIN') has low contrast and is hard to read, and the serif quote in frame 5-6 is faint against busy backgrounds, so 7.0. Pacing shows staged text reveals and a background swap to the Seneca statue for the body, giving reasonable rhythm but the hook frames are near-identical static waterfall shots with little motion energy, hence 6.0. The moody purple waterfall is aesthetically pleasing and would make some viewers pause, but it's a common Stoic-aesthetic look and frame 1 lacks a strong focal hook, so scroll-stop is a moderate 6.0.
+**Issues:**
+- Top banner text is thin, low-contrast and nearly illegible at phone size
+- Hook frames 1-4 are visually static (same waterfall), reducing motion-driven attention
+- Serif quote overlay in body frames competes with busy statue/texture background
+**Suggestions:**
+- Add subtle zoom or parallax motion to the waterfall during the hook to create movement in the first 1.5s
+- Increase contrast/weight on the top banner or move key info into the bold caption style; add a semi-transparent scrim behind the serif quote for readability
+
