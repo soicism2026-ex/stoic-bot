@@ -663,3 +663,17 @@ for any recurring defects.
 - Introduce a subtle zoom, text scale-in, or word-by-word reveal across the hook frames to add energy and prevent a static open.
 - Boost the top banner and body quote with a semi-transparent dark bar or heavier font weight, and add a slight glow/stroke to keep serif text legible over the video.
 
+
+## Visual QA — 2026-07-10 10:33 UTC
+**File:** `2026-07-10_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Prepare quietly.
+**Scores:** hook_strength=6.0 | text_legibility=8.0 | pacing=6.5 | scroll_stop_potential=5.0
+**Reasoning:** Hook text 'PREPARE QUIETLY.' is punchy and creates mild curiosity, but the first frame is a plain dark purple background with no visual subject, which weakens immediate stopping power (hook_strength 6, scroll_stop 5). Text legibility is strong — the bold yellow caption with outline is crisp and high-contrast, though the thin serif banner at top is small and slightly low-contrast, and the double-stacked repeated caption in frames 2-3 is momentarily confusing (8). Pacing shows reasonable variety: solid intro, then video reveals a hammer/rock texture and captions animate in with word-by-word progression, which gives energy though the opening two frames are static (6.5). The purple grade is consistent and on-brand but the opening lacks a striking visual to guarantee a scroll-stop.
+**Issues:**
+- Frame 1 is a bare gradient background with no imagery — low arrest value for the critical first impression
+- Frames 2-3 stack two identical 'PREPARE QUIETLY' captions, creating momentary visual redundancy/confusion
+**Suggestions:**
+- Open on a compelling visual (the hammer or cold-water/ice shot) behind the hook text from frame 1 to boost scroll-stop potential
+- Remove the duplicated caption stack — keep one animated caption per beat so the eye isn't split between two identical phrases
+**Flagged dims:** scroll_stop_potential
+
