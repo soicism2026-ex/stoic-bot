@@ -690,3 +690,17 @@ for any recurring defects.
 - Add a subtle zoom or push-in on the seascape during the hook to inject motion and boost scroll-stop energy
 - Increase caption stroke/shadow or use consistent bright-white active captions throughout so body text never dips in legibility
 
+
+## Visual QA — 2026-07-10 18:23 UTC
+**File:** `2026-07-10_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Enough already
+**Scores:** hook_strength=5.5 | text_legibility=7.0 | pacing=6.0 | scroll_stop_potential=5.0
+**Reasoning:** Hook text 'ENOUGH ALREADY' is punchy and creates mild curiosity, but the opening frames are visually flat — a static purple gradient with no imagery, faces, or motion to arrest the scroller, so hook_strength lands mid-range. Text legibility is decent overall: the yellow headline has good contrast against purple, but the animated caption in frames 3 and 5 fades to a low-contrast dusty tone that becomes hard to read at phone size, and the top banner is quite thin. Pacing shows animated caption transitions and a background reveal (face appearing in frame 6), giving some rhythm, but the first 1.5s barely changes visually. Scroll-stop potential is limited because the arresting human face only appears in the final body frame — the hook window is a plain gradient that most feed scrollers would swipe past.
+**Issues:**
+- Hook window (frames 1-4) is a static plain gradient with no compelling visual — the human face only appears at the very end
+- Animated caption text fades to low-contrast muted tones (frames 3 & 5) reducing readability
+**Suggestions:**
+- Move the striking face imagery into the first frame so the hook window has immediate visual stopping power
+- Keep caption text at full high-contrast yellow/white throughout the animation rather than letting it fade to dim tones
+**Flagged dims:** hook_strength, scroll_stop_potential
+
