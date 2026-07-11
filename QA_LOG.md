@@ -744,3 +744,17 @@ for any recurring defects.
 - Add a subtle text shadow or semi-opaque backing bar behind captions so words like 'TO A' stay crisp over busy water textures.
 - Introduce a punchier opening visual beat — a quick zoom, light flicker, or a bolder first-frame word reveal — to increase scroll-stop power given the calm, dark palette.
 
+
+## Visual QA — 2026-07-11 17:50 UTC
+**File:** `2026-07-11_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Do your part.
+**Scores:** hook_strength=5.5 | text_legibility=8.0 | pacing=6.5 | scroll_stop_potential=6.0
+**Reasoning:** hook_strength: 'Do your part' is a clear, punchy imperative and the dramatic purple tornado backdrop reinforces urgency, but the phrase itself is fairly generic mindset-speak that won't stop every scroller. text_legibility: the yellow bold headline with dark outline and white caption text both read cleanly against the purple; only minor issue is the 'DISCIPLINE.' caption in frame 6 sitting over a busy textured background slightly reduces contrast. pacing: caption words progress in sync with voiceover (PART / YOU ALREADY / WHOSE TURN / DISCIPLINE) and the background shifts from tornado to a darker texture in the body, giving decent rhythm, though the static main headline lingers across all hook frames. scroll_stop_potential: the ominous purple-graded tornado is genuinely eye-catching and atmospheric, likely to make many pause, but it competes visually with lots of text and isn't a face or motion spike.
+**Issues:**
+- Main 'DO YOUR PART.' headline stays identical across all 4 hook frames, creating visual stagnation in the critical first 1.5s
+- In frame 6 the 'DISCIPLINE.' caption overlaps a high-detail branch texture, lowering readability compared to earlier frames
+**Suggestions:**
+- Introduce subtle motion or scale animation on the headline in the first second to create movement that stops the scroll
+- Add a consistent semi-transparent dark bar behind lower captions so words like 'DISCIPLINE.' stay high-contrast over any background
+**Flagged dims:** hook_strength
+
