@@ -717,3 +717,17 @@ for any recurring defects.
 - Increase contrast/weight on the animated lower captions or add a subtle drop shadow so every word reveal is instantly readable
 - Introduce a stronger visual change (zoom, cut, or dramatic wave burst) within the first 1.5s to make the hook feel more dynamic and stop-worthy
 
+
+## Visual QA — 2026-07-11 08:55 UTC
+**File:** `2026-07-11_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Name the fear.
+**Scores:** hook_strength=7.5 | text_legibility=6.5 | pacing=7.0 | scroll_stop_potential=6.5
+**Reasoning:** Hook 'NAME THE FEAR.' is punchy, direct, and creates a psychological curiosity gap that works well for the fear theme (7.5). The main hook text is bold yellow with strong contrast against the purple waterfall backdrop and is instantly readable, but the top 'DAY 37' banner is thin serif and low-contrast, and the animated captions like 'FEAR.' in frame 3 and 'ITS GRIP.' in frame 6 fade/dim into the dark background making them hard to read (6.5). Pacing shows layered animated captions building word-by-word alongside the static hook, giving a decent kinetic rhythm matched to voiceover, though the background footage is fairly static (7.0). The moody purple waterfall visual is aesthetically pleasing and the bold text would probably make a scroller pause, but it isn't uniquely arresting versus other Stoic edits (6.5).
+**Issues:**
+- Caption words fade to near-invisible against dark purple backgrounds (frame 3 'FEAR.' and frame 6 'ITS GRIP.' lose contrast)
+- Top 'DAY 37' banner uses thin serif at low contrast — barely legible on the busy foliage
+**Suggestions:**
+- Add a consistent dark stroke or semi-transparent pill behind all animated captions so they stay legible during dark frames and fade transitions
+- Increase visual dynamism in the hook window — a subtle zoom/push on the waterfall or a quick flash on 'FEAR' to boost scroll-stop power
+**Flagged dims:** text_legibility
+
