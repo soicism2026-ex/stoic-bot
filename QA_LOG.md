@@ -731,3 +731,16 @@ for any recurring defects.
 - Increase visual dynamism in the hook window — a subtle zoom/push on the waterfall or a quick flash on 'FEAR' to boost scroll-stop power
 **Flagged dims:** text_legibility
 
+
+## Visual QA — 2026-07-11 13:28 UTC
+**File:** `2026-07-11_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Banished twice to a barren rock
+**Scores:** hook_strength=7.5 | text_legibility=8.0 | pacing=7.0 | scroll_stop_potential=6.5
+**Reasoning:** Hook 'Banished twice to a barren rock' is intriguing and creates a narrative curiosity gap (who? why?), earning a solid 7.5, though it doesn't reveal it's about friendship or a specific figure until later. Text legibility is strong (8.0): the bold orange headline and white captions have good contrast against the darkened forest/stream footage, with only minor legibility risk where captions overlap busy water textures (e.g. frame 3 'TO A' partially lost in dark area). Pacing is decent (7.0): animated caption reveals ('BANISHED TWICE', 'BARREN ROCK', 'STRIPPED OF', 'MAKING YOU') sync to voiceover and the background subtly moves, but the static camera and single locked-off shot in the hook keep it from feeling truly energetic. Scroll-stop potential is moderate (6.5): the misty green waterfall is atmospheric and calming rather than arresting, and the dark, muted palette risks blending into feeds — the text does most of the stopping work.
+**Issues:**
+- Frame 3 caption 'TO A' is nearly illegible where it sits over the dark water/rock area — low contrast.
+- The header line 'DAY 37 · UNTIL DISCIPLINE IS COOL AGAIN' is thin and low-contrast, essentially unreadable at phone size and competes with the main headline.
+**Suggestions:**
+- Add a subtle text shadow or semi-opaque backing bar behind captions so words like 'TO A' stay crisp over busy water textures.
+- Introduce a punchier opening visual beat — a quick zoom, light flicker, or a bolder first-frame word reveal — to increase scroll-stop power given the calm, dark palette.
+
