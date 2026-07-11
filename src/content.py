@@ -124,9 +124,16 @@ This is the viral engine: a TRUE dramatic moment from the author's life, told \
 as a story with real stakes, that lands on the quote. Story + death/exile/ruin \
 + "this actually happened" is the highest-retention pattern in this niche.
 - hook: 4-7 words of pure story stakes. No wisdom framing, no author name. \
-RIGHT: "He was ordered to die." / "Rome's richest man lost everything." / \
-"Written surrounded by a plague." / "A slave outthought an empire." \
+RIGHT: "Rome's richest man lost everything." / "Written surrounded by a plague." \
+/ "He ruled Rome from a war tent." / "Exiled twice. He kept teaching." \
 WRONG: "Wisdom from a Stoic." / anything that sounds like advice.
+- SAFE STAKES PHRASING (distribution-critical): the hook is burned into the \
+video, thumbnail AND title, and YouTube suppresses Shorts whose text reads as \
+violence, abuse, or suicide — a hook phrased as physical harm got a post ~9 \
+views instead of ~700. NEVER use explicit harm wording ("ordered to die", \
+"killed", "lamed by his master", "took his own life"). Imply the stakes \
+instead: "Nero sent him one final order." / "Born a slave. He outthought an \
+empire." / "His last letter." High drama, zero graphic phrasing.
 - voiceover_text: 45-60 words. Sentences 1-2: set the true historical scene — \
 name, place, what was at stake. Then write "..." on its own (the narrator's \
 beat of silence before the line lands). Then deliver the quote as what they \
