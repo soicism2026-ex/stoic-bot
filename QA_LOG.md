@@ -758,3 +758,16 @@ for any recurring defects.
 - Add a consistent semi-transparent dark bar behind lower captions so words like 'DISCIPLINE.' stay high-contrast over any background
 **Flagged dims:** hook_strength
 
+
+## Visual QA — 2026-07-11 22:52 UTC
+**File:** `2026-07-11_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Stop rehearsing. Begin.
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=7.0 | scroll_stop_potential=7.0
+**Reasoning:** The hook 'STOP REHEARSING. BEGIN.' is punchy, action-oriented, and creates curiosity — a strong imperative that pairs well with the discipline theme, earning 8.0. Text legibility is high: the yellow bold caps with black outline are crisp and readable against the muted mountain background, though the animated caption stacking (large headline plus smaller subtitle) is momentarily busy, and the thin serif 'DAY 37' header is low-contrast, capping it at 8.5. Pacing shows a progressive reveal of hook words and a caption transition into the quote body, giving it decent rhythm (7.0), but transitions are subtle rather than energetic. Scroll-stop potential is solid — the bold centered text stops eyes — but the misty landscape is somewhat generic and doesn't feature a face or motion, so it's a probable rather than definite stop (7.0).
+**Issues:**
+- Two stacked caption blocks (large hook + smaller subtitle) in frames 2-3 compete for attention and briefly clutter the frame
+- The 'DAY 37 · UNTIL DISCIPLINE IS COOL AGAIN' header uses a thin low-contrast serif that is hard to read against the sky
+**Suggestions:**
+- Show only one caption line at a time to keep the hook clean and focused during the critical first 1.5 seconds
+- Increase weight/contrast on the top header or add a subtle shadow so the branding line is legible without distracting from the hook
+
