@@ -797,3 +797,22 @@ for any recurring defects.
 - Add a subtle zoom, parallax, or word-by-word reveal on the hook headline in the first 1.5s to inject motion and stop the scroll
 - Increase weight/contrast of the top label or add a semi-transparent bar behind it, and consider a punchier frame-1 visual (e.g. a dramatic push-in on the waterfall) to boost stop rate
 
+
+## 2026-07-12 — attempt 1
+- uploaded: False
+- severity: high
+- issues:
+  - Quote text on screen does not match the intended quote above - multiple frames show incomplete or altered versions of the Musonius Rufus quote, with additions like 'OR NOT', 'IS DELAYED', 'ALOUD, THE', 'UNSEND', 'CANNOT REFUSE', 'TONIGHT', 'FIRE THAT', 'ANGER' that are not part of the intended complete quote
+
+## 2026-07-12 — attempt 2
+- uploaded: False
+- severity: high
+- issues:
+  - Quote text does not match intended quote - shows fragmented interpretation ('LET IT BE', 'OR NOT', 'IS DELAYED', 'ALOUD THE', 'UNSEND', 'CANNOT REFUSE', 'TONIGHT', 'FIRE THAT', 'ANGER') rather than the complete intended quote
+  - Background mood (dramatic, rebellious, angry tone with fire/water imagery) is severely mismatched with the intended quote's stoic acceptance theme
+
+## 2026-07-12 — attempt 3
+- uploaded: False
+- severity: high
+- issues:
+  - Quote text on screen does not match the intended quote above - multiple frames show incomplete or altered versions of the quote (e.g., 'OR NOT.', 'IS DELAYED,', 'ALOUD, THE', 'UNSEND.', 'CANNOT REFUSE.', 'TONIGHT.', 'FIRE THAT', 'ANGER.') rather than the complete intended quote
