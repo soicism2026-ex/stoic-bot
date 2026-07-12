@@ -784,3 +784,16 @@ for any recurring defects.
 - Add a subtle drop shadow or semi-opaque bar behind the header line to lift it off the busy waterfall texture
 - Introduce a slow push-in (Ken Burns zoom) on the waterfall footage to add motion energy and boost scroll-stop appeal in the first 1.5s
 
+
+## Visual QA — 2026-07-12 13:21 UTC
+**File:** `2026-07-12_reel.mp4` | **Verdict:** `PASS`
+**Hook:** He walked away from a fortune
+**Scores:** hook_strength=7.5 | text_legibility=8.5 | pacing=6.0 | scroll_stop_potential=7.0
+**Reasoning:** Hook text 'HE WALKED AWAY FROM A FORTUNE' creates strong curiosity — the promise of someone abandoning wealth is intriguing and pairs well with the theme of ego, earning a solid hook score. Text legibility is high: bold golden all-caps against a dark forest/waterfall background is crisp and readable, and the animated captions have outlines for contrast, though the top 'DAY 38' label is thin and low-contrast against the busy foliage. Pacing is only moderate — the first four hook frames are nearly identical with the same static headline, so the opening 1.5s feels visually repetitive rather than dynamic; the body brings in a new quote and rolling captions which helps. Scroll-stop potential is decent thanks to the moody waterfall backdrop and bold text, but the dark, muted nature footage is a common Stoicism visual and the frame-1 composition isn't uniquely arresting.
+**Issues:**
+- First four hook frames are visually near-identical (same static headline), wasting the crucial opening 1.5s with no visual progression
+- Top 'DAY 38 · UNTIL DISCIPLINE IS COOL AGAIN' label is thin serif and low-contrast over the leafy background, hard to read
+**Suggestions:**
+- Add a subtle zoom, parallax, or word-by-word reveal on the hook headline in the first 1.5s to inject motion and stop the scroll
+- Increase weight/contrast of the top label or add a semi-transparent bar behind it, and consider a punchier frame-1 visual (e.g. a dramatic push-in on the waterfall) to boost stop rate
+
