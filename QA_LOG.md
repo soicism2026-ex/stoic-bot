@@ -771,3 +771,16 @@ for any recurring defects.
 - Show only one caption line at a time to keep the hook clean and focused during the critical first 1.5 seconds
 - Increase weight/contrast on the top header or add a subtle shadow so the branding line is legible without distracting from the hook
 
+
+## Visual QA — 2026-07-12 09:10 UTC
+**File:** `2026-07-12_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Not tomorrow.
+**Scores:** hook_strength=7.0 | text_legibility=7.5 | pacing=6.5 | scroll_stop_potential=6.0
+**Reasoning:** The hook 'NOT TOMORROW.' is punchy and creates a mild curiosity gap (tomorrow what?), scoring 7 — it's clear and abrupt but not maximally arresting since the payoff isn't yet visible. Text legibility is solid at 7.5: the bold yellow-outlined caption is crisp and high-contrast, but the header 'DAY 38 · UNTIL DISCIPLINE IS COOL AGAIN' is thin, low-contrast against the busy purple waterfall, and hard to read. Pacing is adequate at 6.5 — there's an animated echo/ghost text effect and staggered caption reveals that add motion, but the background image is static throughout, so energy feels moderate. Scroll-stop potential is 6.0: the purple-tinted waterfall is aesthetically pleasing and the bold hook helps, but the visual is somewhat generic within the Stoic-content genre and won't halt every thumb.
+**Issues:**
+- Header text 'DAY 38 · UNTIL DISCIPLINE IS COOL AGAIN' is thin and low-contrast, nearly illegible over the busy background
+- Static background image reduces perceived pacing and makes frame 1 feel similar to countless other Stoic shorts
+**Suggestions:**
+- Add a subtle drop shadow or semi-opaque bar behind the header line to lift it off the busy waterfall texture
+- Introduce a slow push-in (Ken Burns zoom) on the waterfall footage to add motion energy and boost scroll-stop appeal in the first 1.5s
+
