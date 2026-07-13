@@ -122,7 +122,8 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 
 | File | Contents |
 |------|----------|
-| `data/posts.csv` | All posts: date, theme, quote, author, caption, video_url, video_id, voice_name, music_track |
+| `data/doctrine.md` | The owner's PERMANENT creative standing orders (ICP, hook psychology, format philosophy). Injected into every content generation call. Never overwritten by automation — unlike `data/strategy.md`, which `strategy_loop.py` rewrites daily at 10:00 UTC. |
+| `data/posts.csv` | All posts: date, theme, quote, author, caption, video_url, video_id, voice_name, music_track, hook, experiment, format |
 | `data/analytics.csv` | Per-video view/like/comment snapshots |
 | `data/replied_comments.csv` | Comment IDs the bot has already replied to |
 | `data/improve_state.json` | Improvement loop memory: iteration count, current focus, focus history with before/after metrics and verdicts, metrics snapshot at each focus start |

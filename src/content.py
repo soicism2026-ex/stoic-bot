@@ -184,6 +184,31 @@ Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
 }"""
 
 
+def _load_doctrine() -> str:
+    """Load data/doctrine.md — the owner's PERMANENT creative standing orders.
+
+    Unlike strategy.md (rewritten daily by strategy_loop.py from analytics),
+    doctrine.md is never touched by automation: it holds durable creative
+    direction (ICP definition, hook psychology, format philosophy). Injected
+    into every generation call, ahead of the auto-strategy.
+    """
+    doctrine_path = ROOT / "data" / "doctrine.md"
+    if not doctrine_path.exists():
+        return ""
+    try:
+        text = doctrine_path.read_text(encoding="utf-8").strip()
+        if not text:
+            return ""
+        return (
+            "\n\n---\n"
+            "CONTENT DOCTRINE (the channel owner's permanent creative standing "
+            "orders — these OVERRIDE your format defaults where they conflict):\n\n"
+            + text
+        )
+    except Exception:
+        return ""
+
+
 def _load_strategy() -> str:
     """Load data/strategy.md and format it as a system-prompt addendum."""
     strategy_path = ROOT / "data" / "strategy.md"
@@ -310,7 +335,7 @@ def generate_content() -> dict:
         f"{avoid_block}"
     )
 
-    strategy_addendum = _load_strategy()
+    strategy_addendum = _load_doctrine() + _load_strategy()
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
     required = {"format", "theme", "quote", "author", "hook", "voiceover_text",
                 "cta", "pinned_comment", "caption", "hashtags", "callout_words"}
