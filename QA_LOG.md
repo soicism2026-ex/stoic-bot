@@ -856,3 +856,16 @@ for any recurring defects.
 - Introduce the Marcus Aurelius bust or the atmospheric forest visual within the first 0.5s so the opening frame has an image, not just text on black
 - Add subtle motion (zoom, word pop-in animation) during frames 1-2 so the hook window feels dynamic instead of a static hold
 
+
+## Visual QA — 2026-07-13 23:02 UTC
+**File:** `2026-07-13_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Stay unmoved.
+**Scores:** hook_strength=6.5 | text_legibility=7.5 | pacing=7.0 | scroll_stop_potential=6.0
+**Reasoning:** Hook 'Stay unmoved.' is clean and thematically strong, paired with a fitting crashing-wave-against-rock visual that reinforces the resilience message — but it's a fairly common Stoic phrasing and the purple ocean B-roll, while attractive, is not uniquely arresting, hence hook_strength 6.5 and scroll_stop 6.0. Text legibility is good: the yellow bold caps 'STAY UNMOVED' has strong contrast and the white captioned voiceover with dark outline reads well, though the serif quote in frame 5 sits over a bright splash and there's a visible watermark ('THEHOUR') slightly muddying it, dropping to 7.5. Pacing feels adequate with animated captions building and a scene change to a darker frame in frame 6, giving reasonable rhythm at 7.0, but the hook window largely repeats the same static shot and same text for 4 frames, which limits energy.
+**Issues:**
+- Visible stock watermark ('THEHOUR...') across frame 5 reduces polish and legibility of the quote
+- Hook window frames 1-4 reuse the same background and near-identical text, creating a static feel in the critical opening 1.5s
+**Suggestions:**
+- Remove/replace the watermarked footage and ensure the quote card has a clean, high-contrast backing (subtle dark gradient behind serif text)
+- Introduce a subtle motion or zoom change within the first 1.5s (e.g., punch-in on the wave impact synced to 'UNMOVED') to boost scroll-stop power
+
