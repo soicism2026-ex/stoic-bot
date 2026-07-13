@@ -829,3 +829,17 @@ for any recurring defects.
 - Introduce a subtle zoom, parallax, or lighting shift across the first 1.5s so the hook window feels dynamic rather than a static image with growing text.
 - Increase the header font weight/contrast or drop it entirely during the hook so the main statement dominates without visual clutter.
 
+
+## Visual QA — 2026-07-13 14:55 UTC
+**File:** `2026-07-13_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Count them.
+**Scores:** hook_strength=4.5 | text_legibility=6.5 | pacing=6.0 | scroll_stop_potential=4.0
+**Reasoning:** hook_strength: 'Count them.' is intriguing but ambiguous without context — it creates mild curiosity but doesn't clearly signal the anger theme, so many scrollers won't grasp the payoff. text_legibility: The yellow caption has good weight and outline in some frames, but on the bright pink/orange lava background (frames 3-4) the yellow-on-pink contrast weakens, and the top 'DAY 39' banner is thin and small. The double 'COUNT THEM' captions in frame 2 create clutter. pacing: The lava/cave shadow footage shifts frame to frame and the body transitions to a calmer purple mountain scene, giving reasonable rhythm, but the repeated identical caption reduces perceived momentum. scroll_stop_potential: The abstract reddish-pink texture is moody but not immediately readable as a compelling scene; a human shadow appears but is faint, so it's a maybe-stop rather than a definite one.
+**Issues:**
+- Yellow caption text loses contrast against the bright pink/orange background in frames 3-4
+- Hook 'Count them.' is too vague on its own — theme (anger) isn't clear in the first 1.5s
+**Suggestions:**
+- Add a stroke/drop-shadow or dark caption box behind the yellow text to guarantee contrast on the lava backgrounds
+- Sharpen the hook by pairing 'Count them.' with a concrete anger cue (e.g., 'Count the days you got angry.') to instantly frame the topic
+**Flagged dims:** hook_strength, text_legibility, scroll_stop_potential
+
