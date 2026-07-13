@@ -816,3 +816,16 @@ for any recurring defects.
 - severity: high
 - issues:
   - Quote text on screen does not match the intended quote above - multiple frames show incomplete or altered versions of the quote (e.g., 'OR NOT.', 'IS DELAYED,', 'ALOUD, THE', 'UNSEND.', 'CANNOT REFUSE.', 'TONIGHT.', 'FIRE THAT', 'ANGER.') rather than the complete intended quote
+
+## Visual QA — 2026-07-13 10:34 UTC
+**File:** `2026-07-13_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Fortune owes you nothing
+**Scores:** hook_strength=8.0 | text_legibility=7.5 | pacing=6.5 | scroll_stop_potential=7.0
+**Reasoning:** Hook strength is strong (8.0): 'FORTUNE OWES YOU NOTHING' is a bold, punchy statement that creates instant curiosity, and it appears large and centred in the very first frame paired with a lush waterfall backdrop. Text legibility is good (7.5): the main yellow hook text is bold and high-contrast against the dark scene, but the thin serif 'DAY 39' header is nearly illegible and the semi-transparent fading caption in frame 4 ('YOU NOTHING') momentarily drops in contrast. Pacing (6.5) is adequate — the animated caption reveals and the background subtly shifts, but frames 1-4 are visually near-identical so the hook window feels static; the body cut to a darker forest scene in frame 6 adds some variety. Scroll-stop potential (7.0) is solid thanks to the strong statement and moody nature footage, but the muted dark palette and lack of a striking motion or face means not every scroller stops.
+**Issues:**
+- Thin serif 'DAY 39 · UNTIL DISCIPLINE IS COOL AGAIN' header is low-contrast and effectively unreadable at phone size.
+- Hook window frames 1-4 are visually near-identical, making the opening feel static and slowing perceived pacing.
+**Suggestions:**
+- Introduce a subtle zoom, parallax, or lighting shift across the first 1.5s so the hook window feels dynamic rather than a static image with growing text.
+- Increase the header font weight/contrast or drop it entirely during the hook so the main statement dominates without visual clutter.
+
