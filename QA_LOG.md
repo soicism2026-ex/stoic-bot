@@ -908,3 +908,17 @@ for any recurring defects.
 - Introduce a subtle zoom, parallax, or brightness shift across the first 1.5s so the hook feels dynamic, not a static card
 - Increase weight/contrast on the serif quote text or add a slight shadow so it stays legible over the bright sparkler background
 
+
+## Visual QA — 2026-07-14 23:02 UTC
+**File:** `2026-07-14_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Do the work now.
+**Scores:** hook_strength=6.0 | text_legibility=8.0 | pacing=4.5 | scroll_stop_potential=5.0
+**Reasoning:** Hook 'DO THE WORK NOW.' is punchy and direct, and the bold yellow caps command attention, but it's a fairly common mindset phrase that won't stop every scroller (6.0). Text legibility is strong — the yellow bold font has good contrast against purple, though the thin serif 'DAY 40' header and the quote's yellowish serif in frame 5 lose a little clarity against the bright sky (8.0). Pacing is the weak point: frames 1–4 are nearly identical with a static main headline and only small caption changes at the bottom, so the hook window feels visually frozen rather than dynamic (4.5). Scroll-stop potential is moderate — the purple landscape and bold text are pleasant but not arresting, and the opening frame lacks motion or a surprising visual (5.0).
+**Issues:**
+- Hook frames 1-4 are visually static — the same 'DO THE WORK NOW.' headline dominates with negligible change, wasting the critical first 1.5s
+- Background landscape and heavy purple tint are generic Stoic-template visuals that don't create pattern-interrupt in a feed
+**Suggestions:**
+- Introduce visible motion or a punch-in zoom during the hook window, and let the caption reveal word-by-word to create forward momentum
+- Open on a more striking or unexpected first frame (e.g. the closing hand/texture shot from frame 6) to boost scroll-stop before settling into the quote
+**Flagged dims:** pacing, scroll_stop_potential
+
