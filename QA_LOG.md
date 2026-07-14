@@ -869,3 +869,16 @@ for any recurring defects.
 - Remove/replace the watermarked footage and ensure the quote card has a clean, high-contrast backing (subtle dark gradient behind serif text)
 - Introduce a subtle motion or zoom change within the first 1.5s (e.g., punch-in on the wave impact synced to 'UNMOVED') to boost scroll-stop power
 
+
+## Visual QA — 2026-07-14 09:14 UTC
+**File:** `2026-07-14_reel.mp4` | **Verdict:** `PASS`
+**Hook:** The threat that never came
+**Scores:** hook_strength=7.5 | text_legibility=8.0 | pacing=7.0 | scroll_stop_potential=7.0
+**Reasoning:** Hook strength is solid at 7.5 — 'THE THREAT THAT NEVER CAME' is intriguing and taps into curiosity/fear, though the phrasing is a bit abstract and doesn't create an immediate personal itch. Text legibility scores 8.0 — the bold orange headline and white captioned subtitles are crisp and high-contrast against the dark aquatic background, but the thin italic 'DAY 40 · UNTIL DISCIPLINE IS COOL AGAIN' banner is small and easily missed. Pacing earns 7.0 — the animated word-by-word captions (THAT NEVER, CAME, DETAIL THEN, TALK ABOUT) give visual rhythm and the background schooling-fish footage has subtle motion, but the hero headline stays static too long across all four hook frames. Scroll-stop potential is 7.0 — the shimmering bioluminescent fish school is visually distinctive and moody, likely stopping a portion of scrollers, but it isn't jarring or pattern-breaking enough to guarantee a stop.
+**Issues:**
+- The main hook headline is identical and static across all four hook frames, so the first 1.5s lacks visual escalation despite the animated captions.
+- The final body frame swaps to a dark, ambiguous close-up (appears to be food/hands) that clashes with the underwater aesthetic and looks murky/off-theme.
+**Suggestions:**
+- Add a subtle zoom, color pulse, or word-reveal animation to the hero headline in the first second to create motion and stop-power at the very open.
+- Replace the incongruous dark body footage in frame 6 with imagery consistent with the fear/anxiety theme (e.g., continued ocean or a calm dawn) to maintain visual coherence.
+
