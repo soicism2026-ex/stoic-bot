@@ -23,8 +23,10 @@ To retire a loser or add a challenger, edit the two lists — everything else
 
 INTRO_VARIANTS = [
     # (name, env overrides)
+    # RETIRED 2026-07-14: "punch" (bass_impact) — last place in views@1d in both
+    # grade pairings (283v vs swell's 408v, n=8). Doctrine: kill losers, multiply
+    # winners. swell vs cold_open continues at doubled sample rate.
     ("cold_open", {"REEL_HOOK_SOUND": "0"}),
-    ("punch",     {"REEL_HOOK_SOUND": "1", "REEL_HOOK_SOUND_PRESET": "bass_impact"}),
     ("swell",     {"REEL_HOOK_SOUND": "1", "REEL_HOOK_SOUND_PRESET": "cinematic"}),
 ]
 

@@ -11,3 +11,11 @@ assets/backgrounds/*.mov
 
 # Generated/downloaded music beds (never commit audio)
 assets/music/*.mp3
+
+# Backup-render intermediates (bg clips, sidecars) — regenerable, some >100MB,
+# and GitHub rejects pushes containing files over 100MB. Only the final
+# backups/*_bk_reel.mp4 + .json belong in git.
+backups/*.bg*.mp4
+backups/*.captions.ass
+backups/*.clicks.wav
+backups/*.mixclick.m4a

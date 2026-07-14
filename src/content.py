@@ -91,6 +91,9 @@ accusatory, urgent, or clickbait. Set up the quote's idea WITHOUT quoting or nam
 the author. No quotation marks, no hashtags, no ellipsis. \
 RIGHT: "Let it pass." / "Nothing here is yours." / "This moment is enough." / \
 "Carry less today." \
+ALSO RIGHT — quantified (per the doctrine, our ICP responds to numbers; keep \
+the calm register): "Most men break here." / "99% never train this." / \
+"One habit divides you." \
 WRONG: "You're wasting your life." (aggressive) / "Time is precious." (cliché) / \
 "Wisdom from Marcus Aurelius." (never name author in hook)
 - voiceover_text: 15-18 seconds (~35-45 words). A calm, measured reflection that lets \

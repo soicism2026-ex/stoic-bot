@@ -208,7 +208,12 @@ def _add_to_backup_bank(today: str, music_track: dict):
         video_name = f"{today}_bk_reel.mp4"
         video_path = BACKUPS_DIR / video_name
         bk_music = music_mod.fetch_music(music_track, ROOT / "data" / f"{today}_bk_music.mp3")
-        render_mod.render_reel(
+        # Backups are committed to git, and GitHub rejects pushes with files
+        # over 100 MB — a 125 MB backup killed the whole 2026-07-12 22:00 run
+        # (post never logged). Render backups at a higher CRF so they always
+        # fit; visual difference at 1080x1920 CRF 27 is negligible.
+        _render_with_env(
+            {"REEL_CRF": os.environ.get("REEL_BACKUP_CRF", "27")},
             quote=content["quote"], author=content["author"],
             audio_path=audio_path, out_path=video_path,
             theme=content["theme"], word_timings=word_timings, hook=hook,
@@ -216,7 +221,21 @@ def _add_to_backup_bank(today: str, music_track: dict):
             music_path=bk_music,
         )
 
+        # Render intermediates (background clips, caption/click sidecars) land
+        # next to out_path in backups/ and must never reach git — one bg
+        # intermediate hit 201 MB. Delete them here regardless of QA outcome.
+        for junk in BACKUPS_DIR.glob(f"{today}_bk_reel.*"):
+            if junk.suffix not in (".mp4", ".json") or ".bg" in junk.name:
+                junk.unlink(missing_ok=True)
+
         qa = run_qa(video_path, content["quote"])
+        if qa["pass"] and video_path.exists() and video_path.stat().st_size > 95_000_000:
+            # Still too big even at backup CRF — discard rather than poison the
+            # next git push (GitHub hard-rejects >100 MB).
+            print("  [backup] rendered file exceeds git-safe size — discarding")
+            video_path.unlink(missing_ok=True)
+            audio_path.unlink(missing_ok=True)
+            return
         if not qa["pass"] and qa["severity"] == "high":
             print("  [backup] QA high-severity — discarding")
             video_path.unlink(missing_ok=True)

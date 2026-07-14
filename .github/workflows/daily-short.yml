@@ -103,6 +103,17 @@ jobs:
         run: |
           git config user.name "stoic-bot"
           git config user.email "bot@users.noreply.github.com"
+          # Never let render intermediates or >95MB files near the push —
+          # GitHub hard-rejects files over 100MB and the WHOLE run fails,
+          # losing the post log (this killed the 2026-07-12 22:00 slot).
+          find backups -type f \( -name '*.bg*.mp4' -o -name '*.captions.ass' \
+            -o -name '*.clicks.wav' -o -name '*.mixclick.m4a' -o -size +95M \) \
+            -delete 2>/dev/null || true
           git add data/posts.csv data/analytics.csv data/replied_comments.csv QA_LOG.md backups/
           git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
-          git push
+          # The 4 daily slots race on pushing to main — rebase-retry instead of
+          # failing the run (a lost push means a lost posts.csv row).
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase origin main && continue
+          done
