@@ -882,3 +882,16 @@ for any recurring defects.
 - Add a subtle zoom, color pulse, or word-reveal animation to the hero headline in the first second to create motion and stop-power at the very open.
 - Replace the incongruous dark body footage in frame 6 with imagery consistent with the fear/anxiety theme (e.g., continued ocean or a calm dawn) to maintain visual coherence.
 
+
+## Visual QA — 2026-07-14 13:35 UTC
+**File:** `2026-07-14_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Give first.
+**Scores:** hook_strength=6.5 | text_legibility=7.0 | pacing=7.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook 'GIVE FIRST.' is punchy and confrontational, delivered with an animated cascading caption effect that builds visual energy (frames 1-4 stack the text repeatedly), earning a solid hook_strength but not a 10 because the phrase alone is a bit abstract without immediate context. Text legibility is good — bold yellow captions with black outline read well over the purple waterfall — but the thin serif 'DAY 40' header at top has low contrast against the busy foliage, and the ghosted/animating duplicate captions in frames 3 and 6 are momentarily faded and harder to read. Pacing feels energetic thanks to the moving water background and the animated text cascade rhythm across the hook window, plus a background swap to the hand/close-up in frame 6. Scroll-stop potential is moderate: the purple-graded waterfall is aesthetically pleasing and the bold caption stands out, but it reads as a familiar 'Stoic quote over stock nature' format that many scrollers have seen, so not everyone stops.
+**Issues:**
+- Top header 'DAY 40 · UNTIL DISCIPLINE IS COOL AGAIN' is thin serif with poor contrast over foliage, nearly invisible in some frames
+- Faded/ghosted duplicate captions (frame 3 lower text, frame 6 'SIT WITH') are low-contrast and briefly hard to read
+**Suggestions:**
+- Boost the opening frame's stopping power with a bolder first-frame visual or a more provocative hook line (e.g. 'Stop keeping score')
+- Add a subtle drop shadow or semi-opaque band behind the top header and ensure animating captions reach full opacity quickly for consistent legibility
+
