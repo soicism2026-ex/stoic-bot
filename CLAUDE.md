@@ -98,7 +98,7 @@ Never commit secrets. They exist only in GitHub Actions secrets.
 **Themes** (12 total, LRU, block last 3):
 `discipline`, `mortality/memento mori`, `control vs acceptance`, `ego`, `resilience`, `anger`, `desire`, `time`, `fear`, `friendship`, `duty/justice`, `adversity as training`
 
-**Format rotation**: `["quote", "quote", "quote", "list"]` — 3 personal quote posts then 1 numbered-rules list
+**Format rotation** (exploration week from 2026-07-15): `["story", "pov", "rule", "challenge", "minimal", "quote"]` — six structurally different formats, one of each per day at 6 posts/day. Each has its own visual world via `REEL_BG_FLAVOR` (story=roman ruins, pov=city night rain, rule=statue spotlight, challenge=sunrise training). Format is logged per post; the report ranks them — winners take more slots next week
 
 **Voice rotation**: ElevenLabs "Brian" voices the FIRST `ELEVENLABS_POSTS_PER_DAY` posts of each day (default 1 — sized for the Starter plan's 30k chars/month; live credit-balance guard refuses to overspend). All other posts use the free edge-tts pool — Andrew, BrianEdge (`en-US-BrianNeural`), Christopher — each with a per-voice rate/pitch profile plus an ffmpeg mastering chain (`_master_voice`: warmth EQ + compression) to approach paid quality. Analytics-weighted after 5 posts per voice, LRU before that. `data/posts.csv` logs the voice that ACTUALLY spoke (`tts.LAST_VOICE_NAME`). Goal: when a tuned free voice matches paid Brian on views+retention, cancel ElevenLabs.
 

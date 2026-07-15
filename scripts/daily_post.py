@@ -365,6 +365,18 @@ def main():
     exp_name, exp_env = pick_experiment(post_rows)
     print(f"  experiment: {exp_name}")
 
+    # Per-format visual world — structurally different formats should also look
+    # different in the feed (backgrounds._search_term reads REEL_BG_FLAVOR).
+    FORMAT_BG_FLAVOR = {
+        "story":     "ancient rome ruins torchlight dramatic cinematic",
+        "pov":       "city night rain window moody lonely cinematic",
+        "rule":      "single marble statue spotlight black background",
+        "challenge": "sunrise athlete training silhouette determination",
+    }
+    bg_flavor = FORMAT_BG_FLAVOR.get(content.get("format", ""), "")
+    if bg_flavor:
+        exp_env = {**exp_env, "REEL_BG_FLAVOR": bg_flavor}
+
     all_qa: list = []
     current_env: dict = dict(exp_env)
     upload_result = None

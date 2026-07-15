@@ -61,8 +61,10 @@ SYSTEM = """You are the content engine for a faceless Stoicism YouTube Shorts \
 account. Your job is to produce ONE short-form video script per call.
 
 You will be told the FORMAT for this post: "story" (a true historical moment \
-that lands on the quote), "minimal" (one calm truth), "quote" (classic \
-single-quote format), or "list" (numbered rules / habits / things).
+that lands on the quote), "pov" (drop the viewer into a modern moment), "rule" \
+(one law from the Stoic code), "challenge" (a 24-hour practice), "minimal" \
+(one calm truth), "quote" (classic single-quote format), or "list" (numbered \
+rules / habits / things).
 
 Rules that apply to ALL formats:
 - Use only genuine, public-domain Stoic material. NEVER fabricate, invent, or \
@@ -154,6 +156,43 @@ and lamed; Zeno shipwrecked, losing his fortune before founding the Stoa; \
 Musonius exiled twice). If you are not certain of a detail, keep the scene \
 vague rather than invent. Never dramatise beyond the sources.
 
+FORMAT "pov" rules:
+Drop the viewer INTO a hyper-specific modern moment, second person, present \
+tense — then answer it with the ancient line. The recognition shock is the hook.
+- hook: starts with "POV:" then the moment in 4-8 words. \
+RIGHT: "POV: 11pm. You reopened the app." / "POV: Left on read. Again." / \
+"POV: You rehearsed the argument in the shower." \
+WRONG: anything generic enough to be anyone's moment on any day.
+- voiceover_text: 35-50 words. Sentences 1-2: narrate THEIR moment back to \
+them (second person, present tense, uncomfortably specific, calm delivery). \
+Then the turn: what the Stoic sees in that same moment. Land the quote as the \
+answer. Final line: a short quiet directive ("Put it down.") or question.
+- quote: genuine, under 14 words — must actually answer the moment.
+
+FORMAT "rule" rules:
+One rule, stated like law from a larger code the viewer hasn't seen — the \
+numbering IS the curiosity gap (what are the other rules?).
+- hook: "Rule N: <imperative>" with N between 3 and 40 (pick to feel arbitrary \
+and real). RIGHT: "Rule 7: Never explain twice." / "Rule 19: Move before the \
+feeling." / "Rule 12: Keep one thing sacred."
+- voiceover_text: 30-45 words. State the rule. One specific modern cost of \
+breaking it. One line on what keeping it buys. Then credit the source: the \
+genuine quote the rule derives from.
+- quote: the real passage behind the rule. NEVER present the rule itself as \
+the quote or attribute your rule-wording to the author.
+
+FORMAT "challenge" rules:
+A 24-hour practice the viewer can actually do — subscribing = coming back to \
+report. This format builds the streak community.
+- hook: 3-6 words framing the test. RIGHT: "Try this for 24 hours." / \
+"One day. One rule." / "The 24-hour silence test."
+- voiceover_text: 35-50 words. Name ONE precise, measurable behaviour \
+(e.g. "complain about nothing for 24 hours — not the weather, not once"). \
+One line on why it's harder than it sounds. One line on what they'll notice. \
+End EXACTLY with an enlist line like: "Comment 'day one' if you're in." \
+(comment velocity is the point).
+- quote: genuine passage grounding the practice.
+
 FORMAT "list" rules:
 - hook: 4-8 words. PERSONAL and second-person — promise the VIEWER a benefit or \
 call out a flaw they have. The viewer must instantly feel "this is about ME and what \
@@ -176,7 +215,7 @@ Total 15-20 seconds / 35-50 words. No filler, no warm-up.
 
 Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
 {
-  "format": "story" | "minimal" | "quote" | "list",
+  "format": "story" | "pov" | "rule" | "challenge" | "minimal" | "quote" | "list",
   "theme": "...",
   "quote": "...",
   "author": "<the exact author name you were assigned>",
@@ -281,9 +320,11 @@ def _pick_next_theme(rows: list, current_theme: str) -> str:
 
 def _pick_format(rows: list[dict]) -> str:
     """Rotate content format: quote → minimal → quote → list (repeating)."""
-    # One "story" (the viral bet: true historical stakes), balanced with the
-    # calm minimal/quote formats. "list" stays retired (text-heavy).
-    ROTATION = ["story", "minimal", "quote", "minimal"]
+    # EXPLORATION WEEK (from 2026-07-15): six structurally different formats,
+    # one of each per day at 6 posts/day. Format is logged per post and the
+    # report ranks them — after ~a week the winners take more slots (doctrine:
+    # test NEW, then multiply the winner until it dies). "list" stays retired.
+    ROTATION = ["story", "pov", "rule", "challenge", "minimal", "quote"]
     return ROTATION[len(rows) % len(ROTATION)]
 
 
