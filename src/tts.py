@@ -53,7 +53,7 @@ VOICE_POOL = [
 # ELEVENLABS_API_KEY — and it defaults to Brian automatically. Override the voice
 # with ELEVENLABS_VOICE_ID. If the paid call ever fails it falls back to edge-tts.
 _EL_KEY          = os.environ.get("ELEVENLABS_API_KEY", "").strip()
-_EL_BRIAN_VOICE  = "nPczCjzI2devNBz1zQrb"  # ElevenLabs "Brian" — top performer
+_EL_BRIAN_VOICE  = "Gubgw9l4dtIoQA9YZHgx"  # "Brian" from the owner's ElevenLabs library — top performer (852v, 93% retention)
 _EL_VOICE_ID     = os.environ.get("ELEVENLABS_VOICE_ID", "").strip() or (
     _EL_BRIAN_VOICE if _EL_KEY else ""
 )
