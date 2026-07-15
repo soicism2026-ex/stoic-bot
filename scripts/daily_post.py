@@ -22,6 +22,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 from content import generate_content, _load_rows as _load_post_rows  # noqa: E402
+import tts as tts_mod                      # noqa: E402
 from tts import synthesize_voice, pick_voice  # noqa: E402
 from publish import publish_short, set_thumbnail, post_comment  # noqa: E402
 import publish_instagram                    # noqa: E402
@@ -476,7 +477,9 @@ def main():
                 date=today, theme=content["theme"], quote=content["quote"],
                 author=content["author"], caption=description,
                 publish_result=upload_result,
-                voice_name=voice["name"],
+                # the voice that actually spoke — ElevenLabs Brian and the edge
+                # pool alternate by budget, and analytics must not mix them up
+                voice_name=tts_mod.LAST_VOICE_NAME or voice["name"],
                 music_track=music_track["name"],
                 hook=content.get("hook", ""),
                 experiment=exp_name,

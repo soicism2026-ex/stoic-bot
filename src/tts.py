@@ -294,17 +294,86 @@ def _synthesize_elevenlabs(text: str, out_path: Path, voice_id: str) -> tuple:
 # Public entry point
 # ---------------------------------------------------------------------------
 
+# ---------------------------------------------------------------------------
+# ElevenLabs character budget — sized for the Starter plan (30k chars/month).
+#
+# 4 posts/day x ~700 chars ≈ 84k/month, which only the Creator tier covers.
+# Policy: Brian voices the FIRST N posts of each day (ELEVENLABS_POSTS_PER_DAY,
+# default 1 ≈ 21k/month — fits Starter with headroom); edge-tts covers the
+# rest, including backup-bank renders (they run after the day's first post, so
+# they never touch paid credits). A live subscription check also refuses to
+# spend when the remaining monthly credits are lower than the script needs.
+# ---------------------------------------------------------------------------
+EL_POSTS_PER_DAY = int(os.environ.get("ELEVENLABS_POSTS_PER_DAY", "1"))
+_EL_CREDIT_BUFFER = 200  # keep a small reserve so we never hit the hard cap
+
+# The voice that actually synthesized the last call — daily_post logs this so
+# a Brian post is never attributed to an edge voice in the analytics.
+LAST_VOICE_NAME = ""
+
+
+def _count_posts_today() -> int:
+    """Rows in data/posts.csv dated today (UTC) — mirrors the daily-cap guard."""
+    import datetime
+    log = Path(__file__).resolve().parent.parent / "data" / "posts.csv"
+    if not log.exists():
+        return 0
+    today = datetime.datetime.now(datetime.timezone.utc).date().isoformat()
+    try:
+        with open(log, newline="", encoding="utf-8") as f:
+            return sum(1 for row in csv.reader(f) if row and row[0] == today)
+    except Exception:
+        return 0
+
+
+def _el_credits_remaining() -> int | None:
+    """Remaining monthly characters on the ElevenLabs subscription, or None if
+    the check itself fails (caller then lets the synth call decide)."""
+    try:
+        resp = requests.get(
+            "https://api.elevenlabs.io/v1/user/subscription",
+            headers={"xi-api-key": _EL_KEY}, timeout=10,
+        )
+        resp.raise_for_status()
+        d = resp.json()
+        return int(d.get("character_limit", 0)) - int(d.get("character_count", 0))
+    except Exception:
+        return None
+
+
+def _el_budget_allows(text: str) -> bool:
+    """True if this post is within the daily ElevenLabs allocation AND the
+    subscription has enough characters left for it."""
+    n_today = _count_posts_today()
+    if n_today >= EL_POSTS_PER_DAY:
+        print(f"  tts: ElevenLabs daily allocation used ({n_today}/{EL_POSTS_PER_DAY} "
+              f"posts today) — edge-tts for this one")
+        return False
+    remaining = _el_credits_remaining()
+    if remaining is not None and remaining < len(text) + _EL_CREDIT_BUFFER:
+        print(f"  tts: ElevenLabs credits low ({remaining} left, need "
+              f"~{len(text) + _EL_CREDIT_BUFFER}) — edge-tts until the plan resets")
+        return False
+    if remaining is not None:
+        print(f"  tts: ElevenLabs budget ok ({remaining} chars left this month)")
+    return True
+
+
 def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     """Synthesize `text` to `out_path`. Returns (out_path, word_timings).
 
-    Uses ElevenLabs only when both ELEVENLABS_API_KEY and ELEVENLABS_VOICE_ID
-    are set (legacy override path). Otherwise uses edge-tts for free.
-    Raises RuntimeError if synthesis completely fails.
+    ElevenLabs (Brian) is used when the key is set AND the post fits the daily
+    + monthly character budget; otherwise the free edge-tts pool, then gTTS.
+    Sets LAST_VOICE_NAME to whichever voice actually spoke.
+    Raises RuntimeError only if every engine fails.
     """
-    if _EL_KEY and _EL_VOICE_ID:
-        print(f"  tts: ElevenLabs override active (voice {_EL_VOICE_ID})")
+    global LAST_VOICE_NAME
+    if _EL_KEY and _EL_VOICE_ID and _el_budget_allows(text):
+        print(f"  tts: ElevenLabs active (voice {_EL_VOICE_ID})")
         try:
-            return _synthesize_elevenlabs(text, out_path, _EL_VOICE_ID)
+            result = _synthesize_elevenlabs(text, out_path, _EL_VOICE_ID)
+            LAST_VOICE_NAME = "Brian"
+            return result
         except Exception as e:  # noqa: BLE001
             # Bad key, exhausted credits, or API outage — degrade the voice,
             # never the channel. Fall through to the free edge-tts pool.
@@ -314,12 +383,15 @@ def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     name = next((v["name"] for v in VOICE_POOL if v["id"] == vid), vid)
     print(f"  tts: edge-tts voice {name} ({vid})")
     try:
-        return _synthesize_edge(text, out_path, vid)
+        result = _synthesize_edge(text, out_path, vid)
+        LAST_VOICE_NAME = name
+        return result
     except Exception as e:  # noqa: BLE001
         # edge-tts is flaky from cloud IPs; never let that ship a silent Short.
         print(f"  tts: edge-tts failed ({e}); falling back to gTTS")
         out_path, timings = _synthesize_gtts(text, out_path)
         print(f"  tts: gTTS fallback succeeded -> {Path(out_path).name}")
+        LAST_VOICE_NAME = "gTTS"
         return out_path, timings
 
 
