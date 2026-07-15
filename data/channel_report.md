@@ -1,37 +1,40 @@
 # Stoic Shorts — Channel Report
 
 ## 1. Health snapshot
-- Posts with data: **67** (of 67 total)
-- Total views: **32,971** · avg **492** · median **457** · best **1,255** · worst **2**
-- Engagement: **3.37%** like rate, **0.461%** comment rate
-- Trend: earlier 52 posts avg **526** → last 15 avg **374**  (DOWN 153)
+- Posts with data: **98** (of 98 total)
+- Total views: **45,132** · avg **461** · median **401** · best **1,255** · worst **1**
+- Engagement: **3.06%** like rate, **0.492%** comment rate
+- Trend: earlier 83 posts avg **498** → last 15 avg **253**  (DOWN 244)
   - _Caveat: newer videos are younger, so some of this gap is just age._
 
 ## Retention (the signal that actually drives reach)
-- ⚠️ **Not enabled yet.** Views alone can't tell you what the algorithm rewards. Re-run `python src/auth_setup.py` (now requests `yt-analytics.readonly`), update `YOUTUBE_REFRESH_TOKEN`, and the retention agent will report avg-view-% per video here.
+- Avg view %: **107.7%** across 90 videos
+- Best retention: **2129%** — "The greater the difficulty, the more glo"
+- Worst retention: **16%** — "It is not that we have a short time to l"
+- _Optimise hooks/pacing for the high-retention patterns above._
 
 ## Avg views by theme
-- anger                          **794v**  (n=5)
-- mortality/memento mori         **736v**  (n=5)
-- friendship                     **615v**  (n=5)
-- resilience                     **567v**  (n=5)
-- fear                           **540v**  (n=5)
-- desire                         **493v**  (n=5)
-- discipline                     **479v**  (n=7)
-- ego                            **470v**  (n=6)
-- duty/justice                   **469v**  (n=5)
-- control vs acceptance          **457v**  (n=5)
-- adversity as training          **276v**  (n=5)  ⚠️ weak
-- time                           **230v**  (n=9)  ⚠️ weak
+- anger                          **652v**  (n=8)
+- mortality/memento mori         **638v**  (n=8)
+- friendship                     **518v**  (n=8)
+- resilience                     **516v**  (n=8)
+- fear                           **501v**  (n=8)
+- discipline                     **490v**  (n=10)
+- ego                            **469v**  (n=9)
+- desire                         **404v**  (n=8)
+- duty/justice                   **392v**  (n=8)
+- control vs acceptance          **369v**  (n=8)
+- adversity as training          **298v**  (n=5)  ⚠️ weak
+- time                           **261v**  (n=10)  ⚠️ weak
 
 ## Avg views by author
 - Hierocles                      **639v**  (n=1)
-- Zeno of Citium                 **626v**  (n=9)
-- Marcus Aurelius                **589v**  (n=11)
-- Epictetus                      **524v**  (n=11)
-- Musonius Rufus                 **479v**  (n=9)
-- Seneca                         **439v**  (n=13)
-- Chrysippus                     **370v**  (n=11)
+- Zeno of Citium                 **550v**  (n=15)
+- Marcus Aurelius                **519v**  (n=17)
+- Epictetus                      **455v**  (n=17)
+- Seneca                         **446v**  (n=20)
+- Musonius Rufus                 **414v**  (n=15)
+- Chrysippus                     **380v**  (n=11)
 - Cleanthes                      **224v**  (n=1)
 - Cato the Younger               **158v**  (n=1)
 
@@ -40,39 +43,58 @@
 - Adam                           **728v**  (n=5)
 - George                         **524v**  (n=5)
 - Daniel                         **457v**  (n=1)
-- Christopher                    **428v**  (n=8)
-- Ryan                           **383v**  (n=8)
-- Guy                            **152v**  (n=12)  ⚠️ weak
+- Christopher                    **452v**  (n=14)
+- Ryan                           **360v**  (n=20)
+- Eric                           **342v**  (n=12)
+- Guy                            **201v**  (n=12)  ⚠️ weak
 
 ## Avg views by music
-- focus_underscore               **577v**  (n=14)
-- ancient_minimal                **456v**  (n=13)
-- dark_ambient                   **392v**  (n=20)
+- focus_underscore               **475v**  (n=26)
+- dark_ambient                   **429v**  (n=26)
+- ancient_minimal                **403v**  (n=25)
+
+## Avg views by format (story is the viral bet)
+- quote                          **420v**  (n=6)
+- story                          **264v**  (n=6)  ⚠️ weak
+- minimal                        **261v**  (n=11)  ⚠️ weak
 
 ## ⚑ Voice gap
-- Best voice **Brian** (852v) is **5.6×** the current-style voice **Guy** (152v). Voice may be the biggest lever (watch the age confound, but the gap is large).
+- Best voice **Brian** (852v) is **4.2×** the current-style voice **Guy** (201v). Voice may be the biggest lever (watch the age confound, but the gap is large).
 
 ## ⚑ Duplicate quotes shipped
 - "It is not that we have a short time to live, but t…" posted 4× (views: 382, 4, 20, 568)
 
 ## Hook-lab
-- Collecting hook data (0 posts logged so far). Once ~10+ posts carry hooks, this shows which hook lengths/styles win.
+- 2-3 words: **364v** avg (n=14)
+- 4-5 words: **411v** avg (n=9)
+- 6+ words: **264v** avg (n=6)
+- Best hook so far: "The one who stayed" (807v)
+
+## Experiments (intro sound × colour grade)
+- swell+warm_gold        **436v** (n=4)
+- punch+warm_gold        **391v** (n=4)
+- swell+obsidian         **342v** (n=4)
+- cold_open+obsidian     **323v** (n=5)
+- cold_open+warm_gold    **286v** (n=5)
+- punch+obsidian         **252v** (n=4)
+- Intro signal: **swell** leads (swell 389v, punch 321v, cold_open 305v)
+- Grade signal: **warm_gold** leads (warm_gold 364v, obsidian 307v)
 
 ## Packaging (titles)
-- Shorter titles (≤45 chars): **301v** vs longer **557v**
+- Shorter titles (≤45 chars): **354v** vs longer **514v**
 
 ## Top 5
 -  1255v  Epictetus        duty/justice     Do your duty in the place where you are stat
 -  1252v  Marcus Aurelius  desire           Stop wanting what you don't have, and use we
 -  1251v  Musonius Rufus   friendship       We must wait for friendship to grow naturall
--  1106v  Zeno of Citium   friendship       The wise man will feel affection for others.
+-  1118v  Zeno of Citium   friendship       The wise man will feel affection for others.
 -  1057v  Marcus Aurelius  discipline       At dawn, when you struggle to rise, tell you
 ## Bottom 5
--    23v  Chrysippus       adversity as tra The wise man is tested by hardship, not brok
+-    28v  Zeno of Citium   friendship       A friend is another self.
 -    20v  Seneca           time             It is not that we have a short time to live,
--    13v  Epictetus        time             No man knows whether he shall be alive tomor
+-    11v  Epictetus        anger            If you would not be quick-tempered, do not f
 -     4v  Seneca           time             It is not that we have a short time to live,
--     2v  Marcus Aurelius  discipline       Confine yourself to the present.
+-     1v  Marcus Aurelius  discipline       The impediment to action advances action. Wh
 
 ## Data-driven candidates (you decide)
 - Drop / down-weight themes: **adversity as training, time**
