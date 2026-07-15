@@ -989,3 +989,17 @@ for any recurring defects.
 - Introduce a distinct visual change or zoom/push-in within the hook window to create motion and reinforce the 'war tent' concept
 - Add a semi-transparent dark scrim behind the quote block in body frames so the serif text stays high-contrast over bright backgrounds
 
+
+## Visual QA — 2026-07-15 16:34 UTC
+**File:** `2026-07-15_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** POV: You just got passed over again.
+**Scores:** hook_strength=7.5 | text_legibility=5.5 | pacing=6.0 | scroll_stop_potential=6.5
+**Reasoning:** The hook 'POV: You just got passed over again' is relatable and creates immediate emotional recognition for anyone who's felt overlooked at work, earning a solid 7.5. However, text legibility takes a hit (5.5) because frames 2-4 have overlapping caption layers — the animated word-by-word subtitle ('YOU JUST', 'GOT PASSED', 'AGAIN') collides with the static main headline, creating a garbled double-text effect, especially in frame 4 where 'GOT PASSED' overlaps 'AGAIN' in near-illegible layered form. Pacing (6.0) is adequate with the karaoke-style caption reveal and a scene change to ocean footage in the body, but the hook frames feel visually static since the moody purple hand shot barely moves. Scroll-stop potential (6.5) is decent thanks to the strong relatable hook copy, but the dark, ambiguous purple imagery of a hand isn't visually arresting enough to guarantee a stop.
+**Issues:**
+- Overlapping caption layers in frames 2-4 — animated subtitles collide with the static main headline creating illegible double-text
+- Hook visual (dim purple hand close-up) is ambiguous and not visually arresting on its own
+**Suggestions:**
+- Remove either the static headline or the animated word-by-word captions during the hook window so only one clean text layer is visible at a time
+- Open on a more concrete, high-contrast visual (e.g. a clear shot of a phone screen at 11pm with a promotion post) to reinforce the relatable hook and boost scroll-stop
+**Flagged dims:** text_legibility
+
