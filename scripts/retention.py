@@ -63,15 +63,26 @@ def fetch_retention() -> list[dict]:
         ).execute()
     except Exception as e:
         msg = str(e)
-        if "403" in msg or "scope" in msg.lower() or "insufficient" in msg.lower():
+        low = msg.lower()
+        # Same 403, two different fixes — name the right one in the log.
+        if "accessnotconfigured" in low or "has not been used" in low or "is disabled" in low:
             print(
-                "[retention] Analytics API not authorised yet. Re-run "
-                "'python src/auth_setup.py' to grant yt-analytics.readonly, then "
-                "update YOUTUBE_REFRESH_TOKEN. Skipping for now.",
+                "[retention] CAUSE=API_DISABLED — the 'YouTube Analytics API' is "
+                "not enabled in Google Cloud Console (note: the 'YouTube Reporting "
+                "API' is a different product). Enable: APIs & Services > Library > "
+                "'YouTube Analytics API' > Enable. Skipping for now.",
+                file=sys.stderr,
+            )
+        elif "insufficient" in low or "scope" in low or "invalid_scope" in low:
+            print(
+                "[retention] CAUSE=TOKEN_SCOPE — the refresh token lacks "
+                "yt-analytics.readonly. Run 'git pull' FIRST (an old auth_setup.py "
+                "does not request the scope), then re-run 'python src/auth_setup.py' "
+                "and update YOUTUBE_REFRESH_TOKEN. Skipping for now.",
                 file=sys.stderr,
             )
         else:
-            print(f"[retention] pull failed ({e}); skipping.", file=sys.stderr)
+            print(f"[retention] pull failed ({msg[:300]}); skipping.", file=sys.stderr)
         return []
 
     rows = []
