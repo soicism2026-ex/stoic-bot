@@ -43,7 +43,10 @@ BACKUP_MIN = 3
 # (07:00/12:00/17:00/22:00 UTC); each run posts once and this cap stops a single
 # day exceeding 4. Setting it to 1 caps the WHOLE channel at one upload per day
 # (every later run skips green). It is per-DAY total, not per-run. Keep at 4.
-MAX_POSTS_PER_DAY = 4
+# 6/day for the monetization push (500 subs + 3M Shorts views/90d): views scale
+# with inventory, and every post is a shot at the breakout the goal requires.
+# Env-tunable so throttling back never needs a code change.
+MAX_POSTS_PER_DAY = int(os.environ.get("MAX_POSTS_PER_DAY", "6"))
 
 # Visual QA config — reads env vars at import time so GitHub Actions can override
 # VQA_ENABLED=0         Skip visual QA entirely (default: 1 = enabled)

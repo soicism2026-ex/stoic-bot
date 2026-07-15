@@ -74,7 +74,10 @@ feeling (creates rewatch loops). Reference the next day's theme naturally. Under
 words. Vary the phrasing.
 - Pinned comment: short, personal, slightly uncomfortable question that forces a \
 specific answer tied to today's content. NOT "what do you think?" Ask something that \
-requires naming a specific person, habit, or moment. Under 20 words.
+requires naming a specific person, habit, or moment. Under 20 words. Then, on a new \
+line, ONE short streak-follow line converting viewers to subscribers, e.g. \
+"Following the streak? Subscribe — one Stoic truth every day until discipline is \
+cool again." (vary the wording naturally each day).
 - Caption: 1-2 sentences that reframe the idea for daily life + one specific question.
 - Hashtags: 8-12, mixing broad (#stoicism #discipline) and mid-size niche tags.
 - callout_words: 2-4 concrete nouns that appear verbatim in voiceover_text. They \

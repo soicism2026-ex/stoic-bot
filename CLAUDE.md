@@ -3,7 +3,7 @@
 Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover → render → upload → comment reply. Runs on GitHub Actions, zero human intervention per day.
 
 **Channel:** forged.in.stoicism  
-**Posting cadence:** 4 videos/day at 07:00, 12:00, 17:00, 22:00 UTC  
+**Posting cadence:** 6 videos/day at 02:00, 07:00, 12:00, 15:00, 17:00, 22:00 UTC (monetization push: 500 subs + 3M Shorts views/90d)  
 **Product:** The Stoic Reset journal — https://soicism.gumroad.com/l/cslosv
 
 ---
@@ -12,7 +12,7 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 
 Each run of `scripts/daily_post.py` does:
 
-1. **Guard** — reads `data/posts.csv`; skips if `posts_today >= MAX_POSTS_PER_DAY (4)`
+1. **Guard** — reads `data/posts.csv`; skips if `posts_today >= MAX_POSTS_PER_DAY` (env, default 6)
 2. **Content** — `src/content.py` calls Claude Opus 4.8 for quote, hook, voiceover script, CTA, caption, hashtags, callout words, pinned comment
 3. **Voice** — `src/tts.py` calls ElevenLabs with-timestamps endpoint; falls back to edge-tts if no key
 4. **Music** — `src/music.py` downloads a royalty-free Pixabay track to `assets/music/`

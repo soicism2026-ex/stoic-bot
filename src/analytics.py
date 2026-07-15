@@ -80,10 +80,43 @@ def append_rows(rows):
             w.writerow(r)
 
 
+CHANNEL_STATS = ROOT / "data" / "channel_stats.csv"
+
+
+def snapshot_channel_stats():
+    """Daily channel-level snapshot: subscribers + lifetime views + video count.
+
+    Powers the monetization-goal tracker (500 subs + 3M Shorts views/90d):
+    the report reads this series to show progress and required run-rate.
+    Costs 1 API unit. Best-effort — never fails the analytics pull.
+    """
+    try:
+        yt = _service()
+        ch = yt.channels().list(part="statistics", mine=True).execute()
+        s = ch["items"][0]["statistics"]
+        new = not CHANNEL_STATS.exists()
+        with open(CHANNEL_STATS, "a", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=["pulled_on", "subscribers",
+                                              "total_views", "videos"])
+            if new:
+                w.writeheader()
+            w.writerow({
+                "pulled_on": datetime.date.today().isoformat(),
+                "subscribers": s.get("subscriberCount", ""),
+                "total_views": s.get("viewCount", ""),
+                "videos": s.get("videoCount", ""),
+            })
+        print(f"Channel stats: {s.get('subscriberCount','?')} subs, "
+              f"{s.get('viewCount','?')} lifetime views")
+    except Exception as e:
+        print(f"[channel-stats] snapshot failed ({e}); continuing", flush=True)
+
+
 def main():
     rows = fetch_recent()
     append_rows(rows)
     print(f"Wrote {len(rows)} analytics rows to {OUT.name}")
+    snapshot_channel_stats()
 
 
 if __name__ == "__main__":

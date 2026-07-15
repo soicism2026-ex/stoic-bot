@@ -132,7 +132,36 @@ def build_report() -> str:
     earlier = [views_of(p) for p in tracked[:-15]]
 
     w("# Stoic Shorts — Channel Report\n")
-    w("## 1. Health snapshot")
+
+    # 🎯 Monetization goal: 500 subscribers + 3M valid public Shorts views in a
+    # rolling 90 days (YouTube Partner Program, Shorts track). Front and centre
+    # until reached.
+    GOAL_SUBS, GOAL_VIEWS = 500, 3_000_000
+    subs = None
+    stats_path = ROOT / "data" / "channel_stats.csv"
+    if stats_path.exists():
+        with open(stats_path, newline="", encoding="utf-8") as f:
+            srows = list(csv.DictReader(f))
+        if srows:
+            try:
+                subs = int(srows[-1].get("subscribers") or 0)
+            except ValueError:
+                subs = None
+    total_v90 = sum(views_of(p) for p in tracked)  # channel younger than 90d
+    w("## 🎯 Monetization goal (500 subs + 3M Shorts views / 90 days)")
+    if subs is not None:
+        w(f"- Subscribers: **{subs} / {GOAL_SUBS}**  ({100*subs/GOAL_SUBS:.0f}%)")
+    else:
+        w("- Subscribers: _tracking starts with the next analytics pull_")
+    w(f"- Shorts views (rolling 90d): **{total_v90:,} / {GOAL_VIEWS:,}**  "
+      f"({100*total_v90/GOAL_VIEWS:.1f}%)")
+    recent7 = [views_of(p) for p in tracked[-28:]]  # ~7 days at 4/day
+    daily_rate = sum(recent7) / 7 if recent7 else 0
+    w(f"- Current run-rate: **~{daily_rate:,.0f} views/day** · needed for 3M/90d: "
+      f"**~33,300/day** — the gap closes with volume + a breakout video, not "
+      f"averages. Every post is a lottery ticket; the pipeline optimises the odds.")
+
+    w("\n## 1. Health snapshot")
     w(f"- Posts with data: **{len(tracked)}** (of {len(posts)} total)")
     w(f"- Total views: **{total_v:,}** · avg **{_avg(views):.0f}** · median "
       f"**{statistics.median(views):.0f}** · best **{max(views):,}** · worst **{min(views)}**")
