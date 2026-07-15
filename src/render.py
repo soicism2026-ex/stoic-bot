@@ -59,6 +59,12 @@ WORD_CLICKS_ON = os.environ.get("REEL_WORD_CLICKS", "0") not in ("0", "false", "
 CAPTION_FONT = os.environ.get("REEL_CAPTION_FONT", "DejaVu Sans")
 CAPTION_FONTSIZE = int(os.environ.get("REEL_CAPTION_FONTSIZE", "92"))
 CAPTION_MARGINV = int(os.environ.get("REEL_CAPTION_MARGINV", "620"))
+
+# Presentation style pack (set per content-format by daily_post):
+#   classic      — quote card + author + bottom captions (the house look)
+#   caption_only — NO quote card; big karaoke captions in the CENTRE of frame
+#                  carry the words (modern viral clip style; b-roll is the star)
+STYLE = os.environ.get("REEL_STYLE", "classic").strip() or "classic"
 # Phone-fullscreen safe zone. iPhones are ~19.5:9 — narrower than 9:16 — so the
 # Shorts player fills the screen HEIGHT and crops ~120px off EACH side of a
 # 1080-wide frame. Text/brackets outside the central band get eaten (a hook
@@ -428,6 +434,13 @@ def _build_ass(word_timings: list, out_path: Path) -> Path:
     outline = "&H00000000"
     shadow  = "&H0030B8FF"
 
+    # caption_only style: captions ARE the show — centre of frame (ASS
+    # alignment 5 = middle-centre), ~35% larger, same pop animation.
+    if STYLE == "caption_only":
+        cap_align, cap_fs, cap_marginv = 5, int(CAPTION_FONTSIZE * 1.35), 0
+    else:
+        cap_align, cap_fs, cap_marginv = 2, CAPTION_FONTSIZE, CAPTION_MARGINV
+
     header = f"""[Script Info]
 ScriptType: v4.00+
 PlayResX: {W}
@@ -437,7 +450,7 @@ ScaledBorderAndShadow: yes
 
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
-Style: Karaoke,{CAPTION_FONT},{CAPTION_FONTSIZE},{primary},{primary},{outline},{shadow},-1,0,0,0,100,100,3,0,1,6,4,2,{CAPTION_MARGINL},{CAPTION_MARGINR},{CAPTION_MARGINV},1
+Style: Karaoke,{CAPTION_FONT},{cap_fs},{primary},{primary},{outline},{shadow},-1,0,0,0,100,100,3,0,1,6,4,{cap_align},{CAPTION_MARGINL},{CAPTION_MARGINR},{cap_marginv},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -694,7 +707,9 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
 
     # When captions occupy the lower-middle, lift the quote card up so they don't
     # collide; otherwise keep the original date-varied placement.
-    show_quote = not (CAPTIONS_ONLY and word_timings)
+    # STYLE "caption_only" (modern viral clip style): NO quote/author card at
+    # all — the b-roll + big centered karaoke captions ARE the video.
+    show_quote = STYLE != "caption_only" and not (CAPTIONS_ONLY and word_timings)
     caption_band = bool(word_timings) and CAPTIONS_ON
 
     # vary text vertical position: 0 -> centered, 1 -> upper third

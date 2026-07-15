@@ -74,6 +74,14 @@ author's, choose a different real passage rather than guessing.
 - CTA: 1-2 spoken sentences at the very end. Last line loops back to the opening \
 feeling (creates rewatch loops). Reference the next day's theme naturally. Under 25 \
 words. Vary the phrasing.
+- broll_queries: THREE stock-video search queries (4-7 words each), one per \
+third of the video, each literally depicting what the voiceover is SAYING at \
+that point — the viewer should feel the footage was shot for these exact \
+words. Concrete, human, filmable. \
+RIGHT: "man staring at phone dark room" / "rain window city night lonely" / \
+"person walking away sunrise street". \
+WRONG: "stoicism" / "discipline concept" / anything abstract a stock site \
+can't match.
 - Pinned comment: short, personal, slightly uncomfortable question that forces a \
 specific answer tied to today's content. NOT "what do you think?" Ask something that \
 requires naming a specific person, habit, or moment. Under 20 words. Then, on a new \
@@ -225,7 +233,8 @@ Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
   "pinned_comment": "...",
   "caption": "...",
   "hashtags": ["#...", "..."],
-  "callout_words": ["word1", "word2"]
+  "callout_words": ["word1", "word2"],
+  "broll_queries": ["stock video search 1", "search 2", "search 3"]
 }"""
 
 

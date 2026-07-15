@@ -130,11 +130,13 @@ def _search_term(theme: str, clip_idx: int = 0) -> str:
     clip_idx>0 uses a diversity pool so consecutive clips look visually distinct.
     """
     day = date.today().toordinal() + _bg_offset()
-    # Per-format visual world (set by daily_post from the content format —
-    # e.g. POV posts get moody modern city footage instead of statues) so
-    # structurally different formats also LOOK different in the feed.
-    flavor = os.environ.get("REEL_BG_FLAVOR", "").strip()
-    if clip_idx == 0 and flavor:
+    # Scene-matched b-roll: daily_post sets REEL_BG_FLAVOR / REEL_BG_FLAVOR1 /
+    # REEL_BG_FLAVOR2 (from the content engine's broll_queries — each literally
+    # depicting what the voiceover says in that third — or from the per-format
+    # visual world). Any clip without a flavor falls through to the old pools.
+    flavor = os.environ.get(
+        f"REEL_BG_FLAVOR{clip_idx if clip_idx else ''}", "").strip()
+    if flavor:
         return flavor
     if clip_idx > 0:
         slot = DIVERSITY_QUERIES[(clip_idx - 1) % len(DIVERSITY_QUERIES)]

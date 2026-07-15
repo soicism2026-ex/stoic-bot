@@ -143,6 +143,68 @@ _MUSIC_SYNTH = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Generated AMBIENCE beds — diegetic soundscapes that match each style pack's
+# visual world (rain under city-night b-roll, wind under sunrise training...).
+# Pure ffmpeg synthesis: no network, no key, never fails the pipeline.
+# ---------------------------------------------------------------------------
+_AMBIENCE_SYNTH = {
+    # rain on a window: hissy pink noise, dulled highs, slow swell + far rumble
+    "rain_night": (
+        "anoisesrc=d={d}:c=pink,lowpass=f=1400,highpass=f=250,"
+        "tremolo=f=0.1:d=0.25,volume=0.5[rain];"
+        "sine=frequency=48:duration={d},volume=0.12[rumble];"
+        "[rain][rumble]amix=inputs=2:duration=longest,volume=1.6,alimiter=limit=0.9"
+    ),
+    # distant city at night: deep hum + soft filtered wash
+    "city_hum": (
+        "anoisesrc=d={d}:c=pink,lowpass=f=420,tremolo=f=0.1:d=0.3,volume=0.45[wash];"
+        "sine=frequency=55:duration={d},volume=0.16[hum];"
+        "[wash][hum]amix=inputs=2:duration=longest,volume=1.7,alimiter=limit=0.9"
+    ),
+    # dawn wind: banded noise breathing slowly
+    "wind_dawn": (
+        "anoisesrc=d={d}:c=pink,bandpass=f=600:w=500,"
+        "tremolo=f=0.12:d=0.6,volume=0.55,"
+        "aecho=0.7:0.8:300:0.25,volume=1.5,alimiter=limit=0.9"
+    ),
+    # low fire-warmth bed: dark noise with a faster flutter (ember crackle feel)
+    "embers": (
+        "anoisesrc=d={d}:c=pink,lowpass=f=500,"
+        "tremolo=f=5:d=0.25,volume=0.4[fl];"
+        "sine=frequency=60:duration={d},volume=0.1[warm];"
+        "[fl][warm]amix=inputs=2:duration=longest,tremolo=f=0.1:d=0.3,"
+        "volume=1.6,alimiter=limit=0.9"
+    ),
+}
+
+
+def fetch_ambience(name: str, dur: float = 26.0) -> Path | None:
+    """Generate (and cache) a diegetic ambience bed. Returns None only if
+    ffmpeg itself fails — callers then fall back to the normal music bed."""
+    import subprocess
+    fc = _AMBIENCE_SYNTH.get(name)
+    if not fc:
+        return None
+    MUSIC_DIR.mkdir(parents=True, exist_ok=True)
+    cached = MUSIC_DIR / f"amb_{name}.mp3"
+    if cached.exists() and cached.stat().st_size > 5_000:
+        return cached
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-filter_complex", fc.format(d=dur), "-t", f"{dur:.0f}",
+             "-ar", "44100", "-ac", "2", "-c:a", "libmp3lame", "-b:a", "128k",
+             str(cached)],
+            check=True, capture_output=True,
+        )
+        if cached.exists() and cached.stat().st_size > 5_000:
+            print(f"[music] synthesized ambience '{name}' → {cached.name}")
+            return cached
+    except Exception as e:
+        print(f"[music] ambience synth failed for '{name}': {e}", file=sys.stderr)
+    return None
+
+
 def _synthesize_music(track: dict, out_path: Path, dur: float = 24.0) -> Path | None:
     """Generate a calm ambient bed with ffmpeg — no network, never needs a key.
 

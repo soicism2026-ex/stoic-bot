@@ -365,17 +365,48 @@ def main():
     exp_name, exp_env = pick_experiment(post_rows)
     print(f"  experiment: {exp_name}")
 
-    # Per-format visual world — structurally different formats should also look
-    # different in the feed (backgrounds._search_term reads REEL_BG_FLAVOR).
+    # ---- Style packs: each format gets its own full presentation ----------
+    # caption_only = no quote card, big centred captions (modern viral clip
+    # look); ambience = generated diegetic soundscape replacing the music bed.
+    STYLE_PACKS = {
+        "pov":       {"REEL_STYLE": "caption_only", "_ambience": "rain_night"},
+        "challenge": {"REEL_STYLE": "caption_only", "_ambience": "wind_dawn"},
+        "story":     {"_ambience": "embers"},
+        "rule":      {"_ambience": "embers"},
+    }
+    # Per-format visual world — fallback when the content engine's
+    # scene-matched broll_queries are missing.
     FORMAT_BG_FLAVOR = {
         "story":     "ancient rome ruins torchlight dramatic cinematic",
         "pov":       "city night rain window moody lonely cinematic",
         "rule":      "single marble statue spotlight black background",
         "challenge": "sunrise athlete training silhouette determination",
     }
-    bg_flavor = FORMAT_BG_FLAVOR.get(content.get("format", ""), "")
-    if bg_flavor:
-        exp_env = {**exp_env, "REEL_BG_FLAVOR": bg_flavor}
+    fmt = content.get("format", "")
+    pack = dict(STYLE_PACKS.get(fmt, {}))
+
+    # Scene-matched b-roll: one query per third of the video, straight from
+    # the script — the footage matches what the voiceover is saying.
+    broll = [q.strip() for q in (content.get("broll_queries") or []) if q and q.strip()]
+    if broll:
+        for i, q in enumerate(broll[:3]):
+            pack[f"REEL_BG_FLAVOR{i if i else ''}"] = q
+    elif FORMAT_BG_FLAVOR.get(fmt):
+        pack["REEL_BG_FLAVOR"] = FORMAT_BG_FLAVOR[fmt]
+
+    # Diegetic ambience replaces the music bed for this style (falls back to
+    # the normal generative music if synthesis ever fails).
+    ambience = pack.pop("_ambience", "")
+    if ambience:
+        amb_path = music_mod.fetch_ambience(ambience)
+        if amb_path:
+            music_path = amb_path
+            music_track = {"name": f"amb_{ambience}"}
+
+    exp_env = {**exp_env, **pack}
+    print(f"  style: {fmt or 'classic'} -> {pack.get('REEL_STYLE','classic')}"
+          f"{' + ' + ambience if ambience else ''}"
+          f"{' + scene-matched b-roll' if broll else ''}")
 
     all_qa: list = []
     current_env: dict = dict(exp_env)
