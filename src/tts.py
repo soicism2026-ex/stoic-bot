@@ -30,6 +30,7 @@ import json
 import os
 import re
 import subprocess
+import sys
 from datetime import date
 from pathlib import Path
 
@@ -42,10 +43,18 @@ import requests
 # edge-tts free voice pool. "Guy" was DROPPED — it averaged 152v across 12 posts,
 # far below Christopher (428v) and the paid ElevenLabs voices; channel_report
 # flagged it as the single worst voice. Christopher leads (best free performer).
+# Free edge-tts pool, upgraded to Microsoft's newest-generation narrators.
+# Andrew and (free) Brian are a different class from the old Guy/Christopher
+# voices — deep, warm, podcast-natural. Each entry carries its own rate/pitch
+# profile, and all edge output runs through _master_voice() (warmth EQ + gentle
+# compression) to close the gap with ElevenLabs. Goal: once analytics show a
+# tuned free voice matching paid Brian (852v / 93% retention), drop ElevenLabs.
 VOICE_POOL = [
-    {"name": "Christopher", "id": "en-US-ChristopherNeural"},
-    {"name": "Ryan",        "id": "en-GB-RyanNeural"},
-    {"name": "Eric",        "id": "en-US-EricNeural"},
+    # already deep — only a gentle slow-down + slight drop, or they get boomy
+    {"name": "Andrew",    "id": "en-US-AndrewNeural", "rate": "-4%", "pitch": "-2Hz"},
+    {"name": "BrianEdge", "id": "en-US-BrianNeural",  "rate": "-4%", "pitch": "-2Hz"},
+    # best of the old generation, kept as the control for the A/B
+    {"name": "Christopher", "id": "en-US-ChristopherNeural", "rate": "+0%", "pitch": "-8Hz"},
 ]
 
 # ElevenLabs A/B: analytics say the paid voices dominate (Brian 852v, Adam 728v
@@ -158,13 +167,16 @@ def _voice_audio_is_real(audio_path: Path, text: str) -> tuple[bool, float, floa
 # edge-tts synthesis (primary)
 # ---------------------------------------------------------------------------
 
-async def _edge_stream(text: str, out_path: Path, voice_id: str) -> list:
-    """Async core: stream edge-tts, collect audio + word boundaries."""
+async def _edge_stream(text: str, out_path: Path, voice_id: str,
+                       rate: str = "+0%", pitch: str = "-8Hz") -> list:
+    """Async core: stream edge-tts, collect audio + word boundaries.
+
+    rate/pitch come from the voice's profile in VOICE_POOL. (A previous global
+    -15% slowdown read as "too slow" — keep adjustments per-voice and subtle.)
+    """
     import edge_tts  # lazy import keeps startup fast when EL override is used
 
-    # rate left at default (+0%) — a previous -15% slowdown read as "too slow".
-    # Keep a small pitch drop for a deeper, more authoritative Stoic register.
-    communicate = edge_tts.Communicate(text, voice_id, rate="+0%", pitch="-8Hz")
+    communicate = edge_tts.Communicate(text, voice_id, rate=rate, pitch=pitch)
     audio_chunks: list[bytes] = []
     word_timings: list[tuple] = []
 
@@ -181,15 +193,50 @@ async def _edge_stream(text: str, out_path: Path, voice_id: str) -> list:
     return word_timings
 
 
+def _master_voice(audio_path: Path) -> None:
+    """Studio-narrator mastering for edge-tts output (in place, best-effort).
+
+    Raw neural TTS reads thin next to ElevenLabs. Chain: rumble cut → low-shelf
+    warmth (+2.5dB @ 130Hz) → presence lift (+1.5dB @ 5kHz) → gentle 2.2:1
+    compression → limiter. Timing is untouched, so word boundaries stay valid.
+    Skippable with REEL_VOICE_MASTER=0. Failure leaves the original file.
+    """
+    if os.environ.get("REEL_VOICE_MASTER", "1") in ("0", "false", "False"):
+        return
+    tmp = audio_path.with_suffix(".mastered.mp3")
+    try:
+        subprocess.run(
+            ["ffmpeg", "-y", "-i", str(audio_path), "-af",
+             "highpass=f=70,"
+             "equalizer=f=130:t=q:w=1:g=2.5,"
+             "equalizer=f=5000:t=q:w=1.2:g=1.5,"
+             "acompressor=threshold=-21dB:ratio=2.2:attack=15:release=180:makeup=2,"
+             "alimiter=limit=0.95",
+             "-c:a", "libmp3lame", "-b:a", "160k", str(tmp)],
+            check=True, capture_output=True,
+        )
+        if tmp.exists() and tmp.stat().st_size > 1000:
+            tmp.replace(audio_path)
+            print("  tts: voice mastered (warmth EQ + compression)")
+    except Exception as e:  # noqa: BLE001
+        tmp.unlink(missing_ok=True)
+        print(f"  tts: mastering skipped ({e})", file=sys.stderr)
+
+
 def _synthesize_edge(text: str, out_path: Path, voice_id: str) -> tuple:
     """Run edge-tts synthesis and return (out_path, word_timings)."""
+    prof = next((v for v in VOICE_POOL if v["id"] == voice_id), {})
+    rate, pitch = prof.get("rate", "+0%"), prof.get("pitch", "-8Hz")
     try:
         loop = asyncio.get_event_loop()
         if loop.is_closed():
             raise RuntimeError("loop closed")
-        timings = loop.run_until_complete(_edge_stream(text, out_path, voice_id))
+        timings = loop.run_until_complete(
+            _edge_stream(text, out_path, voice_id, rate=rate, pitch=pitch))
     except RuntimeError:
-        timings = asyncio.run(_edge_stream(text, out_path, voice_id))
+        timings = asyncio.run(_edge_stream(text, out_path, voice_id, rate=rate, pitch=pitch))
+
+    _master_voice(out_path)
 
     ok, dur, mean_db = _voice_audio_is_real(out_path, text)
     print(f"  tts: edge-tts audio dur={dur:.1f}s mean_vol={mean_db:.1f}dB "

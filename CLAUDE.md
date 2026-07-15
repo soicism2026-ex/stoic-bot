@@ -51,6 +51,7 @@ After the main post loop, the workflow runs:
 | `scripts/rethumbnail.py` | One-off: re-generates and uploads thumbnails for all past videos. `--only-missing` skips videos that already have a `maxres` thumbnail. |
 | `scripts/improve_loop.py` | The brain of the continuous improvement loop. Joins posts.csv + analytics.csv, evaluates last run's outcome, picks next focus area, writes a data-grounded prompt to `data/improve_prompt.txt`, and saves run memory to `data/improve_state.json`. |
 | `scripts/prune_videos.py` | Unlists underperforming videos. |
+| `scripts/cost_report.py` | Cost agent: reads `data/costs.json` (subscriptions incl. Claude + ElevenLabs, one-time buys), computes monthly burn, all-time spend, cost per Short / per 1k views. Standalone + embedded in the weekly channel report. |
 
 ---
 
@@ -99,7 +100,7 @@ Never commit secrets. They exist only in GitHub Actions secrets.
 
 **Format rotation**: `["quote", "quote", "quote", "list"]` — 3 personal quote posts then 1 numbered-rules list
 
-**Voice rotation**: Brian (preferred) → George → Adam, analytics-weighted after 5 posts each, LRU before that. Override with `ELEVENLABS_VOICE_ID`.
+**Voice rotation**: ElevenLabs "Brian" voices the FIRST `ELEVENLABS_POSTS_PER_DAY` posts of each day (default 1 — sized for the Starter plan's 30k chars/month; live credit-balance guard refuses to overspend). All other posts use the free edge-tts pool — Andrew, BrianEdge (`en-US-BrianNeural`), Christopher — each with a per-voice rate/pitch profile plus an ffmpeg mastering chain (`_master_voice`: warmth EQ + compression) to approach paid quality. Analytics-weighted after 5 posts per voice, LRU before that. `data/posts.csv` logs the voice that ACTUALLY spoke (`tts.LAST_VOICE_NAME`). Goal: when a tuned free voice matches paid Brian on views+retention, cancel ElevenLabs.
 
 ---
 
@@ -127,6 +128,7 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 | `data/analytics.csv` | Per-video view/like/comment snapshots |
 | `data/replied_comments.csv` | Comment IDs the bot has already replied to |
 | `data/improve_state.json` | Improvement loop memory: iteration count, current focus, focus history with before/after metrics and verdicts, metrics snapshot at each focus start |
+| `data/costs.json` | Editable money registry: subscriptions (Claude, ElevenLabs, API estimates), one-time purchases, free services. ASSUMED/ESTIMATE notes flag guessed numbers. Feeds `scripts/cost_report.py`. |
 | `backups/*.json` + `backups/*.mp4` | Evergreen backup bank (3 videos) used when QA fails |
 | `QA_LOG.md` | Per-run QA issue log |
 

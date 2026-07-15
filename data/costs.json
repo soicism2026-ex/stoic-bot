@@ -1,0 +1,31 @@
+{
+  "_readme": "Money tracker for the bot. EDIT THE NUMBERS — anything marked ASSUMED/ESTIMATE is a guess. monthly_usd is the recurring price; start is when the subscription began (YYYY-MM-DD). scripts/cost_report.py turns this into the monthly money report.",
+  "subscriptions": [
+    {
+      "name": "Claude subscription",
+      "monthly_usd": 20.0,
+      "start": "2026-06-05",
+      "note": "ASSUMED Pro plan at $20/mo — edit to your actual plan (Max is $100+/mo)"
+    },
+    {
+      "name": "ElevenLabs Starter",
+      "monthly_usd": 5.0,
+      "start": "2026-07-15",
+      "note": "Brian voice, 1 post/day budget (30k chars/mo cap)"
+    },
+    {
+      "name": "Anthropic API (content generation)",
+      "monthly_usd": 3.0,
+      "start": "2026-06-05",
+      "note": "ESTIMATE — Opus content calls + Haiku comment replies, ~4-5 calls/day. Check real usage at console.anthropic.com and correct this."
+    }
+  ],
+  "one_time": [],
+  "free_services": [
+    "GitHub Actions (public repo — unlimited free minutes)",
+    "edge-tts + gTTS voices (fallback pool)",
+    "Pixabay + Pexels backgrounds",
+    "YouTube Data & Analytics APIs",
+    "Generative ambient music (ffmpeg)"
+  ]
+}

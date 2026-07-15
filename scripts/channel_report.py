@@ -295,6 +295,13 @@ def build_report() -> str:
     if dups:
         w("- Harden the duplicate-quote guard (same quote shipped twice above).")
 
+    # Cost agent: the money picture ships with the performance picture.
+    try:
+        from cost_report import costs_summary
+        w("\n" + costs_summary())
+    except Exception as e:
+        w(f"\n## 💰 Costs\n- cost report unavailable ({e})")
+
     w("\n_Advisory only — nothing here was applied. Tell me which to action._")
     return "\n".join(out)
 
