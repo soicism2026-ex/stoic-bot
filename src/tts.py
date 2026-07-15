@@ -50,11 +50,12 @@ import requests
 # compression) to close the gap with ElevenLabs. Goal: once analytics show a
 # tuned free voice matching paid Brian (852v / 93% retention), drop ElevenLabs.
 VOICE_POOL = [
-    # already deep — only a gentle slow-down + slight drop, or they get boomy
-    {"name": "Andrew",    "id": "en-US-AndrewNeural", "rate": "-4%", "pitch": "-2Hz"},
-    {"name": "BrianEdge", "id": "en-US-BrianNeural",  "rate": "-4%", "pitch": "-2Hz"},
-    # best of the old generation, kept as the control for the A/B
+    # Christopher leads — owner listened to Andrew (2026-07-15, UWhKhyad4w8) and
+    # preferred this voice; taste outranks novelty. Andrew REMOVED.
     {"name": "Christopher", "id": "en-US-ChristopherNeural", "rate": "+0%", "pitch": "-8Hz"},
+    # single remaining challenger (unjudged so far): free "Brian" — kept in the
+    # race because the paid ElevenLabs Brian is the metric leader to beat
+    {"name": "BrianEdge", "id": "en-US-BrianNeural", "rate": "-4%", "pitch": "-2Hz"},
 ]
 
 # ElevenLabs A/B: analytics say the paid voices dominate (Brian 852v, Adam 728v
