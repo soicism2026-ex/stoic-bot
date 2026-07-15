@@ -935,3 +935,17 @@ for any recurring defects.
 - Introduce a punchier visual change or zoom within the first second (e.g., animate the hook text in word-by-word or cut to the sparkler earlier) to add scroll-stopping motion
 - Add a dark semi-transparent bar or drop shadow behind the top header and keep contrast high so all overlay text is instantly readable
 
+
+## Visual QA — 2026-07-15 01:56 UTC
+**File:** `2026-07-15_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Set it down.
+**Scores:** hook_strength=5.5 | text_legibility=7.5 | pacing=6.5 | scroll_stop_potential=5.0
+**Reasoning:** hook_strength: 'Set it down.' is intriguing and delivered word-by-word with karaoke captions, but on its own it's a little vague and doesn't immediately spell out the ego/pride payoff, so not every scroller will bite (5.5). text_legibility: The bold gold-outlined captions are crisp and high-contrast against the purple waterfall footage, though the header 'DAY 41 · UNTIL DISCIPLINE IS COOL AGAIN' is thin and low-contrast, and the body quote/'YOUR OWN' text in frame 5 lacks a strong outline making it slightly muted (7.5). pacing: Word-by-word caption reveals plus the sparkler transition in the body give reasonable rhythm, but the background clip stays fairly static through the hook window (6.5). scroll_stop_potential: The purple-graded waterfall is aesthetically pleasing but a common stock look, and frame 1 leads with a short cryptic phrase rather than a bold visual jolt, so it's a maybe-stop (5.0).
+**Issues:**
+- Header text 'DAY 41 · UNTIL DISCIPLINE IS COOL AGAIN' is thin, italic and low-contrast — hard to read against the busy background.
+- Frame 5's quote and 'YOUR OWN' caption lack the bold outline used elsewhere, so they blend into the purple background and lose punch.
+**Suggestions:**
+- Front-load a sharper curiosity gap in the hook, e.g. pair 'Set it down.' with 'the thing quietly ruining you' to force the swipe-stop.
+- Apply the same heavy black/gold outline to ALL text overlays (header, quote, captions) for consistent legibility, and consider a punchier first frame with faster motion or a zoom to arrest the scroll.
+**Flagged dims:** hook_strength, scroll_stop_potential
+
