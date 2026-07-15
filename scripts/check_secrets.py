@@ -57,8 +57,12 @@ def check_elevenlabs() -> bool:
         print(f"  [{PASS}] ELEVENLABS_API_KEY — subscription tier: {tier}")
         return True
     except Exception as e:
-        print(f"  [{FAIL}] ELEVENLABS_API_KEY — {e}")
-        return False
+        # WARN, never FAIL: tts.py falls back to edge-tts (then gTTS) when the
+        # ElevenLabs call errors, so a bad/expired key must degrade the voice,
+        # not stop the channel. A 401 here once blocked all 4 daily posts.
+        print(f"  [{SKIP}] ELEVENLABS_API_KEY — invalid ({e}); voice will FALL "
+              f"BACK to edge-tts until the key is fixed")
+        return True
 
 
 def check_youtube() -> bool:

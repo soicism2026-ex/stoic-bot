@@ -303,7 +303,12 @@ def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     """
     if _EL_KEY and _EL_VOICE_ID:
         print(f"  tts: ElevenLabs override active (voice {_EL_VOICE_ID})")
-        return _synthesize_elevenlabs(text, out_path, _EL_VOICE_ID)
+        try:
+            return _synthesize_elevenlabs(text, out_path, _EL_VOICE_ID)
+        except Exception as e:  # noqa: BLE001
+            # Bad key, exhausted credits, or API outage — degrade the voice,
+            # never the channel. Fall through to the free edge-tts pool.
+            print(f"  tts: ElevenLabs failed ({e}); falling back to edge-tts")
 
     vid = voice_id or VOICE_POOL[0]["id"]
     name = next((v["name"] for v in VOICE_POOL if v["id"] == vid), vid)
