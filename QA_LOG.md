@@ -1003,3 +1003,17 @@ for any recurring defects.
 - Open on a more concrete, high-contrast visual (e.g. a clear shot of a phone screen at 11pm with a promotion post) to reinforce the relatable hook and boost scroll-stop
 **Flagged dims:** text_legibility
 
+
+## Visual QA — 2026-07-16 05:23 UTC
+**File:** `2026-07-16_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rule 9: Name the fear.
+**Scores:** hook_strength=6.5 | text_legibility=7.0 | pacing=6.5 | scroll_stop_potential=5.5
+**Reasoning:** Hook text 'RULE 9: NAME THE FEAR.' is clear and creates mild curiosity (a numbered rule implies a series and a payoff), but the dark, muddy office background is not visually arresting and 'Rule 9' assumes context most cold viewers lack, which slightly weakens the standalone hook — hence 6.5. Text legibility is decent: the bold yellow all-caps main text has a good outline and contrast, but the thin serif banner ('DAY 42 · UNTIL DISCIPLINE IS COOL AGAIN') is small, low-contrast against the pale wall, and the serif Seneca quote in frames 5-6 is somewhat thin over busy backgrounds, so 7.0. Pacing shows a nice progressive word-by-word caption reveal (RULE 9 → NAME THE → FEAR.) and a scene change from the dim office to the stepping-stone path, giving reasonable rhythm but nothing energetic, so 6.5. Scroll-stop is the weakest: the opening frame is dark, gloomy and static with a generic cluttered room, which many viewers would swipe past despite the readable hook text, so 5.5.
+**Issues:**
+- Opening frame background is dark and murky with a cluttered, low-energy office scene that lacks visual punch to stop a scroller
+- The 'DAY 42' banner and serif quote text are thin and low-contrast, hard to read against light walls and busy nature shots
+**Suggestions:**
+- Open on a higher-contrast, more dramatic visual (e.g. a stark silhouette or the stepping-stone path) and brighten/punch the first 0.5s to boost scroll-stop
+- Increase weight or add a stronger drop-shadow/background bar behind the serif banner and Seneca quote so both are instantly legible at phone size
+**Flagged dims:** scroll_stop_potential
+
