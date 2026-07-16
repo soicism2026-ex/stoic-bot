@@ -1045,3 +1045,17 @@ for any recurring defects.
 - Consolidate to a single caption layer during the hook to avoid the duplicated 'DECIDE, THEN ACT' plus subtitle redundancy, and boost the header contrast
 **Flagged dims:** scroll_stop_potential
 
+
+## Visual QA — 2026-07-16 16:23 UTC
+**File:** `2026-07-16_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Let it break on you
+**Scores:** hook_strength=6.5 | text_legibility=6.0 | pacing=5.5 | scroll_stop_potential=5.5
+**Reasoning:** hook_strength: 'LET IT BREAK ON YOU' is intriguing and slightly ambiguous in a good way, creating curiosity, but the visual (young man reading in dim library) is calm rather than arresting, so it won't stop every scroller. text_legibility: The yellow hook text has a strong outline and reads well, but the purple duotone lowers overall contrast, and the body quote in serif italic overlaid on the busy bookshelf/forest is noticeably harder to parse; caption words are clear. pacing: The first four hook frames are nearly identical — same pose, same background — so the opening feels static with little visual movement; only the transition to the forest scene in frame 6 adds energy. scroll_stop_potential: The moody aesthetic and bold text give it some pull, but the muted, low-motion opening and generic 'person reading' shot mean many viewers might scroll past.
+**Issues:**
+- First 4 hook frames are visually near-identical, creating a static, low-motion opening
+- Heavy purple duotone reduces contrast and the serif italic quote is hard to read over the busy bookshelf background
+**Suggestions:**
+- Introduce a punchier visual change or camera move within the first 1.5s (zoom, cut, or a dramatic close-up) to break the static feel
+- Increase text contrast — use a solid semi-transparent backing bar or heavier drop shadow behind the serif quote so it reads instantly at phone size
+**Flagged dims:** text_legibility, scroll_stop_potential
+
