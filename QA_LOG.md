@@ -1017,3 +1017,17 @@ for any recurring defects.
 - Increase weight or add a stronger drop-shadow/background bar behind the serif banner and Seneca quote so both are instantly legible at phone size
 **Flagged dims:** scroll_stop_potential
 
+
+## Visual QA — 2026-07-16 09:28 UTC
+**File:** `2026-07-16_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** The 24-hour honesty test
+**Scores:** hook_strength=7.5 | text_legibility=5.5 | pacing=6.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'THE 24-HOUR HONESTY TEST' is a strong, curiosity-driving phrase that promises a concrete challenge, earning a solid hook_strength score, though the blurry, ambiguous purple-tinted background doesn't reinforce the concept visually. Text legibility is hurt significantly in frames 2-4 by the overlapping static title and animated caption stacking on top of each other in the same yellow/white palette, creating a muddy, hard-to-parse cluster; the standalone frames (1, 5) are clean and readable. Pacing is adequate — the word-by-word caption animation adds rhythm and the background has subtle motion — but the visual scene barely changes across the hook, making it feel static. Scroll-stop potential is moderate: the text intrigues but the out-of-focus, indistinct imagery isn't arresting enough to reliably halt a fast scroller.
+**Issues:**
+- Static title overlaps with animated captions in frames 2-4, causing text collision and reduced readability
+- Background footage is heavily blurred and ambiguous, giving no clear visual anchor for the 'honesty test' concept
+**Suggestions:**
+- Remove or fade out the static title once the animated caption begins so only one text layer is visible at a time
+- Open on a sharper, more literal visual (e.g. two friends face-to-face) to boost scroll-stop and reinforce the friendship theme
+**Flagged dims:** text_legibility
+
