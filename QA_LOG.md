@@ -1072,3 +1072,17 @@ for any recurring defects.
 - Introduce a subtle zoom or parallax push on the background during the hook to add motion and prevent the opening from feeling frozen.
 - Keep all animated captions in a consistent high-contrast white-with-outline style and consider a quick visual reveal (e.g. a subtle flash or scale pop) on the headline to boost scroll-stop power.
 
+
+## Visual QA — 2026-07-16 23:16 UTC
+**File:** `2026-07-16_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** POV: You just refreshed your own post.
+**Scores:** hook_strength=8.5 | text_legibility=6.0 | pacing=7.5 | scroll_stop_potential=8.0
+**Reasoning:** The hook 'POV: You just refreshed your own post' is highly relatable and instantly triggers self-recognition, especially for the doomscrolling audience it targets — earning a strong hook_strength. Text_legibility suffers because frames 2-4 show overlapping caption layers (the static hook block and the animated caption 'YOU JUST' / 'REFRESHED YOUR') colliding, creating a muddy, hard-to-parse cluster mid-frame. Pacing feels adequate to good: the animated word-by-word captions add rhythm and the shift to the kingfisher body shot provides visual variety, though the hook window is a bit repetitive across the four frames. Scroll_stop_potential is high because the dim, intimate phone-in-bed imagery paired with the confrontational POV line mirrors the viewer's own behavior, making a thumb-stop likely.
+**Issues:**
+- Overlapping text layers in frames 2-4 (static block + animated captions) reduce readability and look cluttered
+- Hook window frames are nearly identical, so 4 frames convey little visual progression during the critical first 1.5s
+**Suggestions:**
+- Remove or fade the large static POV block once the animated word captions begin so only one text element is visible at a time
+- Add subtle motion or a punch-in zoom during the hook to differentiate the opening frames and heighten scroll-stop energy
+**Flagged dims:** text_legibility
+
