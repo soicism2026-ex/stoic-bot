@@ -1031,3 +1031,17 @@ for any recurring defects.
 - Open on a sharper, more literal visual (e.g. two friends face-to-face) to boost scroll-stop and reinforce the friendship theme
 **Flagged dims:** text_legibility
 
+
+## Visual QA — 2026-07-16 13:49 UTC
+**File:** `2026-07-16_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Decide, then act.
+**Scores:** hook_strength=6.0 | text_legibility=7.5 | pacing=6.5 | scroll_stop_potential=5.0
+**Reasoning:** Hook text 'DECIDE, THEN ACT.' is punchy and readable in bold yellow, but the concept is generic mindset advice that won't stop every scroller (6.0). The background of a hand typing on a keyboard is soft-focus and mundane rather than arresting, limiting scroll-stop potential (5.0). Text legibility is strong for the main yellow caption with black outline, but the thin serif header 'DAY 42 · UNTIL DISCIPLINE IS COOL AGAIN' is low-contrast against the busy background and the body-frame serif quote is decent but small (7.5). Pacing is adequate: the animated caption cycles words in sync with the voiceover and there's a clean transition to the darker body frame, but the underlying visual barely changes across the hook window making it feel static (6.5).
+**Issues:**
+- Static background (single keyboard/hand shot) across all four hook frames reduces visual energy and scroll-stop power
+- Two overlapping text layers in hook frames (large caption + progressive subtitle) compete and clutter the frame
+**Suggestions:**
+- Open on a more dynamic or high-contrast visual (fast zoom, close-up eye, or bold color flash) to seize attention in the first 0.5s
+- Consolidate to a single caption layer during the hook to avoid the duplicated 'DECIDE, THEN ACT' plus subtitle redundancy, and boost the header contrast
+**Flagged dims:** scroll_stop_potential
+
