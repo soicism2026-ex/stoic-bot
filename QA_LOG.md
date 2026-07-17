@@ -1099,3 +1099,17 @@ for any recurring defects.
 - Introduce visible motion or a hard cut within the first 1.5s (e.g., zoom-punch on the hands or a phone-refresh action tied to the 'won't come' line) to break the static hook
 - Add a subtle dark gradient or shadow box behind the serif quote in bright-background body frames to keep contrast consistent
 
+
+## Visual QA — 2026-07-17 09:33 UTC
+**File:** `2026-07-17_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** The 24-hour no-flare test
+**Scores:** hook_strength=6.5 | text_legibility=7.0 | pacing=4.5 | scroll_stop_potential=5.0
+**Reasoning:** Hook text 'THE 24-HOUR NO-FLARE TEST' is clear, curiosity-inducing, and frames a challenge, which is a strong device — but the 'no-flare' phrasing is slightly ambiguous without context, keeping it from a top score. Text legibility is good: the yellow body font has decent contrast against the dark wheat, though the top 'DAY 43' banner is thin, serif, and low-contrast, becoming nearly illegible over bright areas in frame 6. Pacing is weak — the first four hook frames are essentially the same static wheat shot with identical text, so the opening 1.5s shows no motion or transition energy; only the body introduces a new (walking) scene. Scroll-stop potential is moderate: the moody wheat field is aesthetic but generic for Stoicism content and the frame-1 visual isn't arresting enough to guarantee a stop.
+**Issues:**
+- First 4 hook frames are nearly identical — no visual change during the critical opening, making it feel static.
+- Top 'DAY 43 · UNTIL DISCIPLINE IS COOL AGAIN' banner uses a thin low-contrast serif that disappears over bright backgrounds (esp. frame 6).
+**Suggestions:**
+- Introduce motion or a punch-in zoom / cut within the first 1.5s so the hook window isn't a single frozen shot; consider revealing the hook text word-by-word.
+- Increase the top banner's weight and add a subtle shadow or semi-opaque bar so it stays legible over the sunlit forest frames.
+**Flagged dims:** pacing, scroll_stop_potential
+
