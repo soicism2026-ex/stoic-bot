@@ -870,8 +870,18 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # burn in karaoke captions last so they sit on top
     ass_path = None
     if caption_band:
+        # The hook is SPOKEN first, and its words are already on screen as the
+        # big hook card — captioning them too made the intro read as doubled
+        # text with off-looking timing (and in caption_only style the centred
+        # captions sat directly ON TOP of the hook card). Skip the hook's words
+        # in the caption track; captions begin with the voiceover body.
+        cap_timings = word_timings
+        if hook and HOOK_TEXT_ON:
+            n_hook = len(hook.split())
+            if len(word_timings) > n_hook + 2:
+                cap_timings = word_timings[n_hook:]
         ass_path = Path(out_path).with_suffix(".captions.ass")
-        _build_ass(word_timings, ass_path)
+        _build_ass(cap_timings, ass_path)
         vf_parts.append(f"ass='{_escape_filter_path(ass_path)}'")
 
     # Thin gold frame + corner brackets, drawn on top of everything.
