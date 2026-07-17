@@ -1113,3 +1113,17 @@ for any recurring defects.
 - Increase the top banner's weight and add a subtle shadow or semi-opaque bar so it stays legible over the sunlit forest frames.
 **Flagged dims:** pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-07-17 13:29 UTC
+**File:** `2026-07-17_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Look inward.
+**Scores:** hook_strength=5.5 | text_legibility=7.0 | pacing=5.0 | scroll_stop_potential=5.5
+**Reasoning:** hook_strength: 'Look inward.' is a clean, on-theme command but it's quite generic in the crowded Stoic-content space and doesn't spark strong curiosity by itself; the moody frost-walk visual helps but doesn't fully compensate. text_legibility: The bold yellow 'LOOK INWARD' and white subtitle words are crisp and high-contrast, but the thin gold header font 'DAY 43 · UNTIL DISCIPLINE IS COOL AGAIN' is nearly illegible at phone size — a real weakness. pacing: The first four hook frames are almost visually identical (same walker, same frosty path), so the opening feels static and lacks the energetic rhythm scrollers reward; the body cut to a beach scene adds welcome variety. scroll_stop_potential: The atmospheric silhouette-on-frost shot is genuinely cinematic and would catch some eyes, but the near-frozen motion across the hook frames and familiar composition mean many will keep swiping.
+**Issues:**
+- Hook window (frames 1-4) is visually near-static — same walking shot with only tiny movement, reducing early motion energy
+- The gold header text 'DAY 43 · UNTIL DISCIPLINE IS COOL AGAIN' is a thin decorative font with low contrast, effectively unreadable on a phone
+**Suggestions:**
+- Introduce a stronger visual change or punch-in zoom within the first 1.5s to create motion and stop the scroll faster
+- Replace the thin gold serif header with a bolder, higher-contrast font, or drop it during the hook so the eye goes straight to 'LOOK INWARD.'
+**Flagged dims:** hook_strength, scroll_stop_potential
+
