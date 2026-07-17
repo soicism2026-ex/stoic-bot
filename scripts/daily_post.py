@@ -176,12 +176,34 @@ def _count_backups() -> int:
     return sum(1 for _ in BACKUPS_DIR.glob("*.json"))
 
 
+BACKUP_MAX_AGE_DAYS = int(os.environ.get("BACKUP_MAX_AGE_DAYS", "3"))
+
+
 def _load_backup():
-    """Return (video_path, metadata_dict, meta_file) or None."""
+    """Return (video_path, metadata_dict, meta_file) or None.
+
+    EXPIRES stale backups instead of posting them: the bank once held videos
+    rendered a MONTH earlier — every render/voice/caption fix since was missing
+    from them, so a QA-failure day silently published outdated aesthetics
+    ("my changes don't show up"). Anything older than BACKUP_MAX_AGE_DAYS is
+    deleted here; the nightly top-up refills the bank with current-code
+    renders.
+    """
     BACKUPS_DIR.mkdir(exist_ok=True)
+    today = datetime.date.today()
     for meta_file in sorted(BACKUPS_DIR.glob("*.json")):
         try:
             meta = json.loads(meta_file.read_text(encoding="utf-8"))
+            created = meta.get("created", "")
+            try:
+                age = (today - datetime.date.fromisoformat(created)).days
+            except ValueError:
+                age = 999  # unparseable = ancient; expire it
+            if age > BACKUP_MAX_AGE_DAYS:
+                print(f"  [backup] {meta.get('filename','?')} is {age}d old "
+                      f"(> {BACKUP_MAX_AGE_DAYS}d) — expiring, not posting")
+                _remove_backup(meta_file)
+                continue
             vp = BACKUPS_DIR / meta["filename"]
             if vp.exists():
                 return vp, meta, meta_file

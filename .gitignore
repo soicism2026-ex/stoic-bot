@@ -19,3 +19,6 @@ backups/*.bg*.mp4
 backups/*.captions.ass
 backups/*.clicks.wav
 backups/*.mixclick.m4a
+backups/*.hook.wav
+backups/*.mix.m4a
+backups/*.loud.m4a

@@ -119,7 +119,8 @@ jobs:
           # GitHub hard-rejects files over 100MB and the WHOLE run fails,
           # losing the post log (this killed the 2026-07-12 22:00 slot).
           find backups -type f \( -name '*.bg*.mp4' -o -name '*.captions.ass' \
-            -o -name '*.clicks.wav' -o -name '*.mixclick.m4a' -o -size +95M \) \
+            -o -name '*.clicks.wav' -o -name '*.mixclick.m4a' -o -name '*.hook.wav' \
+            -o -name '*.mix.m4a' -o -name '*.loud.m4a' -o -size +95M \) \
             -delete 2>/dev/null || true
           git add data/posts.csv data/analytics.csv data/channel_stats.csv data/replied_comments.csv QA_LOG.md backups/
           git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
