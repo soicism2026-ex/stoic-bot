@@ -363,7 +363,16 @@ def generate_content() -> dict:
     # model knows it must pick a completely different passage from the same source.
     author_used = [q for i, q in enumerate(used_quotes)
                    if rows[i].get("author") == required_author]
+    # Recent hooks (all formats) — prevents pattern repeats the model can't
+    # otherwise know about, e.g. generating "Rule 9" two days running.
+    recent_hooks = [r.get("hook", "") for r in rows[-12:] if r.get("hook")]
     avoid_block = ""
+    if recent_hooks:
+        hooked = "\n".join(f'- "{h}"' for h in recent_hooks)
+        avoid_block += (
+            "\n\nRecent hooks — do NOT reuse their wording, numbers, or pattern "
+            f"(vary rule numbers especially):\n{hooked}"
+        )
     if used_quotes:
         quoted = "\n".join(f'- "{q}"' for q in used_quotes[-80:])
         avoid_block = (
