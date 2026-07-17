@@ -1141,3 +1141,16 @@ for any recurring defects.
 - Increase contrast on the quote overlay with a semi-transparent backing bar, and switch the banner to a bolder sans-serif for instant legibility
 **Flagged dims:** pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-07-17 18:11 UTC
+**File:** `2026-07-17_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Nero handed him a death sentence.
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=5.5 | scroll_stop_potential=7.0
+**Reasoning:** Hook text 'Nero handed him a death sentence' is a strong, specific, curiosity-driving line with historical intrigue and life-or-death stakes, earning a high hook_strength — though the visual (a generic book and flowers) doesn't reinforce the drama. Text_legibility is strong: the bold yellow all-caps hook with black outline reads instantly against the blurred background, and the body serif quote is clear too, with a minor deduction because the elegant serif is slightly thinner than ideal at phone size. Pacing is the weakest area — the first four hook frames are essentially identical still shots with no visible motion or transition, making the opening feel static, though the shift to a darker, moodier visual in frame 6 adds welcome contrast. Scroll_stop_potential is solid thanks to the provocative hook line, but the calm, pretty stock background undercuts the tension the words are trying to create.
+**Issues:**
+- Hook frames 1-4 are nearly identical with no visual motion, making the critical opening feel static
+- The peaceful book-and-flowers background contradicts the dark 'death sentence' hook, weakening emotional impact
+**Suggestions:**
+- Add subtle motion (slow zoom, parallax, or a quick cut) across the hook window to create visual energy in the first 1.5s
+- Use a darker, more ominous opening visual that matches the death-sentence theme, saving the calm imagery for the resolution
+
