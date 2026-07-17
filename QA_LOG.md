@@ -1086,3 +1086,16 @@ for any recurring defects.
 - Add subtle motion or a punch-in zoom during the hook to differentiate the opening frames and heighten scroll-stop energy
 **Flagged dims:** text_legibility
 
+
+## Visual QA — 2026-07-17 05:26 UTC
+**File:** `2026-07-17_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Rule 9: Want nothing you can't command.
+**Scores:** hook_strength=7.5 | text_legibility=8.5 | pacing=6.0 | scroll_stop_potential=6.5
+**Reasoning:** hook_strength: 'Rule 9: Want nothing you can't command' is a strong, imperative, curiosity-driving line, and the numbered-rule framing implies a series that pulls viewers deeper — but the visual behind it (dim hands in shadow) is murky and doesn't add punch, so it stops short of a perfect stop. text_legibility: The bold gold hook text has good weight and outline against the dark background and is very readable; the italic serif quote in frame 6 loses some contrast over the bright sunset sky, docking a point. pacing: Frames 1-4 are nearly identical with only tiny hand movement, so the hook window feels static; the body cut to the silhouette/sunset adds welcome variety but overall rhythm is slow. scroll_stop_potential: The strong text may catch mindset-content viewers, but the dark, low-detail opening imagery is not visually arresting enough to guarantee a stop.
+**Issues:**
+- Hook frames 1-4 are visually near-identical (dim hands in low light), creating a static, low-energy opening 1.5s
+- Serif quote text in frame 6 has reduced contrast against the bright sunset sky
+**Suggestions:**
+- Introduce visible motion or a hard cut within the first 1.5s (e.g., zoom-punch on the hands or a phone-refresh action tied to the 'won't come' line) to break the static hook
+- Add a subtle dark gradient or shadow box behind the serif quote in bright-background body frames to keep contrast consistent
+
