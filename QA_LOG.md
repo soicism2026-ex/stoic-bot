@@ -1154,3 +1154,16 @@ for any recurring defects.
 - Add subtle motion (slow zoom, parallax, or a quick cut) across the hook window to create visual energy in the first 1.5s
 - Use a darker, more ominous opening visual that matches the death-sentence theme, saving the calm imagery for the resolution
 
+
+## Visual QA — 2026-07-17 23:01 UTC
+**File:** `2026-07-17_reel.mp4` | **Verdict:** `PASS`
+**Hook:** POV: You almost lied to keep him.
+**Scores:** hook_strength=8.0 | text_legibility=7.5 | pacing=6.0 | scroll_stop_potential=7.0
+**Reasoning:** Hook text 'POV: You almost lied to keep him' is strong, relatable and creates immediate curiosity with tension and mystery — earns 8. Text legibility is good: the bold amber hook copy is crisp and high-contrast against the dark purple, but the body 'FLATTERY.' frame uses a low-contrast dark-gold on a busy street photo that's hard to read, and the small serif 'DAY 43' header is thin — pulls it to 7.5. Pacing is only adequate: frames 1-4 are nearly static with almost no visual change during the hook window, and the moody purple ambiguous imagery lacks energy until the body cut to the street scene — 6. Scroll-stop potential is decent thanks to the punchy first-line copy and dramatic dark aesthetic, but the abstract, dim opening visual doesn't grab as hard as a face or motion would — 7.
+**Issues:**
+- Hook frames 1-4 are essentially static; the background barely changes, wasting the critical 1.5s window
+- 'FLATTERY.' body text is low-contrast dark gold over a busy, cluttered street photo, hurting readability
+**Suggestions:**
+- Introduce subtle motion or a visual reveal (zoom, hand animation) across the hook frames to add kinetic energy and stop the scroll
+- Boost body-text contrast with a solid drop shadow or semi-opaque backing bar so key words like 'FLATTERY.' pop against detailed backgrounds
+
