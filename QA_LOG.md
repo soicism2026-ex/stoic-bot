@@ -1127,3 +1127,17 @@ for any recurring defects.
 - Replace the thin gold serif header with a bolder, higher-contrast font, or drop it during the hook so the eye goes straight to 'LOOK INWARD.'
 **Flagged dims:** hook_strength, scroll_stop_potential
 
+
+## Visual QA — 2026-07-17 16:24 UTC
+**File:** `2026-07-17_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Nothing outside can reach it
+**Scores:** hook_strength=6.5 | text_legibility=7.0 | pacing=4.0 | scroll_stop_potential=5.5
+**Reasoning:** Hook text 'NOTHING OUTSIDE CAN REACH IT' is intriguing and abstract enough to spark curiosity, but it lacks a concrete pain point in frame 1 to force a stop, so it earns a 6.5. Legibility of the main yellow bold headline is strong with good outline/contrast against the purple background, but the thin serif top banner ('DAY 43...') is low-contrast and hard to read, and in frame 5-6 the italic quote overlaps with the busy background reducing clarity — hence 7.0. Pacing is weak: the first four hook frames are essentially identical with no visual movement, transition, or zoom, making the opening feel static (4.0). Scroll-stop potential is moderate — the purple moody nature scene is aesthetically pleasing and the caption is bold, but nothing visually dynamic or face-driven appears until the body, so it's a 'maybe' stop (5.5).
+**Issues:**
+- First four hook frames are visually static/identical — no motion or transition to create energy
+- Top banner text and italic quote are low-contrast serif fonts that are hard to read at phone size, especially over the busy body image in frame 6
+**Suggestions:**
+- Add subtle motion in the hook window (slow zoom, parallax on the branch, or word-by-word caption reveal) to break the static feel and boost pacing
+- Increase contrast on the quote overlay with a semi-transparent backing bar, and switch the banner to a bolder sans-serif for instant legibility
+**Flagged dims:** pacing, scroll_stop_potential
+
