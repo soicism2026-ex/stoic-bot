@@ -1181,3 +1181,16 @@ for any recurring defects.
 - Increase overlay contrast with a darker gradient scrim behind text and ensure body captions like 'SOUL.' use the same high-contrast outline treatment so they stay readable over busy backgrounds
 **Flagged dims:** scroll_stop_potential
 
+
+## Visual QA — 2026-07-18 08:59 UTC
+**File:** `2026-07-18_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Stop rehearsing. Start living.
+**Scores:** hook_strength=7.5 | text_legibility=8.5 | pacing=5.0 | scroll_stop_potential=6.5
+**Reasoning:** Hook text 'STOP REHEARSING. START LIVING.' is punchy, action-oriented, and creates a clear contrast that sparks curiosity — earning a solid 7.5, though the purple mountain background is aesthetically pleasing but not visually arresting on its own. Text legibility is strong: bold gold caps with outline pop well against the purple gradient, though the very bright yellow on light-purple areas creates minor contrast softening (8.5). Pacing is the weak point — the first four hook frames are nearly identical with only subtle background drift, so the opening feels static rather than energetic (5.0). Scroll-stop potential is moderate: the bold typography and dramatic mountain scene are interesting enough to catch some viewers, but the muted color palette and lack of motion or facial focus mean many will keep scrolling (6.5).
+**Issues:**
+- First four hook frames are almost visually identical — no motion or transition energy in the critical opening 1.5s
+- In body frame 6, the 'MAKE THE' background text is barely visible and appears as a rendering artifact overlapping the castle imagery
+**Suggestions:**
+- Add subtle animated motion (zoom, parallax, or word-by-word reveal) to the hook text to inject energy during the opening scroll-stop window
+- Increase background darkening/vignette behind the gold text to guarantee contrast and clean up the faint overlapping body text
+
