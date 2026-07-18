@@ -3,7 +3,7 @@
 Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover → render → upload → comment reply. Runs on GitHub Actions, zero human intervention per day.
 
 **Channel:** forged.in.stoicism  
-**Posting cadence:** 6 videos/day at 02:00, 07:00, 12:00, 15:00, 17:00, 22:00 UTC (monetization push: 500 subs + 3M Shorts views/90d)  
+**Posting cadence:** 4 videos/day at 07:00, 12:00, 17:00, 22:00 UTC (subscriber-first since 2026-07-18; goal: 500 subs + 3M Shorts views/90d)  
 **Product:** The Stoic Reset journal — https://soicism.gumroad.com/l/cslosv
 
 ---
@@ -12,7 +12,7 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 
 Each run of `scripts/daily_post.py` does:
 
-1. **Guard** — reads `data/posts.csv`; skips if `posts_today >= MAX_POSTS_PER_DAY` (env, default 6)
+1. **Guard** — reads `data/posts.csv`; skips if `posts_today >= MAX_POSTS_PER_DAY` (env, default 4)
 2. **Content** — `src/content.py` calls Claude Opus 4.8 for quote, hook, voiceover script, CTA, caption, hashtags, callout words, pinned comment
 3. **Voice** — `src/tts.py` calls ElevenLabs with-timestamps endpoint; falls back to edge-tts if no key
 4. **Music** — `src/music.py` downloads a royalty-free Pixabay track to `assets/music/`
@@ -98,7 +98,7 @@ Never commit secrets. They exist only in GitHub Actions secrets.
 **Themes** (12 total, LRU, block last 3):
 `discipline`, `mortality/memento mori`, `control vs acceptance`, `ego`, `resilience`, `anger`, `desire`, `time`, `fear`, `friendship`, `duty/justice`, `adversity as training`
 
-**Format rotation** (exploration week from 2026-07-15): `["story", "pov", "rule", "challenge", "minimal", "quote"]` — six structurally different formats, one of each per day at 6 posts/day. Each has its own visual world via `REEL_BG_FLAVOR` (story=roman ruins, pov=city night rain, rule=statue spotlight, challenge=sunrise training). Format is logged per post; the report ranks them — winners take more slots next week. Style packs (daily_post `STYLE_PACKS`): pov/challenge render `caption_only` (NO quote card; big centred karaoke captions carry the words) with generated diegetic ambience (rain_night / wind_dawn) replacing the music bed; story/rule keep the classic card with an `embers` bed. The content engine emits `broll_queries` — 3 stock-video searches literally depicting the voiceover's moments — which drive all 3 background clips (`REEL_BG_FLAVOR{,1,2}`)
+**Format rotation** (subscriber-first consolidation 2026-07-18): `["rule", "quote", "minimal", "story"]` — one of each per day at 4/day, all sharing the classic visual identity. pov + challenge (caption_only style) cut early: weakest numbers and broke the channel's visual coherence (churn risk). "rule" is the exploration star (436v). Style-pack/caption_only code remains for future tests. Style packs (daily_post `STYLE_PACKS`): pov/challenge render `caption_only` (NO quote card; big centred karaoke captions carry the words) with generated diegetic ambience (rain_night / wind_dawn) replacing the music bed; story/rule keep the classic card with an `embers` bed. The content engine emits `broll_queries` — 3 stock-video searches literally depicting the voiceover's moments — which drive all 3 background clips (`REEL_BG_FLAVOR{,1,2}`)
 
 **Voice rotation**: ElevenLabs "Brian" voices the FIRST `ELEVENLABS_POSTS_PER_DAY` posts of each day (default 1 — sized for the Starter plan's 30k chars/month; live credit-balance guard refuses to overspend). All other posts use the free edge-tts pool — Andrew, BrianEdge (`en-US-BrianNeural`), Christopher — each with a per-voice rate/pitch profile plus an ffmpeg mastering chain (`_master_voice`: warmth EQ + compression) to approach paid quality. Analytics-weighted after 5 posts per voice, LRU before that. `data/posts.csv` logs the voice that ACTUALLY spoke (`tts.LAST_VOICE_NAME`). Goal: when a tuned free voice matches paid Brian on views+retention, cancel ElevenLabs.
 

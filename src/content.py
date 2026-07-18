@@ -329,11 +329,12 @@ def _pick_next_theme(rows: list, current_theme: str) -> str:
 
 def _pick_format(rows: list[dict]) -> str:
     """Rotate content format: quote → minimal → quote → list (repeating)."""
-    # EXPLORATION WEEK (from 2026-07-15): six structurally different formats,
-    # one of each per day at 6 posts/day. Format is logged per post and the
-    # report ranks them — after ~a week the winners take more slots (doctrine:
-    # test NEW, then multiply the winner until it dies). "list" stays retired.
-    ROTATION = ["story", "pov", "rule", "challenge", "minimal", "quote"]
+    # SUBSCRIBER-FIRST consolidation (2026-07-18): pov + challenge cut early —
+    # weakest of the exploration week (pov 59v/0v, challenge 34v), most
+    # off-brand (caption_only broke the channel's visual identity, a likely
+    # churn driver), and owner-flagged on execution. The four survivors share
+    # the classic look; "rule" is the exploration week's star (436v).
+    ROTATION = ["rule", "quote", "minimal", "story"]
     return ROTATION[len(rows) % len(ROTATION)]
 
 

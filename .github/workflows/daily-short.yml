@@ -2,18 +2,15 @@ name: daily-short
 
 on:
   schedule:
-    # 6 posts per day for the monetization push (500 subs + 3M views/90d),
-    # spaced to hit peak hours in all major time zones:
-    # 02:00 UTC — Asia/Pacific prime time (11am JST, 7pm PT prior day)
+    # 4 posts per day — SUBSCRIBER-FIRST cadence (2026-07-18). 6/day flooded
+    # subscriber feeds (the classic churn driver) without producing a breakout;
+    # net sub growth is the constraint now. Peak-hour slots retained:
     # 07:00 UTC — Europe morning (9am CET, 3am ET)
     # 12:00 UTC — US East morning (8am ET), Europe afternoon
-    # 15:00 UTC — US East lunch (11am ET), Europe late afternoon
     # 17:00 UTC — US afternoon (1pm ET, 10am PT), Europe evening
     # 22:00 UTC — US West evening (5pm PT), Asia/Pacific morning
-    - cron: "0 2 * * *"
     - cron: "0 7 * * *"
     - cron: "0 12 * * *"
-    - cron: "0 15 * * *"
     - cron: "0 17 * * *"
     - cron: "0 22 * * *"
   workflow_dispatch: {}
