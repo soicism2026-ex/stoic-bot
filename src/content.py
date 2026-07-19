@@ -376,7 +376,9 @@ def generate_content() -> dict:
         )
     if used_quotes:
         quoted = "\n".join(f'- "{q}"' for q in used_quotes[-80:])
-        avoid_block = (
+        # += — a previous `=` here silently ERASED the recent-hooks block above,
+        # which is why 'Rule 9' shipped four days running despite the dedup.
+        avoid_block += (
             "\n\nCRITICAL — quotes already used on this channel. You MUST NOT repeat, "
             "paraphrase, or use the core idea of ANY quote on this list:\n"
             f"{quoted}"
@@ -389,6 +391,23 @@ def generate_content() -> dict:
                 f"{author_quoted}"
             )
 
+    # Rule format: the CODE assigns the rule number — models gravitate to 7/9
+    # no matter the instructions ('Rule 9' shipped 4 days straight). Numbers
+    # cycle through a fixed shuffled order, skipping any already used.
+    rule_line = ""
+    if content_format == "rule":
+        import re as _re
+        used_ns = set()
+        for r in rows:
+            m = _re.match(r"\s*Rule\s+(\d+)", r.get("hook", "") or "")
+            if m:
+                used_ns.add(int(m.group(1)))
+        order = [7, 12, 3, 19, 24, 5, 31, 14, 21, 4, 28, 11, 17, 35, 8, 26,
+                 6, 15, 40, 22, 9, 33, 13, 18, 27, 10, 38, 16, 23, 29]
+        rule_n = next((n for n in order if n not in used_ns), order[len(rows) % len(order)])
+        rule_line = (f"\nThis rule post MUST use EXACTLY the number {rule_n}: "
+                     f"the hook starts with 'Rule {rule_n}:'. No other number.")
+
     user_msg = (
         f"Generate today's Stoic Reel.\n"
         f"FORMAT: {content_format}\n"
@@ -398,6 +417,7 @@ def generate_content() -> dict:
         f"Tomorrow's theme (for the CTA): {next_theme}\n"
         f"Pick a genuine, lesser-known passage that cuts differently from anything "
         f"on the avoid list."
+        f"{rule_line}"
         f"{avoid_block}"
     )
 
