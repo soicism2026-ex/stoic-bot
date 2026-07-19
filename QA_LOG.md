@@ -1221,3 +1221,16 @@ for any recurring defects.
 - Introduce a stronger visual change or zoom/push within the first 1.5s so the hook window feels dynamic instead of a single held frame
 - Add a semi-transparent dark scrim behind the serif quote and header in body frames to guarantee contrast on lighter backgrounds
 
+
+## Visual QA — 2026-07-19 09:12 UTC
+**File:** `2026-07-19_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Rule 9: Train it, don't just know it.
+**Scores:** hook_strength=7.0 | text_legibility=8.5 | pacing=5.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'RULE 9: TRAIN IT, DON'T JUST KNOW IT.' is clear, punchy and creates mild curiosity — the 'Rule 9' framing implies a series and taps into discipline culture, but the dark, dimly-lit hand imagery behind it is generic and low-contrast, so it won't stop every scroller (7). Text legibility is strong: the amber all-caps hook is bold and readable, and body captions ('CHANGED NOTHING', 'PRACTICE SEPARATES') use a white outlined style with good contrast (8.5), though the amber-on-dark quote in frame 5 is slightly muddy against the busy hand background. Pacing feels sluggish across the first four hook frames — they're nearly identical with only a slow zoom on the same hands, giving little visual energy in the critical opening (5.5). Scroll-stop potential is moderate: the dark cinematic look and framing brackets are stylish, but the opening lacks a striking focal image; the sunset silhouette in frame 6 is far more arresting than anything in the hook window (6).
+**Issues:**
+- Hook frames 1-4 are visually near-identical (same dark hands, slow zoom), creating a static, low-energy opening in the most critical 1.5 seconds
+- The opening hand imagery is dim and ambiguous — low contrast and unclear subject reduce scroll-stop power
+**Suggestions:**
+- Lead with the striking sunset-silhouette shot (frame 6) or another high-contrast image in the first second to grab attention before settling into the hands B-roll
+- Add a visible cut, punch-in, or motion transition within the hook window to inject pacing energy instead of one continuous slow zoom
+
