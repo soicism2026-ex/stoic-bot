@@ -1234,3 +1234,16 @@ for any recurring defects.
 - Lead with the striking sunset-silhouette shot (frame 6) or another high-contrast image in the first second to grab attention before settling into the hands B-roll
 - Add a visible cut, punch-in, or motion transition within the hook window to inject pacing energy instead of one continuous slow zoom
 
+
+## Visual QA — 2026-07-19 13:20 UTC
+**File:** `2026-07-19_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Notice who holds the leash.
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=6.5 | scroll_stop_potential=6.5
+**Reasoning:** Hook text 'Notice who holds the leash' is intriguing and metaphorical, creating curiosity that pairs well with the anger theme — earns an 8. Text legibility is strong: the bold yellow all-caps hook has good contrast and outline against the moody background, though the fainter serif quote and top day-label are lower contrast in places (8.5). Pacing shows some visual variation across the broccoli close-ups and a color/texture shift to the glitchy pink body frame, but the hook window frames are quite similar to each other, making it feel moderately static (6.5). Scroll-stop is decent — the abstract, unclear broccoli imagery in dark purple tones is atmospheric but not immediately arresting or clearly relevant, so viewers might scroll depending on mood (6.5).
+**Issues:**
+- The hook-window background imagery (blurry broccoli close-ups) is ambiguous and doesn't obviously connect to the 'leash'/anger theme, weakening visual relevance.
+- First four frames are visually near-identical, so the hook window lacks motion energy to hold attention.
+**Suggestions:**
+- Swap the abstract vegetable footage for imagery that visually reinforces the 'leash' or tension metaphor (e.g., a taut rope, clenched fist) to boost scroll-stop and thematic clarity.
+- Introduce a stronger visual change or zoom/punch-in within the first 1.5s to add pacing energy across the hook frames.
+
