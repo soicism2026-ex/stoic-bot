@@ -1247,3 +1247,17 @@ for any recurring defects.
 - Swap the abstract vegetable footage for imagery that visually reinforces the 'leash' or tension metaphor (e.g., a taut rope, clenched fist) to boost scroll-stop and thematic clarity.
 - Introduce a stronger visual change or zoom/punch-in within the first 1.5s to add pacing energy across the hook frames.
 
+
+## Visual QA — 2026-07-19 17:53 UTC
+**File:** `2026-07-19_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Want less.
+**Scores:** hook_strength=6.5 | text_legibility=7.0 | pacing=6.0 | scroll_stop_potential=5.5
+**Reasoning:** Hook 'WANT LESS.' is punchy and creates mild curiosity, but the dark, moody hand imagery is atmospheric rather than arresting — it doesn't visually pop enough to stop every scroller (6.5). The amber 'WANT LESS.' text is bold and mostly legible, and the white captions with outline are clear, but the top 'DAY 45' header is thin and low-contrast, and in the final beach frame the serif quote and author line get badly washed out against the bright water reflection (7.0). Pacing is adequate — captions progress word-by-word and the background shifts from hand to ocean, but the first four frames are nearly identical, giving a static feel during the crucial hook window (6.0). Scroll-stop potential is middling: the dark frame with a hand is intriguing but understated, and doesn't guarantee a stop in a fast feed (5.5).
+**Issues:**
+- First 4 hook frames are almost visually identical (same hand/pointing), wasting the opening 1.5s with no motion variety
+- In the final beach frame the serif Marcus Aurelius quote and author credit are washed out and nearly unreadable against the bright water reflection
+**Suggestions:**
+- Introduce a stronger visual change or zoom within the first 1.5s so the hook window feels dynamic instead of a near-frozen hand
+- Add a semi-transparent dark scrim behind the serif quote block so it stays high-contrast when the background switches to the bright ocean shot
+**Flagged dims:** scroll_stop_potential
+
