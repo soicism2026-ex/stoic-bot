@@ -366,7 +366,7 @@ def generate_content() -> dict:
                    if rows[i].get("author") == required_author]
     # Recent hooks (all formats) — prevents pattern repeats the model can't
     # otherwise know about, e.g. generating "Rule 9" two days running.
-    recent_hooks = [r.get("hook", "") for r in rows[-12:] if r.get("hook")]
+    recent_hooks = [r.get("hook", "") for r in rows[-40:] if r.get("hook")]
     avoid_block = ""
     if recent_hooks:
         hooked = "\n".join(f'- "{h}"' for h in recent_hooks)
@@ -375,7 +375,7 @@ def generate_content() -> dict:
             f"(vary rule numbers especially):\n{hooked}"
         )
     if used_quotes:
-        quoted = "\n".join(f'- "{q}"' for q in used_quotes[-80:])
+        quoted = "\n".join(f'- "{q}"' for q in used_quotes[-200:])
         # += — a previous `=` here silently ERASED the recent-hooks block above,
         # which is why 'Rule 9' shipped four days running despite the dedup.
         avoid_block += (

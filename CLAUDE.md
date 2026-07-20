@@ -3,7 +3,7 @@
 Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover → render → upload → comment reply. Runs on GitHub Actions, zero human intervention per day.
 
 **Channel:** forged.in.stoicism  
-**Posting cadence:** 4 videos/day at 07:00, 12:00, 17:00, 22:00 UTC (subscriber-first since 2026-07-18; goal: 500 subs + 3M Shorts views/90d)  
+**Posting cadence:** 1 curated video/day at 17:00 UTC (quality-first since 2026-07-20 — avoids YouTube's repetitious-content flag / protects Partner Program eligibility; goal: 500 subs + 3M Shorts views/90d)  
 **Product:** The Stoic Reset journal — https://soicism.gumroad.com/l/cslosv
 
 ---
@@ -12,12 +12,12 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 
 Each run of `scripts/daily_post.py` does:
 
-1. **Guard** — reads `data/posts.csv`; skips if `posts_today >= MAX_POSTS_PER_DAY` (env, default 4)
+1. **Guard** — reads `data/posts.csv`; skips if `posts_today >= MAX_POSTS_PER_DAY` (env, default 1)
 2. **Content** — `src/content.py` calls Claude Opus 4.8 for quote, hook, voiceover script, CTA, caption, hashtags, callout words, pinned comment
 3. **Voice** — `src/tts.py` calls ElevenLabs with-timestamps endpoint; falls back to edge-tts if no key
 4. **Music** — `src/music.py` downloads a royalty-free Pixabay track to `assets/music/`
 5. **Render** — `src/render.py` builds 1080×1920 MP4 via ffmpeg (3 background clips, hook text, quote text, music mixed at 7% volume)
-6. **QA** — `scripts/qa_check.py` checks for frozen frames, audio desync, unreadable text; up to 3 render attempts with auto-corrections
+6. **QA** — `scripts/qa_check.py` checks for frozen frames, audio desync, unreadable text; up to 5 render attempts with auto-corrections
 7. **Upload** — `src/publish.py` posts to YouTube as a Short with optimised title/tags/description
 8. **Thumbnail** — `render.py:generate_thumbnail()` generates 1080×1920 JPEG (big hook text, dark cinematic grade, gold accent), uploaded via YouTube API
 9. **Comments** — pinned engagement question + promo CTA posted as comments
@@ -59,7 +59,7 @@ After the main post loop, the workflow runs:
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| `daily-short.yml` | cron 4×/day | Main pipeline: post → analytics → prune → reply |
+| `daily-short.yml` | cron 1×/day | Main pipeline: post → analytics → prune → reply |
 | `pull-analytics.yml` | cron daily | Analytics-only pull |
 | `refresh-assets.yml` | manual | Pre-download background clips to `data/hook_preset` |
 | `rethumbnail.yml` | manual | Backfill thumbnails for old videos |

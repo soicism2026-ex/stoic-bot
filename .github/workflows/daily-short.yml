@@ -2,17 +2,13 @@ name: daily-short
 
 on:
   schedule:
-    # 4 posts per day — SUBSCRIBER-FIRST cadence (2026-07-18). 6/day flooded
-    # subscriber feeds (the classic churn driver) without producing a breakout;
-    # net sub growth is the constraint now. Peak-hour slots retained:
-    # 07:00 UTC — Europe morning (9am CET, 3am ET)
-    # 12:00 UTC — US East morning (8am ET), Europe afternoon
-    # 17:00 UTC — US afternoon (1pm ET, 10am PT), Europe evening
-    # 22:00 UTC — US West evening (5pm PT), Asia/Pacific morning
-    - cron: "0 7 * * *"
-    - cron: "0 12 * * *"
+    # ONE curated video per day (2026-07-20). Quality-over-quantity: 4x/day
+    # mass-produced near-identical templates risk YouTube's "repetitious /
+    # reused content" policy, which blocks Partner Program approval even while
+    # views grow. A single higher-effort, format-varied video/day is the safer
+    # path to monetization eligibility. Slot = 17:00 UTC (1pm ET / 10am PT /
+    # 6pm CET) — the strongest global overlap.
     - cron: "0 17 * * *"
-    - cron: "0 22 * * *"
   workflow_dispatch: {}
 
 permissions:
