@@ -1288,3 +1288,17 @@ for any recurring defects.
 - Apply a stronger dark gradient/scrim behind quote text on the forest background so the white serif font stays readable
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-07-20 14:10 UTC
+**File:** `2026-07-20_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Count them honestly.
+**Scores:** hook_strength=6.0 | text_legibility=7.5 | pacing=4.0 | scroll_stop_potential=5.5
+**Reasoning:** Hook text 'Count them honestly.' creates mild curiosity — it teases a question (count what?) but is ambiguous on its own since the subject (friends) isn't revealed until the body, weakening immediate intrigue (6.0). The yellow bold text is high-contrast and readable against the purple-toned image, though the thin serif header 'DAY 46...' is small and the body quote text overlaps a busy background reducing punch (7.5). Pacing is weak — the first four hook frames are nearly identical with no visual movement or transition, so the opening feels static (4.0). Scroll-stop is moderate: the moody purple-graded desk/journaling scene is aesthetically decent but not arresting, and the hook doesn't fully clarify the payoff at a glance (5.5).
+**Issues:**
+- Hook window (frames 1-4) is essentially a frozen image — no visible motion or transition to create energy in the critical first 1.5s
+- Hook 'Count them honestly' lacks context; viewer can't tell what to count, reducing immediate curiosity payoff
+**Suggestions:**
+- Add subtle motion (slow zoom, parallax, or a quick cut) across the hook frames to break the static feel and improve retention in the first 1.5s
+- Tie the hook more explicitly to the theme, e.g. 'Count your real friends — honestly.' so scrollers instantly grasp the stakes
+**Flagged dims:** pacing, scroll_stop_potential
+
