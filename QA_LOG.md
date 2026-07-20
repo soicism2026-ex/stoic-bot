@@ -1316,3 +1316,16 @@ for any recurring defects.
 - Strengthen the opening hook with a more curiosity-driving lead-in line (e.g. 'You've been doing this wrong for 46 days') before revealing 'Just this.' to boost scroll-stop rate
 **Flagged dims:** hook_strength, scroll_stop_potential
 
+
+## Visual QA — 2026-07-20 23:12 UTC
+**File:** `2026-07-20_reel.mp4` | **Verdict:** `PASS`
+**Hook:** He ruled Rome from a war tent
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=5.5 | scroll_stop_potential=7.5
+**Reasoning:** hook_strength: 'HE RULED ROME FROM A WAR TENT' is a strong, curiosity-driving statement pairing power with hardship, and the moody purple/ember backdrop reinforces it well — though the visual is atmospheric rather than a face or motion that stops every scroller. text_legibility: The yellow bold outlined caption is crisp and high-contrast against the dark backdrop and instantly readable; the body quote in serif is legible but slightly lower weight/contrast, a minor issue. pacing: The first four hook frames are visually near-identical — no motion, transition or reveal — which feels static during the critical opening; the body frames show some change (glowing background shifts to water texture, caption swaps). scroll_stop_potential: The bold headline and glowing crimson foliage are visually interesting enough that many would pause, but the absence of a human subject or dynamic movement keeps it from a definite stop.
+**Issues:**
+- Hook window (frames 1-4) is visually static — the same image and text hold with no animation or reveal, wasting the crucial first 1.5 seconds.
+- Body serif quote has lower contrast/weight than the yellow captions, making it slightly harder to read at phone size against the busy background.
+**Suggestions:**
+- Add subtle motion to the hook — a slow push-in, animated ember particles, or a word-by-word text reveal — to create dynamism in the opening frames.
+- Increase the quote text weight or add a subtle dark scrim/shadow behind it so the serif attribution and quote pop as strongly as the caption overlays.
+
