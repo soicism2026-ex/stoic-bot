@@ -167,6 +167,58 @@ def _fetch_top_comments(yt, video_id: str, replied_ids: set,
 # Claude reply generation
 # ---------------------------------------------------------------------------
 
+_DISMISSIVE_SIGNALS = [
+    "ai slop", "ai generated", "ai voice", "chatgpt", "bot channel", "grifter",
+    "grift", "scam", "cringe", "stupid", "trash", "garbage", "boring", "mid",
+    "fake deep", "pseudo", "nonsense", "who cares", "cope", "brainrot",
+    "stolen", "ripoff", "rip off", "L take", "ratio", "yap", "midwit",
+]
+
+
+def _is_dismissive(text: str) -> bool:
+    """Cheap prefilter: obvious mockery/hostility, skipped without a model call."""
+    low = text.lower()
+    return any(sig in low for sig in _DISMISSIVE_SIGNALS)
+
+
+def _is_receptive(comment_text: str) -> bool:
+    """Reply only to viewers who actually connect with the message — builds a
+    real community and avoids amplifying detractors (engaging a hostile comment
+    boosts it and tells the algorithm to find more people like them).
+
+    True for: sincere agreement, sharing their own struggle/experience, genuine
+    questions, gratitude, thoughtful reflection. False for: mockery, trolling,
+    bad-faith argument, dismissal, or anything hollow. Fails CLOSED (skip) so a
+    classifier hiccup never engages a troll.
+    """
+    if _is_dismissive(comment_text):
+        return False
+    try:
+        import anthropic
+        client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+        msg = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=5,
+            system=(
+                "You screen YouTube comments for a Stoic philosophy channel. Reply "
+                "ONLY to viewers who genuinely connect with the message. Answer with "
+                "one word:\n"
+                "ENGAGE — sincere agreement, someone sharing their own struggle or "
+                "experience, a genuine question, gratitude, or thoughtful reflection "
+                "that shows they take the ideas seriously.\n"
+                "SKIP — mockery, trolling, sarcasm, bad-faith argument, dismissal, "
+                "hostility, insults, or hollow one-word noise.\n"
+                "When unsure, answer SKIP."
+            ),
+            messages=[{"role": "user", "content": f'Comment: "{comment_text}"'}],
+        )
+        verdict = msg.content[0].text.strip().upper()
+        return verdict.startswith("ENGAGE")
+    except Exception as e:
+        print(f"  [comments] receptivity check failed ({e}) — skipping to be safe")
+        return False
+
+
 def _generate_reply(comment_text: str, video_title: str) -> str:
     """Ask Claude to write a short, on-brand Stoic reply."""
     import anthropic
@@ -244,9 +296,12 @@ def main():
             title_map = {}
         candidates = [(item, vid, title_map.get(vid, "Stoic wisdom")) for item, vid, _ in candidates]
 
-    # Sort all candidates globally by score, take top N
+    # Sort all candidates globally by score. Keep a wider pool than
+    # MAX_REPLIES_PER_RUN because the receptivity screen (below) will skip
+    # non-believers, and we still want to reach the reply quota with the
+    # genuine ones.
     candidates.sort(key=lambda x: _score_comment(x[0]), reverse=True)
-    candidates = candidates[:MAX_REPLIES_PER_RUN]
+    candidates = candidates[:max(MAX_REPLIES_PER_RUN * 6, 30)]
 
     if not candidates:
         print("  No suitable comments found this run.")
@@ -254,6 +309,8 @@ def main():
 
     replied = 0
     for item, video_id, video_title in candidates:
+        if replied >= MAX_REPLIES_PER_RUN:
+            break
         comment_id  = item["snippet"]["topLevelComment"]["id"]
         comment_txt = item["snippet"]["topLevelComment"]["snippet"]["textDisplay"].strip()
         author      = item["snippet"]["topLevelComment"]["snippet"].get("authorDisplayName", "viewer")
@@ -261,6 +318,11 @@ def main():
 
         print(f"\n  Comment ({likes} likes) by {author}:")
         print(f"    \"{comment_txt[:120]}{'...' if len(comment_txt) > 120 else ''}\"")
+
+        # Only engage viewers who genuinely connect with the message.
+        if not _is_receptive(comment_txt):
+            print("  [screen] not receptive to the message — skipping (no reply)")
+            continue
 
         try:
             reply = _generate_reply(comment_txt, video_title)

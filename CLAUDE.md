@@ -47,7 +47,7 @@ After the main post loop, the workflow runs:
 | `src/publish_instagram.py` | Cross-posts to Instagram Reels via Meta Graph API. Requires `IG_ACCESS_TOKEN` + `IG_USER_ID`. Currently skipped (Meta dev account pending). |
 | `scripts/daily_post.py` | Main orchestrator. Self-healing retry loop. Backup bank logic. |
 | `scripts/qa_check.py` | Video QA: frozen frames, audio desync, contrast, safe-zone clipping. Returns pass/fail + severity. |
-| `scripts/reply_to_comments.py` | Auto-replies to best viewer comments. Filters own channel by `videoOwnerChannelId == authorChannelId` (channel ID comparison, not display name). Max 5 replies/run. |
+| `scripts/reply_to_comments.py` | Auto-replies to best viewer comments. Filters own channel by `videoOwnerChannelId == authorChannelId` (channel ID comparison, not display name). Max 5 replies/run. Receptivity screen (`_is_receptive`, Haiku + `_is_dismissive` keyword prefilter) engages ONLY viewers who genuinely connect with the message — skips trolls/mockery/bad-faith to build community and avoid amplifying detractors; fails closed. |
 | `scripts/rethumbnail.py` | One-off: re-generates and uploads thumbnails for all past videos. `--only-missing` skips videos that already have a `maxres` thumbnail. |
 | `scripts/improve_loop.py` | The brain of the continuous improvement loop. Joins posts.csv + analytics.csv, evaluates last run's outcome, picks next focus area, writes a data-grounded prompt to `data/improve_prompt.txt`, and saves run memory to `data/improve_state.json`. |
 | `scripts/prune_videos.py` | Unlists underperforming videos. |
