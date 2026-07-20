@@ -94,6 +94,22 @@ cool again." (vary the wording naturally each day).
 flash large on screen when spoken. Concrete only — "phone", "anger", "body", not \
 "virtue" or "wisdom".
 
+EMOTIONAL CORE (applies to EVERY format — this is what turns a quote card into a \
+moment someone remembers):
+- Write to ONE real person having a hard night, as a friend who has stood in \
+that exact spot — never a teacher lecturing from above. Warmth outranks \
+authority every time.
+- Name the actual FEELING, physically and specifically: the 2am ceiling stare, \
+the tight chest before you hit send, the hollow after you snapped at someone \
+you love, the Sunday-night dread. Feelings you can point to — not concepts.
+- Earn the comfort. Admit it is genuinely hard BEFORE the Stoic turn. No toxic \
+positivity, no "just stop caring." Sit in the ache for one honest beat first.
+- Speak with quiet conviction — you truly believe this 2,000-year-old line can \
+hold someone together tonight. That belief IS the emotion the viewer feels.
+- Land on being SEEN, not being taught. The best last line makes one person \
+think "how did they know." Leave them with hope, tenderness, or hard-won calm \
+— never a shrug, never a scold.
+
 FORMAT "quote" rules:
 - quote: a real attested passage, punchy, under 12 words. Lightly modernized phrasing \
 is fine but preserve the author's actual meaning. Favor lesser-known genuine passages \
@@ -164,6 +180,22 @@ and lamed; Zeno shipwrecked, losing his fortune before founding the Stoa; \
 Musonius exiled twice). If you are not certain of a detail, keep the scene \
 vague rather than invent. Never dramatise beyond the sources.
 
+FORMAT "letter" rules:
+The most personal format — an intimate, direct message to the viewer, like a \
+letter from someone who loves them and refuses to lie to them. Pure connection.
+- hook: 3-6 words, spoken leaning in close, like the first line of a letter. \
+RIGHT: "If today felt heavy—" / "Read this if you're tired." / "You don't have \
+to earn rest." / "Still awake? Then this is for you." \
+WRONG: anything that sounds like a headline, a rule, or advice.
+- voiceover_text: 40-55 words, second person, warm and unhurried. Open by \
+naming exactly where they are TONIGHT — specific, tender, true (the unanswered \
+text, the pretending-you're-fine, the exhaustion nobody sees). Admit it's hard. \
+Then hand them the Stoic truth not as a rule but as something you'd say with a \
+hand on their shoulder. Close on ONE line of quiet hope that loops back to the \
+hook. First person "I"/"we" is welcome here — shared struggle, never lecture.
+- quote: the genuine passage the letter is built around, under 14 words, woven \
+in as the heart of the message (still correctly attributed to the author).
+
 FORMAT "pov" rules:
 Drop the viewer INTO a hyper-specific modern moment, second person, present \
 tense — then answer it with the ancient line. The recognition shock is the hook.
@@ -223,7 +255,7 @@ Total 15-20 seconds / 35-50 words. No filler, no warm-up.
 
 Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
 {
-  "format": "story" | "pov" | "rule" | "challenge" | "minimal" | "quote" | "list",
+  "format": "story" | "letter" | "pov" | "rule" | "challenge" | "minimal" | "quote" | "list",
   "theme": "...",
   "quote": "...",
   "author": "<the exact author name you were assigned>",
@@ -334,7 +366,10 @@ def _pick_format(rows: list[dict]) -> str:
     # off-brand (caption_only broke the channel's visual identity, a likely
     # churn driver), and owner-flagged on execution. The four survivors share
     # the classic look; "rule" is the exploration week's star (436v).
-    ROTATION = ["rule", "quote", "minimal", "story"]
+    # Emotional-connection era (2026-07-20): 5-format rotation adds "letter" —
+    # the intimate direct-message format — for day-to-day variety AND depth. All
+    # keep the classic look. EMOTIONAL CORE in SYSTEM raises every format's warmth.
+    ROTATION = ["rule", "letter", "quote", "minimal", "story"]
     return ROTATION[len(rows) % len(ROTATION)]
 
 
