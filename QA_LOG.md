@@ -1302,3 +1302,17 @@ for any recurring defects.
 - Tie the hook more explicitly to the theme, e.g. 'Count your real friends — honestly.' so scrollers instantly grasp the stakes
 **Flagged dims:** pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-07-20 18:52 UTC
+**File:** `2026-07-20_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Just this.
+**Scores:** hook_strength=5.5 | text_legibility=7.5 | pacing=6.0 | scroll_stop_potential=5.0
+**Reasoning:** hook_strength: 'Just this.' is intriguing and minimalist but ambiguous on its own — it hints at curiosity without a strong promise, so it won't stop every scroller (5.5). text_legibility: The yellow 'JUST THIS.' and white caption text are bold and high-contrast against the dark forest, but the top banner 'DAY 46 · UNTIL DISCIPLINE IS COOL AGAIN' is small, thin, and low-contrast, and the serif quote in frame 6 sits partly over a bright white area reducing readability (7.5). pacing: The silhouette figure gradually emerges across frames, adding subtle movement, and body text builds progressively, but the moody dark aesthetic feels slow and contemplative rather than energetic (6.0). scroll_stop_potential: The dramatic sunset-sky-with-silhouette is atmospheric and on-brand for Stoicism, but it's a fairly common vertical aesthetic that a viewer might swipe past unless already in a reflective mood (5.0).
+**Issues:**
+- Top banner text is thin and low-contrast against the busy cloudy sky, making it hard to read at phone size
+- Body-frame serif quote overlaps a bright white background zone (frame 6), reducing contrast on the lower text
+**Suggestions:**
+- Add a subtle dark gradient or text shadow behind the top banner and quote so text stays legible over both bright and dark background areas
+- Strengthen the opening hook with a more curiosity-driving lead-in line (e.g. 'You've been doing this wrong for 46 days') before revealing 'Just this.' to boost scroll-stop rate
+**Flagged dims:** hook_strength, scroll_stop_potential
+
