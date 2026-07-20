@@ -1274,3 +1274,17 @@ for any recurring defects.
 - Add a subtle zoom, camera push, or animated text reveal across the hook frames to create momentum in the first 1.5s
 - Introduce a punchier visual beat or cut on the storm/shipwreck moment to lift pacing and raise scroll-stop power
 
+
+## Visual QA — 2026-07-20 10:20 UTC
+**File:** `2026-07-20_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rule 7: Fear only what is present.
+**Scores:** hook_strength=7.0 | text_legibility=7.5 | pacing=4.0 | scroll_stop_potential=6.0
+**Reasoning:** hook_strength: 'Rule 7: Fear only what is present' is a clear, curiosity-generating command implying a series (Rule 7 hints at more), scoring solid but not maximal because the numbered-rule format is common in this niche. text_legibility: The bold yellow hook text is high-contrast and crisp against the dark warm scene, but the body quote in frame 6 (forest) suffers from poor contrast where white serif text overlaps bright green foliage, dragging the score down. pacing: The first four hook frames are nearly identical with barely perceptible motion — the video feels static in the critical opening, and the only real visual change comes when switching backgrounds in the body. scroll_stop_potential: The moody candlelit bedroom with a person on a phone at 2am is atmospheric and relevant, but the dark palette is easy to scroll past compared to a brighter or more dramatic opening frame.
+**Issues:**
+- Hook frames 1-4 are almost visually identical, creating a static, low-energy opening during the crucial 1.5s window
+- Body quote text in the forest frame (6) loses contrast against bright green foliage and sunlight, reducing legibility
+**Suggestions:**
+- Add subtle motion or a punch-in zoom across the hook frames, or reveal the hook text word-by-word to inject energy in the first 1.5 seconds
+- Apply a stronger dark gradient/scrim behind quote text on the forest background so the white serif font stays readable
+**Flagged dims:** pacing
+
