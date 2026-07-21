@@ -1329,3 +1329,17 @@ for any recurring defects.
 - Add subtle motion to the hook — a slow push-in, animated ember particles, or a word-by-word text reveal — to create dynamism in the opening frames.
 - Increase the quote text weight or add a subtle dark scrim/shadow behind it so the serif attribution and quote pop as strongly as the caption overlays.
 
+
+## Visual QA — 2026-07-21 18:14 UTC
+**File:** `2026-07-21_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** This one breath.
+**Scores:** hook_strength=6.0 | text_legibility=7.5 | pacing=5.5 | scroll_stop_potential=5.5
+**Reasoning:** Hook text 'THIS ONE BREATH.' is intriguing and ties well to the mortality theme, but it's slightly cryptic without immediate payoff and relies on the golden-hour beach visual which, while pretty, is a common Stoic-content backdrop that won't stop every scroller (hook_strength 6). The bold amber caption has a subtle dark outline and reads clearly, though the top banner 'DAY 47 · UNTIL DISCIPLINE IS COOL AGAIN' is thin, low-contrast, and nearly illegible against the bright water in several frames (text_legibility 7.5). Across the four hook frames the background is essentially the same wave shot with minimal movement, so visual rhythm feels static despite the caption progression (pacing 5.5). The scenery is aesthetically warm but generic to the niche, giving moderate scroll-stop appeal — the body frame's scene change to the misty forest adds welcome variety (scroll_stop_potential 5.5).
+**Issues:**
+- Top banner text is thin serif and low-contrast, especially over bright reflected water — barely readable at phone size.
+- Hook window uses near-identical wave footage across all 4 frames, creating a static, low-energy opening.
+**Suggestions:**
+- Introduce a visual cut or zoom within the first 1.5s (e.g. switch to a contrasting darker frame) to inject motion and stop the scroll.
+- Increase weight/contrast of the 'DAY 47' banner or add a semi-transparent backing bar so it's legible against bright backgrounds.
+**Flagged dims:** scroll_stop_potential
+
