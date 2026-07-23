@@ -1356,3 +1356,16 @@ for any recurring defects.
 - Introduce a subtle push-in zoom or the silhouetted figure walking earlier to add motion in the hook window
 - Add a darker drop-shadow or semi-transparent backing bar behind the header and quote text to boost legibility
 
+
+## Visual QA — 2026-07-23 18:13 UTC
+**File:** `2026-07-23_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Rule 7: Choose the hard thing first.
+**Scores:** hook_strength=7.5 | text_legibility=8.5 | pacing=5.0 | scroll_stop_potential=7.0
+**Reasoning:** Hook strength is solid at 7.5: the silhouetted man walking into a golden sunset is a genuinely cinematic, emotionally resonant frame, and 'Rule 7: Choose the hard thing first' creates mild curiosity (what are rules 1-6? what does this mean?), though the numbered-rule format is somewhat generic in the Stoicism niche. Text legibility is strong at 8.5: the yellow bold sans-serif with dark outline reads instantly against the sunset, and the body captions ('THROUGH', 'THING TODAY') are crisp white with outline; minor deduction because the thin serif quote and small top banner are slightly harder to read at speed. Pacing scores 5.0 because frames 1-4 are nearly identical — the hook holds one static image for the full 1.5s with no zoom, cut, or motion, which feels static; the body does introduce a background shift. Scroll-stop potential is 7.0: the atmospheric sunset silhouette is visually pleasing and stops mood-driven scrollers, but it lacks a pattern-interrupt or motion that would stop everyone.
+**Issues:**
+- Hook window (frames 1-4) is visually static — the identical image held for 1.5s reduces perceived energy and pacing
+- Numbered-rule hook ('Rule 7') is a saturated format in the discipline/Stoicism niche and lacks a specific curiosity gap
+**Suggestions:**
+- Add subtle motion during the hook — a slow push-in zoom or parallax on the silhouette — to create movement in the first 1.5s
+- Sharpen the hook copy with a stakes-driven line like 'Do this before it chooses you' or a bold question to widen the curiosity gap beyond the generic rule number
+
