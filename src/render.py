@@ -112,6 +112,11 @@ GLOW_SIGMA   = float(os.environ.get("REEL_GLOW_SIGMA", "22"))
 GLOW_BRIGHT  = float(os.environ.get("REEL_GLOW_BRIGHT", "0.05"))
 GLOW_OPACITY = float(os.environ.get("REEL_GLOW_OPACITY", "0.45"))
 
+# Cinematic mode — teal-orange grade + warm halation + deeper vignette for a
+# feature-film register. On by default; REEL_CINEMATIC=0 reverts to the plain
+# grade.
+CINEMATIC_ON = os.environ.get("REEL_CINEMATIC", "1") not in ("0", "false", "False")
+
 # Encode quality — "all-in": slow preset + low CRF for a near-master 1080p Short.
 X264_PRESET = os.environ.get("REEL_X264_PRESET", "slower")
 X264_CRF    = os.environ.get("REEL_CRF", "16")
@@ -643,11 +648,20 @@ def _enhance_graph(src_label: str, out_label: str) -> str:
     why enhancement lives in filter_complex rather than a simple -vf chain.
     """
     grain = f",noise=alls={ENH_GRAIN}:allf=t" if ENH_GRAIN > 0 else ""
+    # Cinematic mode warms the glow into HALATION (highlights bleed amber, like
+    # light blooming on film emulsion) and deepens the vignette for a darker,
+    # more theatrical frame.
+    if CINEMATIC_ON:
+        glow_tint = ",colorbalance=rh=0.20:gh=0.06:bh=-0.16"
+        vig = "vignette=PI/5.2"
+    else:
+        glow_tint = ""
+        vig = "vignette=PI/4.5"
     return (
         f"[{src_label}]split[base][glowsrc];"
-        f"[glowsrc]gblur=sigma={GLOW_SIGMA},eq=brightness={GLOW_BRIGHT}[glow];"
+        f"[glowsrc]gblur=sigma={GLOW_SIGMA},eq=brightness={GLOW_BRIGHT}{glow_tint}[glow];"
         f"[base][glow]blend=all_mode=screen:all_opacity={GLOW_OPACITY}"
-        f"{grain},vignette=PI/4.5[{out_label}]"
+        f"{grain},{vig}[{out_label}]"
     )
 
 
@@ -763,6 +777,18 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     pre_parts.append(
         f"eq=brightness={br - EXTRA_DARKEN}:saturation={sat}:contrast={con}"
     )
+    # ---- CINEMATIC grade (Nolan/Hoytema register): teal-cooled shadows, warm
+    # amber highlights (the Hollywood teal-orange), a filmic S-curve that crushes
+    # blacks and rolls off highlights, and a whisper of desaturation so the
+    # colour that remains reads as deliberate. Toggle REEL_CINEMATIC=0.
+    if CINEMATIC_ON:
+        pre_parts += [
+            "colorbalance=rs=-0.08:gs=-0.02:bs=0.10:rm=0.03:bm=-0.03:"
+            "rh=0.09:gh=0.03:bh=-0.08",
+            "curves=r='0/0 0.22/0.13 0.5/0.5 0.78/0.85 1/1':"
+            "g='0/0 0.5/0.49 1/1':b='0/0.02 0.5/0.48 1/0.97'",
+            "eq=saturation=0.92:contrast=1.06:gamma=0.97",
+        ]
     # Experimental colour-world variants (set by src/experiments.py per post,
     # logged to posts.csv, compared in channel_report). Env: REEL_GRADE_VARIANT.
     _grade_variant = os.environ.get("REEL_GRADE_VARIANT", "").strip()

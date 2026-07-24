@@ -130,6 +130,22 @@ _MUSIC_SYNTH = {
         "[a0][a1][a2][a3][air]amix=inputs=5:duration=longest,"
         "aecho=0.8:0.9:200|360:0.35|0.25,volume=2.2,alimiter=limit=0.9"
     ),
+    # CINEMATIC SCORE — a dark, deep, building film bed (Zimmer register): a
+    # sub-bass foundation (E1/E2) + a slowly beating minor drone for unease + a
+    # bare fifth for scale + a filtered-noise "air", swelled slowly and thrown
+    # into a big reverb. Sits under the voice like a feature-film underscore.
+    "cinematic_score": (
+        "sine=frequency=41:duration={d},volume=0.95[sub];"
+        "sine=frequency=82:duration={d},volume=0.5[m1];"
+        "sine=frequency=82.7:duration={d},volume=0.42[m2];"
+        "sine=frequency=98:duration={d},volume=0.3[minor];"
+        "sine=frequency=123:duration={d},volume=0.2[fifth];"
+        "sine=frequency=164:duration={d},volume=0.1[oct];"
+        "anoisesrc=d={d}:c=pink,lowpass=f=340,volume=0.06[air];"
+        "[sub][m1][m2][minor][fifth][oct][air]amix=inputs=7:duration=longest,"
+        "tremolo=f=0.1:d=0.4,aecho=0.85:0.9:260|430:0.35|0.25,"
+        "volume=2.7,alimiter=limit=0.92"
+    ),
     # soft pad with a gentle pulse: low pad + fifth + high pad, slow tremolo
     "focus_underscore": (
         "sine=frequency=65:duration={d},volume=0.7[a0];"

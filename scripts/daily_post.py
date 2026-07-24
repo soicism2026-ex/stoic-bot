@@ -391,9 +391,8 @@ def main():
     STYLE_PACKS = {
         "pov":       {"REEL_STYLE": "caption_only", "_ambience": "rain_night"},
         "challenge": {"REEL_STYLE": "caption_only", "_ambience": "wind_dawn"},
-        "story":     {"_ambience": "embers"},
-        "rule":      {"_ambience": "embers"},
     }
+    cinematic = os.environ.get("REEL_CINEMATIC", "1") not in ("0", "false", "False")
     # Per-format visual world — fallback when the content engine's
     # scene-matched broll_queries are missing.
     FORMAT_BG_FLAVOR = {
@@ -422,9 +421,20 @@ def main():
         if amb_path:
             music_path = amb_path
             music_track = {"name": f"amb_{ambience}"}
+    elif cinematic:
+        # CINEMATIC bed + the "BRAAAM" orchestral-swell intro on every classic
+        # post — the single biggest lever on the feature-film feel.
+        score = music_mod.fetch_music({"name": "cinematic_score"},
+                                      ROOT / "data" / f"{today}_score.mp3")
+        if score:
+            music_path = score
+            music_track = {"name": "cinematic_score"}
+        pack.setdefault("REEL_HOOK_SOUND", "1")
+        pack.setdefault("REEL_HOOK_SOUND_PRESET", "cinematic")
 
     exp_env = {**exp_env, **pack}
     print(f"  style: {fmt or 'classic'} -> {pack.get('REEL_STYLE','classic')}"
+          f"{' + cinematic score+braam' if cinematic and not ambience else ''}"
           f"{' + ' + ambience if ambience else ''}"
           f"{' + scene-matched b-roll' if broll else ''}")
 

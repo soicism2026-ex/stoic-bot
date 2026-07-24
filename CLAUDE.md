@@ -113,7 +113,7 @@ Never commit secrets. They exist only in GitHub Actions secrets.
 [full     ] Background music at 7% volume under voiceover
 ```
 
-Background grade: unsharp sharpen → bloom → film grain → vignette → eq darken → per-clip colour LUT.
+Background grade: unsharp sharpen → bloom → film grain → vignette → eq darken → per-clip colour LUT. CINEMATIC mode (`REEL_CINEMATIC`, default on): teal-orange colour balance (cool shadows, warm highlights) + filmic S-curve + warm HALATION on the bloom + deeper vignette; a generative `cinematic_score` bed (deep sub-bass Zimmer-register drone) replaces the ambient bed and every classic post opens with the `cinematic` BRAAAM hook sound.
 
 Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB830), layered dark gradient overlay, thin gold separator line, author credit below, gold corner brackets.
 
