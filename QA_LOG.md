@@ -1369,3 +1369,16 @@ for any recurring defects.
 - Add subtle motion during the hook — a slow push-in zoom or parallax on the silhouette — to create movement in the first 1.5s
 - Sharpen the hook copy with a stakes-driven line like 'Do this before it chooses you' or a bold question to widen the curiosity gap beyond the generic rule number
 
+
+## Visual QA — 2026-07-24 18:24 UTC
+**File:** `2026-07-24_reel.mp4` | **Verdict:** `PASS`
+**Hook:** If someone got under your skin today—
+**Scores:** hook_strength=7.5 | text_legibility=8.0 | pacing=5.0 | scroll_stop_potential=7.0
+**Reasoning:** The hook text 'IF SOMEONE GOT UNDER YOUR SKIN TODAY—' is relatable and creates a curiosity gap, opening a personal loop that most scrollers will recognize (7.5). The bold yellow hook font with dark outline is crisp and high-contrast against the moody purple statue backdrop, though the tiny serif banner 'DAY 50 · UNTIL DISCIPLINE IS COOL AGAIN' is nearly illegible and the body quote's thin serif over busy imagery drops readability slightly (8.0). Pacing is weak in the hook window — frames 1-4 are essentially the same static shot with only a subtle zoom, so there's little visual rhythm across the opening 1.5s (5.0). Scroll-stop is solid thanks to the atmospheric weeping-statue visual and the arresting purple grade, plus the emotional hook line, but the frozen composition limits stopping power (7.0).
+**Issues:**
+- First 4 hook frames are nearly identical (static statue), giving no visual movement in the critical opening window
+- The 'DAY 50 · UNTIL DISCIPLINE IS COOL AGAIN' banner is too small and low-contrast to be readable
+**Suggestions:**
+- Introduce a punchier motion or cut within the hook — a faster zoom, glitch, or subject change by frame 3 to break the static feel
+- Increase the body quote font weight or add a stronger backing panel/shadow so the serif text stays legible over the deer and statue backgrounds
+
