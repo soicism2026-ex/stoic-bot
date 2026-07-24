@@ -74,14 +74,15 @@ author's, choose a different real passage rather than guessing.
 - CTA: 1-2 spoken sentences at the very end. Last line loops back to the opening \
 feeling (creates rewatch loops). Reference the next day's theme naturally. Under 25 \
 words. Vary the phrasing.
-- broll_queries: THREE stock-video search queries (4-7 words each), one per \
-third of the video, each literally depicting what the voiceover is SAYING at \
-that point — the viewer should feel the footage was shot for these exact \
-words. Concrete, human, filmable. \
+- broll_queries: FOUR stock-video search queries (4-7 words each), in narration \
+order — one for each successive beat of the voiceover, each literally depicting \
+what is being SAID at that moment so the footage cuts in sync with the words in \
+real time. Concrete, human, filmable, cinematic. \
 RIGHT: "man staring at phone dark room" / "rain window city night lonely" / \
-"person walking away sunrise street". \
+"hand clenching into fist slow motion" / "person walking away sunrise street". \
 WRONG: "stoicism" / "discipline concept" / anything abstract a stock site \
-can't match.
+can't match. (A recurring marble-statue "guide" shot is added automatically to \
+open and close the video — do NOT include statues here; depict the SCENES.)
 - Pinned comment: short, personal, slightly uncomfortable question that forces a \
 specific answer tied to today's content. NOT "what do you think?" Ask something that \
 requires naming a specific person, habit, or moment. Under 20 words. Then, on a new \

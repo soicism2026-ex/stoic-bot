@@ -404,14 +404,25 @@ def main():
     fmt = content.get("format", "")
     pack = dict(STYLE_PACKS.get(fmt, {}))
 
-    # Scene-matched b-roll: one query per third of the video, straight from
-    # the script — the footage matches what the voiceover is saying.
+    # ---- Recurring guide character + real-time scene-matched b-roll ---------
+    # A stoic marble statue OPENS and CLOSES every short — the channel's
+    # recurring "guide" (same subject daily so it's recognizable, varied framing
+    # so it never reads as a literal repeat). Between the bookends, one
+    # scene-matched clip per beat of the voiceover, so the visuals track the
+    # words in real time. 6 clips over ~18-20s ≈ a cut every ~3s.
+    STATUE_GUIDE = [
+        "marble bust ancient philosopher dramatic chiaroscuro slow",
+        "stone statue stoic philosopher dark shadow cinematic",
+        "ancient greek marble head sculpture moody candlelight slow",
+        "weathered marble bust wise man low-key lighting slow zoom",
+    ]
+    guide = STATUE_GUIDE[(day if isinstance(day, int) else 0) % len(STATUE_GUIDE)]
     broll = [q.strip() for q in (content.get("broll_queries") or []) if q and q.strip()]
-    if broll:
-        for i, q in enumerate(broll[:3]):
-            pack[f"REEL_BG_FLAVOR{i if i else ''}"] = q
-    elif FORMAT_BG_FLAVOR.get(fmt):
-        pack["REEL_BG_FLAVOR"] = FORMAT_BG_FLAVOR[fmt]
+    scene = broll[:4] or ([FORMAT_BG_FLAVOR[fmt]] if FORMAT_BG_FLAVOR.get(fmt) else [])
+    flavors = ([guide] + scene + [guide]) if scene else [guide, guide]
+    pack["REEL_BG_CLIPS"] = str(len(flavors))
+    for i, q in enumerate(flavors):
+        pack[f"REEL_BG_FLAVOR{i if i else ''}"] = q
 
     # Diegetic ambience replaces the music bed for this style (falls back to
     # the normal generative music if synthesis ever fails).
