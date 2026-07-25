@@ -1382,3 +1382,16 @@ for any recurring defects.
 - Introduce a punchier motion or cut within the hook — a faster zoom, glitch, or subject change by frame 3 to break the static feel
 - Increase the body quote font weight or add a stronger backing panel/shadow so the serif text stays legible over the deer and statue backgrounds
 
+
+## Visual QA — 2026-07-25 17:56 UTC
+**File:** `2026-07-25_reel.mp4` | **Verdict:** `PASS`
+**Hook:** The wanting hurts more.
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=6.0 | scroll_stop_potential=8.0
+**Reasoning:** Hook strength is high: a close-up tiger is a naturally arresting image and 'THE WANTING HURTS MORE.' creates strong emotional curiosity that pairs well with the desire theme. Text legibility is strong across the hook frames — the bold amber all-caps sits crisply over darker fur regions, though frames 3-4 place the text over busier orange fur that slightly reduces contrast. Pacing is only adequate; the first four frames are the same tiger with minimal movement and identical text, so the hook window feels static rather than energetic, though the body shifts scene and adds animated captions. Scroll-stop potential is high because the tiger's face plus a punchy statement genuinely stops thumbs, though the near-identical hook frames mean the visual doesn't escalate. In the body, the 'THAT EMPTINESS' caption in gray has weak contrast against the dark background.
+**Issues:**
+- Hook frames 1-4 are nearly identical (same tiger, same text) making the opening feel static with no visual progression.
+- Body caption 'THAT EMPTINESS' is dark gray on a dark background, hurting readability.
+**Suggestions:**
+- Introduce subtle motion or a zoom/cut within the 1.5s hook so the opening visually escalates and holds attention.
+- Recolor low-contrast body captions to bright white/amber with a stronger stroke or shadow to match the hook's legibility.
+
