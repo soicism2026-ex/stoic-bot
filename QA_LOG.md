@@ -1395,3 +1395,34 @@ for any recurring defects.
 - Introduce subtle motion or a zoom/cut within the 1.5s hook so the opening visually escalates and holds attention.
 - Recolor low-contrast body captions to bright white/amber with a stronger stroke or shadow to match the hook's legibility.
 
+
+## 2026-07-26 — attempt 1
+- uploaded: False
+- severity: high
+- issues:
+  - Quote text does not match intended quote: video shows narrative sequence 'KEEP FLOWING', 'WAVES;', 'THEM;', 'WEEKS NOW,', 'LIKE IT', 'IT DIDN'T.', 'FLOWING —', 'REALLY BLOCKED.' instead of 'Happiness is a good flow of life.'
+  - Background mood (struggle, blockage, failure) is severely mismatched with intended quote tone (contentment, natural flow)
+
+## 2026-07-26 — attempt 2
+- uploaded: False
+- severity: high
+- issues:
+  - Quote text on screen does not match the intended quote above - the video shows a narrative sequence ('KEEP FLOWING', 'WAVES', 'THEM', 'WEEKS NOW', 'LIKE IT', 'IT DIDN'T', 'FLOWING —', 'REALLY BLOCKED') rather than the simple statement 'Happiness is a good flow of life'
+
+## 2026-07-26 — attempt 3
+- uploaded: False
+- severity: high
+- issues:
+  - Quote text on screen does not match the intended quote above - the video contains a narrative about happiness being blocked and not flowing, which directly contradicts the intended quote 'Happiness is a good flow of life'
+
+## 2026-07-26 — attempt 4
+- uploaded: False
+- severity: high
+- issues:
+  - Quote text on screen does not match the intended quote above - multiple frames show extended narrative text ('KEEP FLOWING', 'WAVES;', 'THEM.', 'WEEKS NOW,', 'LIKE IT', 'IT DIDN'T.', 'FLOWING —', 'REALLY BLOCKED.') that are not part of the intended quote 'Happiness is a good flow of life.'
+
+## 2026-07-26 — attempt 5
+- uploaded: False
+- severity: high
+- issues:
+  - Quote text on screen does not match the intended quote above - video shows 'Happiness is a good flow of life.' broken into narrative segments ('KEEP FLOWING', 'WAVES;', 'THEM.', 'WEEKS NOW,', 'LIKE IT', 'IT DIDN'T.', 'FLOWING —', 'REALLY BLOCKED.') that alter and extend the original quote's meaning
