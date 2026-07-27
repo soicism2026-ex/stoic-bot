@@ -2,13 +2,17 @@ name: daily-short
 
 on:
   schedule:
-    # ONE curated video per day (2026-07-20). Quality-over-quantity: 4x/day
-    # mass-produced near-identical templates risk YouTube's "repetitious /
-    # reused content" policy, which blocks Partner Program approval even while
-    # views grow. A single higher-effort, format-varied video/day is the safer
-    # path to monetization eligibility. Slot = 17:00 UTC (1pm ET / 10am PT /
-    # 6pm CET) — the strongest global overlap.
-    - cron: "0 17 * * *"
+    # 3 videos/day (2026-07-24). 1/day collapsed daily views (+1427 -> +114) and
+    # flatlined subs — volume starvation. Restored to 3 spread peak slots. Safe
+    # from the repetition flag now because every video is genuinely distinct:
+    # 5 rotating formats, the recurring statue GUIDE, scene-matched b-roll, and
+    # the cinematic grade/score — variety earns back the volume.
+    # 08:00 UTC — Europe midday / US East early morning
+    # 15:00 UTC — US East late morning / Europe evening
+    # 22:00 UTC — US West evening / Asia morning
+    - cron: "0 8 * * *"
+    - cron: "0 15 * * *"
+    - cron: "0 22 * * *"
   workflow_dispatch: {}
 
 permissions:

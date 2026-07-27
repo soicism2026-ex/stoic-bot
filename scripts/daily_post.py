@@ -41,10 +41,11 @@ MAX_ATTEMPTS = int(os.environ.get("REEL_MAX_ATTEMPTS", "5"))
 BACKUP_MIN = 3
 # Per-DAY upload total (not per-run). The single 17:00 UTC cron slot posts once;
 # this cap is the backstop against a same-day double-post.
-# 1/day, quality-first (2026-07-20): one curated, format-varied video daily to
-# avoid YouTube's "repetitious content" flag and clear Partner Program review.
-# Env-tunable — raise only if the channel needs volume again post-monetization.
-MAX_POSTS_PER_DAY = int(os.environ.get("MAX_POSTS_PER_DAY", "1"))
+# 3/day (2026-07-24): 1/day starved daily views (+1427 -> +114) and stalled
+# subs. Restored volume; safe from the repetition flag because every video is
+# now genuinely distinct (5 formats, statue guide, scene-matched b-roll,
+# cinematic look). Env-tunable.
+MAX_POSTS_PER_DAY = int(os.environ.get("MAX_POSTS_PER_DAY", "3"))
 
 # Visual QA config — reads env vars at import time so GitHub Actions can override
 # VQA_ENABLED=0         Skip visual QA entirely (default: 1 = enabled)

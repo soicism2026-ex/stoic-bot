@@ -3,7 +3,7 @@
 Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover → render → upload → comment reply. Runs on GitHub Actions, zero human intervention per day.
 
 **Channel:** forged.in.stoicism  
-**Posting cadence:** 1 curated video/day at 17:00 UTC (quality-first since 2026-07-20 — avoids YouTube's repetitious-content flag / protects Partner Program eligibility; goal: 500 subs + 3M Shorts views/90d)  
+**Posting cadence:** 3 videos/day at 08:00, 15:00, 22:00 UTC (restored 2026-07-24 after 1/day starved views; safe volume because every video is now distinct — 5 formats, statue guide, scene-matched b-roll, cinematic look; goal: 500 subs + 3M Shorts views/90d)  
 **Product:** The Stoic Reset journal — https://soicism.gumroad.com/l/cslosv
 
 ---
@@ -12,7 +12,7 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 
 Each run of `scripts/daily_post.py` does:
 
-1. **Guard** — reads `data/posts.csv`; skips if `posts_today >= MAX_POSTS_PER_DAY` (env, default 1)
+1. **Guard** — reads `data/posts.csv`; skips if `posts_today >= MAX_POSTS_PER_DAY` (env, default 3)
 2. **Content** — `src/content.py` calls Claude Opus 4.8 for quote, hook, voiceover script, CTA, caption, hashtags, callout words, pinned comment
 3. **Voice** — `src/tts.py` calls ElevenLabs with-timestamps endpoint; falls back to edge-tts if no key
 4. **Music** — `src/music.py` downloads a royalty-free Pixabay track to `assets/music/`
@@ -59,7 +59,7 @@ After the main post loop, the workflow runs:
 
 | Workflow | Trigger | Purpose |
 |----------|---------|---------|
-| `daily-short.yml` | cron 1×/day | Main pipeline: post → analytics → prune → reply |
+| `daily-short.yml` | cron 3×/day | Main pipeline: post → analytics → prune → reply |
 | `pull-analytics.yml` | cron daily | Analytics-only pull |
 | `refresh-assets.yml` | manual | Pre-download background clips to `data/hook_preset` |
 | `rethumbnail.yml` | manual | Backfill thumbnails for old videos |
