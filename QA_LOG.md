@@ -1453,3 +1453,17 @@ for any recurring defects.
 - Add subtle motion in the hook window (slow zoom, parallax, or a quick text reveal/word-by-word emphasis) to inject energy in the first 1.5s
 - Bump the header contrast or drop it during the hook so the main hook text owns the frame; consider staggering the hook lines to add pacing
 
+
+## Visual QA — 2026-07-27 22:37 UTC
+**File:** `2026-07-27_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rule 7: Never keep a friend who makes you smaller.
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=4.5 | scroll_stop_potential=7.0
+**Reasoning:** Hook strength is strong (8.0): 'Rule 7: Never keep a friend who makes you smaller' is a bold, curiosity-driving statement with the 'Rule 7' framing implying a series and creating open-loop intrigue. Text legibility is good (8.5): the orange all-caps text with dark outline sits well against the purple background and is easily readable at phone size, though the tiny top-bar day label is low-contrast. Pacing is weak (4.5): the first four hook frames are nearly identical with only a subtle background zoom, so the opening feels static with no real visual movement; the body frames do change scenery but transitions are minimal. Scroll-stop potential is solid (7.0): the punchy hook text plus moody purple waterfall visual is interesting enough to make many stop, but the static feel and lack of a face or dramatic motion in frame 1 keeps it from a definite stop.
+**Issues:**
+- First 1.5s hook window shows four near-identical frames — almost no visual movement to reinforce the audio energy
+- Top label 'DAY 53 · UNTIL DISCIPLINE IS COOL AGAIN' is small and low-contrast, effectively unreadable
+**Suggestions:**
+- Add subtle motion during the hook — animated text reveal, a punch-in zoom, or word-by-word highlight synced to the voiceover to break the static feel
+- Increase contrast/size on the day-counter bar or drop it, and animate body captions ('BEST YEARS', 'MEN WHO') as karaoke-style keyword pops to boost pacing
+**Flagged dims:** pacing
+
