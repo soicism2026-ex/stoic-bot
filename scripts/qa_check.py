@@ -96,18 +96,27 @@ def run_qa(video_path, intended_quote: str) -> dict:
         "text": (
             f"Intended quote: {intended_quote}\n\n"
             f"Audio check: {audio_note}\n\n"
+            "IMPORTANT — this short intentionally has TWO kinds of on-screen text:\n"
+            "  (a) a large centered QUOTE CARD showing the quote + author name;\n"
+            "  (b) small word-by-word KARAOKE CAPTIONS that scroll the spoken\n"
+            "      narration in real time. These captions DELIBERATELY show many\n"
+            "      words that are NOT in the quote (they are the voiceover). That\n"
+            "      is correct and expected — NEVER flag the scrolling captions as\n"
+            "      a quote mismatch or 'extra text'.\n\n"
             "Check this vertical short ONLY for these issues:\n"
             "1. Text clipped by the safe zone (cut off at the top/bottom edge of the frame)\n"
             "2. Black or frozen frames (video not playing)\n"
             "3. Text unreadable due to low contrast against the background\n"
-            "4. Quote text on screen does not match the intended quote above\n"
+            "4. The large QUOTE CARD itself shows a garbled or completely different\n"
+            "   quote than the intended quote above. (IGNORE the scrolling karaoke\n"
+            "   captions — they are narration, not the quote.)\n"
             "5. No audio stream in the video (see audio check above)\n"
             "6. Background mood badly mismatched with the quote tone\n\n"
             "Return ONLY valid JSON, no markdown fences:\n"
             '{"pass": true/false, "issues": ["..."], "severity": "low"|"high"}\n\n'
             '"pass": true = acceptable to publish. '
             '"severity": "high" ONLY for issues that make the video unwatchable or factually wrong '
-            '(e.g. black screen, no audio, quote completely wrong). '
+            '(e.g. black screen, no audio, the QUOTE CARD quote completely wrong). '
             'Minor contrast or mood issues = severity "low". '
             'If no issues: {"pass": true, "issues": [], "severity": "low"}'
         ),

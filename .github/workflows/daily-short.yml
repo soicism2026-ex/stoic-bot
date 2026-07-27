@@ -2,17 +2,17 @@ name: daily-short
 
 on:
   schedule:
-    # 3 videos/day (2026-07-24). 1/day collapsed daily views (+1427 -> +114) and
-    # flatlined subs — volume starvation. Restored to 3 spread peak slots. Safe
-    # from the repetition flag now because every video is genuinely distinct:
-    # 5 rotating formats, the recurring statue GUIDE, scene-matched b-roll, and
-    # the cinematic grade/score — variety earns back the volume.
-    # 08:00 UTC — Europe midday / US East early morning
-    # 15:00 UTC — US East late morning / Europe evening
-    # 22:00 UTC — US West evening / Asia morning
-    - cron: "0 8 * * *"
+    # Target 3 videos/day (MAX_POSTS_PER_DAY caps it). GitHub Actions SILENTLY
+    # DROPS scheduled runs under load, so we over-provision 6 trigger slots as
+    # redundancy — the daily cap ensures only 3 actually post (extra runs hit
+    # the guard and skip). Spread across the clock to catch peak hours in every
+    # region and to survive whichever runs GitHub decides to drop.
+    - cron: "0 3 * * *"
+    - cron: "0 7 * * *"
+    - cron: "0 11 * * *"
     - cron: "0 15 * * *"
-    - cron: "0 22 * * *"
+    - cron: "0 19 * * *"
+    - cron: "0 23 * * *"
   workflow_dispatch: {}
 
 permissions:
