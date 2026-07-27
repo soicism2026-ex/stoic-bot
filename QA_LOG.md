@@ -1440,3 +1440,16 @@ for any recurring defects.
 - Increase weight/contrast of the header and body quote text (add a stronger drop shadow or dark scrim) so it reads instantly against the light pink frames
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-07-27 17:04 UTC
+**File:** `2026-07-27_reel.mp4` | **Verdict:** `PASS`
+**Hook:** His last letters, written while marked for death
+**Scores:** hook_strength=8.5 | text_legibility=8.0 | pacing=5.0 | scroll_stop_potential=7.5
+**Reasoning:** Hook text 'His last letters, written while marked for death' creates strong intrigue and taps into mortality and mystery — a compelling curiosity gap that fits the fear theme well, earning a high hook_strength. Text legibility is good: the bold gold caps are readable against the darkened forest/stream background, though the small serif 'DAY 53' header is thin and low-contrast, and in frame 6 the quote text overlaps a slightly busier background. Pacing is the weak point — the first four hook frames are essentially identical with only marginal background motion, so the opening feels static and lacks visual rhythm or transitions. Scroll-stop potential is solid because the dark, moody nature imagery paired with a death-related hook is genuinely arresting, though the muted palette isn't as thumb-stopping as brighter or motion-heavy openers.
+**Issues:**
+- First 4 hook frames are nearly static/identical, giving no sense of visual movement or momentum in the critical opening
+- The 'DAY 53 · UNTIL DISCIPLINE IS COOL AGAIN' header is thin, serif, and low-contrast — hard to read at phone size
+**Suggestions:**
+- Add subtle motion in the hook window (slow zoom, parallax, or a quick text reveal/word-by-word emphasis) to inject energy in the first 1.5s
+- Bump the header contrast or drop it during the hook so the main hook text owns the frame; consider staggering the hook lines to add pacing
+
