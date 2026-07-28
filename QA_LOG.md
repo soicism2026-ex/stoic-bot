@@ -1494,3 +1494,17 @@ for any recurring defects.
 - Increase the weight/contrast of the 'DAY 54' banner or add a semi-opaque backing bar so it reads instantly on the busy background
 **Flagged dims:** text_legibility
 
+
+## Visual QA — 2026-07-28 09:47 UTC
+**File:** `2026-07-28_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Right on time.
+**Scores:** hook_strength=5.5 | text_legibility=6.0 | pacing=5.0 | scroll_stop_potential=5.5
+**Reasoning:** hook_strength: 'RIGHT ON TIME.' is punchy and paired with a haunting statue image, but it lacks explicit curiosity — it doesn't clearly promise a payoff without context, so it lands around mid-range. text_legibility: The main 'RIGHT ON TIME' overlay is bold, high-contrast yellow and instantly readable, but the thin serif banner 'DAY 54 · UNTIL DISCIPLINE IS COOL AGAIN' is faint and nearly illegible against the busy foliage, and the quote text in frame 5-6 competes with dark backgrounds. pacing: The first four hook frames are essentially the same static statue shot with the same text, so the opening feels frozen — there's minimal visual movement until the body switches to blue and aerial shots. scroll_stop_potential: The eerie weeping-statue with the golden bracket frame is somewhat arresting and moody, fitting memento mori, but the near-static repetition and low-contrast top banner reduce the stopping power.
+**Issues:**
+- Hook frames 1-4 are visually near-identical, making the crucial first 1.5s feel static and slow
+- Top banner text is thin, low-contrast and unreadable over the leafy background
+**Suggestions:**
+- Introduce motion or a quick cut within the hook window — a slow zoom/push on the statue or a flash transition to keep the eye engaged
+- Add a subtle dark scrim or drop shadow behind the top banner and quote text, or use a heavier font weight to guarantee legibility at phone size
+**Flagged dims:** hook_strength, text_legibility, scroll_stop_potential
+
