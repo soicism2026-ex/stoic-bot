@@ -26,7 +26,7 @@ Each run of `scripts/daily_post.py` does:
 
 After the main post loop, the workflow runs:
 - `src/analytics.py` — pulls view/like/comment counts to `data/analytics.csv`
-- `scripts/prune_videos.py` — unlists videos below a view threshold
+- `scripts/prune_videos.py` — unlists videos below a view threshold (re-enabled 2026-07-28: <60 views after 14 days)
 - `scripts/reply_to_comments.py` — auto-replies to up to 5 top viewer comments with Claude Haiku
 
 ---
