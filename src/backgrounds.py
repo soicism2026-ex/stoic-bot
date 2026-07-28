@@ -24,7 +24,7 @@ BG_DIR = ROOT / "assets" / "backgrounds"
 # so we only ever pick from the TOP few (result #1 matches the query; #40 is
 # barely related). This is the difference between footage that FITS the words and
 # footage that feels random. Small window = high relevance + a little variety.
-BG_TOP_N = int(os.environ.get("REEL_BG_TOP", "5"))
+BG_TOP_N = int(os.environ.get("REEL_BG_TOP", "3"))
 
 
 def _relevant_index(pool_len: int) -> int:
@@ -338,6 +338,19 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     """
     out_path = Path(out_path)
     query = _search_term(theme, clip_idx=clip_idx)
+
+    # PIVOT: when image generation is enabled (REEL_IMAGE_BG=1 + OPENAI_API_KEY),
+    # generate a cinematic still that depicts THIS query exactly, instead of
+    # searching stock. Returns None (and we fall through to stock) if disabled or
+    # if anything fails, so it can never break a render.
+    try:
+        import imagegen
+        gen = imagegen.generate_clip(query, out_path)
+        if gen is not None:
+            print(f"[background] SOURCE=GENERATED query='{query}' file={gen.name}", flush=True)
+            return gen
+    except Exception as e:  # noqa: BLE001
+        print(f"[background] imagegen skipped: {e}", file=sys.stderr, flush=True)
 
     for label, fn in [
         ("PIXABAY",   lambda: _fetch_from_pixabay(theme, out_path, query=query)),

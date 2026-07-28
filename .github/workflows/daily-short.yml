@@ -79,6 +79,12 @@ jobs:
           PROMO_COMMENT: "1"
           # PROMO_CTA_VARIATIONS: pipe-delimited (|) list of 3-5 CTA strings.
           # Leave unset to use the three built-in defaults from src/promo.py.
+          # GENERATED BACKGROUNDS (pivot from stock). Add the OPENAI_API_KEY
+          # secret to activate: each background becomes an AI cinematic still
+          # depicting the exact narration beat (~$0.04-0.08/image). Falls back to
+          # stock automatically if the key is absent or any call fails.
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REEL_IMAGE_BG: "1"
         run: python scripts/daily_post.py
 
       - name: Fetch analytics
