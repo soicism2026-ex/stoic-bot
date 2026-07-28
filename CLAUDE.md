@@ -2,6 +2,14 @@
 
 Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover → render → upload → comment reply. Runs on GitHub Actions, zero human intervention per day.
 
+> **MEMORY PROTOCOL (read first):** `data/decisions.md` is the owner's decision
+> log — every directive, veto, and preference from chat sessions. READ IT before
+> making changes; HONOR everything in it; APPEND a dated entry whenever the
+> owner issues a new decision (newest wins on conflict; never delete history).
+> Creative philosophy lives in `data/doctrine.md` (injected into every content
+> call). If the owner says "remember X" or states a preference — it goes in
+> decisions.md (operational) or doctrine.md (creative) in the same turn.
+
 **Channel:** forged.in.stoicism  
 **Posting cadence:** 3 videos/day at 08:00, 15:00, 22:00 UTC (restored 2026-07-24 after 1/day starved views; safe volume because every video is now distinct — 5 formats, statue guide, scene-matched b-roll, cinematic look; goal: 500 subs + 3M Shorts views/90d)  
 **Product:** The Stoic Reset journal — https://soicism.gumroad.com/l/cslosv
@@ -125,6 +133,7 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 
 | File | Contents |
 |------|----------|
+| `data/decisions.md` | Owner decision log — the channel's cross-session memory. Every chat directive/veto recorded with dates. Claude reads it first and appends new decisions same-turn. |
 | `data/doctrine.md` | The owner's PERMANENT creative standing orders (ICP, hook psychology, format philosophy). Injected into every content generation call. Never overwritten by automation — unlike `data/strategy.md`, which `strategy_loop.py` rewrites daily at 10:00 UTC. |
 | `data/posts.csv` | All posts: date, theme, quote, author, caption, video_url, video_id, voice_name, music_track, hook, experiment, format |
 | `data/analytics.csv` | Per-video view/like/comment snapshots |
