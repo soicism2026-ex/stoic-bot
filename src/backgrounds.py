@@ -20,6 +20,18 @@ import requests
 ROOT = Path(__file__).resolve().parent.parent
 BG_DIR = ROOT / "assets" / "backgrounds"
 
+# Scene-matching relevance window. Stock APIs return results ranked by relevance,
+# so we only ever pick from the TOP few (result #1 matches the query; #40 is
+# barely related). This is the difference between footage that FITS the words and
+# footage that feels random. Small window = high relevance + a little variety.
+BG_TOP_N = int(os.environ.get("REEL_BG_TOP", "5"))
+
+
+def _relevant_index(pool_len: int) -> int:
+    """Deterministic pick from only the top-BG_TOP_N most-relevant results."""
+    window = max(1, min(pool_len, BG_TOP_N))
+    return (date.today().toordinal() + _bg_offset()) % window
+
 PEXELS_SEARCH_URL = "https://api.pexels.com/videos/search"
 PIXABAY_VIDEO_URL = "https://pixabay.com/api/videos/"
 
@@ -214,9 +226,10 @@ def _fetch_from_pexels(theme: str, out_path: Path, query: str = "") -> Path:
     if not videos:
         raise RuntimeError(f"Pexels returned no videos for '{query}'")
 
-    # deterministic-by-date choice so it's varied but reproducible per day;
-    # the retry loop shifts the pick via REEL_BG_OFFSET
-    video = videos[(date.today().toordinal() + _bg_offset()) % len(videos)]
+    # Pick from the TOP few most-relevant results so the clip actually matches
+    # the query (Pexels sorts by relevance). Retry offset varies within the
+    # window, keeping it relevant AND slightly varied.
+    video = videos[_relevant_index(len(videos))]
     link = _pick_vertical_file(video)
     if not link:
         raise RuntimeError("No suitable vertical MP4 in chosen Pexels result")
@@ -267,7 +280,7 @@ def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "") -> Path:
     if not pool:
         raise RuntimeError(f"Pixabay returned no videos for '{query}'")
 
-    pick = pool[(date.today().toordinal() + _bg_offset()) % len(pool)]
+    pick = pool[_relevant_index(len(pool))]
     url = None
     for size in ("large", "medium", "small"):
         v = pick.get("videos", {}).get(size, {})
