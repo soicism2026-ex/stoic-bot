@@ -5,10 +5,18 @@ After MIN_AGE_DAYS days, any video with fewer than VIEW_THRESHOLD views is
 unlisted — hidden from the channel page but not permanently deleted. Delete
 mode is available via PRUNE_ACTION=delete but is irreversible.
 
+The threshold is ADAPTIVE: it is the FLOOR (PRUNE_VIEW_THRESHOLD) or a fraction
+of the recent median views, whichever is higher. So as the channel gets stronger
+and typical views climb, the bar for "underperforming" rises automatically —
+the minimum view count continuously increases with the bot's performance, never
+dropping below the floor.
+
 Config via environment variables (all optional):
-  PRUNE_VIEW_THRESHOLD  — minimum views to keep; default 300
-  PRUNE_MIN_AGE_DAYS    — how many days to wait before judging; default 7
-  PRUNE_ACTION          — "unlist" (default) or "delete"
+  PRUNE_VIEW_THRESHOLD    — floor minimum views to keep; default 300
+  PRUNE_MIN_AGE_DAYS      — how many days to wait before judging; default 7
+  PRUNE_ADAPTIVE_FRACTION — threshold = max(floor, fraction * recent median);
+                            default 0.5 (unlist below half the recent median)
+  PRUNE_ACTION            — "unlist" (default) or "delete"
 
 Reads data/analytics.csv for the latest view counts. Run after analytics.py
 so data is fresh.
@@ -26,9 +34,10 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 
-VIEW_THRESHOLD = int(os.environ.get("PRUNE_VIEW_THRESHOLD", "300"))
-MIN_AGE_DAYS   = int(os.environ.get("PRUNE_MIN_AGE_DAYS",   "7"))
-ACTION         = os.environ.get("PRUNE_ACTION", "unlist").lower()
+VIEW_FLOOR        = int(os.environ.get("PRUNE_VIEW_THRESHOLD", "300"))
+MIN_AGE_DAYS      = int(os.environ.get("PRUNE_MIN_AGE_DAYS",   "7"))
+ADAPTIVE_FRACTION = float(os.environ.get("PRUNE_ADAPTIVE_FRACTION", "0.5"))
+ACTION            = os.environ.get("PRUNE_ACTION", "unlist").lower()
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 
@@ -106,6 +115,27 @@ def _age_from_date(date_str: str) -> float:
         return 0.0
 
 
+def _effective_threshold(all_stats: dict, posts_dates: dict) -> tuple[int, float | None]:
+    """Return (threshold, recent_median). The threshold rises with the channel:
+    max(VIEW_FLOOR, ADAPTIVE_FRACTION * median of recent settled videos)."""
+    import statistics
+    settled = []  # (age, views) for videos old enough to judge
+    for vid, d in all_stats.items():
+        age = _age_days(d["published_at"])
+        if age == 0.0 and vid in posts_dates:
+            age = _age_from_date(posts_dates[vid])
+        if age >= MIN_AGE_DAYS:
+            settled.append((age, d["views"]))
+    if len(settled) < 5:
+        return VIEW_FLOOR, None
+    # Most recent ~40 settled videos (smallest age first) = current performance.
+    settled.sort(key=lambda x: x[0])
+    recent = [v for _, v in settled[:40]]
+    median = statistics.median(recent)
+    adaptive = int(ADAPTIVE_FRACTION * median)
+    return max(VIEW_FLOOR, adaptive), median
+
+
 def _unlist(yt, video_id: str) -> bool:
     yt.videos().update(
         part="status",
@@ -120,13 +150,20 @@ def _delete(yt, video_id: str) -> bool:
 
 
 def main():
-    print(f"[prune] threshold={VIEW_THRESHOLD}v  min_age={MIN_AGE_DAYS}d  action={ACTION}")
-
     all_stats = _load_latest_views()
     if not all_stats:
         return
 
     posts_dates = _load_posts_dates()
+
+    threshold, median = _effective_threshold(all_stats, posts_dates)
+    if median is not None:
+        print(f"[prune] adaptive threshold={threshold}v "
+              f"(floor {VIEW_FLOOR}, {ADAPTIVE_FRACTION:g}× recent median {median:.0f}v)  "
+              f"min_age={MIN_AGE_DAYS}d  action={ACTION}")
+    else:
+        print(f"[prune] threshold={threshold}v (floor; too few settled videos to "
+              f"adapt)  min_age={MIN_AGE_DAYS}d  action={ACTION}")
 
     candidates = []
     for vid, data in all_stats.items():
@@ -137,11 +174,11 @@ def main():
             age = _age_from_date(posts_dates[vid])
             if age > 0:
                 print(f"  [prune] {vid}: published_at missing — using posts.csv date ({posts_dates[vid]})")
-        if age >= MIN_AGE_DAYS and data["views"] < VIEW_THRESHOLD:
+        if age >= MIN_AGE_DAYS and data["views"] < threshold:
             candidates.append((vid, data, age))
 
     if not candidates:
-        print(f"[prune] no videos qualify (age≥{MIN_AGE_DAYS}d AND views<{VIEW_THRESHOLD})")
+        print(f"[prune] no videos qualify (age≥{MIN_AGE_DAYS}d AND views<{threshold})")
         return
 
     print(f"[prune] {len(candidates)} video(s) qualify:")

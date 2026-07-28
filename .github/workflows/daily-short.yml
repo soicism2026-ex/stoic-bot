@@ -95,18 +95,19 @@ jobs:
         run: python src/analytics.py
 
       - name: Prune low-performing videos
-        # RE-ENABLED 2026-07-28 (owner request). Conservative threshold: only
-        # unlist genuine duds — under 60 views after a fair 14-day window (~5 of
-        # 103 videos today, vs 45 at the old 300 default). Note: unlisted views
-        # stop counting toward the 3M valid-public-views YPP threshold, so we
-        # keep the cull small. Tune with PRUNE_VIEW_THRESHOLD / PRUNE_MIN_AGE_DAYS.
+        # Unlist under-performers older than a week. ADAPTIVE threshold: the
+        # floor is 300v but the bar rises automatically as the channel improves
+        # (max of 300 and 0.5x the recent median views) — the minimum keeps
+        # increasing with performance. Note: unlisted views stop counting toward
+        # the 3M YPP threshold.
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          PRUNE_VIEW_THRESHOLD: "60"
-          PRUNE_MIN_AGE_DAYS: "14"
+          PRUNE_VIEW_THRESHOLD: "300"
+          PRUNE_MIN_AGE_DAYS: "7"
+          PRUNE_ADAPTIVE_FRACTION: "0.5"
         run: python scripts/prune_videos.py
 
       - name: Reply to top comments
