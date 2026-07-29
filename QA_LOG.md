@@ -1521,3 +1521,16 @@ for any recurring defects.
 - Add subtle zoom, parallax, or a snap-cut in the hook window to inject motion and prevent the tiger shot feeling static
 - Add a semi-transparent dark scrim behind quote/caption text on bright backgrounds (frame 5) to guarantee contrast
 
+
+## Visual QA — 2026-07-29 13:01 UTC
+**File:** `2026-07-29_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Rule 7: Only chase what's yours
+**Scores:** hook_strength=6.5 | text_legibility=7.0 | pacing=6.5 | scroll_stop_potential=7.0
+**Reasoning:** The tiger imagery is genuinely arresting and the close-up predator face gives strong scroll-stop appeal — hence a solid 7 there. Hook strength lands at 6.5 because 'Rule 7: Only Chase What's Yours' is decent and curiosity-inducing but 'Rule 7' with no visible context can feel arbitrary to a cold viewer, and the bold orange text on the busy tiger fur reduces immediate readability. Text legibility is 7: the main hook text is bold with a subtle glow but sits on high-detail, similarly-colored orange/black fur, and the top 'DAY 55' label is small and low-contrast; frame 6 is worst, where the serif quote sits over a bright forest sky and nearly disappears. Pacing gets 6.5 — the hook frames are near-identical slow zooms with little visual variety across 1.5s, though the body transitions from candlelit interior to misty forest add movement.
+**Issues:**
+- Orange hook text over orange/black tiger fur creates color camouflage, hurting instant readability
+- Frame 6 body quote (serif, cream) loses contrast against the bright misty forest sky and is hard to read
+**Suggestions:**
+- Add a semi-transparent dark scrim or text box behind overlay copy so text pops regardless of background brightness
+- Vary the hook frames more (faster zoom, a cut, or a text reveal animation) to build visual energy in the first 1.5s instead of a near-static tiger
+
