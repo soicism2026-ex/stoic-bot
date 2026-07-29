@@ -29,6 +29,22 @@ REPLIED_CSV  = ROOT / "data" / "replied_comments.csv"
 TOKEN_URI    = "https://oauth2.googleapis.com/token"
 
 MAX_REPLIES_PER_RUN = 5
+# Hard DAILY cap. The workflow has 6 cron slots, so a per-run cap alone allowed
+# 30 replies/day = 1,500 YouTube quota units (each comments.insert is 50) against
+# a 10,000/day budget that must also fund uploads at 1600 each.
+MAX_REPLIES_PER_DAY = int(os.environ.get("MAX_REPLIES_PER_DAY", "5"))
+
+
+def _replies_today() -> int:
+    """How many replies were already posted today (across all runs)."""
+    if not REPLIED_CSV.exists():
+        return 0
+    today = datetime.date.today().isoformat()
+    try:
+        with open(REPLIED_CSV, newline="", encoding="utf-8") as f:
+            return sum(1 for r in csv.DictReader(f) if r.get("date") == today)
+    except Exception:
+        return 0
 LOOKBACK_DAYS       = 7    # only reply on videos posted in the last N days
 MIN_COMMENT_LEN     = 20   # ignore very short comments
 REPLY_SCOPES        = [
@@ -362,9 +378,17 @@ def main():
         print("  No suitable comments found this run.")
         return
 
+    already = _replies_today()
+    budget = min(MAX_REPLIES_PER_RUN, MAX_REPLIES_PER_DAY - already)
+    if budget <= 0:
+        print(f"  Daily reply budget used ({already}/{MAX_REPLIES_PER_DAY}) — "
+              f"skipping to protect YouTube API quota.")
+        return
+    print(f"  Reply budget this run: {budget} ({already}/{MAX_REPLIES_PER_DAY} used today)")
+
     replied = 0
     for item, video_id, video_title in candidates:
-        if replied >= MAX_REPLIES_PER_RUN:
+        if replied >= budget:
             break
         comment_id  = item["snippet"]["topLevelComment"]["id"]
         comment_txt = item["snippet"]["topLevelComment"]["snippet"]["textDisplay"].strip()

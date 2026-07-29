@@ -11,6 +11,7 @@ import sys
 import json
 import urllib.request
 import urllib.parse
+import urllib.error
 
 import requests as _requests
 
@@ -114,6 +115,27 @@ def check_youtube() -> bool:
         comment_status = "comment posting enabled" if has_force_ssl else "comment posting needs re-auth (force-ssl missing)"
         print(f"  [{PASS}] YOUTUBE credentials — channel: '{channel_name}', {comment_status}")
         return True
+    except urllib.error.HTTPError as e:
+        # A 403 here is almost always quotaExceeded, NOT bad credentials. Saying
+        # "credentials failed" for a temporary daily-quota trip sends the owner
+        # off re-authenticating a token that is perfectly fine. Read the body and
+        # name the real reason; quota is a SKIP (recoverable) not a FAIL.
+        body = ""
+        try:
+            body = e.read().decode("utf-8", "replace")
+        except Exception:
+            pass
+        if e.code == 403 and ("quota" in body.lower() or "quotaExceeded" in body):
+            print(f"  [{SKIP}] YOUTUBE — daily API quota exceeded (credentials are "
+                  f"fine). Resets at midnight Pacific. Uploads will fail until then.")
+            return True
+        if e.code == 403:
+            print(f"  [{FAIL}] YOUTUBE credentials — 403 Forbidden. Not a bad token: "
+                  f"check the API is enabled and the token has youtube.force-ssl. "
+                  f"Detail: {body[:200]}")
+            return False
+        print(f"  [{FAIL}] YOUTUBE credentials — {e}")
+        return False
     except Exception as e:
         print(f"  [{FAIL}] YOUTUBE credentials — {e}")
         return False

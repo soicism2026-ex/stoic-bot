@@ -66,6 +66,20 @@ This file is for OPERATIONAL decisions and taste vetoes.
 - Mission counter on every video: "DAY N · UNTIL DISCIPLINE IS COOL AGAIN"
   (override via `MISSION_PHRASE`).
 
+## Quota (YouTube Data API — 10,000 units/day, hard ceiling)
+- **2026-07-29** Quota exhaustion caused a `403 quotaExceeded` that *looked* like
+  "YouTube credentials failed". Credentials were fine. Costs: upload 1600,
+  comment/reply/unlist 50 each, list calls 1.
+- Root cause: prune judged from analytics.csv view counts and never checked
+  current privacy status, so it re-unlisted the SAME 72 videos on all 6 cron
+  slots = 21,600 units/day by itself. Fixed: `_public_only()` status check
+  (1 unit/50 ids) + `PRUNE_MAX_PER_RUN=10` cap.
+- Replies were capped per RUN (5) not per DAY → 30/day = 1500 units. Now
+  `MAX_REPLIES_PER_DAY=5` enforced from replied_comments.csv.
+- **Rule:** any new YouTube API call must be costed against the 10,000/day
+  budget, remembering the workflow fires 6 cron slots per day. Uploads
+  (4800/day at 3 posts) always get first claim on the budget.
+
 ## Pruning
 - **2026-07-28 CURRENT:** floor 300 views, only videos >7 days old, ADAPTIVE:
   threshold = max(300, 0.5 × recent median) — bar rises as the channel improves.

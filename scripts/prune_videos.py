@@ -38,6 +38,9 @@ VIEW_FLOOR        = int(os.environ.get("PRUNE_VIEW_THRESHOLD", "300"))
 MIN_AGE_DAYS      = int(os.environ.get("PRUNE_MIN_AGE_DAYS",   "7"))
 ADAPTIVE_FRACTION = float(os.environ.get("PRUNE_ADAPTIVE_FRACTION", "0.5"))
 ACTION            = os.environ.get("PRUNE_ACTION", "unlist").lower()
+# Max unlists per run. Each costs 50 quota units against a 10,000/day budget
+# that must also fund uploads (1600 each) — bound the damage.
+MAX_PER_RUN       = int(os.environ.get("PRUNE_MAX_PER_RUN", "10"))
 
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 
@@ -136,6 +139,29 @@ def _effective_threshold(all_stats: dict, posts_dates: dict) -> tuple[int, float
     return max(VIEW_FLOOR, adaptive), median
 
 
+def _public_only(yt, video_ids: list[str]) -> set[str]:
+    """Return the subset of video_ids that are still PUBLIC.
+
+    Critical for quota: judging solely on analytics view counts made the pruner
+    re-unlist the same videos on every run (50 units each, 6 runs/day = 21,600
+    units against a 10,000/day quota → quotaExceeded 403s that looked like
+    "YouTube credentials failed"). videos.list costs 1 unit per call (up to 50
+    ids), so this check is ~1000x cheaper than the redundant updates it prevents.
+    """
+    public: set[str] = set()
+    for i in range(0, len(video_ids), 50):
+        batch = video_ids[i:i + 50]
+        try:
+            resp = yt.videos().list(part="status", id=",".join(batch)).execute()
+            for item in resp.get("items", []):
+                if item.get("status", {}).get("privacyStatus") == "public":
+                    public.add(item["id"])
+        except Exception as e:  # noqa: BLE001
+            print(f"[prune] status check failed for a batch ({e}); "
+                  f"skipping those to stay safe", file=sys.stderr)
+    return public
+
+
 def _unlist(yt, video_id: str) -> bool:
     yt.videos().update(
         part="status",
@@ -181,15 +207,37 @@ def main():
         print(f"[prune] no videos qualify (age≥{MIN_AGE_DAYS}d AND views<{threshold})")
         return
 
-    print(f"[prune] {len(candidates)} video(s) qualify:")
-    for vid, d, age in candidates:
-        print(f"  {vid}  {d['views']:>5}v  {age:.1f}d  {d['title'][:55]}")
+    print(f"[prune] {len(candidates)} video(s) match the view/age rule")
 
     try:
         yt = _service()
     except Exception as e:
         print(f"[prune] YouTube auth failed: {e}", file=sys.stderr)
         sys.exit(1)
+
+    # Only act on videos that are STILL PUBLIC — never re-unlist (quota killer).
+    if ACTION != "delete":
+        still_public = _public_only(yt, [v for v, _, _ in candidates])
+        skipped = len(candidates) - len(still_public)
+        candidates = [c for c in candidates if c[0] in still_public]
+        if skipped:
+            print(f"[prune] {skipped} already unlisted — skipping (saves "
+                  f"{skipped * 50} quota units)")
+
+    if not candidates:
+        print("[prune] nothing left to unlist — all matches already handled")
+        return
+
+    # Bound the per-run cost. An upload alone is 1600 units of a 10,000/day
+    # quota, so a big backlog must be worked through over several days rather
+    # than starving the pipeline that actually posts videos.
+    if len(candidates) > MAX_PER_RUN:
+        print(f"[prune] capping this run at {MAX_PER_RUN} of {len(candidates)} "
+              f"(quota safety; the rest go next run)")
+        candidates = candidates[:MAX_PER_RUN]
+
+    for vid, d, age in candidates:
+        print(f"  {vid}  {d['views']:>5}v  {age:.1f}d  {d['title'][:55]}")
 
     fn = _delete if ACTION == "delete" else _unlist
     done = 0
