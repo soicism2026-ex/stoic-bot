@@ -1508,3 +1508,16 @@ for any recurring defects.
 - Add a subtle dark scrim or drop shadow behind the top banner and quote text, or use a heavier font weight to guarantee legibility at phone size
 **Flagged dims:** hook_strength, text_legibility, scroll_stop_potential
 
+
+## Visual QA — 2026-07-29 09:56 UTC
+**File:** `2026-07-29_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Nero's tutor watched the throne rot.
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=6.5 | scroll_stop_potential=8.0
+**Reasoning:** Hook strength is strong: 'Nero's tutor watched the throne rot' pairs an intriguing historical hook with a menacing tiger visual that suggests power/decay, creating genuine curiosity — though 'tutor' delays the payoff slightly. Text legibility is high; the bold yellow hook text with heavy weight reads instantly against the dark tiger, and the body serif quote is clean, though the light Seneca quote over the bright candle background in frame 5 has slightly weaker contrast. Pacing is adequate: the first four frames are near-identical static shots of the same tiger with the same text (little visual movement in the crucial hook window), while the body introduces animated caption words and a background change, so rhythm is decent but not energetic. Scroll-stop potential is high because the tiger is a striking, high-contrast subject and the bold headline commands attention in a feed.
+**Issues:**
+- Hook window frames 1-4 are almost visually identical — minimal motion or transition during the critical first 1.5s
+- Frame 5's light serif quote and pale yellow caption sit over a bright, busy candle-flame background reducing contrast
+**Suggestions:**
+- Add subtle zoom, parallax, or a snap-cut in the hook window to inject motion and prevent the tiger shot feeling static
+- Add a semi-transparent dark scrim behind quote/caption text on bright backgrounds (frame 5) to guarantee contrast
+
