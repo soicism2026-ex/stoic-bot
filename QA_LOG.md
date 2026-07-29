@@ -1534,3 +1534,16 @@ for any recurring defects.
 - Add a semi-transparent dark scrim or text box behind overlay copy so text pops regardless of background brightness
 - Vary the hook frames more (faster zoom, a cut, or a text reveal animation) to build visual energy in the first 1.5s instead of a near-static tiger
 
+
+## Visual QA — 2026-07-29 16:29 UTC
+**File:** `2026-07-29_reel.mp4` | **Verdict:** `PASS`
+**Hook:** If someone got under your skin today—
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=6.0 | scroll_stop_potential=8.0
+**Reasoning:** Hook scores well: the tiger imagery is arresting and thematically apt for anger content, while 'If someone got under your skin today—' creates an open loop that invites the viewer to self-identify with a recent irritation. Text legibility is strong — the bold yellow hook font with dark outline sits cleanly over the tiger and is instantly readable at phone size; the body quote in serif is also crisp, though the animated caption ('REPLY YOU'LL', 'ONE GETS') has slightly softer contrast against the purple. Pacing is the weak point: all four hook frames are near-identical, with only subtle color/zoom drift and no real transition energy, so the opening feels static despite the animal subject. Scroll-stop potential is good because a tiger face is intrinsically eye-catching and the theme-image match is intuitive.
+**Issues:**
+- Hook window frames 1-4 are almost visually identical — minimal movement or transition, making the first 1.5s feel static
+- Body caption words ('REPLY YOU'LL', 'ONE GETS') fragment the voiceover awkwardly and have weaker contrast than the hook text
+**Suggestions:**
+- Add a punchier motion beat in the hook — a slow push-in on the tiger's eyes or a subtle glitch/cut on the em-dash to signal the reveal is coming
+- Ensure caption fragments break on complete phrases ('the reply you'll never send') and boost their outline/shadow so they pop against the purple background
+
