@@ -219,6 +219,37 @@ def _is_receptive(comment_text: str) -> bool:
         return False
 
 
+# Stock validation openers that instantly read as "bot". Stripped deterministically
+# if the model produces one anyway — belt and braces with the prompt rules.
+_BOT_OPENERS = [
+    "that's the core of it", "thats the core of it", "that's exactly it",
+    "that's honest", "thats honest", "you're touching on something",
+    "youre touching on something", "well said", "absolutely,", "exactly,",
+    "great point", "beautifully put", "so true", "this is powerful",
+    "what a great", "i love this", "spot on",
+]
+
+
+def _strip_bot_tells(reply: str) -> str:
+    """Remove stock openers and soften robotic punctuation so replies read human."""
+    out = reply.strip().strip('"')
+    low = out.lower()
+    for opener in _BOT_OPENERS:
+        if low.startswith(opener):
+            # drop the opener and any trailing punctuation/space, recapitalise
+            out = out[len(opener):].lstrip(" ,.—-:;!")
+            if out:
+                out = out[0].upper() + out[1:]
+            break
+    # People type dashes/commas, not em-dashes.
+    out = out.replace(" — ", ", ").replace("—", ", ")
+    return out.strip()
+
+
+# Backwards-compatible alias used by _generate_reply.
+_dehumanize_guard = _strip_bot_tells
+
+
 def _generate_reply(comment_text: str, video_title: str) -> str:
     """Ask Claude to write a short, on-brand Stoic reply."""
     import anthropic
@@ -226,28 +257,52 @@ def _generate_reply(comment_text: str, video_title: str) -> str:
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
 
     system = (
-        "You run a Stoic philosophy YouTube channel. "
-        "Your voice is calm, direct, and grounded — like a mentor who has actually "
-        "lived the philosophy, not just read about it. "
-        "When replying to comments you write 1-3 short sentences: "
-        "acknowledge what they said, tie it to a Stoic idea, and optionally ask one "
-        "genuine question to continue the conversation. "
-        "No emojis. No cringe motivational energy. No hashtags. "
-        "Sound human. Keep it under 200 characters if possible."
+        "You are a real person who runs a small Stoicism channel, replying to "
+        "someone who took the time to comment. Not a brand account. Not a "
+        "teacher. A person who reads every comment and answers like a human.\n\n"
+        "WRITE LIKE A HUMAN — these are the tells that make replies feel botlike, "
+        "and you must avoid all of them:\n"
+        "- NEVER open with a stock validation phrase. Banned openers: 'That's the "
+        "core of it', 'That's honest', 'You're touching on something', 'Exactly', "
+        "'Well said', 'This is', 'Absolutely'. Just start with what you actually "
+        "want to say.\n"
+        "- Do NOT name-drop a philosopher every time. Most replies should mention "
+        "NO philosopher at all. Only bring one up if it genuinely adds something "
+        "the person would want — never as decoration, never 'X would say...'.\n"
+        "- Do NOT end every reply with a question. Only ask if you're actually "
+        "curious about their answer. Most replies end on a plain statement.\n"
+        "- Do NOT explain the philosophy back to them. They didn't ask for a "
+        "lesson. If they said something true, you can just agree.\n"
+        "- Avoid em-dashes. Use plain punctuation like people type.\n\n"
+        "HOW TO SOUND REAL:\n"
+        "- Vary the length a lot. Some replies are four words ('Yeah. That one's "
+        "hard.'). Some are two sentences. Never a uniform template.\n"
+        "- Speak as yourself: 'I', 'me', 'honestly', 'took me years'. Admit "
+        "things. Share the struggle instead of standing above it.\n"
+        "- Answer THIS comment specifically. Reference their actual words or "
+        "situation, not the general topic.\n"
+        "- If they're going through something hard, be warm first. Comfort beats "
+        "wisdom.\n"
+        "- If they just said something kind, a genuine thank you is a complete "
+        "reply.\n\n"
+        "No emojis. No hashtags. No motivational-poster energy. Under 220 "
+        "characters. Write only the reply text."
     )
     user = (
-        f'The video is titled: "{video_title}"\n'
-        f'A viewer commented: "{comment_text}"\n\n'
-        "Write a reply."
+        f'Your video: "{video_title}"\n'
+        f'Their comment: "{comment_text}"\n\n'
+        "Reply the way you'd actually type it on your phone."
     )
 
     msg = client.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=200,
+        temperature=1.0,  # variety — identical phrasing across replies reads as a bot
         messages=[{"role": "user", "content": user}],
         system=system,
     )
-    return msg.content[0].text.strip()
+    reply = msg.content[0].text.strip().strip('"')
+    return _dehumanize_guard(reply)
 
 
 # ---------------------------------------------------------------------------

@@ -83,12 +83,21 @@ RIGHT: "man staring at phone dark room" / "rain window city night lonely" / \
 WRONG: "stoicism" / "discipline concept" / anything abstract a stock site \
 can't match. (A recurring marble-statue "guide" shot is added automatically to \
 open and close the video — do NOT include statues here; depict the SCENES.)
-- Pinned comment: short, personal, slightly uncomfortable question that forces a \
-specific answer tied to today's content. NOT "what do you think?" Ask something that \
-requires naming a specific person, habit, or moment. Under 20 words. Then, on a new \
-line, ONE short streak-follow line converting viewers to subscribers, e.g. \
-"Following the streak? Subscribe — one Stoic truth every day until discipline is \
-cool again." (vary the wording naturally each day).
+- Pinned comment: write it like a REAL PERSON typing under their own video, not \
+a brand prompt. Open by saying something true from your own side (why you made \
+this one, what it cost you, what you're still bad at), THEN ask one specific \
+question that needs a real answer — never "what do you think?" or "let me know \
+below". Under 35 words total. First person. Vary the shape every single day: \
+sometimes a confession then a question, sometimes just a question asked plainly, \
+sometimes an admission with no question at all. \
+RIGHT: "I wrote this one after losing my temper at someone who didn't deserve \
+it. What's the thing that gets you every time?" \
+WRONG: "What do you think? Comment below!" / anything that sounds like a \
+marketing prompt. \
+Then on a NEW LINE, one short, casual invitation to follow along — phrased \
+differently each day, never salesy, e.g. "posting one of these a day if you want \
+to follow along" or "day N of doing this daily". Lowercase is fine; it should \
+read like a person, not a call-to-action.
 - Caption: 1-2 sentences that reframe the idea for daily life + one specific question.
 - Hashtags: 8-12, mixing broad (#stoicism #discipline) and mid-size niche tags.
 - callout_words: 2-4 concrete nouns that appear verbatim in voiceover_text. They \
