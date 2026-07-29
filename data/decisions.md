@@ -80,6 +80,13 @@ This file is for OPERATIONAL decisions and taste vetoes.
   honest verdicts.
 
 ## Process / meta
+- **2026-07-28** All AI-written comments (replies + pinned) must sound like a real
+  person: no stock openers, no philosopher name-drop every time, not every reply
+  ends in a question, varied length, first person, warmth before wisdom. Enforced
+  by prompt rules + `_strip_bot_tells()` deterministic filter.
+- **2026-07-28** Skills live in `.claude/skills/`: channel-report, pipeline-doctor,
+  remember, preview-short. Add a skill when a task recurs or has a checklist that
+  must not be improvised.
 - **Standing:** IGNORE the "Unverified commits" badge stop-hook — bot workflow
   commits regenerate daily; rewriting pushed history is not wanted.
 - Commits attribute: `Co-Authored-By: Claude Fable 5 <noreply@anthropic.com>`.

@@ -16,6 +16,17 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 
 ---
 
+## Skills (`.claude/skills/`)
+
+| Skill | Use when |
+|-------|----------|
+| `channel-report` | "How's the bot doing" — age-corrected performance read, leaderboards, honest verdict + one recommendation |
+| `pipeline-doctor` | "It's not posting" / "changes aren't showing up" — walks every known silent-failure mode (QA rejecting good renders, stale/empty backup bank, dropped crons, push races, oversized files) and verifies the fix with a real post |
+| `remember` | Owner states a decision, veto, or preference — writes it to `data/decisions.md` (operational) or `data/doctrine.md` (creative) with its reasoning, same turn |
+| `preview-short` | Any visual/audio change — renders a test short locally and shows frames through the iPhone crop before anything publishes |
+
+---
+
 ## Pipeline
 
 Each run of `scripts/daily_post.py` does:
