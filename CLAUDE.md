@@ -101,6 +101,7 @@ After the main post loop, the workflow runs:
 | `YOUTUBE_REFRESH_TOKEN` | same — must include `youtube.force-ssl` scope for thumbnails + comments |
 | `PIXABAY_API_KEY` | backgrounds.py, music.py |
 | `PEXELS_API_KEY` | backgrounds.py fallback |
+| `REPLICATE_API_TOKEN` | tts.py — Chatterbox voice (primary; open-source, beats ElevenLabs in blind tests, pay-per-second) |
 | `OPENAI_API_KEY` | imagegen.py — activates AI-generated backgrounds (optional, paid) |
 | `IG_ACCESS_TOKEN` | publish_instagram.py (optional) |
 | `IG_USER_ID` | publish_instagram.py (optional) |

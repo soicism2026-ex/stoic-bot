@@ -301,6 +301,92 @@ _EL_SETTINGS = {
 _EL_FORMAT = os.environ.get("ELEVENLABS_OUTPUT_FORMAT", "mp3_44100_128")
 
 
+# ---------------------------------------------------------------------------
+# Chatterbox (Resemble AI, MIT) via Replicate — the PRIMARY paid-quality voice.
+#
+# Chosen 2026-07-29: open-source, beats ElevenLabs in blind listener tests
+# (65.3% vs 24.5%), and pay-per-second on Replicate instead of a subscription.
+# WanGP bundles the same model but needs a local 6GB+ GPU, which the CI runner
+# does not have — the hosted API is how we use it from GitHub Actions.
+#
+# Tradeoff accepted: Chatterbox returns audio only, no word-level timestamps
+# (ElevenLabs did), so karaoke captions use duration-estimated timings. Fine at
+# our 2-word chunk granularity.
+# ---------------------------------------------------------------------------
+_CB_TOKEN = os.environ.get("REPLICATE_API_TOKEN", "").strip()
+_CB_MODEL = os.environ.get("CHATTERBOX_MODEL", "resemble-ai/chatterbox")
+# Calm, deliberate Stoic narration: Chatterbox docs say lower cfg_weight gives
+# slower/more measured pacing; keep exaggeration just under neutral so it reads
+# grounded rather than theatrical (matches the channel's meditative baseline).
+_CB_EXAGGERATION = float(os.environ.get("CHATTERBOX_EXAGGERATION", "0.45"))
+_CB_CFG_WEIGHT   = float(os.environ.get("CHATTERBOX_CFG_WEIGHT", "0.35"))
+# Optional voice cloning: a public URL to a short reference clip.
+_CB_VOICE_REF    = os.environ.get("CHATTERBOX_VOICE_URL", "").strip()
+
+
+def _synthesize_chatterbox(text: str, out_path: Path) -> tuple:
+    """Generate a voiceover with Chatterbox via Replicate.
+
+    Returns (out_path, estimated_word_timings). Raises on any failure so
+    synthesize_voice() can fall through to the free edge-tts pool.
+    """
+    import time
+
+    payload = {
+        "input": {
+            "prompt": text,
+            "exaggeration": _CB_EXAGGERATION,
+            "cfg_weight": _CB_CFG_WEIGHT,
+        }
+    }
+    if _CB_VOICE_REF:
+        payload["input"]["audio_prompt"] = _CB_VOICE_REF
+
+    headers = {
+        "Authorization": f"Bearer {_CB_TOKEN}",
+        "Content-Type": "application/json",
+        # Ask Replicate to hold the connection briefly so most calls return
+        # a finished prediction without polling.
+        "Prefer": "wait=60",
+    }
+    resp = requests.post(
+        f"https://api.replicate.com/v1/models/{_CB_MODEL}/predictions",
+        headers=headers, json=payload, timeout=180,
+    )
+    resp.raise_for_status()
+    pred = resp.json()
+
+    # Poll if it didn't finish within the wait window.
+    deadline = time.time() + 240
+    while pred.get("status") in ("starting", "processing") and time.time() < deadline:
+        time.sleep(3)
+        pred = requests.get(pred["urls"]["get"], headers=headers, timeout=60).json()
+
+    if pred.get("status") != "succeeded":
+        raise RuntimeError(f"Chatterbox status={pred.get('status')} "
+                           f"error={str(pred.get('error'))[:200]}")
+
+    out = pred.get("output")
+    audio_url = out[0] if isinstance(out, list) and out else out
+    if not isinstance(audio_url, str) or not audio_url.startswith("http"):
+        raise RuntimeError(f"Chatterbox returned no audio URL (got {type(out).__name__})")
+
+    with requests.get(audio_url, stream=True, timeout=180) as dl:
+        dl.raise_for_status()
+        with open(out_path, "wb") as fh:
+            for chunk in dl.iter_content(chunk_size=1 << 16):
+                if chunk:
+                    fh.write(chunk)
+
+    ok, dur, mean_db = _voice_audio_is_real(out_path, text)
+    print(f"  tts: Chatterbox audio dur={dur:.1f}s mean_vol={mean_db:.1f}dB "
+          f"({'ok' if ok else 'REJECTED — silent/truncated'})")
+    if not ok:
+        raise RuntimeError(f"Chatterbox audio unusable (dur={dur:.1f}s, "
+                           f"mean_vol={mean_db:.1f}dB)")
+    return out_path, _estimate_timings(text, dur)
+
+
 def _synthesize_elevenlabs(text: str, out_path: Path, voice_id: str) -> tuple:
     """ElevenLabs path (only called when ELEVENLABS_API_KEY + VOICE_ID are set)."""
     headers = {"xi-api-key": _EL_KEY, "Content-Type": "application/json"}
@@ -409,12 +495,25 @@ def _el_budget_allows(text: str) -> bool:
 def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     """Synthesize `text` to `out_path`. Returns (out_path, word_timings).
 
-    ElevenLabs (Brian) is used when the key is set AND the post fits the daily
-    + monthly character budget; otherwise the free edge-tts pool, then gTTS.
+    Order: Chatterbox (Replicate — open source, preferred over ElevenLabs in
+    blind tests, pay-per-second) → ElevenLabs (legacy, if its key still works)
+    → free edge-tts pool → gTTS. Every engine failing over to the next means a
+    dead key or an API outage degrades the VOICE, never the channel.
     Sets LAST_VOICE_NAME to whichever voice actually spoke.
     Raises RuntimeError only if every engine fails.
     """
     global LAST_VOICE_NAME
+    if _CB_TOKEN:
+        print(f"  tts: Chatterbox active (model {_CB_MODEL}, "
+              f"exaggeration={_CB_EXAGGERATION}, cfg_weight={_CB_CFG_WEIGHT})")
+        try:
+            result = _synthesize_chatterbox(text, out_path)
+            LAST_VOICE_NAME = "Chatterbox"
+            return result
+        except Exception as e:  # noqa: BLE001
+            print(f"  tts: Chatterbox failed ({e}); trying next engine",
+                  file=sys.stderr)
+
     if _EL_KEY and _EL_VOICE_ID and _el_budget_allows(text):
         print(f"  tts: ElevenLabs active (voice {_EL_VOICE_ID})")
         try:

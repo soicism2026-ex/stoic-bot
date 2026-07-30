@@ -85,6 +85,14 @@ jobs:
           # stock automatically if the key is absent or any call fails.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           REEL_IMAGE_BG: "1"
+          # PRIMARY VOICE — Chatterbox (Resemble AI, MIT) via Replicate.
+          # Open source, preferred over ElevenLabs in blind tests (65% vs 25%),
+          # billed per second instead of a subscription. Add the
+          # REPLICATE_API_TOKEN secret to activate; without it the pipeline
+          # silently uses ElevenLabs (if working) then free edge-tts.
+          # Optional: CHATTERBOX_VOICE_URL = public URL of a reference clip to
+          # clone a specific voice.
+          REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
         run: python scripts/daily_post.py
 
       - name: Fetch analytics

@@ -24,6 +24,22 @@ This file is for OPERATIONAL decisions and taste vetoes.
 - **Standing:** Christopher (en-US-ChristopherNeural) is the approved free voice.
   Any new voice requires the owner's ear before becoming default.
 
+- **2026-07-29** PRIMARY VOICE → **Chatterbox** (Resemble AI, MIT) via Replicate,
+  owner's choice after finding WanGP. Rationale: open source, beat ElevenLabs in
+  blind listener tests (65.3% vs 24.5%), pay-per-second (~$1-3/mo) vs a
+  subscription — and the ElevenLabs key was 401'ing anyway. Chain is now
+  Chatterbox → ElevenLabs (legacy) → edge-tts → gTTS; any failure degrades the
+  voice, never the channel. Tuned calm/deliberate: exaggeration 0.45,
+  cfg_weight 0.35. Needs the `REPLICATE_API_TOKEN` secret.
+- **2026-07-29** ACCEPTED TRADEOFF: Chatterbox returns no word-level timestamps
+  (ElevenLabs did), so karaoke captions use duration-estimated timings. Fine at
+  2-word chunk granularity; revisit if captions ever look out of sync.
+- **2026-07-29** WanGP (Wan2GP) evaluated: real and excellent, but it is a LOCAL
+  app needing a 6GB+ VRAM GPU. Owner's GTX 1650 Super has 4GB → local video
+  generation is NOT viable, and CI runners have no GPU at all. Use the hosted
+  APIs of the same open models instead. Do not re-propose local WanGP unless the
+  GPU changes.
+
 ## Cadence (history matters — read all)
 - 2026-07-15: ~~6/day~~ (monetization push) → flooded subscriber feeds.
 - 2026-07-18: ~~4/day subscriber-first~~.
