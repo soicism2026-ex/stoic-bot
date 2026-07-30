@@ -1,0 +1,51 @@
+name: Generate voice samples
+
+# Manual only. Renders three Chatterbox pacing variants of the same script and
+# COMMITS them as MP3s to samples/ so they can be listened to on a phone without
+# unzipping a CI artifact. Never touches posting.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+jobs:
+  samples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      # Same key as the benchmark — weights are already cached, so this is fast.
+      - name: Cache HuggingFace weights
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-chatterbox-v1
+
+      - name: Install CPU-only torch + chatterbox
+        run: |
+          pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install chatterbox-tts
+
+      - name: Generate samples
+        run: python scripts/make_voice_samples.py
+
+      - name: Commit samples
+        run: |
+          git config user.name "stoic-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -f samples/*.mp3
+          git diff --staged --quiet || git commit -m "samples: chatterbox voice pacing variants [skip ci]"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase origin main && continue
+          done
