@@ -40,6 +40,17 @@ This file is for OPERATIONAL decisions and taste vetoes.
   APIs of the same open models instead. Do not re-propose local WanGP unless the
   GPU changes.
 
+- **2026-07-30** Chatterbox BENCHMARKED on a free CPU runner: ~99s/post,
+  8.5x realtime, 4 cores, no GPU — PASS. Repo is public so those minutes cost
+  $0. Self-hosted engine (`_synthesize_chatterbox_local`) is built and gated
+  behind repo variable `CHATTERBOX_LOCAL=1`; chain is local → Replicate →
+  edge-tts → gTTS.
+- **2026-07-30** MEASURED pacing (samples/chatterbox_*.mp3, 39-word script):
+  single-shot at 0.45/0.35 = 222 wpm AND truncated the script (10.5s vs 15.3s).
+  Sentence-chunking is a CORRECTNESS fix, not just pacing. New defaults
+  exaggeration 0.35 / cfg_weight 0.25 / 0.40s sentence gap = 153 wpm, inside
+  the 120-150 target for calm narration. Awaiting owner's ear before enabling.
+
 ## Cadence (history matters — read all)
 - 2026-07-15: ~~6/day~~ (monetization push) → flooded subscriber feeds.
 - 2026-07-18: ~~4/day subscriber-first~~.

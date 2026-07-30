@@ -1,11 +1,11 @@
 {
-  "_readme": "Money tracker for the bot. EDIT THE NUMBERS — anything marked ASSUMED/ESTIMATE is a guess. monthly_usd is the recurring price; start is when the subscription began (YYYY-MM-DD). scripts/cost_report.py turns this into the monthly money report.",
+  "_readme": "Money tracker for the bot. EDIT THE NUMBERS \u2014 anything marked ASSUMED/ESTIMATE is a guess. monthly_usd is the recurring price; start is when the subscription began (YYYY-MM-DD). scripts/cost_report.py turns this into the monthly money report.",
   "subscriptions": [
     {
       "name": "Claude subscription",
       "monthly_usd": 20.0,
       "start": "2026-06-05",
-      "note": "ASSUMED Pro plan at $20/mo — edit to your actual plan (Max is $100+/mo)"
+      "note": "ASSUMED Pro plan at $20/mo \u2014 edit to your actual plan (Max is $100+/mo)"
     },
     {
       "name": "ElevenLabs Starter",
@@ -17,12 +17,19 @@
       "name": "Anthropic API (content generation)",
       "monthly_usd": 3.0,
       "start": "2026-06-05",
-      "note": "ESTIMATE — Opus content calls + Haiku comment replies, ~4-5 calls/day. Check real usage at console.anthropic.com and correct this."
+      "note": "ESTIMATE for the monthly burn rate. Actual credit purchases are logged under one_time \u2014 see 2026-07-30 $20 top-up. Check real usage at console.anthropic.com and correct this."
     }
   ],
-  "one_time": [],
+  "one_time": [
+    {
+      "name": "Anthropic API credit top-up",
+      "usd": 20.0,
+      "date": "2026-07-30",
+      "note": "Owner purchased after running out of tokens mid-session (API had cut off). ASSUMED to be Anthropic API credits \u2014 correct this if it was a different service."
+    }
+  ],
   "free_services": [
-    "GitHub Actions (public repo — unlimited free minutes)",
+    "GitHub Actions (public repo \u2014 unlimited free minutes)",
     "edge-tts + gTTS voices (fallback pool)",
     "Pixabay + Pexels backgrounds",
     "YouTube Data & Analytics APIs",

@@ -318,10 +318,80 @@ _CB_MODEL = os.environ.get("CHATTERBOX_MODEL", "resemble-ai/chatterbox")
 # Calm, deliberate Stoic narration: Chatterbox docs say lower cfg_weight gives
 # slower/more measured pacing; keep exaggeration just under neutral so it reads
 # grounded rather than theatrical (matches the channel's meditative baseline).
-_CB_EXAGGERATION = float(os.environ.get("CHATTERBOX_EXAGGERATION", "0.45"))
-_CB_CFG_WEIGHT   = float(os.environ.get("CHATTERBOX_CFG_WEIGHT", "0.35"))
+# Measured on real samples (2026-07-30, samples/chatterbox_*.mp3): the old
+# 0.45/0.35 defaults read at 222 wpm — far too fast for this channel, and
+# single-shot generation TRUNCATED the script (10.5s vs 15.3s chunked for the
+# same 39 words). 0.35/0.25 + sentence chunking lands at 153 wpm, inside the
+# 120-150 target for calm narration.
+_CB_EXAGGERATION = float(os.environ.get("CHATTERBOX_EXAGGERATION", "0.35"))
+_CB_CFG_WEIGHT   = float(os.environ.get("CHATTERBOX_CFG_WEIGHT", "0.25"))
+# Pause inserted between sentences when chunking (seconds).
+_CB_GAP          = float(os.environ.get("CHATTERBOX_SENTENCE_GAP", "0.40"))
+# Run Chatterbox IN-PROCESS on the CI runner instead of calling Replicate.
+# Benchmarked at ~99s/post on a 4-core GitHub runner with no GPU — and the repo
+# is public, so those minutes are free. Requires torch + chatterbox-tts.
+_CB_LOCAL        = os.environ.get("CHATTERBOX_LOCAL", "0") not in ("0", "false", "False")
 # Optional voice cloning: a public URL to a short reference clip.
 _CB_VOICE_REF    = os.environ.get("CHATTERBOX_VOICE_URL", "").strip()
+
+
+_CB_MODEL_CACHE = None
+
+
+def _sentences(text: str) -> list:
+    """Split into sentences for chunked synthesis."""
+    parts = re.split(r"(?<=[.!?])\s+", (text or "").strip())
+    return [p.strip() for p in parts if p.strip()]
+
+
+def _synthesize_chatterbox_local(text: str, out_path: Path) -> tuple:
+    """Run Chatterbox in-process on the runner — no API, no key, no cost.
+
+    Synthesizes SENTENCE BY SENTENCE and concatenates with a short pause. This
+    is not cosmetic: single-shot generation silently truncated long scripts
+    (measured 10.5s vs 15.3s for the same text), and the per-sentence pauses are
+    what give the calm, deliberate pacing this channel wants.
+
+    Raises on any failure so synthesize_voice() falls through to the next engine.
+    """
+    global _CB_MODEL_CACHE
+    import torch  # heavy, optional — only imported when the local path is on
+    import torchaudio
+    from chatterbox.tts import ChatterboxTTS
+
+    if _CB_MODEL_CACHE is None:
+        print("  tts: loading Chatterbox locally (first call downloads weights)")
+        _CB_MODEL_CACHE = ChatterboxTTS.from_pretrained(device="cpu")
+    model = _CB_MODEL_CACHE
+    sr = model.sr
+
+    pieces = []
+    for sentence in _sentences(text) or [text]:
+        wav = model.generate(sentence, exaggeration=_CB_EXAGGERATION,
+                             cfg_weight=_CB_CFG_WEIGHT)
+        pieces.append(wav)
+        if _CB_GAP > 0:
+            pieces.append(torch.zeros(1, int(sr * _CB_GAP)))
+    audio = torch.cat(pieces, dim=-1)
+
+    # Chatterbox emits WAV; the rest of the pipeline expects an mp3 path.
+    wav_tmp = Path(out_path).with_suffix(".cb.wav")
+    torchaudio.save(str(wav_tmp), audio, sr)
+    subprocess.run(
+        ["ffmpeg", "-y", "-loglevel", "error", "-i", str(wav_tmp),
+         "-c:a", "libmp3lame", "-b:a", "192k", str(out_path)],
+        check=True, capture_output=True,
+    )
+    wav_tmp.unlink(missing_ok=True)
+
+    ok, dur, mean_db = _voice_audio_is_real(out_path, text)
+    wpm = len(_tokenize(text)) / (dur / 60) if dur else 0
+    print(f"  tts: Chatterbox(local) dur={dur:.1f}s {wpm:.0f}wpm "
+          f"mean_vol={mean_db:.1f}dB ({'ok' if ok else 'REJECTED'})")
+    if not ok:
+        raise RuntimeError(f"Chatterbox local audio unusable (dur={dur:.1f}s, "
+                           f"mean_vol={mean_db:.1f}dB)")
+    return out_path, _estimate_timings(text, dur)
 
 
 def _synthesize_chatterbox(text: str, out_path: Path) -> tuple:
@@ -503,6 +573,18 @@ def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     Raises RuntimeError only if every engine fails.
     """
     global LAST_VOICE_NAME
+    if _CB_LOCAL:
+        print("  tts: Chatterbox LOCAL active (in-process, no API, "
+              f"exaggeration={_CB_EXAGGERATION}, cfg_weight={_CB_CFG_WEIGHT}, "
+              f"sentence-chunked)")
+        try:
+            result = _synthesize_chatterbox_local(text, out_path)
+            LAST_VOICE_NAME = "ChatterboxLocal"
+            return result
+        except Exception as e:  # noqa: BLE001
+            print(f"  tts: local Chatterbox failed ({e}); trying next engine",
+                  file=sys.stderr)
+
     if _CB_TOKEN:
         print(f"  tts: Chatterbox active (model {_CB_MODEL}, "
               f"exaggeration={_CB_EXAGGERATION}, cfg_weight={_CB_CFG_WEIGHT})")

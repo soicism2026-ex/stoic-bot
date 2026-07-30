@@ -1,0 +1,7 @@
+# OPTIONAL heavy deps — only installed when the self-hosted Chatterbox voice is
+# enabled (repo variable CHATTERBOX_LOCAL=1). Kept out of requirements.txt so
+# normal runs stay light: torch alone adds ~2 minutes to every install.
+# Install with the CPU-only index:
+#   pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements-voice.txt
+chatterbox-tts>=0.1.1
