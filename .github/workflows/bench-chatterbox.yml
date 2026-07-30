@@ -1,0 +1,53 @@
+name: Benchmark Chatterbox (CPU)
+
+# One-off experiment, manual only — never touches posting.
+# Question: can Chatterbox TTS run self-hosted on a free CPU runner fast enough
+# to voice our Shorts at $0, replacing both ElevenLabs and the Replicate API?
+# Produces real timings + a downloadable audio sample to judge quality.
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  bench:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Show runner spec
+        run: |
+          echo "cores: $(nproc)"; free -g | head -2; df -h / | tail -1
+
+      # Cache the ~2GB of model weights so a real deployment only pays the
+      # download once. The benchmark reports load time either way.
+      - name: Cache HuggingFace weights
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-chatterbox-v1
+
+      - name: Install CPU-only torch + chatterbox
+        run: |
+          set -x
+          # CPU-only wheel is ~1/5 the size of the default CUDA build.
+          time pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
+          time pip install chatterbox-tts
+
+      - name: Run benchmark
+        run: python scripts/bench_chatterbox.py
+
+      - name: Upload audio sample
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: chatterbox-sample
+          path: bench_chatterbox.wav
+          if-no-files-found: warn
