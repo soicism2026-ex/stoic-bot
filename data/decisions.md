@@ -88,6 +88,17 @@ This file is for OPERATIONAL decisions and taste vetoes.
 - **2026-07-23** Recurring GUIDE character: marble statue opens AND closes every
   short (clip 0 + clip 5 of 6); 4 scene-matched b-roll clips between, cutting
   with the narration (~every 3s). Guide is also the thumbnail.
+- **2026-07-30** Higgsfield AI evaluated (cinematic video gen; unifies Kling,
+  Veo, Sora, Hailuo, Soul/Cinema Studio with camera-motion presets — well suited
+  to this channel's look). NOT viable as a per-post backend: free tier is 10
+  credits/day AND **watermarks output** (fatal for a monetization-seeking
+  channel), and the API is gated behind paid tiers with reportedly sparse docs.
+  Our volume needs ~3,240 credits/month (18 clips/day at ~6 credits) — far past
+  any sane plan. VIABLE ALTERNATIVE if the owner wants it: one month of a cheap
+  plan to hand-generate a REUSABLE library of ~20-30 statue GUIDE clips
+  (~120-180 credits, no watermark), commit them, and rotate — the guide opens
+  and closes every video, so one purchase upgrades all output permanently.
+  Verify current pricing before acting; Higgsfield has restructured repeatedly.
 - **2026-07-28** Backgrounds must be RELEVANT: stock picks only from top-3
   most-relevant results (`REEL_BG_TOP=3`). PIVOT ready: `src/imagegen.py`
   generates AI stills from the narration text when `OPENAI_API_KEY` secret +
