@@ -1600,3 +1600,17 @@ for any recurring defects.
 - Open on a more visually striking or high-contrast first frame (e.g. faster water motion or a bolder color pop) and increase weight/contrast on the top header
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-07-31 06:07 UTC
+**File:** `2026-07-31_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** If today asked too much—
+**Scores:** hook_strength=6.5 | text_legibility=7.0 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** The hook text 'IF TODAY ASKED TOO MUCH—' creates a decent open loop with an em-dash cliffhanger that invites completion, earning a solid-but-not-elite hook score. The waterfall backdrop is attractive and cinematic but is a common nature-scroll aesthetic that won't stop every viewer. Text legibility is good — bold amber sans-serif reads clearly against the darker background — though the amber-on-green/bright water areas in some frames (and the thin serif 'DAY 57' header) drop contrast slightly. Pacing is the weakest dimension: frames 1–4 are nearly identical, so the hook window feels static with almost no visual movement or transition energy, which risks stalling in the critical first 1.5 seconds. Scroll-stop potential is moderate — the scene is pretty and the text is intriguing, but nothing visually surprising jolts the thumb.
+**Issues:**
+- The four hook frames are almost identical, giving the opening 1.5s a static, low-energy feel
+- Amber body text partially overlaps bright white water and glare zones, reducing contrast in places; thin serif header is hard to read at phone size
+**Suggestions:**
+- Add motion in the hook window — a slow push-in, parallax, or animated text reveal — so the first 1.5s feels dynamic
+- Add a subtle dark gradient scrim behind the main text and reveal the hook word-by-word to boost curiosity and legibility
+**Flagged dims:** pacing
+
