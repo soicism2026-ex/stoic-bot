@@ -58,7 +58,7 @@ After the main post loop, the workflow runs:
 | `src/tts.py` | ElevenLabs primary (Brian → George → Adam, analytics-weighted). edge-tts fallback when no key. Returns per-word timings for karaoke. |
 | `src/render.py` | ffmpeg pipeline. 3-clip background (clip 0 = theme query, clip 1 = dramatic nature, clip 2 = ancient stone). Hook text at top, quote + author centred, music mixed. Captions OFF by default (`REEL_CAPTIONS=0`). |
 | `src/imagegen.py` | PIVOT: text-to-image backgrounds. When `REEL_IMAGE_BG=1` + `OPENAI_API_KEY`, each clip is an AI cinematic still depicting the exact narration beat (gpt-image-1) → Ken Burns clip. OFF by default; any failure falls back to stock. |
-| `src/backgrounds.py` | Generated (imagegen) → Pixabay → Pexels → synthetic lavfi fallback. Stock picks from top-`REEL_BG_TOP` (=3) most-relevant results, not a deep index. `clip_idx` drives diversity: idx 0 = theme-specific query, idx 1 = `DIVERSITY_QUERIES[0]` (nature), idx 2 = `DIVERSITY_QUERIES[1]` (stone). |
+| `src/backgrounds.py` | Guide library (bookend slots only) → generated (imagegen) → Pixabay → Pexels → synthetic lavfi fallback. Stock picks from top-`REEL_BG_TOP` (=3) most-relevant results, not a deep index. `clip_idx` drives diversity: idx 0 = theme-specific query, idx 1 = `DIVERSITY_QUERIES[0]` (nature), idx 2 = `DIVERSITY_QUERIES[1]` (stone). |
 | `src/music.py` | 3-track pool: `dark_ambient`, `ancient_minimal`, `focus_underscore`. Analytics-weighted after 5 posts per track, LRU before that. Pixabay music API. |
 | `src/publish.py` | YouTube Data API v3 upload. `set_thumbnail()` requires `youtube.force-ssl` scope. |
 | `src/promo.py` | Configurable CTA injection into description + comment. All copy in env vars. Toggle with `PROMO_ENABLED`. |
@@ -71,6 +71,7 @@ After the main post loop, the workflow runs:
 | `scripts/rethumbnail.py` | One-off: re-generates and uploads thumbnails for all past videos. `--only-missing` skips videos that already have a `maxres` thumbnail. |
 | `scripts/improve_loop.py` | The brain of the continuous improvement loop. Joins posts.csv + analytics.csv, evaluates last run's outcome, picks next focus area, writes a data-grounded prompt to `data/improve_prompt.txt`, and saves run memory to `data/improve_state.json`. |
 | `scripts/prune_videos.py` | Unlists underperforming videos. |
+| `scripts/prep_guide_clips.py` | Normalises hand-generated GUIDE clips into `assets/guide/` (1080×1920, trimmed, muted, compressed, sequentially named) so they can be committed. Prompts to generate them: `docs/guide_clip_prompts.md`. |
 | `scripts/cost_report.py` | Cost agent: reads `data/costs.json` (subscriptions incl. Claude + ElevenLabs, one-time buys), computes monthly burn, all-time spend, cost per Short / per 1k views. Standalone + embedded in the weekly channel report. |
 
 ---
@@ -159,7 +160,7 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 
 ## Key invariants
 
-- Background MP4s are gitignored (`assets/backgrounds/*.mp4`). Never commit video files.
+- Background MP4s are gitignored (`assets/backgrounds/*.mp4`). Never commit video files. **One deliberate exception:** `assets/guide/*.mp4` — the curated recurring-statue library, which CI must find on a fresh checkout. Keep it under ~80MB.
 - Quotes must be genuine public-domain Stoic text. Never fabricate or misattribute.
 - The `youtube.force-ssl` scope is required for thumbnails AND comments. If either returns 403, the refresh token needs re-scoping via `scripts/auth_setup.py`.
 - `data/posts.csv` is the single source of truth for rotation history and quote dedup. Do not delete rows.

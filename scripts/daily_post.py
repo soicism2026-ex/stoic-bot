@@ -424,6 +424,10 @@ def main():
     pack["REEL_BG_CLIPS"] = str(len(flavors))
     for i, q in enumerate(flavors):
         pack[f"REEL_BG_FLAVOR{i if i else ''}"] = q
+    # Tell backgrounds.py which slots ARE the guide, so a committed guide
+    # library (assets/guide/) can serve them instead of stock search — same
+    # character every day instead of a different bust. Harmless when empty.
+    pack["REEL_GUIDE_SLOTS"] = f"0,{len(flavors) - 1}"
 
     # Diegetic ambience replaces the music bed for this style (falls back to
     # the normal generative music if synthesis ever fails).

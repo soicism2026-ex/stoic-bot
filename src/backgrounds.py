@@ -2,6 +2,8 @@
 Background video sourcing for the daily Short.
 
 Source chain (first that succeeds wins):
+  0. Guide library — assets/guide/*.mp4, only for the recurring-character
+     bookend slots (REEL_GUIDE_SLOTS). Empty by default.
   1. Pixabay — portrait clip, works reliably from GitHub Actions (PIXABAY_API_KEY)
   2. Pexels  — secondary source; free-tier keys may 403 from cloud IPs (PEXELS_API_KEY)
   3. Synthetic — ffmpeg lavfi dark-gradient; always available, no network needed
@@ -19,6 +21,14 @@ import requests
 
 ROOT = Path(__file__).resolve().parent.parent
 BG_DIR = ROOT / "assets" / "backgrounds"
+
+# Curated, COMMITTED library of the recurring marble-statue GUIDE character that
+# opens and closes every short. Stock search can only ever approximate the guide
+# (a different bust every day); a hand-made library makes it the SAME character,
+# which is the whole point of a recurring guide. Empty by default — the pipeline
+# falls straight through to stock search, so this is purely additive.
+# See docs/guide_clip_prompts.md for how to fill it.
+GUIDE_DIR = ROOT / "assets" / "guide"
 
 # Scene-matching relevance window. Stock APIs return results ranked by relevance,
 # so we only ever pick from the TOP few (result #1 matches the query; #40 is
@@ -158,6 +168,43 @@ def _search_term(theme: str, clip_idx: int = 0) -> str:
         if keyword in t:
             return queries[day % len(queries)]
     return DEFAULT_QUERIES[day % len(DEFAULT_QUERIES)]
+
+
+def _guide_slots() -> set[int]:
+    """Clip indices that should show the recurring GUIDE character.
+
+    daily_post.py sets REEL_GUIDE_SLOTS="0,5" — the bookends of the 6-clip
+    assembly. Read at call time (the QA retry loop mutates env between attempts).
+    """
+    raw = os.environ.get("REEL_GUIDE_SLOTS", "").strip()
+    slots: set[int] = set()
+    for part in raw.split(","):
+        part = part.strip()
+        if part.lstrip("-").isdigit():
+            slots.add(int(part))
+    return slots
+
+
+def _guide_clip(clip_idx: int) -> Path | None:
+    """Pick a clip from the committed guide library, or None if there isn't one.
+
+    Rotates deterministically by date so the guide varies day to day, and offsets
+    the CLOSING bookend so the open and close of the same short are never the
+    identical clip (that reads as a loop bug, not as a returning character).
+    """
+    if not GUIDE_DIR.is_dir():
+        return None
+    clips = sorted(p for p in GUIDE_DIR.glob("*.mp4") if p.stat().st_size > 1_000)
+    if not clips:
+        return None
+    slots = sorted(_guide_slots())
+    # Position of this slot among the guide slots: 0 = opener, 1 = closer, ...
+    rank = slots.index(clip_idx) if clip_idx in slots else 0
+    day = date.today().toordinal() + _bg_offset()
+    # Stride by a number coprime-ish with the library size so the opener/closer
+    # pair drifts apart instead of always sitting next to each other.
+    stride = 1 + (len(clips) // 3)
+    return clips[(day + rank * stride) % len(clips)]
 
 
 def _rotate_local() -> Path:
@@ -338,6 +385,19 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     """
     out_path = Path(out_path)
     query = _search_term(theme, clip_idx=clip_idx)
+
+    # GUIDE LIBRARY (highest priority, zero cost, zero network). If this clip is
+    # a guide bookend AND the owner has committed a curated library, use it — a
+    # consistent recurring character beats whatever bust stock returns today.
+    # No library => returns None and everything below runs exactly as before.
+    if clip_idx in _guide_slots():
+        try:
+            g = _guide_clip(clip_idx)
+            if g is not None:
+                print(f"[background] SOURCE=GUIDE_LIBRARY file={g.name}", flush=True)
+                return g
+        except Exception as e:  # noqa: BLE001
+            print(f"[background] guide library skipped: {e}", file=sys.stderr, flush=True)
 
     # PIVOT: when image generation is enabled (REEL_IMAGE_BG=1 + OPENAI_API_KEY),
     # generate a cinematic still that depicts THIS query exactly, instead of

@@ -99,6 +99,18 @@ This file is for OPERATIONAL decisions and taste vetoes.
   (~120-180 credits, no watermark), commit them, and rotate — the guide opens
   and closes every video, so one purchase upgrades all output permanently.
   Verify current pricing before acting; Higgsfield has restructured repeatedly.
+- **2026-07-31** GUIDE LIBRARY built so that path is one command away, whatever
+  tool the clips come from (Higgsfield, Kling, Runway, stock, a museum phone
+  video). `assets/guide/*.mp4` is COMMITTED (deliberate exception to the
+  "never commit video" invariant — CI needs them on a fresh checkout) and
+  `backgrounds.fetch_background()` serves it for the bookend slots only
+  (`REEL_GUIDE_SLOTS`, set by daily_post), rotating by date with the closer
+  offset so a short never opens and closes on the same clip. Empty folder =
+  old stock behaviour exactly; a lookup failure degrades to stock, never
+  breaks a render. Prompts: `docs/guide_clip_prompts.md` (30 shots, character
+  bible, negative prompt, accept/reject checklist). Normaliser:
+  `scripts/prep_guide_clips.py` (1080x1920, trim, mute, compress, warns past
+  80 MB — committed bytes are paid for on every CI checkout, 3x/day).
 - **2026-07-28** Backgrounds must be RELEVANT: stock picks only from top-3
   most-relevant results (`REEL_BG_TOP=3`). PIVOT ready: `src/imagegen.py`
   generates AI stills from the narration text when `OPENAI_API_KEY` secret +
