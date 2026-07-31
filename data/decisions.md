@@ -51,6 +51,15 @@ This file is for OPERATIONAL decisions and taste vetoes.
   exaggeration 0.35 / cfg_weight 0.25 / 0.40s sentence gap = 153 wpm, inside
   the 120-150 target for calm narration. Awaiting owner's ear before enabling.
 
+- **2026-07-30** Hugging Face free tier evaluated as a voice backend: NOT viable.
+  Free accounts get only **$0.10/month** of Inference Provider credits and ~5
+  min/day of ZeroGPU (an interactive-Spaces perk, not a stable automation API);
+  PRO is $9/mo. Our 3 posts/day need ~5 min/day of compute — right at the free
+  ceiling, with cold starts and quota errors. The self-hosted path is strictly
+  better: genuinely $0, unlimited, no key, already benchmarked. NOTE: we DO
+  already use HF for free where it matters — hosting/downloading the Chatterbox
+  model weights (cached in CI). Do not re-propose HF inference as a cost saver.
+
 ## Cadence (history matters — read all)
 - 2026-07-15: ~~6/day~~ (monetization push) → flooded subscriber feeds.
 - 2026-07-18: ~~4/day subscriber-first~~.
