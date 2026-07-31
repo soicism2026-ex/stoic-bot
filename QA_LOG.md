@@ -1586,3 +1586,17 @@ for any recurring defects.
 - Add motion or a punch-in zoom / word-by-word text reveal during the hook so frames 1-4 feel dynamic rather than a frozen title card.
 - Increase contrast on body-frame text with a subtle dark gradient or drop shadow behind the serif quote, and bump the header weight for readability.
 
+
+## Visual QA — 2026-07-31 00:15 UTC
+**File:** `2026-07-31_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rule 7: Guard who you let close.
+**Scores:** hook_strength=7.0 | text_legibility=8.0 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'RULE 7: GUARD WHO YOU LET CLOSE.' is clear, bold, and creates mild curiosity via the numbered-rule framing that implies a series — decent but not universally scroll-stopping (7). Text legibility is strong: the large orange all-caps title has good contrast against the dark purple waterfall background, and body captions use white-with-stroke that reads well; the small 'DAY 57' header is thin and low-contrast, dragging it down slightly (8). Pacing is weak across the hook window — frames 1-4 are nearly identical static shots with barely perceptible motion, so the opening 1.5s feels frozen rather than energetic; the body introduces new imagery but transitions feel slow (4.5). Scroll-stop potential is moderate: the color grade and waterfall are pleasant but not arresting, and the static hook reduces the odds of a hard stop (6).
+**Issues:**
+- Hook frames 1-4 are visually near-identical, creating a static, motionless opening that hurts pacing
+- Small 'DAY 57 · UNTIL DISCIPLINE IS COOL AGAIN' header is thin, italic and low-contrast — nearly unreadable at phone size
+**Suggestions:**
+- Add a subtle zoom/parallax or a punch-in on the first second, plus animate the RULE 7 text in word-by-word to inject motion into the hook window
+- Open on a more visually striking or high-contrast first frame (e.g. faster water motion or a bolder color pop) and increase weight/contrast on the top header
+**Flagged dims:** pacing
+
