@@ -1654,3 +1654,16 @@ for any recurring defects.
 - Introduce a striking image (Seneca bust, Roman setting, or a face) or a punchy word-by-word text animation within the first 0.5s to add visual movement
 - Add a subtle zoom/parallax or reveal transition across the hook window so the opening 1.5s feels dynamic rather than a held static card
 
+
+## Visual QA — 2026-08-01 09:18 UTC
+**File:** `2026-08-01_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Rule 7: Fight only what you can move.
+**Scores:** hook_strength=7.5 | text_legibility=8.5 | pacing=7.0 | scroll_stop_potential=6.5
+**Reasoning:** The hook text 'Rule 7: Fight only what you can move' is punchy, curiosity-driven, and part of a numbered series which encourages retention — earning a solid 7.5, though the opening frame is nearly black and doesn't visually arrest until the flame element grows across frames 2-4. Text legibility is strong (8.5): bold amber sans-serif on dark backgrounds is crisp and readable, with only slight contrast risk where the flame overlaps the letters in frame 3. Pacing gets 7.0 — the igniting match creates a nice building visual rhythm through the hook and the body transitions to atmospheric imagery, but the movement is subtle rather than energetic. Scroll-stop potential is 6.5 because frame 1 is a mostly dark screen with static text; a scroller might not stop until the flame appears, so the very first impression is weaker than the concept deserves.
+**Issues:**
+- Frame 1 is almost entirely black with no visual anchor, wasting the critical first impression before the flame appears
+- Hook text remains static across all four hook frames — no motion or emphasis to reinforce the words themselves
+**Suggestions:**
+- Bring the flame/ember visual into frame 1 immediately so the opening frame is visually arresting from the first millisecond
+- Add a subtle scale-punch or color pulse on 'Rule 7' or 'MOVE' to create kinetic emphasis matched to the voiceover beat
+
