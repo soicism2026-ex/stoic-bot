@@ -1628,3 +1628,16 @@ for any recurring defects.
 - Increase contrast on the top banner (add a semi-transparent bar or heavier weight) or drop it during the hook to keep focus on the main line.
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-08-01 00:09 UTC
+**File:** `2026-08-01_reel.mp4` | **Verdict:** `PASS`
+**Hook:** The door is open.
+**Scores:** hook_strength=6.5 | text_legibility=7.5 | pacing=7.0 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'THE DOOR IS OPEN.' is intriguing and works with the memento mori theme, but frame 1 opens on a near-black screen with minimal visual interest, undercutting immediate scroll-stopping power; the flame/match reveal across frames 2-4 builds nicely and adds motion. Text legibility is strong for the main amber hook against dark backgrounds, though the header 'DAY 58 · UNTIL DISCIPLINE IS COOL AGAIN' is small and the body-frame captions ('DIAGNOSIS, A', 'GRIP TOO.') read as awkward mid-sentence fragments. Pacing is decent — the igniting flame gives a sense of progression and the body shifts to a strong silhouette/sunset image — but the very dark opening frames feel static. Scroll-stop potential is moderate: the concept is compelling but the dim first frame doesn't grab instantly, and the payoff visual only arrives later.
+**Issues:**
+- Frame 1 is almost entirely black with no visual anchor, weakening the critical first-impression scroll-stop moment.
+- Body captions split mid-phrase ('DIAGNOSIS, A', 'GRIP TOO.') creating confusing standalone text that undermines readability.
+**Suggestions:**
+- Front-load the lit flame or silhouette visual into frame 1 so the very first thing a scroller sees is bright and arresting.
+- Chunk voiceover captions into complete, self-contained phrases (e.g. 'A DIAGNOSIS' / 'A TIGHTENING GRIP') so no frame shows a dangling fragment.
+
