@@ -1,75 +1,75 @@
 # Stoic Shorts — Channel Report
 
 ## 🎯 Monetization goal (500 subs + 3M Shorts views / 90 days)
-- Subscribers: **178 / 500**  (36%)
-- Shorts views (rolling 90d): **52,898 / 3,000,000**  (1.8%)
-- Current run-rate: **~790 views/day** · needed for 3M/90d: **~33,300/day** — the gap closes with volume + a breakout video, not averages. Every post is a lottery ticket; the pipeline optimises the odds.
+- Subscribers: **205 / 500**  (41%)
+- Shorts views (rolling 90d): **62,281 / 3,000,000**  (2.1%)
+- Current run-rate: **~1,475 views/day** · needed for 3M/90d: **~33,300/day** — the gap closes with volume + a breakout video, not averages. Every post is a lottery ticket; the pipeline optimises the odds.
 
 ## 1. Health snapshot
-- Posts with data: **133** (of 133 total)
-- Total views: **52,898** · avg **398** · median **290** · best **1,255** · worst **4**
-- Engagement: **2.93%** like rate, **0.561%** comment rate
-- Trend: earlier 118 posts avg **419** → last 15 avg **233**  (DOWN 186)
+- Posts with data: **156** (of 156 total)
+- Total views: **62,281** · avg **399** · median **294** · best **1,255** · worst **4**
+- Engagement: **2.76%** like rate, **0.560%** comment rate
+- Trend: earlier 141 posts avg **403** → last 15 avg **365**  (DOWN 37)
   - _Caveat: newer videos are younger, so some of this gap is just age._
 
 ## Retention (the signal that actually drives reach)
-- Avg view %: **91.5%** across 132 videos
+- Avg view %: **88.8%** across 150 videos
 - Best retention: **2129%** — "The greater the difficulty, the more glo"
 - Worst retention: **16%** — "It is not that we have a short time to l"
 - _Optimise hooks/pacing for the high-retention patterns above._
 
 ## Avg views by theme
-- anger                          **541v**  (n=12)
-- mortality/memento mori         **482v**  (n=12)
-- fear                           **470v**  (n=11)
-- discipline                     **417v**  (n=13)
-- friendship                     **407v**  (n=11)
-- resilience                     **406v**  (n=11)
-- control vs acceptance          **366v**  (n=12)
-- ego                            **358v**  (n=13)
-- duty/justice                   **357v**  (n=11)
-- desire                         **334v**  (n=12)
+- mortality/memento mori         **515v**  (n=14)
+- anger                          **513v**  (n=14)
+- resilience                     **433v**  (n=14)
+- fear                           **425v**  (n=14)
+- discipline                     **406v**  (n=15)
+- friendship                     **400v**  (n=14)
+- duty/justice                   **384v**  (n=13)
+- desire                         **365v**  (n=14)
+- control vs acceptance          **349v**  (n=14)
+- ego                            **340v**  (n=15)
 - adversity as training          **298v**  (n=5)  ⚠️ weak
 - time                           **261v**  (n=10)  ⚠️ weak
 
 ## Avg views by author
 - Hierocles                      **639v**  (n=1)
-- Marcus Aurelius                **422v**  (n=24)
-- Zeno of Citium                 **422v**  (n=22)
-- Epictetus                      **408v**  (n=24)
-- Seneca                         **390v**  (n=27)
+- Zeno of Citium                 **455v**  (n=27)
+- Marcus Aurelius                **425v**  (n=28)
+- Epictetus                      **413v**  (n=28)
 - Chrysippus                     **380v**  (n=11)
-- Musonius Rufus                 **363v**  (n=22)
+- Seneca                         **367v**  (n=32)
+- Musonius Rufus                 **355v**  (n=27)
 - Cleanthes                      **224v**  (n=1)
 - Cato the Younger               **158v**  (n=1)
 
 ## Avg views by voice
 - Adam                           **728v**  (n=5)
-- Brian                          **572v**  (n=18)
+- Brian                          **553v**  (n=26)
 - George                         **524v**  (n=5)
 - Daniel                         **457v**  (n=1)
 - Eric                           **384v**  (n=12)
 - Ryan                           **368v**  (n=20)
-- Christopher                    **284v**  (n=33)  ⚠️ weak
+- Christopher                    **306v**  (n=48)  ⚠️ weak
 - Guy                            **201v**  (n=12)  ⚠️ weak
 - Andrew                         **126v**  (n=1)
 - BrianEdge                      **90v**  (n=5)  ⚠️ weak
 
 ## Avg views by music
 - focus_underscore               **446v**  (n=30)
+- cinematic_score                **396v**  (n=25)
 - ancient_minimal                **389v**  (n=29)
 - dark_ambient                   **379v**  (n=33)
-- cinematic_score                **260v**  (n=2)
 - amb_embers                     **253v**  (n=13)  ⚠️ weak
 - amb_rain_night                 **84v**  (n=3)
 - amb_wind_dawn                  **50v**  (n=2)
 
 ## Avg views by format (story is the viral bet)
-- rule                           **430v**  (n=6)
-- quote                          **331v**  (n=14)
-- minimal                        **236v**  (n=19)  ⚠️ weak
-- letter                         **218v**  (n=1)
-- story                          **190v**  (n=13)  ⚠️ weak
+- letter                         **394v**  (n=5)
+- rule                           **381v**  (n=11)
+- quote                          **356v**  (n=18)
+- minimal                        **313v**  (n=24)  ⚠️ weak
+- story                          **205v**  (n=18)  ⚠️ weak
 - pov                            **84v**  (n=3)
 - challenge                      **50v**  (n=2)
 
@@ -80,23 +80,23 @@
 - "It is not that we have a short time to live, but t…" posted 4× (views: 382, 4, 20, 568)
 
 ## Hook-lab
-- 2-3 words: **291v** avg (n=23)
-- 4-5 words: **345v** avg (n=19)
-- 6+ words: **222v** avg (n=22)
-- Best hook so far: "The one who stayed" (807v)
+- 2-3 words: **324v** avg (n=26)
+- 4-5 words: **382v** avg (n=27)
+- 6+ words: **258v** avg (n=34)
+- Best hook so far: "Right on time." (892v)
 
 ## Experiments (intro sound × colour grade)
 - punch+warm_gold        **399v** (n=4)
-- cold_open+warm_gold    **326v** (n=14)
-- swell+warm_gold        **264v** (n=13)
-- cold_open+obsidian     **263v** (n=13)
+- cold_open+warm_gold    **362v** (n=19)
+- swell+warm_gold        **315v** (n=19)
+- cold_open+obsidian     **315v** (n=19)
 - punch+obsidian         **260v** (n=4)
-- swell+obsidian         **188v** (n=13)
-- Intro signal: **punch** leads (punch 330v, cold_open 295v, swell 226v)
-- Grade signal: **warm_gold** leads (warm_gold 309v, obsidian 230v)
+- swell+obsidian         **232v** (n=19)
+- Intro signal: **cold_open** leads (cold_open 338v, punch 330v, swell 273v)
+- Grade signal: **warm_gold** leads (warm_gold 344v, obsidian 272v)
 
 ## Packaging (titles)
-- Shorter titles (≤45 chars): **329v** vs longer **430v**
+- Shorter titles (≤45 chars): **346v** vs longer **421v**
 
 ## Top 5
 -  1255v  Epictetus        duty/justice     Do your duty in the place where you are stat
@@ -113,16 +113,17 @@
 
 ## Data-driven candidates (you decide)
 - Drop / down-weight themes: **adversity as training, time**
-- Over-weight themes: **anger, mortality/memento mori, fear**
+- Over-weight themes: **mortality/memento mori, anger, resilience**
 - Test switching default voice away from **BrianEdge** toward **Adam**-style delivery.
 - Harden the duplicate-quote guard (same quote shipped twice above).
 
 ## 💰 Costs (edit data/costs.json to correct any number)
-- Claude subscription: **$20.00/mo** (since 2026-06-05, ~$34 total) ⚠️ _guess — edit me_
-- ElevenLabs Starter: **$5.00/mo** (since 2026-07-15, ~$2 total)
-- Anthropic API (content generation): **$3.00/mo** (since 2026-06-05, ~$5 total) ⚠️ _guess — edit me_
-- **Monthly burn: $28.00** · all-time spend: **~$41**
-- Unit economics: **$0.31 per Short** · **$0.77 per 1k views**
+- Claude subscription: **$20.00/mo** (since 2026-06-05, ~$39 total) ⚠️ _guess — edit me_
+- ElevenLabs Starter: **$5.00/mo** (since 2026-07-15, ~$3 total)
+- Anthropic API (content generation): **$3.00/mo** (since 2026-06-05, ~$6 total) ⚠️ _guess — edit me_
+- Anthropic API credit top-up: **$20.00** one-time (2026-07-30)
+- **Monthly burn: $28.00** · all-time spend: **~$68**
+- Unit economics: **$0.43 per Short** · **$1.06 per 1k views**
 - Running free: GitHub Actions (public repo — unlimited free minutes), edge-tts + gTTS voices (fallback pool), Pixabay + Pexels backgrounds, YouTube Data & Analytics APIs, Generative ambient music (ffmpeg)
 - _Revenue not tracked yet — add Gumroad numbers and this becomes a profit report._
 
