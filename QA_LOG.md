@@ -1789,3 +1789,17 @@ for any recurring defects.
 - Add a punchy text-reveal animation or a hard cut between hook frames to inject energy in the opening 1.5s
 - Increase weight/contrast of the top banner or drop it during the hook so it doesn't compete with the main text
 
+
+## Visual QA — 2026-08-05 00:15 UTC
+**File:** `2026-08-05_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rule 7: Practice hardship on purpose.
+**Scores:** hook_strength=7.5 | text_legibility=6.5 | pacing=4.0 | scroll_stop_potential=6.5
+**Reasoning:** Hook text 'Rule 7: Practice hardship on purpose' is a strong, actionable curiosity driver and the bold orange caps read well against the forest backdrop, earning a solid hook_strength. Legibility is decent but the amber-on-green tree texture creates spots of low contrast, and the top banner 'UNTIL DISCIPLINE IS COOL AGAIN' is thin, italic, and hard to parse — plus caption bugs like 'MEAL, TAKE' and 'TRAIN EASE' appear as garbled orphan words, hurting the score. Pacing is weak: the first four hook frames are essentially identical with only micro zoom on the same tree, so the opening 1.5s feels static rather than energetic. Scroll-stop is moderate — the number-based rule hook helps, but the muted, dim nature imagery isn't visually arresting enough to guarantee a stop.
+**Issues:**
+- Hook frames 1-4 are nearly identical (same tree, minor zoom) making the opening feel static and slow
+- Garbled caption fragments 'MEAL, TAKE' and 'TRAIN EASE' appear low-contrast and semantically broken
+**Suggestions:**
+- Introduce a hard visual cut or a punchy text-reveal animation within the first 1.5s instead of holding on one static tree shot
+- Fix the auto-captions so they show clean full phrases at high contrast, and thicken/brighten the top day-banner for readability
+**Flagged dims:** text_legibility, pacing
+
