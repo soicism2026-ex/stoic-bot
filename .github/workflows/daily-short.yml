@@ -19,9 +19,22 @@ permissions:
   contents: write
   issues: write
 
+# GitHub delivers backed-up scheduled runs in bursts — on 2026-08-06 two fired
+# 6 seconds apart. Two pipelines running at once both read posts.csv BEFORE
+# either commits, so both see "2 posts today" and both publish: the 3/day cap
+# silently becomes 4. Serialising the workflow makes the daily guard read
+# committed state, and removes the posts.csv push race at the same time.
+# cancel-in-progress is false — never kill a run that may be mid-upload.
+concurrency:
+  group: daily-short
+  cancel-in-progress: false
+
 jobs:
   post:
     runs-on: ubuntu-latest
+    # A normal run is ~5 min; a QA-retry-heavy one ~30. Anything past an hour is
+    # hung, and without this it would sit burning a runner for 6 hours.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
 

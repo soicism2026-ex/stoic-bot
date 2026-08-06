@@ -1,13 +1,22 @@
 """
 Pre-flight secrets validator. Run before the pipeline to confirm every API
-key is present and actually works. Exits 0 only if all required keys pass.
+key is present and actually works.
+
+It exits non-zero ONLY for a definitively bad credential (missing, revoked,
+401/400, invalid_grant). Transient failures — 5xx from the provider, 429, DNS
+and connection blips — are retried with backoff and then WARNED about, never
+failed. This gate guards the pipeline; it must never be the thing that kills
+it. A single Google 500 aborted the whole 2026-08-05 05:37 slot before this
+policy existed.
 
 Required keys:  ANTHROPIC_API_KEY, ELEVENLABS_API_KEY, YOUTUBE_CLIENT_ID,
                 YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN
 Optional keys:  PEXELS_API_KEY, PIXABAY_API_KEY (fallbacks exist without them)
 """
 import os
+import socket
 import sys
+import time
 import json
 import urllib.request
 import urllib.parse
@@ -19,25 +28,82 @@ PASS = "\033[32mPASS\033[0m"
 FAIL = "\033[31mFAIL\033[0m"
 SKIP = "\033[33mSKIP\033[0m"
 
+# How many times to retry a check that failed for a TRANSIENT reason before
+# giving up on it. Backoff is 2s, 4s.
+RETRIES = int(os.environ.get("SECRETS_CHECK_RETRIES", "3"))
+
+
+def _is_transient(exc: Exception) -> bool:
+    """True if this failure says nothing about whether the credential is valid.
+
+    Google returns 500/502/503 on its own bad days, and runners hit DNS and
+    connection blips. Treating those as "your credentials are invalid" aborts
+    the whole job — the 2026-08-05 05:37 slot died to a single Google 500 and
+    posted nothing. A blip must degrade to a warning, never a hard stop.
+    429 counts as transient too: rate limiting is not an auth problem.
+    """
+    if isinstance(exc, urllib.error.HTTPError):
+        return exc.code >= 500 or exc.code == 429
+    if isinstance(exc, _requests.exceptions.HTTPError):
+        resp = getattr(exc, "response", None)
+        code = getattr(resp, "status_code", 0) or 0
+        return code >= 500 or code == 429
+    return isinstance(exc, (
+        urllib.error.URLError,          # DNS / connection refused / TLS
+        socket.timeout,
+        TimeoutError,
+        ConnectionError,
+        _requests.exceptions.RequestException,
+    ))
+
+
+def _retrying(fn, label: str):
+    """Run fn(), retrying only on transient failures. Returns (value, error).
+
+    On success: (result, None). On failure: (None, last_exception) — the caller
+    decides whether that exception is fatal or merely a warning.
+    """
+    last: Exception | None = None
+    for attempt in range(1, max(1, RETRIES) + 1):
+        try:
+            return fn(), None
+        except Exception as e:  # noqa: BLE001
+            last = e
+            if not _is_transient(e) or attempt == max(1, RETRIES):
+                return None, e
+            wait = 2 ** attempt
+            print(f"  [{SKIP}] {label} — transient error ({e}); "
+                  f"retry {attempt}/{max(1, RETRIES) - 1} in {wait}s")
+            time.sleep(wait)
+    return None, last
+
 
 def check_anthropic() -> bool:
     key = os.environ.get("ANTHROPIC_API_KEY", "")
     if not key:
         print(f"  [{FAIL}] ANTHROPIC_API_KEY — not set")
         return False
-    try:
+    def _call():
         req = urllib.request.Request(
             "https://api.anthropic.com/v1/models",
             headers={"x-api-key": key, "anthropic-version": "2023-06-01"},
         )
         with urllib.request.urlopen(req, timeout=10) as r:
-            data = json.loads(r.read())
+            return json.loads(r.read())
+
+    data, err = _retrying(_call, "ANTHROPIC_API_KEY")
+    if err is None:
         count = len(data.get("data", []))
         print(f"  [{PASS}] ANTHROPIC_API_KEY — {count} models accessible")
         return True
-    except Exception as e:
-        print(f"  [{FAIL}] ANTHROPIC_API_KEY — {e}")
-        return False
+    if _is_transient(err):
+        # Anthropic's server having a bad minute is not a bad key. content.py
+        # has its own retry path; let the pipeline try for real.
+        print(f"  [{SKIP}] ANTHROPIC_API_KEY — API unreachable after {RETRIES} "
+              f"tries ({err}). Not a key problem; proceeding.")
+        return True
+    print(f"  [{FAIL}] ANTHROPIC_API_KEY — {err}")
+    return False
 
 
 def check_elevenlabs() -> bool:
@@ -81,7 +147,7 @@ def check_youtube() -> bool:
         return False
 
     # Exchange refresh token for an access token
-    try:
+    def _exchange():
         body = urllib.parse.urlencode({
             "grant_type": "refresh_token",
             "refresh_token": refresh_token,
@@ -94,7 +160,12 @@ def check_youtube() -> bool:
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         )
         with urllib.request.urlopen(req, timeout=10) as r:
-            tokens = json.loads(r.read())
+            return json.loads(r.read())
+
+    try:
+        tokens, err = _retrying(_exchange, "YOUTUBE credentials")
+        if err is not None:
+            raise err
 
         if "error" in tokens:
             print(f"  [{FAIL}] YOUTUBE credentials — {tokens['error']}: {tokens.get('error_description', '')}")
@@ -134,9 +205,18 @@ def check_youtube() -> bool:
                   f"check the API is enabled and the token has youtube.force-ssl. "
                   f"Detail: {body[:200]}")
             return False
+        if _is_transient(e):
+            print(f"  [{SKIP}] YOUTUBE — Google returned {e.code} after {RETRIES} "
+                  f"tries. That is Google's server, not your credentials. "
+                  f"Proceeding; upload has its own retry + backup path.")
+            return True
         print(f"  [{FAIL}] YOUTUBE credentials — {e}")
         return False
     except Exception as e:
+        if _is_transient(e):
+            print(f"  [{SKIP}] YOUTUBE — network unreachable after {RETRIES} tries "
+                  f"({e}). Not a credentials problem; proceeding.")
+            return True
         print(f"  [{FAIL}] YOUTUBE credentials — {e}")
         return False
 
@@ -222,7 +302,9 @@ def main():
     print("================================")
     failures = sum(1 for r in required if not r)
     if failures:
-        print(f"FAILED: {failures} required key(s) invalid. Fix secrets before proceeding.")
+        print(f"FAILED: {failures} required key(s) are definitively invalid "
+              f"(not a transient outage — those are retried and warned about). "
+              f"Fix the secret before the next run.")
         sys.exit(1)
     print("All required keys valid.")
 

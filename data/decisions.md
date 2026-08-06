@@ -75,6 +75,19 @@ This file is for OPERATIONAL decisions and taste vetoes.
   "lamed by his master") — YouTube suppressed one to 9 views. Imply stakes.
 - **2026-07-19** Rule numbers are CODE-assigned (models repeat 7/9). Never let the
   model choose N.
+- **2026-08-06** That code-assignment was silently DEAD for months and shipped
+  "Rule 7" thirteen times (after "Rule 9" four times). Cause was not the rule
+  logic: `data/posts.csv` still carried the original **7-column header** over
+  12-column rows, because `logbook.py` only wrote a header when creating the
+  file and `FIELDS` had since grown 7→9→10→11→12. `csv.DictReader` keys off the
+  header, so `hook`, `voice_name`, `music_track`, `experiment` and `format`
+  were unreadable — hook dedup, rule numbering, voice LRU/weighting and music
+  LRU/weighting all went blind at once, with no error. Header repaired in place
+  (no rows touched) and `logbook._repair_header()` now verifies it on every
+  append, so growing FIELDS can never do this again.
+  **Rule: posts.csv is read by header, so adding a column means fixing the
+  header — there is a test (`test_live_posts_csv_header_matches_fields`) that
+  now fails if it ever drifts again.**
 - **2026-07-20** Emotional core on every format + "letter" format added — owner
   wants personal, emotional, "feel seen" content.
 - **2026-07-20** VETO: pov + challenge formats (caption_only style) — cut for
@@ -135,6 +148,14 @@ This file is for OPERATIONAL decisions and taste vetoes.
   (1 unit/50 ids) + `PRUNE_MAX_PER_RUN=10` cap.
 - Replies were capped per RUN (5) not per DAY → 30/day = 1500 units. Now
   `MAX_REPLIES_PER_DAY=5` enforced from replied_comments.csv.
+- **2026-08-06** A single Google **HTTP 500** made `check_secrets.py` print
+  "YOUTUBE credentials — FAIL" and exit 1, which SKIPPED the entire pipeline
+  (the 05:37 slot posted nothing). Same mistake as the quota bug: a transient
+  provider error reported as a bad credential. Policy now: the pre-flight gate
+  exits non-zero ONLY for a definitively bad credential (missing, 400/401,
+  invalid_grant, non-quota 403). 5xx / 429 / DNS / timeout are retried with
+  backoff then WARNED about. **Rule: the gate must never be the thing that
+  kills the pipeline.**
 - **Rule:** any new YouTube API call must be costed against the 10,000/day
   budget, remembering the workflow fires 6 cron slots per day. Uploads
   (4800/day at 3 posts) always get first claim on the budget.
