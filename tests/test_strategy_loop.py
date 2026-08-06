@@ -1,7 +1,7 @@
 """Tests for scripts/strategy_loop.py — windowing, version bumping, doc structure."""
 import sys
 import unittest
-from datetime import date, datetime, timedelta
+from datetime import date, timedelta
 from pathlib import Path
 from unittest.mock import patch
 
@@ -216,7 +216,6 @@ class TestWriteStrategy(unittest.TestCase):
 class TestMinVideoThreshold(unittest.TestCase):
 
     def test_below_min_exits_early(self):
-        posts_csv = Path("/nonexistent/posts.csv")
         with patch.object(sl, "_load_posts", return_value=[]), \
              patch.object(sl, "MIN_VIDEOS", 5):
             # Running main() — should print message and return without calling Claude

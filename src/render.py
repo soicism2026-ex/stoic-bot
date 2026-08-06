@@ -711,11 +711,9 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         )
         bg_clips.append(fetch_background(theme, _clip_path, clip_idx=_i))
     os.environ["REEL_BG_OFFSET"] = str(base_offset)  # restore
-    bg = bg_clips[0]  # clip 0 = .bg.mp4, referenced by thumbnail code
 
     # width=22 keeps the serif quote inside the phone-fullscreen safe band.
     quote_lines = textwrap.wrap(quote, width=22) or [quote]
-    author_txt = _escape(f"— {author}")
 
     day = date.today().toordinal()
 

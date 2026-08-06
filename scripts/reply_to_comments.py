@@ -354,8 +354,7 @@ def main():
     for vid in video_ids:
         items = _fetch_top_comments(yt, vid, replied_ids, own_channel_id=own_channel_id)
         for item in items:
-            title = item["snippet"]["topLevelComment"]["snippet"].get("videoId", vid)
-            candidates.append((item, vid, vid))  # title fetched below
+            candidates.append((item, vid, vid))  # real title filled in below
 
     # Fetch video titles for context
     if candidates:

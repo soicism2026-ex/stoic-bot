@@ -9,7 +9,6 @@ import hashlib
 import os
 import sys
 from pathlib import Path
-from datetime import date
 
 import requests
 

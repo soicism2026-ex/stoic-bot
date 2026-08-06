@@ -1,5 +1,5 @@
 """Tests for src/visual_qa.py — threshold logic, verdict computation, JSON parsing."""
-import importlib
+import importlib.util
 import json
 import os
 import sys
@@ -189,6 +189,12 @@ class TestJSONParsing(unittest.TestCase):
         self.assertAlmostEqual(scores["text_legibility"], 5.0)
 
 
+@unittest.skipUnless(
+    importlib.util.find_spec("anthropic"),
+    "anthropic SDK not installed — these two exercise score_video's live import "
+    "path, which CI always has (it is in requirements.txt). Skipping keeps a "
+    "local run honestly green instead of red for an environment gap.",
+)
 class TestVisualQAResult(unittest.TestCase):
 
     def test_api_error_returns_flag(self):

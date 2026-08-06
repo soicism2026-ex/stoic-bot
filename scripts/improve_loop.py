@@ -17,7 +17,6 @@ Each area has a target metric, a measurement window, and a verdict threshold.
 """
 import csv
 import json
-import os
 import sys
 from collections import defaultdict
 from datetime import date, timedelta

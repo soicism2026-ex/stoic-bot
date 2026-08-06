@@ -178,7 +178,7 @@ def fetch_video_metrics(
                 print(f"  [youtube_analytics] quota error — stopping: {e}", file=sys.stderr)
                 break
             elif "403" in err:
-                print(f"  [youtube_analytics] 403 — ensure YOUTUBE_REFRESH_TOKEN includes "
+                print("  [youtube_analytics] 403 — ensure YOUTUBE_REFRESH_TOKEN includes "
                       "yt-analytics.readonly scope: {e}", file=sys.stderr)
                 break
             elif "400" in err:

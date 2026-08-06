@@ -526,7 +526,7 @@ def main():
                     except Exception as e:
                         print(f"  [thumbnail] skipped: {e}", file=sys.stderr)
                 else:
-                    print(f"  [thumbnail] bg.mp4 not found — skipping thumbnail upload", file=sys.stderr)
+                    print("  [thumbnail] bg.mp4 not found — skipping thumbnail upload", file=sys.stderr)
 
             # Post engagement question as a comment
             pinned_q = content.get("pinned_comment", "").strip()

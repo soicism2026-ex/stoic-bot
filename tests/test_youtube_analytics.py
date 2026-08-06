@@ -1,6 +1,4 @@
 """Tests for src/youtube_analytics.py — quota handling, cache logic, metric parsing."""
-import json
-import os
 import sys
 import tempfile
 import unittest

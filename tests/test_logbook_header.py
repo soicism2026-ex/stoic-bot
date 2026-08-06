@@ -6,7 +6,6 @@ blind at once — hook dedup, rule numbering, voice LRU, music LRU, format
 history — with no error anywhere. These tests lock the repair in.
 """
 import csv
-import importlib
 import sys
 from pathlib import Path
 

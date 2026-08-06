@@ -14,7 +14,6 @@ Output tells us:
     or just a 120px default frame
 """
 import csv
-import os
 import sys
 from pathlib import Path
 
