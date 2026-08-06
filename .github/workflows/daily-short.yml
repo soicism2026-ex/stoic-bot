@@ -61,29 +61,39 @@ jobs:
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
         run: python scripts/check_secrets.py
 
-      # SELF-HOSTED VOICE (optional). Set repository variable
-      # CHATTERBOX_LOCAL=1 (Settings > Secrets and variables > Actions >
-      # Variables) to run Chatterbox in-process for $0 instead of paying an
-      # API. Benchmarked ~99s/post on this runner; repo is public so the
-      # minutes are free. Skipped entirely when the variable is unset.
+      # SELF-HOSTED VOICE — ON by default since 2026-08-06 (owner approved
+      # sample variant B by ear). Chatterbox runs in-process for $0 instead of
+      # paying ElevenLabs or Replicate; benchmarked ~99s/post on this runner,
+      # and the repo is public so the minutes are free. To turn it OFF, set the
+      # repository variable CHATTERBOX_LOCAL=0 (Settings > Secrets and
+      # variables > Actions > Variables) — the chain then falls back to
+      # Replicate, then edge-tts, then gTTS. Every install step below is
+      # continue-on-error: a broken torch wheel must degrade the VOICE, never
+      # stop the post.
       - name: Cache Chatterbox weights
-        if: vars.CHATTERBOX_LOCAL == '1'
+        if: vars.CHATTERBOX_LOCAL != '0'
         uses: actions/cache@v4
         with:
           path: ~/.cache/huggingface
           key: hf-chatterbox-v1
 
       - name: Install self-hosted voice deps
-        if: vars.CHATTERBOX_LOCAL == '1'
+        if: vars.CHATTERBOX_LOCAL != '0'
+        continue-on-error: true
         run: |
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements-voice.txt
 
       - name: Run self-healing post pipeline
         env:
-          # Flips the primary voice to in-process Chatterbox when the repo
-          # variable is set; otherwise the chain starts at Replicate/edge-tts.
-          CHATTERBOX_LOCAL: ${{ vars.CHATTERBOX_LOCAL }}
+          # In-process Chatterbox is the primary voice. Defaults to on; set the
+          # repo variable CHATTERBOX_LOCAL=0 to fall back to Replicate/edge-tts.
+          CHATTERBOX_LOCAL: ${{ vars.CHATTERBOX_LOCAL || '1' }}
+          # Owner-approved pacing (sample variant B, 2026-08-06): the 0.25s
+          # sentence gaps give the viewer a beat to take in the background clip.
+          CHATTERBOX_EXAGGERATION: "0.45"
+          CHATTERBOX_CFG_WEIGHT: "0.35"
+          CHATTERBOX_SENTENCE_GAP: "0.25"
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           # With ELEVENLABS_API_KEY set, tts.py uses the "Brian" voice (top

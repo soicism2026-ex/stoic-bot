@@ -318,19 +318,24 @@ _CB_MODEL = os.environ.get("CHATTERBOX_MODEL", "resemble-ai/chatterbox")
 # Calm, deliberate Stoic narration: Chatterbox docs say lower cfg_weight gives
 # slower/more measured pacing; keep exaggeration just under neutral so it reads
 # grounded rather than theatrical (matches the channel's meditative baseline).
-# Measured on real samples (2026-07-30, samples/chatterbox_*.mp3): the old
-# 0.45/0.35 defaults read at 222 wpm — far too fast for this channel, and
-# single-shot generation TRUNCATED the script (10.5s vs 15.3s chunked for the
-# same 39 words). 0.35/0.25 + sentence chunking lands at 153 wpm, inside the
-# 120-150 target for calm narration.
-_CB_EXAGGERATION = float(os.environ.get("CHATTERBOX_EXAGGERATION", "0.35"))
-_CB_CFG_WEIGHT   = float(os.environ.get("CHATTERBOX_CFG_WEIGHT", "0.25"))
+# Measured on real samples (2026-07-30, samples/chatterbox_*.mp3): single-shot
+# generation TRUNCATED the script (10.5s vs 15.3s chunked for the same 39
+# words), so sentence chunking is a CORRECTNESS fix, not a stylistic one.
+# OWNER PICKED VARIANT B by ear (2026-08-06): 0.45/0.35 chunked with a 0.25s
+# sentence gap = 180 wpm. Not the slowest option on the table — the gaps are
+# the point. They give the viewer a beat to actually look at the background
+# clip between lines, which a continuous read steals. Do not "improve" this to
+# the 120-150 wpm textbook range without the owner's ear on it again.
+_CB_EXAGGERATION = float(os.environ.get("CHATTERBOX_EXAGGERATION", "0.45"))
+_CB_CFG_WEIGHT   = float(os.environ.get("CHATTERBOX_CFG_WEIGHT", "0.35"))
 # Pause inserted between sentences when chunking (seconds).
-_CB_GAP          = float(os.environ.get("CHATTERBOX_SENTENCE_GAP", "0.40"))
+_CB_GAP          = float(os.environ.get("CHATTERBOX_SENTENCE_GAP", "0.25"))
 # Run Chatterbox IN-PROCESS on the CI runner instead of calling Replicate.
 # Benchmarked at ~99s/post on a 4-core GitHub runner with no GPU — and the repo
 # is public, so those minutes are free. Requires torch + chatterbox-tts.
-_CB_LOCAL        = os.environ.get("CHATTERBOX_LOCAL", "0") not in ("0", "false", "False")
+# DEFAULT ON since 2026-08-06 (owner approved variant B). Set the repo variable
+# CHATTERBOX_LOCAL=0 to fall back to the hosted/edge-tts chain.
+_CB_LOCAL        = os.environ.get("CHATTERBOX_LOCAL", "1") not in ("0", "false", "False")
 # Optional voice cloning: a public URL to a short reference clip.
 _CB_VOICE_REF    = os.environ.get("CHATTERBOX_VOICE_URL", "").strip()
 
@@ -565,10 +570,11 @@ def _el_budget_allows(text: str) -> bool:
 def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
     """Synthesize `text` to `out_path`. Returns (out_path, word_timings).
 
-    Order: Chatterbox (Replicate — open source, preferred over ElevenLabs in
-    blind tests, pay-per-second) → ElevenLabs (legacy, if its key still works)
-    → free edge-tts pool → gTTS. Every engine failing over to the next means a
-    dead key or an API outage degrades the VOICE, never the channel.
+    Order: Chatterbox LOCAL (in-process on the CI runner — open source,
+    preferred over ElevenLabs in blind tests, and $0) → Chatterbox on Replicate
+    → ElevenLabs (legacy, if its key still works) → free edge-tts pool → gTTS.
+    Every engine failing over to the next means a dead key or an API outage
+    degrades the VOICE, never the channel.
     Sets LAST_VOICE_NAME to whichever voice actually spoke.
     Raises RuntimeError only if every engine fails.
     """

@@ -50,6 +50,20 @@ This file is for OPERATIONAL decisions and taste vetoes.
   Sentence-chunking is a CORRECTNESS fix, not just pacing. New defaults
   exaggeration 0.35 / cfg_weight 0.25 / 0.40s sentence gap = 153 wpm, inside
   the 120-150 target for calm narration. Awaiting owner's ear before enabling.
+- **2026-08-06** VERDICT: owner picked **variant B** by ear — exaggeration 0.45,
+  cfg_weight 0.35, 0.25s sentence gap, **180 wpm**. His reason, which is the
+  actual rule here: *"I like B since you have some time to think about the
+  background video between chunks."* The pauses are the FEATURE — they give the
+  viewer a beat to take in the background clip between lines. **Do NOT retune
+  toward the 120-150 wpm textbook range**; that measurement was mine, this
+  verdict is his ear, and his wins. Locked by `tests/test_voice_config.py`.
+- **2026-08-06** `CHATTERBOX_LOCAL` is now **ON by default** (code default and
+  workflow), so voice costs $0 with no repo variable to set. Chain: local
+  Chatterbox → Replicate → ElevenLabs (legacy) → edge-tts → gTTS. The dep
+  install is `continue-on-error` — a broken torch wheel degrades the VOICE,
+  never stops the post. Opt out with repo variable `CHATTERBOX_LOCAL=0`.
+  ElevenLabs ($5/mo, key currently 401ing) is now dead weight — cancel it once
+  a few posts have shipped on the local voice.
 
 - **2026-07-30** Hugging Face free tier evaluated as a voice backend: NOT viable.
   Free accounts get only **$0.10/month** of Inference Provider credits and ~5
