@@ -222,3 +222,60 @@ def test_generation_is_capped_per_run(cf, tmp_path, monkeypatch):
 def test_budget_exhaustion_returns_none_not_an_error(cf, tmp_path, monkeypatch):
     monkeypatch.setattr(cf, "MAX_IMAGES_PER_RUN", 0)
     assert cf.generate_clip("x", tmp_path / "o.mp4") is None
+
+
+# ------------------------------------------------- palette / grade / bookends
+
+def test_style_names_the_wrong_colours_explicitly(cf):
+    """FLUX produced saturated RED from a vague 'teal-and-orange' instruction.
+    Naming the forbidden colours is what actually moves it."""
+    s = cf.STYLE.lower()
+    assert "amber" in s and "teal" in s
+    for wrong in ("not red", "not magenta", "not purple"):
+        assert wrong in s, f"{wrong!r} missing — palette drift will come back"
+
+
+def test_style_asks_for_retained_shadow_detail(cf):
+    """render.py darkens on top; a crushed still becomes murky."""
+    assert "not crushed" in cf.STYLE.lower()
+
+
+def test_closing_bookend_varies_the_shot_but_not_the_seed(monkeypatch, tmp_path):
+    import backgrounds
+    monkeypatch.setenv("REEL_GUIDE_SLOTS", "0,5")
+    seen = {}
+    import imagegen as ig
+    monkeypatch.setattr(ig, "generate_clip",
+                        lambda prompt, out, seed=None, **kw:
+                        seen.update({out.name: (prompt, seed)}) or None)
+    monkeypatch.setattr(backgrounds, "_fetch_from_pixabay",
+                        lambda *a, **k: (_ for _ in ()).throw(RuntimeError("x")))
+    monkeypatch.setattr(backgrounds, "_fetch_from_pexels",
+                        lambda *a, **k: (_ for _ in ()).throw(RuntimeError("x")))
+    monkeypatch.setattr(backgrounds, "_fetch_synthetic",
+                        lambda t, o: o if o.write_bytes(b"\0" * 5000) is None else o)
+    backgrounds.fetch_background("discipline", tmp_path / "open.mp4", clip_idx=0)
+    backgrounds.fetch_background("discipline", tmp_path / "close.mp4", clip_idx=5)
+    (p_open, s_open) = seen["open.mp4"]
+    (p_close, s_close) = seen["close.mp4"]
+    assert s_open == s_close == backgrounds.GUIDE_SEED, "same statue"
+    assert p_open != p_close, "identical prompt+seed gives an identical image"
+    assert backgrounds.GUIDE_CLOSING_SHOT in p_close
+
+
+def test_render_lifts_brightness_only_for_generated_backgrounds(monkeypatch):
+    import render
+    monkeypatch.setenv("REEL_IMAGE_BG", "1")
+    monkeypatch.setenv("CLOUDFLARE_ACCOUNT_ID", "a")
+    monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "t")
+    importlib.reload(imagegen)
+    assert render._generated_backgrounds_active() is True
+    monkeypatch.setenv("REEL_IMAGE_BG", "0")
+    importlib.reload(imagegen)
+    assert render._generated_backgrounds_active() is False
+
+
+def test_brightness_lift_is_smaller_than_the_darkening():
+    """A lift bigger than the grade would wash the footage out instead."""
+    import render
+    assert 0 < render.GEN_BRIGHT_LIFT < min(abs(g[0]) for g in render._GRADES) + 0.05

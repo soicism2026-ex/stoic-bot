@@ -34,10 +34,22 @@ import requests
 # fight the quote card and captions.
 STYLE = os.environ.get(
     "REEL_IMAGE_STYLE",
-    "cinematic film still, dark moody dramatic chiaroscuro lighting, "
-    "teal-and-orange color grade, shallow depth of field, volumetric light, "
-    "atmospheric, photorealistic, shot on 35mm. Absolutely NO text, NO words, "
-    "NO letters, NO watermark, NO captions.",
+    # Palette is stated first, in concrete colour words, and the wrong colours
+    # are named explicitly. The original wording put "dramatic chiaroscuro"
+    # before a vague "teal-and-orange color grade" and FLUX obliged with a
+    # saturated RED/CYAN gel-lit look — striking, but a different channel's
+    # identity, and gold type does not read over red.
+    # Exposure is stated too: render.py then applies its own darkening grade on
+    # top (tuned for bright stock footage), so a still that arrives already
+    # crushed comes out murky. Ask for controlled midtones and let the grade do
+    # the darkening.
+    "cinematic film still. Colour palette: warm amber and gold highlights "
+    "against deep desaturated teal-blue shadows. NOT red, NOT magenta, NOT "
+    "purple, NOT neon. Soft directional key light with visible falloff, "
+    "controlled midtones, detail retained in the shadows, not crushed to "
+    "black. Shallow depth of field, subtle volumetric haze, photorealistic, "
+    "shot on 35mm film. Absolutely NO text, NO words, NO letters, NO "
+    "watermark, NO captions, NO logos.",
 )
 MODEL = os.environ.get("REEL_IMAGE_MODEL", "gpt-image-1")
 _SIZE = os.environ.get("REEL_IMAGE_SIZE", "1024x1536")  # portrait ~2:3

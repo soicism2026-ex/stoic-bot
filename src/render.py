@@ -91,6 +91,26 @@ HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFB830")      # warm amber/gol
 # (scripts/daily_post.py) when a render fails on text contrast.
 EXTRA_DARKEN = float(os.environ.get("REEL_EXTRA_DARKEN", "0"))
 
+# Brightness added back when backgrounds are AI-GENERATED rather than stock.
+# The _GRADES table darkens by 0.15-0.25 because stock footage is bright and
+# flat; generated stills arrive dark and pre-graded, so the same darkening
+# lands them in the mud.
+GEN_BRIGHT_LIFT = float(os.environ.get("REEL_GEN_BRIGHT_LIFT", "0.14"))
+
+
+def _generated_backgrounds_active() -> bool:
+    """True when this render's backgrounds came from an image model.
+
+    Asked at graph-build time rather than tracked per clip: generation is a
+    whole-run switch, so either every slot is generated or the provider was
+    never configured and all of them are stock.
+    """
+    try:
+        import imagegen
+        return imagegen.enabled()
+    except Exception:  # noqa: BLE001
+        return False
+
 # ---------------------------------------------------------------------------
 # Cinematic enhancement — pushes raw stock footage toward an After-Effects /
 # Topaz "graded and finished" look entirely inside ffmpeg:
@@ -772,8 +792,18 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     ]
     if ENHANCE_ON:
         pre_parts += [ENH_DENOISE, ENH_SHARPEN, "curves=preset=increase_contrast"]
+    # GENERATED backgrounds arrive already dark and already graded, unlike the
+    # bright flat stock footage this grade was tuned for. Stacking the full
+    # darkening on top produced exactly what the visual QA flagged on
+    # 2026-08-07: "background statue is too dark and murky". Lift the brightness
+    # and ease off the contrast when the source is generated — the look still
+    # comes from this grade, it just stops double-applying.
+    _br, _con = br, con
+    if _generated_backgrounds_active():
+        _br = br + GEN_BRIGHT_LIFT
+        _con = 1.0 + (con - 1.0) * 0.5
     pre_parts.append(
-        f"eq=brightness={br - EXTRA_DARKEN}:saturation={sat}:contrast={con}"
+        f"eq=brightness={_br - EXTRA_DARKEN}:saturation={sat}:contrast={_con}"
     )
     # ---- CINEMATIC grade (Nolan/Hoytema register): teal-cooled shadows, warm
     # amber highlights (the Hollywood teal-orange), a filmic S-curve that crushes

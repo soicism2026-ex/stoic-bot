@@ -35,6 +35,15 @@ GUIDE_DIR = ROOT / "assets" / "guide"
 # only to deliberately recast the guide — it will look like a different person.
 GUIDE_SEED = int(os.environ.get("REEL_GUIDE_SEED", "20260806"))
 
+# Appended to the CLOSING bookend's prompt only. Same seed keeps the same
+# statue; this changes the shot so the close reads as the guide receding rather
+# than as the opening frame played twice.
+GUIDE_CLOSING_SHOT = os.environ.get(
+    "REEL_GUIDE_CLOSING_SHOT",
+    "wider framing, the figure smaller in the frame, turned slightly away, "
+    "light falling off into darkness",
+)
+
 # Scene-matching relevance window. Stock APIs return results ranked by relevance,
 # so we only ever pick from the TOP few (result #1 matches the query; #40 is
 # barely related). This is the difference between footage that FITS the words and
@@ -413,8 +422,17 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
         # The guide bookends get a FIXED seed, so FLUX returns the same statue
         # every single day — a genuine recurring character, for free. B-roll
         # slots pass no seed so they stay varied.
-        seed = GUIDE_SEED if clip_idx in _guide_slots() else None
-        gen = imagegen.generate_clip(query, out_path, seed=seed)
+        slots = sorted(_guide_slots())
+        seed = GUIDE_SEED if clip_idx in slots else None
+        gen_query = query
+        if seed is not None and slots and clip_idx == slots[-1]:
+            # SAME seed (same statue) but a different shot, so the closing
+            # bookend is a RETURN to the character rather than a repeat of the
+            # opening frame. Without this the seed lock is too good: identical
+            # seed + identical prompt gave a byte-identical image, and the short
+            # opened and closed on exactly the same picture.
+            gen_query = f"{query}, {GUIDE_CLOSING_SHOT}"
+        gen = imagegen.generate_clip(gen_query, out_path, seed=seed)
         if gen is not None:
             print(f"[background] SOURCE=GENERATED query='{query}' file={gen.name}", flush=True)
             return gen
