@@ -1,0 +1,61 @@
+name: Preview backgrounds
+
+# Manual only. Fetches one background per clip slot through the REAL
+# backgrounds.fetch_background() chain, then commits a frame from each to
+# samples/frames/ so the owner can open them on a phone.
+#
+# Exists because the dev sandbox cannot reach cloudflare.com (network policy),
+# so "did Cloudflare actually serve this, or did it quietly fall back to
+# stock?" can only be answered on a runner. The SOURCE= lines in this job's
+# log are the answer; the PNGs are the verdict on whether it looks good.
+#
+# Never touches posting.
+
+on:
+  workflow_dispatch:
+    inputs:
+      theme:
+        description: "Theme to preview"
+        required: false
+        default: "discipline"
+
+permissions:
+  contents: write
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Fetch backgrounds and grab frames
+        env:
+          REEL_IMAGE_BG: "1"
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        run: python scripts/preview_backgrounds.py --theme "${{ inputs.theme || 'discipline' }}"
+
+      - name: Commit frames
+        run: |
+          git config user.name "stoic-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -f samples/frames/*.png
+          git diff --staged --quiet || git commit -m "preview: background frames [skip ci]"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase origin main && continue
+          done
