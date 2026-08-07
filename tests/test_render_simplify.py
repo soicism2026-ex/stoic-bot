@@ -112,3 +112,40 @@ def test_atmosphere_graph_wires_labels(monkeypatch):
     r = _reload(monkeypatch)
     g = r._atmosphere_graph("enh", "atmos", 12.0)
     assert "[enh]" in g and "[atmos]" in g and "blend=all_mode=screen" in g
+
+
+# ----------------------------------------------------- hook motion curve
+
+def test_hook_uses_ease_out_not_smoothstep(monkeypatch):
+    """Smoothstep eases IN, so it gave the hook the SLOWEST part of the move —
+    measured at 2.6% of its zoom in the first second, which is invisible. QA
+    scored pacing 3.5 and said "the candle flame barely moves"."""
+    r = _reload(monkeypatch)
+    hook = r._motion(0, 100)
+    body = r._motion(2, 100)
+    assert "(1-(1-" in hook, "hook is not front-loaded"
+    assert "3-2*" in body, "body clips should keep smoothstep"
+
+
+def test_hook_gets_a_bigger_push_than_body_clips(monkeypatch):
+    r = _reload(monkeypatch)
+    assert r.HOOK_MOTION_AMP > r.MOTION_AMP
+
+
+def test_hook_moves_visibly_within_the_first_second(monkeypatch):
+    """The scroll decision happens in ~1s. Anything under ~5% of zoom travel
+    in that window reads as a frozen frame."""
+    r = _reload(monkeypatch)
+    frames = 100                      # ~3.3s clip at 30fps
+    t = min(30 / frames, 1)           # one second in
+    travel = r.HOOK_MOTION_AMP * (1 - (1 - t) ** 2)
+    assert travel >= 0.05, f"only {travel:.3f} of zoom in the first second"
+
+
+def test_quote_has_an_outline_not_a_backing_box(monkeypatch):
+    """Generated backgrounds put a candle flame behind centre frame and the
+    drop shadow alone lost the lower lines. An outline hugs the glyphs; a box
+    would reintroduce the black-slab look just removed."""
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "borderw=3:bordercolor=black@0.55" in src
+    assert "box=0:borderw=3" in src, "must not switch the quote to a filled box"

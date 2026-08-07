@@ -153,13 +153,36 @@ def _ease(frames: int) -> str:
     return f"({t}*{t}*(3-2*{t}))"
 
 
+def _ease_out(frames: int) -> str:
+    """1-(1-t)^2 — fastest at the START, settling at the end.
+
+    Smoothstep is the wrong curve for the HOOK. It eases IN, so the opening
+    1.5s (the only part that decides whether anyone watches) gets the slowest
+    part of the move: measured, a smoothstep push travelled 2.6% of its zoom in
+    the first second, which is invisible. The visual QA scored pacing 3.5 and
+    said "the candle flame barely moves" — that was this curve, not a missing
+    one. Ease-out front-loads the movement instead.
+    """
+    n = max(1, frames)
+    t = f"min(on/{n},1)"
+    return f"(1-(1-{t})*(1-{t}))"
+
+
+# The hook clip gets a bigger push than the rest. It is the only shot competing
+# with a scroll, so it earns the strongest move in the video.
+HOOK_MOTION_AMP = float(os.environ.get("REEL_HOOK_MOTION_AMP", "0.18"))
+
+
 def _motion(clip_idx: int, frames: int) -> str:
     """zoompan for one clip: an eased move chosen by position in the sequence."""
-    s = _ease(frames)
+    # Clip 0 is the hook: front-loaded motion and a bigger push.
+    hook = clip_idx == 0
+    s = _ease_out(frames) if hook else _ease(frames)
+    amp = HOOK_MOTION_AMP if hook else MOTION_AMP
     move = _MOVES[clip_idx % len(_MOVES)]
     cx, cy = "iw/2-(iw/zoom/2)", "ih/2-(ih/zoom/2)"
     if move == "push":
-        z, x, y = f"1+{MOTION_AMP}*{s}", cx, cy
+        z, x, y = f"1+{amp}*{s}", cx, cy
     elif move == "pull":
         z, x, y = f"{1 + MOTION_AMP}-{MOTION_AMP}*{s}", cx, cy
     elif move == "driftl":
@@ -963,7 +986,14 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 f"text='{_escape(line)}':"
                 f"fontcolor={QUOTE_COLOR}:fontsize={QUOTE_FONTSIZE}:"
                 f"x=(w-text_w)/2:y={line_y}:"
-                f"box=0:shadowcolor=black@0.85:shadowx=4:shadowy=4:"
+                # A thin dark outline, not a backing plate. Generated
+                # backgrounds put bright things (a candle flame) behind the
+                # centre of frame, and a drop shadow alone lost the lower lines
+                # against it — QA flagged exactly that. An outline hugs the
+                # glyphs so it reads as type, where a box would reintroduce the
+                # black-slab look the owner just asked to remove.
+                f"box=0:borderw=3:bordercolor=black@0.55:"
+                f"shadowcolor=black@0.9:shadowx=4:shadowy=4:"
                 f"alpha='{quote_alpha}'"
             )
 
