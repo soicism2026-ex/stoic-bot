@@ -56,6 +56,20 @@ CF_MODEL = os.environ.get("CLOUDFLARE_IMAGE_MODEL",
                           "@cf/black-forest-labs/flux-1-schnell")
 # schnell is a distilled model: 4-8 steps is its whole design point.
 CF_STEPS = int(os.environ.get("CLOUDFLARE_IMAGE_STEPS", "8"))
+# schnell generates in ~1-2s, so 45s is already ten times generous. The old
+# 180s was a latent job-killer: 6 images per render x 5 QA attempts = 30 calls,
+# and at 180s each a hung provider would burn 90 minutes and blow past the
+# job timeout — turning "the background API is slow" into "no post today".
+CF_TIMEOUT = float(os.environ.get("CLOUDFLARE_IMAGE_TIMEOUT", "45"))
+
+# Hard ceiling on generated images per process. The QA loop re-renders up to 5
+# times and each render asks for 6 backgrounds, so an unlucky post can demand
+# 30 generations — and the backup top-up wants more on top. That is slow enough
+# to threaten the job timeout and wasteful enough to matter against a daily
+# free allowance. Past the ceiling generate_clip() returns None, which is the
+# module's normal "fall back to stock" path, so the post still ships.
+MAX_IMAGES_PER_RUN = int(os.environ.get("REEL_IMAGE_MAX_PER_RUN", "12"))
+_generated = 0
 
 
 def cloudflare_ready() -> bool:
@@ -105,12 +119,12 @@ def _generate_image_cloudflare(prompt: str, out_png: Path,
         body["seed"] = int(seed)
 
     resp = requests.post(url, headers={"Authorization": f"Bearer {CF_TOKEN}"},
-                         json=body, timeout=180)
+                         json=body, timeout=CF_TIMEOUT)
     if resp.status_code == 400:
         # Some Workers AI models reject extra params. Retry with the minimum
         # the API is documented to always accept rather than losing the image.
         resp = requests.post(url, headers={"Authorization": f"Bearer {CF_TOKEN}"},
-                             json={"prompt": full}, timeout=180)
+                             json={"prompt": full}, timeout=CF_TIMEOUT)
     resp.raise_for_status()
 
     payload = resp.json()
@@ -181,10 +195,16 @@ def generate_clip(prompt: str, out_path: Path, dur: float = 6.5,
     below covers-and-crops it to 9:16, so the left and right thirds are lost.
     Prompts should therefore put the subject centred and compose vertically.
     """
+    global _generated
     if not enabled():
+        return None
+    if _generated >= MAX_IMAGES_PER_RUN:
+        print(f"[imagegen] budget reached ({MAX_IMAGES_PER_RUN} images this "
+              f"run); using stock for the rest", flush=True)
         return None
     try:
         png = out_path.with_suffix(".gen.png")
+        _generated += 1
         if not _generate_image(prompt, png, seed=seed):
             return None
         # Still -> looping clip with a gentle push-in so a single frame doesn't

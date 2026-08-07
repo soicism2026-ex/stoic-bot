@@ -197,3 +197,28 @@ def test_guide_slots_get_a_fixed_seed(monkeypatch, tmp_path):
     vals = list(seeds.values())
     assert backgrounds.GUIDE_SEED in vals, "guide slot must pass the fixed seed"
     assert None in vals, "b-roll slots must stay unseeded so they vary"
+
+
+# ----------------------------------------------------------------- budgeting
+
+def test_generation_is_capped_per_run(cf, tmp_path, monkeypatch):
+    """The QA loop can demand 30 images for one post. Unbounded, that
+    threatens the job timeout and burns the daily free allowance; past the cap
+    the module must fall back to stock rather than keep going."""
+    monkeypatch.setattr(cf, "MAX_IMAGES_PER_RUN", 3)
+    monkeypatch.setattr(cf, "_generated", 0)
+    calls = {"n": 0}
+
+    def fake_gen(prompt, png, seed=None):
+        calls["n"] += 1
+        return False          # forces the None path without touching ffmpeg
+
+    monkeypatch.setattr(cf, "_generate_image", fake_gen)
+    for _ in range(10):
+        cf.generate_clip("x", tmp_path / "o.mp4")
+    assert calls["n"] == 3, "budget must stop further provider calls"
+
+
+def test_budget_exhaustion_returns_none_not_an_error(cf, tmp_path, monkeypatch):
+    monkeypatch.setattr(cf, "MAX_IMAGES_PER_RUN", 0)
+    assert cf.generate_clip("x", tmp_path / "o.mp4") is None
