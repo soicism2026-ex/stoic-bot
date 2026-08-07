@@ -1913,3 +1913,17 @@ for any recurring defects.
 - Introduce a brighter or higher-contrast focal element in frame 1 (e.g. the illuminated face from frame 5) to boost feed scroll-stop before viewers swipe
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-08-07 19:09 UTC
+**File:** `2026-08-07_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rome's most powerful mind bowed to no one
+**Scores:** hook_strength=7.0 | text_legibility=8.5 | pacing=3.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'Rome's most powerful mind bowed to no one' creates genuine curiosity and pairs a strong claim with an ego-driven promise, earning a solid 7 — though it doesn't name Seneca or add a visually shocking element to break through every feed. Text legibility is strong: bold yellow all-caps with dark outline against a deep purple/candle background is crisp and readable, minor deduction because the body quote's cream serif over the bright candle glow (frame 5) slightly reduces contrast on the lower lines. Pacing is the weak point: the first four hook frames are nearly identical — the candle flame barely moves and the text is static, so the opening 1.5s feels frozen rather than energetic. Scroll-stop potential is moderate; the candle mood and bold claim are atmospheric but the static composition and generic purple background won't force a stop from most scrollers.
+**Issues:**
+- Hook frames 1-4 are almost visually identical — no motion, zoom, or text animation to signal 'something is happening' in the critical first 1.5s
+- Body quote text in frame 5 partially overlaps the bright candle glow, softening contrast on 'himself free is free'
+**Suggestions:**
+- Add subtle motion to the hook — a slow push-in on the candle or word-by-word text reveal — to create kinetic energy in the opening frames
+- Reposition or add a stronger backing plate behind the body quote so text never sits over the brightest part of the flame, and consider teasing 'Seneca' visually in the hook to sharpen curiosity
+**Flagged dims:** pacing
+
