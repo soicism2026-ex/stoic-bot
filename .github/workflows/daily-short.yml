@@ -170,6 +170,14 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python scripts/reply_to_comments.py
 
+      # Judges the OUTPUT, not the code. Every repetition bug so far (Rule 7
+      # x13, one music bed x30, the same hook verbatim x3) passed the test
+      # suite, because the code was right and posts.csv was wrong. Warn-only:
+      # it must surface drift on the run page, never block a post.
+      - name: Variety check
+        continue-on-error: true
+        run: python scripts/variety_check.py
+
       - name: Commit log and backups
         run: |
           git config user.name "stoic-bot"

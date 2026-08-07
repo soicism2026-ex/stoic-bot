@@ -102,6 +102,25 @@ This file is for OPERATIONAL decisions and taste vetoes.
   **Rule: posts.csv is read by header, so adding a column means fixing the
   header — there is a test (`test_live_posts_csv_header_matches_fields`) that
   now fails if it ever drifts again.**
+- **2026-08-06** Owner: *"rule 7 is repeated consistently... and all the shorts
+  are similar in content every time, don't make it happen again."* Correct, and
+  the header bug was only ONE of three causes:
+  1. Rule numbers — the header bug. Fixed; next rule post is Rule 12.
+  2. **Music was byte-identical on 30/30 recent posts.** Cinematic mode (on by
+     default) hardcoded `cinematic_score`, so `pick_music()` and the whole
+     3-track pool were dead code. Now FIVE cinematic beds (E/D/F/C/G roots,
+     different beat rates and reverbs), LRU-rotated blocking the last TWO —
+     blocking one still let a bed return the same afternoon at 3 posts/day.
+  3. **Hook dedup only looked at the last 40 rows** (~13 days at 3/day), but
+     repeats came back at 17-day gaps: "Nero handed him a death sentence"
+     shipped VERBATIM three times. Now every hook ever published is banned
+     verbatim, with the recent window kept separately for pattern-avoidance.
+  **Safeguard: `scripts/variety_check.py` runs after every post** (warn-only,
+  continue-on-error) and judges the OUTPUT, not the code — verbatim hook
+  repeats, duplicate rule numbers, duplicate quotes, any single
+  format/theme/author/music/voice over 60% of the window, and formulaic hook
+  openers. Every repetition bug so far was invisible to unit tests because the
+  code was right and the DATA was wrong; this checks the data.
 - **2026-07-20** Emotional core on every format + "letter" format added — owner
   wants personal, emotional, "feel seen" content.
 - **2026-07-20** VETO: pov + challenge formats (caption_only style) — cut for

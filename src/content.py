@@ -409,15 +409,29 @@ def generate_content() -> dict:
     # model knows it must pick a completely different passage from the same source.
     author_used = [q for i, q in enumerate(used_quotes)
                    if rows[i].get("author") == required_author]
-    # Recent hooks (all formats) — prevents pattern repeats the model can't
-    # otherwise know about, e.g. generating "Rule 9" two days running.
-    recent_hooks = [r.get("hook", "") for r in rows[-40:] if r.get("hook")]
+    # EVERY hook ever used, not a recent window. A 40-row window is only ~13
+    # days at 3 posts/day, and the repeats in practice came back at 17-day
+    # gaps: "Nero handed him a death sentence" shipped VERBATIM three times
+    # (2026-07-17, 07-30, 08-06) while technically obeying the old window.
+    # Hooks are one line each, so banning all of them costs little.
+    all_hooks = [(r.get("hook") or "").strip() for r in rows]
+    all_hooks = [h for h in all_hooks if h]
+    recent_hooks = all_hooks[-40:]
     avoid_block = ""
+    if all_hooks:
+        banned = "\n".join(f'- "{h}"' for h in dict.fromkeys(all_hooks))
+        avoid_block += (
+            "\n\nCRITICAL — every hook this channel has ever published. You MUST "
+            "NOT reuse any of them verbatim, near-verbatim, or with a word "
+            "swapped. Do not reuse their opening formula either (if three of "
+            "them start with the same proper noun, do not start with it "
+            f"again):\n{banned}"
+        )
     if recent_hooks:
         hooked = "\n".join(f'- "{h}"' for h in recent_hooks)
         avoid_block += (
-            "\n\nRecent hooks — do NOT reuse their wording, numbers, or pattern "
-            f"(vary rule numbers especially):\n{hooked}"
+            "\n\nThe most recent hooks — avoid their PATTERN and rhythm too, not "
+            f"just their words (vary rule numbers especially):\n{hooked}"
         )
     if used_quotes:
         quoted = "\n".join(f'- "{q}"' for q in used_quotes[-200:])

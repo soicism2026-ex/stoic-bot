@@ -94,6 +94,27 @@ def pick_music(rows: list[dict]) -> dict:
     return max(candidates, key=lambda t: avgs.get(t["name"], 0))
 
 
+# Every cinematic bed, in rotation order. Cinematic mode overrides pick_music()
+# for classic posts, so without this the score never changes.
+CINEMATIC_SCORES = [
+    "cinematic_score", "cinematic_score_d", "cinematic_score_f",
+    "cinematic_score_c", "cinematic_score_g",
+]
+
+
+def pick_cinematic_score(rows: list[dict]) -> dict:
+    """LRU-rotate the cinematic bed, blocking the last two used.
+
+    Blocking TWO is deliberate: with a 5-bed pool and 3 posts a day, blocking
+    only the previous one still lets a bed come back the same afternoon, which
+    is exactly the sameness this fixes.
+    """
+    recent = [r.get("music_track") for r in reversed(rows) if r.get("music_track")]
+    block = {t for t in recent[:2] if t}
+    candidates = [n for n in CINEMATIC_SCORES if n not in block] or CINEMATIC_SCORES
+    return {"name": candidates[date.today().toordinal() % len(candidates)]}
+
+
 # ---------------------------------------------------------------------------
 # Download / cache
 # ---------------------------------------------------------------------------
@@ -131,10 +152,17 @@ _MUSIC_SYNTH = {
         "aecho=0.8:0.9:200|360:0.35|0.25,volume=2.2,alimiter=limit=0.9"
     ),
     # CINEMATIC SCORE — a dark, deep, building film bed (Zimmer register): a
-    # sub-bass foundation (E1/E2) + a slowly beating minor drone for unease + a
-    # bare fifth for scale + a filtered-noise "air", swelled slowly and thrown
-    # into a big reverb. Sits under the voice like a feature-film underscore.
-    "cinematic_score": (
+    # sub-bass foundation + a slowly beating minor drone for unease + a bare
+    # fifth for scale + a filtered-noise "air", swelled slowly and thrown into a
+    # big reverb. Sits under the voice like a feature-film underscore.
+    #
+    # FIVE KEYS, not one. Cinematic mode is on for every classic post, and it
+    # used to hardcode ONE bed — so 30 of the last 30 posts shipped with a
+    # byte-identical score. The 3-track pool below was dead code in practice and
+    # the channel sounded like one long video. Same identity, different root:
+    # E1 / D1 / F1 / C1 / G1, each with its own beat rate and reverb so the ear
+    # hears a different cue, not a transpose.
+    "cinematic_score": (           # E — the original, keeps history comparable
         "sine=frequency=41:duration={d},volume=0.95[sub];"
         "sine=frequency=82:duration={d},volume=0.5[m1];"
         "sine=frequency=82.7:duration={d},volume=0.42[m2];"
@@ -144,6 +172,56 @@ _MUSIC_SYNTH = {
         "anoisesrc=d={d}:c=pink,lowpass=f=340,volume=0.06[air];"
         "[sub][m1][m2][minor][fifth][oct][air]amix=inputs=7:duration=longest,"
         "tremolo=f=0.1:d=0.4,aecho=0.85:0.9:260|430:0.35|0.25,"
+        "volume=2.7,alimiter=limit=0.92"
+    ),
+    "cinematic_score_d": (         # D — a whole tone lower, heavier, slower beat
+        "sine=frequency=36.7:duration={d},volume=0.95[sub];"
+        "sine=frequency=73.4:duration={d},volume=0.5[m1];"
+        "sine=frequency=74.1:duration={d},volume=0.42[m2];"
+        "sine=frequency=87.3:duration={d},volume=0.3[minor];"
+        "sine=frequency=110:duration={d},volume=0.2[fifth];"
+        "sine=frequency=146.8:duration={d},volume=0.1[oct];"
+        "anoisesrc=d={d}:c=pink,lowpass=f=300,volume=0.07[air];"
+        "[sub][m1][m2][minor][fifth][oct][air]amix=inputs=7:duration=longest,"
+        # ffmpeg's tremolo rejects f < 0.1, so the "slower" feel comes from a
+        # deeper sweep and a longer echo rather than a lower rate.
+        "tremolo=f=0.1:d=0.55,aecho=0.85:0.9:300|470:0.38|0.28,"
+        "volume=2.7,alimiter=limit=0.92"
+    ),
+    "cinematic_score_f": (         # F — brighter, tighter reverb, more urgent
+        "sine=frequency=43.7:duration={d},volume=0.92[sub];"
+        "sine=frequency=87.3:duration={d},volume=0.5[m1];"
+        "sine=frequency=88.1:duration={d},volume=0.42[m2];"
+        "sine=frequency=103.8:duration={d},volume=0.3[minor];"
+        "sine=frequency=131:duration={d},volume=0.22[fifth];"
+        "sine=frequency=174.6:duration={d},volume=0.11[oct];"
+        "anoisesrc=d={d}:c=pink,lowpass=f=380,volume=0.06[air];"
+        "[sub][m1][m2][minor][fifth][oct][air]amix=inputs=7:duration=longest,"
+        "tremolo=f=0.13:d=0.35,aecho=0.8:0.88:220|380:0.32|0.22,"
+        "volume=2.7,alimiter=limit=0.92"
+    ),
+    "cinematic_score_c": (         # C — the deepest, most funereal; memento mori
+        "sine=frequency=32.7:duration={d},volume=1.0[sub];"
+        "sine=frequency=65.4:duration={d},volume=0.5[m1];"
+        "sine=frequency=66:duration={d},volume=0.42[m2];"
+        "sine=frequency=77.8:duration={d},volume=0.3[minor];"
+        "sine=frequency=98:duration={d},volume=0.2[fifth];"
+        "sine=frequency=130.8:duration={d},volume=0.1[oct];"
+        "anoisesrc=d={d}:c=pink,lowpass=f=280,volume=0.07[air];"
+        "[sub][m1][m2][minor][fifth][oct][air]amix=inputs=7:duration=longest,"
+        "tremolo=f=0.1:d=0.62,aecho=0.88:0.92:340|520:0.40|0.30,"
+        "volume=2.7,alimiter=limit=0.92"
+    ),
+    "cinematic_score_g": (         # G — most open/hopeful of the set
+        "sine=frequency=49:duration={d},volume=0.9[sub];"
+        "sine=frequency=98:duration={d},volume=0.5[m1];"
+        "sine=frequency=98.8:duration={d},volume=0.42[m2];"
+        "sine=frequency=116.5:duration={d},volume=0.3[minor];"
+        "sine=frequency=147:duration={d},volume=0.2[fifth];"
+        "sine=frequency=196:duration={d},volume=0.1[oct];"
+        "anoisesrc=d={d}:c=pink,lowpass=f=400,volume=0.055[air];"
+        "[sub][m1][m2][minor][fifth][oct][air]amix=inputs=7:duration=longest,"
+        "tremolo=f=0.11:d=0.38,aecho=0.82:0.9:240|400:0.34|0.24,"
         "volume=2.7,alimiter=limit=0.92"
     ),
     # soft pad with a gentle pulse: low pad + fifth + high pad, slow tremolo

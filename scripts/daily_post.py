@@ -440,11 +440,15 @@ def main():
     elif cinematic:
         # CINEMATIC bed + the "BRAAAM" orchestral-swell intro on every classic
         # post — the single biggest lever on the feature-film feel.
-        score = music_mod.fetch_music({"name": "cinematic_score"},
+        # The bed is LRU-rotated across five keys. Hardcoding one name here is
+        # what made 30 of the last 30 posts ship a byte-identical score and
+        # left pick_music()'s whole pool as dead code.
+        score_track = music_mod.pick_cinematic_score(post_rows)
+        score = music_mod.fetch_music(score_track,
                                       ROOT / "data" / f"{today}_score.mp3")
         if score:
             music_path = score
-            music_track = {"name": "cinematic_score"}
+            music_track = score_track
         pack.setdefault("REEL_HOOK_SOUND", "1")
         pack.setdefault("REEL_HOOK_SOUND_PRESET", "cinematic")
 
