@@ -107,14 +107,14 @@ def test_sends_prompt_steps_and_seed(cf, tmp_path, monkeypatch):
 
 
 def test_style_block_is_appended_to_every_prompt(cf, tmp_path, monkeypatch):
-    """The 'NO text/watermark' clause must reach the model or generated
-    backgrounds fight the quote card."""
+    """The style block carries the whole look — palette, light source,
+    exposure. If it does not reach the model the backgrounds are unbranded."""
     seen = {}
     monkeypatch.setattr(cf.requests, "post",
                         lambda url, headers=None, json=None, timeout=None:
                         (seen.update(json), FakeResp({"result": {"image": B64}}))[1])
     cf._generate_image_cloudflare("a statue", tmp_path / "o.png")
-    assert "NO watermark" in seen["prompt"]
+    assert "35mm" in seen["prompt"], "style block did not reach the model"
 
 
 def test_retries_without_extra_params_on_400(cf, tmp_path, monkeypatch):
@@ -226,18 +226,30 @@ def test_budget_exhaustion_returns_none_not_an_error(cf, tmp_path, monkeypatch):
 
 # ------------------------------------------------- palette / grade / bookends
 
-def test_style_names_the_wrong_colours_explicitly(cf):
-    """FLUX produced saturated RED from a vague 'teal-and-orange' instruction.
-    Naming the forbidden colours is what actually moves it."""
+def test_style_uses_no_colour_negation(cf):
+    """Diffusion text encoders have no reliable "not". Naming forbidden
+    colours put those tokens in the prompt and the model rendered them anyway
+    — measured twice on real Cloudflare output. Colour must be fixed by
+    describing a physical light source, never by denial."""
     s = cf.STYLE.lower()
-    assert "amber" in s and "teal" in s
-    for wrong in ("not red", "not magenta", "not purple"):
-        assert wrong in s, f"{wrong!r} missing — palette drift will come back"
+    for banned in ("not red", "not magenta", "not purple", "not neon", "no red"):
+        assert banned not in s, f"{banned!r} is negation — it backfires here"
+    assert "candle" in s or "lantern" in s, "no physical light source named"
+    assert "amber" in s or "honey" in s or "golden" in s
+
+
+def test_guide_queries_name_a_light_source_not_a_style(cf):
+    """'dramatic chiaroscuro' + marble bust lands on the red/cyan gel look."""
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    block = src.split("STATUE_GUIDE = [")[1].split("]")[0].lower()
+    assert "chiaroscuro" not in block, "style word invites the wrong palette"
+    assert any(w in block for w in ("candlelight", "lantern", "firelight",
+                                    "window light"))
 
 
 def test_style_asks_for_retained_shadow_detail(cf):
     """render.py darkens on top; a crushed still becomes murky."""
-    assert "not crushed" in cf.STYLE.lower()
+    assert "rather than crushed" in cf.STYLE.lower()
 
 
 def test_closing_bookend_varies_the_shot_but_not_the_seed(monkeypatch, tmp_path):

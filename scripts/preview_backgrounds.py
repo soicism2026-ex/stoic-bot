@@ -31,7 +31,7 @@ OUT = ROOT / "samples" / "frames"
 
 # The same 6-slot assembly daily_post builds: guide bookends around four
 # scene-matched b-roll beats. Slots 0 and 5 must come back as the SAME statue.
-GUIDE_Q = "marble bust ancient philosopher dramatic chiaroscuro slow"
+GUIDE_Q = "marble bust ancient philosopher lit by warm candlelight, dark room"
 BEATS = [
     "a man sitting alone on the edge of a bed at night, head lowered",
     "a storm breaking over an empty ancient colonnade",

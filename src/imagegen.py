@@ -34,22 +34,26 @@ import requests
 # fight the quote card and captions.
 STYLE = os.environ.get(
     "REEL_IMAGE_STYLE",
-    # Palette is stated first, in concrete colour words, and the wrong colours
-    # are named explicitly. The original wording put "dramatic chiaroscuro"
-    # before a vague "teal-and-orange color grade" and FLUX obliged with a
-    # saturated RED/CYAN gel-lit look — striking, but a different channel's
-    # identity, and gold type does not read over red.
-    # Exposure is stated too: render.py then applies its own darkening grade on
-    # top (tuned for bright stock footage), so a still that arrives already
-    # crushed comes out murky. Ask for controlled midtones and let the grade do
-    # the darkening.
-    "cinematic film still. Colour palette: warm amber and gold highlights "
-    "against deep desaturated teal-blue shadows. NOT red, NOT magenta, NOT "
-    "purple, NOT neon. Soft directional key light with visible falloff, "
-    "controlled midtones, detail retained in the shadows, not crushed to "
-    "black. Shallow depth of field, subtle volumetric haze, photorealistic, "
-    "shot on 35mm film. Absolutely NO text, NO words, NO letters, NO "
-    "watermark, NO captions, NO logos.",
+    # NO NEGATION. Diffusion text encoders have no reliable mechanism for
+    # "not": writing "NOT red, NOT magenta" puts those tokens in the prompt and
+    # the model renders them anyway — measured, twice, on real Cloudflare
+    # output (samples/frames, 2026-08-07). The fix is not a stronger denial, it
+    # is to describe a PHYSICAL LIGHT SOURCE, because a named source implies
+    # its own colour temperature and leaves the model nothing to invent.
+    # "Dramatic chiaroscuro" plus "stoic marble bust" sits right on top of the
+    # red/cyan gel-lit look that floods this aesthetic online, so the light has
+    # to be specified or that association wins by default.
+    #
+    # Exposure is stated too: render.py applies its own darkening grade on top
+    # (tuned for bright stock footage), so a still that arrives already crushed
+    # comes out murky. Ask for controlled midtones; let the grade darken.
+    "cinematic film still, lit by a single warm candle flame just out of "
+    "frame, low golden lantern light, honey and amber tones on the lit side, "
+    "soft neutral grey-blue shade on the unlit side, gentle light falloff "
+    "into a dark neutral background, detail retained in the shadows rather "
+    "than crushed to black, controlled midtones, shallow depth of field, "
+    "subtle volumetric haze, photorealistic, shot on 35mm film, natural "
+    "colour, muted and restrained palette.",
 )
 MODEL = os.environ.get("REEL_IMAGE_MODEL", "gpt-image-1")
 _SIZE = os.environ.get("REEL_IMAGE_SIZE", "1024x1536")  # portrait ~2:3

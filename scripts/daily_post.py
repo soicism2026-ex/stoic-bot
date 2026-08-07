@@ -411,11 +411,16 @@ def main():
     # so it never reads as a literal repeat). Between the bookends, one
     # scene-matched clip per beat of the voiceover, so the visuals track the
     # words in real time. 6 clips over ~18-20s ≈ a cut every ~3s.
+    # "dramatic chiaroscuro" was doing real damage once backgrounds became
+    # GENERATED: paired with a stoic marble bust it lands squarely on the
+    # red/cyan gel-lit look that saturates this aesthetic online, and the model
+    # produced exactly that. Each query now names a warm, natural light source
+    # instead of a lighting style, which fixes the colour at the source.
     STATUE_GUIDE = [
-        "marble bust ancient philosopher dramatic chiaroscuro slow",
-        "stone statue stoic philosopher dark shadow cinematic",
-        "ancient greek marble head sculpture moody candlelight slow",
-        "weathered marble bust wise man low-key lighting slow zoom",
+        "marble bust ancient philosopher lit by warm candlelight, dark room",
+        "stone statue stoic philosopher warm lantern glow, deep shade",
+        "ancient greek marble head sculpture by firelight, quiet dark room",
+        "weathered marble bust wise man, low warm window light at dusk",
     ]
     guide = STATUE_GUIDE[(day if isinstance(day, int) else 0) % len(STATUE_GUIDE)]
     broll = [q.strip() for q in (content.get("broll_queries") or []) if q and q.strip()]
