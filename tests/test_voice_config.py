@@ -96,6 +96,22 @@ def test_workflow_enables_local_voice_and_pins_variant_b():
     assert float(env["CHATTERBOX_SENTENCE_GAP"]) == VARIANT_B["gap"]
 
 
+def test_voice_step_conditions_force_a_string_comparison():
+    """GitHub casts to NUMBER when operand types differ, so an unset variable
+    (null -> 0) compares equal to the string '0'. Written the obvious way,
+    `vars.X != '0'` is FALSE when X does not exist — which silently skipped
+    the install steps and left the $0 voice off while everything else said on.
+    format() forces both sides to strings."""
+    yaml = pytest.importorskip("yaml")
+    wf = yaml.safe_load((ROOT / ".github/workflows/daily-short.yml").read_text())
+    conds = [s["if"] for s in wf["jobs"]["post"]["steps"]
+             if "CHATTERBOX_LOCAL" in str(s.get("if", ""))]
+    assert conds, "no step is gated on CHATTERBOX_LOCAL"
+    for c in conds:
+        assert "format(" in c, (
+            f"bare comparison {c!r} silently skips when the variable is unset")
+
+
 def test_voice_dep_install_cannot_break_a_post():
     """A bad torch wheel must degrade the voice, never stop the channel."""
     yaml = pytest.importorskip("yaml")
