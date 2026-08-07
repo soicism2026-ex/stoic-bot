@@ -157,6 +157,26 @@ This file is for OPERATIONAL decisions and taste vetoes.
   bible, negative prompt, accept/reject checklist). Normaliser:
   `scripts/prep_guide_clips.py` (1080x1920, trim, mute, compress, warns past
   80 MB — committed bytes are paid for on every CI checkout, 3x/day).
+- **2026-08-07** GENERATED BACKGROUNDS ARE LIVE and free: Cloudflare Workers AI
+  (FLUX.1 schnell) inside the free 10k-neuron/day allowance — ~230 images/day
+  free, we need 18. Chain: Cloudflare → OpenAI (only if key) → stock →
+  synthetic. The recurring GUIDE is now a fixed seed (`REEL_GUIDE_SEED`), so
+  it is literally the same statue daily; the CLOSING bookend keeps the seed but
+  appends a different shot, because identical seed + identical prompt returned
+  a byte-identical image and the short opened and closed on the same frame.
+- **2026-08-07 PROMPTING RULE — NEVER NEGATE COLOUR.** FLUX kept returning a
+  saturated red/cyan gel-lit statue. Writing "NOT red, NOT magenta, NOT purple"
+  made it WORSE: diffusion text encoders have no reliable "not", so those
+  tokens simply get rendered. Fixed by naming a PHYSICAL LIGHT SOURCE ("lit by
+  a single warm candle flame just out of frame, low golden lantern light") —
+  a named source carries its own colour temperature and leaves nothing to
+  invent. Also removed "dramatic chiaroscuro" from the guide queries: beside a
+  stoic marble bust it sits on top of the red/cyan look that saturates this
+  aesthetic online. A test rejects any colour negation in the style block.
+- **2026-08-07** Generated stills arrive dark and pre-graded, so render.py's
+  grade (tuned for bright flat stock) double-darkened them — the visual QA said
+  "too dark and murky" unprompted. `REEL_GEN_BRIGHT_LIFT` lifts brightness and
+  eases contrast ONLY when backgrounds are generated.
 - **2026-07-28** Backgrounds must be RELEVANT: stock picks only from top-3
   most-relevant results (`REEL_BG_TOP=3`). PIVOT ready: `src/imagegen.py`
   generates AI stills from the narration text when `OPENAI_API_KEY` secret +
