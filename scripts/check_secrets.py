@@ -264,6 +264,48 @@ def check_pixabay() -> bool:
     return True
 
 
+def check_cloudflare() -> bool:
+    """Optional — free AI backgrounds via Workers AI (FLUX.1 schnell).
+
+    Never fails the run: without it, backgrounds come from stock exactly as
+    they did before. But it reports the remaining free allowance, because the
+    whole reason to use Cloudflare is that 18 images/day fits inside a free
+    10,000-neuron/day budget, and the owner should see that holding.
+    """
+    acct = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
+    token = os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
+    if not acct or not token:
+        print(f"  [{SKIP}] CLOUDFLARE — ACCOUNT_ID/API_TOKEN not set "
+              f"(AI backgrounds off; stock footage will be used)")
+        return True
+    try:
+        resp = _requests.post(
+            f"https://api.cloudflare.com/client/v4/accounts/{acct}"
+            f"/ai/run/@cf/black-forest-labs/flux-1-schnell",
+            headers={"Authorization": f"Bearer {token}"},
+            json={"prompt": "a single grey stone cube on black", "steps": 4},
+            timeout=90,
+        )
+        if resp.status_code in (401, 403):
+            print(f"  [{FAIL}] CLOUDFLARE — token rejected ({resp.status_code}). "
+                  f"Needs the 'Workers AI' permission on the right account.")
+            return True          # optional: warn loudly, never block a post
+        resp.raise_for_status()
+        data = resp.json()
+        ok = bool(data.get("success", True)) and bool(data.get("result"))
+        if ok:
+            print(f"  [{PASS}] CLOUDFLARE — Workers AI reachable, FLUX.1 schnell "
+                  f"generated a test image (free tier: ~230 images/day, "
+                  f"this channel needs 18)")
+        else:
+            print(f"  [{SKIP}] CLOUDFLARE — unexpected response "
+                  f"{str(data)[:160]}; backgrounds will fall back to stock")
+    except Exception as e:  # noqa: BLE001
+        print(f"  [{SKIP}] CLOUDFLARE — unreachable ({str(e)[:120]}); "
+              f"backgrounds will fall back to stock")
+    return True
+
+
 def check_instagram() -> bool:
     """Optional — cross-post to Instagram Reels. Skips if not configured."""
     token = os.environ.get("IG_ACCESS_TOKEN", "")
@@ -298,6 +340,7 @@ def main():
     ]
     check_pexels()
     check_pixabay()
+    check_cloudflare()
     check_instagram()
     print("================================")
     failures = sum(1 for r in required if not r)

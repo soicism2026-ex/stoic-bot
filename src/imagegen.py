@@ -42,14 +42,109 @@ STYLE = os.environ.get(
 MODEL = os.environ.get("REEL_IMAGE_MODEL", "gpt-image-1")
 _SIZE = os.environ.get("REEL_IMAGE_SIZE", "1024x1536")  # portrait ~2:3
 
+# ---------------------------------------------------------------------------
+# PROVIDER 1 — Cloudflare Workers AI (FLUX.1 [schnell]).
+# The whole reason generated backgrounds can finally be turned on: Cloudflare's
+# free allowance is 10,000 neurons/day and a schnell image costs roughly 43, so
+# ~230 images/day are free. This channel needs 18 (6 clips x 3 posts). No
+# watermark. OpenAI's gpt-image-1 does the same job at $22-43/month, so
+# Cloudflare is tried FIRST and OpenAI only if its key happens to be present.
+# ---------------------------------------------------------------------------
+CF_ACCOUNT = os.environ.get("CLOUDFLARE_ACCOUNT_ID", "").strip()
+CF_TOKEN = os.environ.get("CLOUDFLARE_API_TOKEN", "").strip()
+CF_MODEL = os.environ.get("CLOUDFLARE_IMAGE_MODEL",
+                          "@cf/black-forest-labs/flux-1-schnell")
+# schnell is a distilled model: 4-8 steps is its whole design point.
+CF_STEPS = int(os.environ.get("CLOUDFLARE_IMAGE_STEPS", "8"))
+
+
+def cloudflare_ready() -> bool:
+    return bool(CF_ACCOUNT and CF_TOKEN)
+
 
 def enabled() -> bool:
-    """True only when explicitly turned on AND a key exists."""
+    """True only when explicitly turned on AND some provider is configured."""
     on = os.environ.get("REEL_IMAGE_BG", "0") not in ("0", "false", "False")
-    return on and bool(os.environ.get("OPENAI_API_KEY", "").strip())
+    return on and (cloudflare_ready()
+                   or bool(os.environ.get("OPENAI_API_KEY", "").strip()))
 
 
-def _generate_image(prompt: str, out_png: Path) -> bool:
+def _decode_cf_image(payload: dict) -> bytes | None:
+    """Pull image bytes out of a Workers AI response.
+
+    Kept tolerant on purpose: this repo's sandbox cannot reach Cloudflare to
+    confirm the exact response shape, and Workers AI has returned the image
+    under more than one key across models. Anything that base64-decodes to a
+    plausible image is accepted; anything else returns None and the caller
+    falls back, so a schema surprise costs a nicer background, never a post.
+    """
+    result = payload.get("result")
+    if isinstance(result, str):
+        candidate = result
+    elif isinstance(result, dict):
+        candidate = (result.get("image") or result.get("images", [None])[0]
+                     if result.get("images") else result.get("image"))
+    else:
+        candidate = None
+    if not candidate or not isinstance(candidate, str):
+        return None
+    try:
+        raw = base64.b64decode(candidate, validate=False)
+    except Exception:  # noqa: BLE001
+        return None
+    return raw if len(raw) > 1000 else None
+
+
+def _generate_image_cloudflare(prompt: str, out_png: Path,
+                               seed: int | None = None) -> bool:
+    full = f"{prompt}. {STYLE}"
+    url = (f"https://api.cloudflare.com/client/v4/accounts/{CF_ACCOUNT}"
+           f"/ai/run/{CF_MODEL}")
+    body: dict = {"prompt": full, "steps": CF_STEPS}
+    if seed is not None:
+        body["seed"] = int(seed)
+
+    resp = requests.post(url, headers={"Authorization": f"Bearer {CF_TOKEN}"},
+                         json=body, timeout=180)
+    if resp.status_code == 400:
+        # Some Workers AI models reject extra params. Retry with the minimum
+        # the API is documented to always accept rather than losing the image.
+        resp = requests.post(url, headers={"Authorization": f"Bearer {CF_TOKEN}"},
+                             json={"prompt": full}, timeout=180)
+    resp.raise_for_status()
+
+    payload = resp.json()
+    if not payload.get("success", True):
+        errs = payload.get("errors") or []
+        raise RuntimeError(f"Workers AI refused the request: {str(errs)[:200]}")
+
+    raw = _decode_cf_image(payload)
+    if raw is None:
+        raise RuntimeError(
+            f"unrecognised Workers AI response shape: "
+            f"{str(payload)[:200]}")
+    out_png.write_bytes(raw)
+    return out_png.exists() and out_png.stat().st_size > 1000
+
+
+def _generate_image(prompt: str, out_png: Path, seed: int | None = None) -> bool:
+    """Try Cloudflare (free) first, then OpenAI (paid) if a key exists."""
+    if cloudflare_ready():
+        try:
+            if _generate_image_cloudflare(prompt, out_png, seed=seed):
+                print(f"[imagegen] SOURCE=CLOUDFLARE_FLUX seed={seed}", flush=True)
+                return True
+        except Exception as e:  # noqa: BLE001
+            print(f"[imagegen] Cloudflare failed ({e}); trying next provider",
+                  file=sys.stderr, flush=True)
+    if os.environ.get("OPENAI_API_KEY", "").strip():
+        if _generate_image_openai(prompt, out_png):
+            print("[imagegen] SOURCE=OPENAI", flush=True)
+            return True
+    return False
+
+
+def _generate_image_openai(prompt: str, out_png: Path) -> bool:
     key = os.environ["OPENAI_API_KEY"].strip()
     full = f"{prompt}. {STYLE}"
     resp = requests.post(
@@ -72,15 +167,25 @@ def _generate_image(prompt: str, out_png: Path) -> bool:
 
 
 def generate_clip(prompt: str, out_path: Path, dur: float = 6.5,
-                  width: int = 1080, height: int = 1920) -> Path | None:
+                  width: int = 1080, height: int = 1920,
+                  seed: int | None = None) -> Path | None:
     """Generate a still for `prompt` and render it into a short MP4 with a slow
     Ken Burns push. Returns the clip path, or None on ANY failure (caller then
-    falls back to stock)."""
+    falls back to stock).
+
+    `seed` is what makes a RECURRING CHARACTER possible for free: pass the same
+    seed and the same prompt and FLUX returns the same statue, every day. That
+    is the thing the paid video tools were going to be bought for.
+
+    Note on framing: FLUX schnell returns a square image, and the ffmpeg step
+    below covers-and-crops it to 9:16, so the left and right thirds are lost.
+    Prompts should therefore put the subject centred and compose vertically.
+    """
     if not enabled():
         return None
     try:
         png = out_path.with_suffix(".gen.png")
-        if not _generate_image(prompt, png):
+        if not _generate_image(prompt, png, seed=seed):
             return None
         # Still -> looping clip with a gentle push-in so a single frame doesn't
         # read as frozen. (render.py layers its own grade/motion on top.)

@@ -30,6 +30,11 @@ BG_DIR = ROOT / "assets" / "backgrounds"
 # See docs/guide_clip_prompts.md for how to fill it.
 GUIDE_DIR = ROOT / "assets" / "guide"
 
+# Fixed seed for the generated guide. Same seed + same prompt = the same statue
+# every day, which is the entire point of a recurring character. Change this
+# only to deliberately recast the guide — it will look like a different person.
+GUIDE_SEED = int(os.environ.get("REEL_GUIDE_SEED", "20260806"))
+
 # Scene-matching relevance window. Stock APIs return results ranked by relevance,
 # so we only ever pick from the TOP few (result #1 matches the query; #40 is
 # barely related). This is the difference between footage that FITS the words and
@@ -405,7 +410,11 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     # if anything fails, so it can never break a render.
     try:
         import imagegen
-        gen = imagegen.generate_clip(query, out_path)
+        # The guide bookends get a FIXED seed, so FLUX returns the same statue
+        # every single day — a genuine recurring character, for free. B-roll
+        # slots pass no seed so they stay varied.
+        seed = GUIDE_SEED if clip_idx in _guide_slots() else None
+        gen = imagegen.generate_clip(query, out_path, seed=seed)
         if gen is not None:
             print(f"[background] SOURCE=GENERATED query='{query}' file={gen.name}", flush=True)
             return gen

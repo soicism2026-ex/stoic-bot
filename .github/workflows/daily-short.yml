@@ -59,6 +59,8 @@ jobs:
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: python scripts/check_secrets.py
 
       # SELF-HOSTED VOICE — ON by default since 2026-08-06 (owner approved
@@ -129,6 +131,14 @@ jobs:
           # stock automatically if the key is absent or any call fails.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           REEL_IMAGE_BG: "1"
+          # PRIMARY image provider — Cloudflare Workers AI (FLUX.1 schnell).
+          # Free allowance is 10,000 neurons/day and a schnell image costs
+          # ~43, so ~230/day are free; this channel needs 18. No watermark.
+          # Tried BEFORE OpenAI, which does the same job at $22-43/month.
+          # Absent secrets => generation is skipped entirely and backgrounds
+          # come from stock exactly as they do today.
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           # PRIMARY VOICE — Chatterbox (Resemble AI, MIT) via Replicate.
           # Open source, preferred over ElevenLabs in blind tests (65% vs 25%),
           # billed per second instead of a subscription. Add the
