@@ -13,7 +13,12 @@ on:
     - cron: "0 15 * * *"
     - cron: "0 19 * * *"
     - cron: "0 23 * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      max_posts:
+        description: "Daily post cap for THIS run (raise it to force a review post past the 3/day cadence)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -100,6 +105,13 @@ jobs:
 
       - name: Run self-healing post pipeline
         env:
+          # Cadence is 3/day and scheduled runs must keep it: `inputs` is empty
+          # on a schedule, so this falls through to "3". A manual run can pass a
+          # higher number to force one extra post for review. Deliberately a
+          # STRING passed straight through — comparing an unset input against a
+          # numeric-looking value is the null-casts-to-0 trap that silently
+          # disabled the voice steps on 2026-08-07.
+          MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '3' }}
           # In-process Chatterbox is the primary voice. Defaults to on; set the
           # repo variable CHATTERBOX_LOCAL=0 to fall back to Replicate/edge-tts.
           CHATTERBOX_LOCAL: ${{ vars.CHATTERBOX_LOCAL || '1' }}
