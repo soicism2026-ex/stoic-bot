@@ -53,7 +53,9 @@ jobs:
         run: |
           git config user.name "stoic-bot"
           git config user.email "bot@users.noreply.github.com"
-          git add -f samples/frames/*.png
+          git add -f samples/frames/*.jpg
+          git rm -r --cached --ignore-unmatch samples/frames/*.png >/dev/null 2>&1 || true
+          rm -f samples/frames/*.png
           git diff --staged --quiet || git commit -m "preview: background frames [skip ci]"
           for i in 1 2 3; do
             git push && break

@@ -10,8 +10,8 @@ prints are the real answer to "did Cloudflare actually serve these, or did it
 quietly fall back to stock?"
 
 Runs in CI (the sandbox cannot reach cloudflare.com) via
-.github/workflows/preview-backgrounds.yml, which commits the PNGs so they can
-be opened on a phone.
+.github/workflows/preview-backgrounds.yml, which commits the JPEGs so they
+can be opened on a phone.
 
     python scripts/preview_backgrounds.py
     python scripts/preview_backgrounds.py --theme resilience
@@ -66,7 +66,7 @@ def main() -> int:
           f"seed={backgrounds.GUIDE_SEED}\n")
 
     OUT.mkdir(parents=True, exist_ok=True)
-    for old in OUT.glob("bg_*.png"):
+    for old in list(OUT.glob("bg_*.png")) + list(OUT.glob("bg_*.jpg")):
         old.unlink()
 
     work = ROOT / "data"
@@ -79,13 +79,17 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001
             print(f"  slot {i}: FAILED {str(e)[:120]}")
             continue
-        png = OUT / f"bg_{i}_{'guide' if i in (0, len(flavors) - 1) else 'beat'}.png"
+        # JPEG, not PNG. These are COMMITTED on every preview run, and a set of
+        # six 1080x1920 PNGs is ~11 MB — that lands in history permanently and
+        # is paid for on every clone and CI checkout. JPEG q3 is visually
+        # indistinguishable for judging a look and roughly a tenth the size.
+        png = OUT / f"bg_{i}_{'guide' if i in (0, len(flavors) - 1) else 'beat'}.jpg"
         try:
             subprocess.run(
                 ["ffmpeg", "-y", "-loglevel", "error", "-ss", "1.0",
                  "-i", str(got), "-frames:v", "1",
                  "-vf", "scale=1080:1920:force_original_aspect_ratio=increase,"
-                        "crop=1080:1920", str(png)],
+                        "crop=1080:1920", "-q:v", "3", str(png)],
                 check=True, capture_output=True)
         except subprocess.CalledProcessError as e:
             print(f"  slot {i}: frame grab failed {e.stderr.decode()[:100]}")
