@@ -67,6 +67,11 @@ _EL_VOICE_ID     = os.environ.get("ELEVENLABS_VOICE_ID", "").strip() or (
     _EL_BRIAN_VOICE if _EL_KEY else ""
 )
 
+# Pitch/formant depth. <1.0 deepens; 0.92 is roughly 1.4 semitones down, enough
+# to move a light male read into an authoritative one without the cartoonish
+# artefacts that appear below ~0.88. Set to 1.0 to disable.
+VOICE_DEPTH = float(os.environ.get("REEL_VOICE_DEPTH", "0.92"))
+
 MIN_POSTS_FOR_WEIGHT = 5
 
 WordTiming = tuple  # (word: str, start: float, end: float)
@@ -204,9 +209,20 @@ def _master_voice(audio_path: Path) -> None:
     if os.environ.get("REEL_VOICE_MASTER", "1") in ("0", "false", "False"):
         return
     tmp = audio_path.with_suffix(".mastered.mp3")
+    # DEPTH: resample down then restore tempo. This lowers pitch AND formants
+    # together, which is what actually makes a voice read as a bigger chest
+    # rather than a pitch-shifted version of the same person — the owner's
+    # complaint on 2026-08-07 was "very feminine male voice that does not work".
+    # Duration is preserved by the matching atempo, so Chatterbox's
+    # duration-estimated word timings stay valid.
+    depth = ""
+    if 0.5 < VOICE_DEPTH < 1.0:
+        depth = (f"asetrate=44100*{VOICE_DEPTH},aresample=44100,"
+                 f"atempo={1 / VOICE_DEPTH:.4f},")
     try:
         subprocess.run(
             ["ffmpeg", "-y", "-i", str(audio_path), "-af",
+             f"{depth}"
              "highpass=f=70,"
              "equalizer=f=130:t=q:w=1:g=2.5,"
              "equalizer=f=5000:t=q:w=1.2:g=1.5,"
@@ -396,6 +412,11 @@ def _synthesize_chatterbox_local(text: str, out_path: Path) -> tuple:
     if not ok:
         raise RuntimeError(f"Chatterbox local audio unusable (dur={dur:.1f}s, "
                            f"mean_vol={mean_db:.1f}dB)")
+    # Chatterbox output never went through mastering — only edge-tts did — so
+    # it shipped raw and thin, and its stock voice reads light. Master it too:
+    # depth + warmth + compression. Duration is preserved, so `dur` above (and
+    # the timings estimated from it) stay correct.
+    _master_voice(out_path)
     return out_path, _estimate_timings(text, dur)
 
 
@@ -459,6 +480,7 @@ def _synthesize_chatterbox(text: str, out_path: Path) -> tuple:
     if not ok:
         raise RuntimeError(f"Chatterbox audio unusable (dur={dur:.1f}s, "
                            f"mean_vol={mean_db:.1f}dB)")
+    _master_voice(out_path)
     return out_path, _estimate_timings(text, dur)
 
 

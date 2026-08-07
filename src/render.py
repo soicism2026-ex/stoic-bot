@@ -51,8 +51,21 @@ DIVIDER_COLOR = os.environ.get("REEL_DIVIDER_COLOR", "0xA08040") # darker bronze
 # Karaoke caption controls (all optional, sensible defaults).
 # ON by default: viewers want to read the narration in real time, and most
 # Shorts are watched muted — synced captions are essential for retention.
-CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False")
+# CAPTIONS OFF for the classic quote-card look. The owner's verdict on the
+# published shorts (2026-08-07): "I don't even know what to read first, there's
+# too much going on." He was right — the frame carried FIVE competing text
+# layers at once: the mission counter, the karaoke caption, the quote, the
+# author, and (in the player) YouTube's own auto-CC. Worse, the karaoke and the
+# narration say the SAME WORDS, so the big yellow caption was duplicating the
+# subtitle underneath it.
+# The quote card IS this channel's identity. It stays; the caption goes.
+# caption_only styles (pov/challenge) still force captions on — there the
+# captions ARE the video and no quote card is drawn.
+CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "0") not in ("0", "false", "False")
 CAPTIONS_ONLY = os.environ.get("REEL_CAPTIONS_ONLY", "0") not in ("0", "false", "False")
+# Mission strapline ("DAY 64 · UNTIL DISCIPLINE IS COOL AGAIN"). Off by default
+# — see the note at its draw site.
+MISSION_ON = os.environ.get("REEL_MISSION", "0") not in ("0", "false", "False")
 # Per-word bass "thud" under the captions. OFF by default — it fights the calm,
 # low-cortisol vibe. Enable with REEL_WORD_CLICKS=1 if you want the punchy feel.
 WORD_CLICKS_ON = os.environ.get("REEL_WORD_CLICKS", "0") not in ("0", "false", "False")
@@ -95,7 +108,95 @@ EXTRA_DARKEN = float(os.environ.get("REEL_EXTRA_DARKEN", "0"))
 # The _GRADES table darkens by 0.15-0.25 because stock footage is bright and
 # flat; generated stills arrive dark and pre-graded, so the same darkening
 # lands them in the mud.
-GEN_BRIGHT_LIFT = float(os.environ.get("REEL_GEN_BRIGHT_LIFT", "0.14"))
+# Raised 0.14 -> 0.22 after the owner saw the published shorts: still too dark.
+# 0.22 roughly cancels the darkest grade preset (-0.25) rather than only half
+# of it, so a generated still lands near its own exposure instead of two stops
+# under it.
+GEN_BRIGHT_LIFT = float(os.environ.get("REEL_GEN_BRIGHT_LIFT", "0.22"))
+
+
+# ---------------------------------------------------------------------------
+# CAMERA MOTION
+#
+# The old Ken Burns was ONE zoompan applied AFTER the six clips were concatted,
+# so a 0.08 zoom was spread across the whole ~20s video — about 0.013 of zoom
+# per 3s clip. That is invisible, which is precisely what the visual QA
+# reported on 2026-08-07: "first four hook frames are virtually identical, no
+# visual progression during the critical opening 1.5s". Backgrounds that are
+# now GENERATED STILLS made it worse: a stock clip at least has its own
+# internal movement, a still has none at all.
+#
+# Motion is now per clip, so every cut gets a full move, and the moves differ
+# clip to clip so six shots do not read as one slow drift.
+# ---------------------------------------------------------------------------
+MOTION_ON = os.environ.get("REEL_MOTION", "1") not in ("0", "false", "False")
+# Zoom travel within a single clip. 0.12 over ~3s is a real move but still
+# unhurried — the channel is meditative, not frenetic.
+MOTION_AMP = float(os.environ.get("REEL_MOTION_AMP", "0.12"))
+# Pan travel as a fraction of frame size, for the drift moves.
+MOTION_PAN = float(os.environ.get("REEL_MOTION_PAN", "0.05"))
+
+# Ordered so consecutive clips never share a move. Index 0 is the hook, where
+# a push-in is the strongest "something is happening" signal.
+_MOVES = ["push", "driftl", "pull", "driftr", "rise", "push"]
+
+
+def _ease(frames: int) -> str:
+    """Smoothstep over the clip: t*t*(3-2t), clamped at 1.
+
+    Linear motion reads as a mechanical slide; eased motion reads as a camera
+    operator. ffmpeg expressions have no variables, so the normalised time term
+    is inlined three times.
+    """
+    n = max(1, frames)
+    t = f"min(on/{n},1)"
+    return f"({t}*{t}*(3-2*{t}))"
+
+
+def _motion(clip_idx: int, frames: int) -> str:
+    """zoompan for one clip: an eased move chosen by position in the sequence."""
+    s = _ease(frames)
+    move = _MOVES[clip_idx % len(_MOVES)]
+    cx, cy = "iw/2-(iw/zoom/2)", "ih/2-(ih/zoom/2)"
+    if move == "push":
+        z, x, y = f"1+{MOTION_AMP}*{s}", cx, cy
+    elif move == "pull":
+        z, x, y = f"{1 + MOTION_AMP}-{MOTION_AMP}*{s}", cx, cy
+    elif move == "driftl":
+        z, x, y = f"1+{MOTION_AMP * 0.4}", f"{cx}-{MOTION_PAN}*iw*({s}-0.5)", cy
+    elif move == "driftr":
+        z, x, y = f"1+{MOTION_AMP * 0.4}", f"{cx}+{MOTION_PAN}*iw*({s}-0.5)", cy
+    else:  # rise
+        z, x, y = f"1+{MOTION_AMP * 0.4}", cx, f"{cy}-{MOTION_PAN}*ih*({s}-0.5)"
+    return (f"zoompan=z='{z}':d=1:x='{x}':y='{y}':"
+            f"s={W}x{H}:fps=30")
+
+
+# ---------------------------------------------------------------------------
+# ATMOSPHERE
+#
+# The single biggest trick for making a STILL read as footage: drifting haze
+# and dust moving through the frame. The image underneath can be perfectly
+# static and the shot still feels alive, because the eye tracks the particles.
+# Generated at quarter resolution and heavily blurred — the blur hides the low
+# resolution completely and keeps this cheap.
+# ---------------------------------------------------------------------------
+ATMOS_ON = os.environ.get("REEL_ATMOSPHERE", "1") not in ("0", "false", "False")
+ATMOS_OPACITY = float(os.environ.get("REEL_ATMOSPHERE_OPACITY", "0.10"))
+
+
+def _atmosphere_graph(src_label: str, out_label: str, dur: float) -> str:
+    """Screen a slow-drifting haze layer over the graded footage."""
+    return (
+        f"color=c=black:s=540x960:r=30:d={dur:.2f}[atm0];"
+        # allf=t re-rolls the noise every frame, which is what makes it DRIFT
+        # rather than sit there as static grain.
+        f"[atm0]noise=alls=100:allf=t+u,gblur=sigma=16,"
+        f"eq=contrast=1.7:brightness=-0.15,"
+        f"scale={W}:{H},format=yuv420p[atm];"
+        f"[{src_label}][atm]blend=all_mode=screen:"
+        f"all_opacity={ATMOS_OPACITY}[{out_label}]"
+    )
 
 
 def _generated_backgrounds_active() -> bool:
@@ -671,12 +772,19 @@ def _enhance_graph(src_label: str, out_label: str) -> str:
     # Cinematic mode warms the glow into HALATION (highlights bleed amber, like
     # light blooming on film emulsion) and deepens the vignette for a darker,
     # more theatrical frame.
+    # vignette angle is INVERSE strength: PI/5.2 is a heavy, theatrical
+    # darkening of the edges, PI/4.5 is milder. Stacked on top of generated
+    # stills — which already arrive dark and pre-graded — it was a third layer
+    # of darkening after the grade and the eq, and the owner's verdict on the
+    # published shorts was blunt: "the background is way too dark because of
+    # the filters". Generated sources get the mild vignette.
+    gen = _generated_backgrounds_active()
     if CINEMATIC_ON:
         glow_tint = ",colorbalance=rh=0.20:gh=0.06:bh=-0.16"
-        vig = "vignette=PI/5.2"
+        vig = "vignette=PI/4.2" if gen else "vignette=PI/5.2"
     else:
         glow_tint = ""
-        vig = "vignette=PI/4.5"
+        vig = "vignette=PI/3.8" if gen else "vignette=PI/4.5"
     return (
         f"[{src_label}]split[base][glowsrc];"
         f"[glowsrc]gblur=sigma={GLOW_SIGMA},eq=brightness={GLOW_BRIGHT}{glow_tint}[glow];"
@@ -800,7 +908,11 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # comes from this grade, it just stops double-applying.
     _br, _con = br, con
     if _generated_backgrounds_active():
-        _br = br + GEN_BRIGHT_LIFT
+        # Clamped to the preset's OWN darkening, so the lift can cancel the
+        # grade but never push past neutral into a washed-out frame. _GRADES
+        # ranges from -0.15 to -0.25, so a flat 0.22 would have over-brightened
+        # the lightest preset by +0.07.
+        _br = br + min(GEN_BRIGHT_LIFT, -br)
         _con = 1.0 + (con - 1.0) * 0.5
     pre_parts.append(
         f"eq=brightness={_br - EXTRA_DARKEN}:saturation={sat}:contrast={_con}"
@@ -904,7 +1016,12 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # Mission counter — small bronze line at the top of frame ("DAY 47 · UNTIL
     # DISCIPLINE IS COOL AGAIN"). Enrols viewers in the streak; auto-fits the
     # phone-fullscreen safe band like the hook does.
-    if mission:
+    # OFF by default since 2026-08-07. It sat at y=265, which is exactly where
+    # YouTube's own auto-caption box lands, so on a real phone the two
+    # overlapped into an unreadable smear (see the owner's screenshots). It is
+    # also a line nobody reads mid-scroll: a 32px bronze strapline cannot
+    # compete with a hook card. Re-enable with REEL_MISSION=1.
+    if mission and MISSION_ON:
         m_safe_w = W - 2 * SAFE_PX
         m_fs = min(32, int(m_safe_w / (0.55 * max(len(mission), 1))))
         vf_parts.append(
@@ -956,14 +1073,22 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             f"scale={W}:{H}:force_original_aspect_ratio=increase,"
             f"crop={W}:{H},setsar=1,fps=30,format=yuv420p"
         )
+        # Motion is applied PER SEGMENT, before concat, so each clip gets a
+        # full camera move instead of sharing one zoom stretched across the
+        # whole video. Trim first, then move, so the move is timed to the
+        # segment's own length.
+        seg_frames = max(1, int(seg_dur * 30))
         bg_segs = [
-            f"[{_i}:v]{geo},trim=0:end={seg_dur:.3f},setpts=PTS-STARTPTS[bgseg{_i}]"
+            f"[{_i}:v]{geo},trim=0:end={seg_dur:.3f},setpts=PTS-STARTPTS"
+            + (f",{_motion(_i, seg_frames)}" if MOTION_ON else "")
+            + f"[bgseg{_i}]"
             for _i in range(n_bg)
         ]
         refs = "".join(f"[bgseg{_i}]" for _i in range(n_bg))
         bg_segs.append(f"{refs}concat=n={n_bg}:v=1[rawbg]")
-        # pre_parts[:2] = scale+crop (done per-clip above); [2:] = zoompan+grade
-        post_geo = ",".join(pre_parts[2:])
+        # pre_parts[:3] = scale+crop+zoompan. The first two ran per-clip above
+        # and the zoompan is now per-segment too, so only the grade is left.
+        post_geo = ",".join(pre_parts[3:])
         segs = [
             *bg_segs,
             f"[rawbg]{post_geo}[graded]",
@@ -976,6 +1101,11 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         last = "enh"
     else:
         last = "graded"
+    # Atmosphere goes on AFTER the grade and BEFORE the text, so the haze sits
+    # in the scene rather than fogging the type.
+    if ATMOS_ON:
+        segs.append(_atmosphere_graph(last, "atmos", dur))
+        last = "atmos"
     segs.append(
         f"[{last}]{overlay_chain}[vout]" if overlay_chain else f"[{last}]copy[vout]"
     )

@@ -287,7 +287,11 @@ def test_render_lifts_brightness_only_for_generated_backgrounds(monkeypatch):
     assert render._generated_backgrounds_active() is False
 
 
-def test_brightness_lift_is_smaller_than_the_darkening():
-    """A lift bigger than the grade would wash the footage out instead."""
+def test_brightness_lift_never_pushes_past_neutral():
+    """A lift bigger than a preset's own darkening would wash that preset out.
+    It is clamped per-preset, so check the clamp, not the raw constant."""
     import render
-    assert 0 < render.GEN_BRIGHT_LIFT < min(abs(g[0]) for g in render._GRADES) + 0.05
+    assert render.GEN_BRIGHT_LIFT > 0
+    for br, _sat, _con in render._GRADES:
+        lifted = br + min(render.GEN_BRIGHT_LIFT, -br)
+        assert lifted <= 0.0001, f"grade {br} lifted to {lifted} — washed out"
