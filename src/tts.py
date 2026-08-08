@@ -50,18 +50,23 @@ import requests
 # compression) to close the gap with ElevenLabs. Goal: once analytics show a
 # tuned free voice matching paid Brian (852v / 93% retention), drop ElevenLabs.
 VOICE_POOL = [
-    # 2026-08-07: the owner rejected Chatterbox outright ("I hate the voice,
-    # it doesn't fit at all"), so the primary is an edge-tts voice again.
-    # Ryan is deep British RP — a classical, measured register that suits
-    # Stoicism better than the American newsreader tone, and it is the one
-    # voice in the deep-male set that has never been auditioned or vetoed.
-    # Run .github/workflows/audition-voices.yml to hear the alternatives;
-    # whichever the owner picks goes at the top of this list.
+    # 2026-08-07 AUDITION RESULT. The owner listened to six candidates
+    # (samples/voices/) and picked TWO: "I like Steffan and Christopher, the
+    # rest not so much — you can cycle between those two and we can check back
+    # in to see which one the audience prefers."
+    #
+    # So this is a deliberate A/B, not a shortlist. pick_voice() alternates
+    # them (it blocks the most recent, and with exactly two entries that means
+    # strict alternation) until each has MIN_POSTS_FOR_WEIGHT posts of view
+    # data, then starts favouring the better performer. Run the channel-report
+    # skill for the voice leaderboard.
+    #
     # VETOED, do not reintroduce without the owner's ear:
     #   Andrew (en-US-AndrewNeural)   2026-07-15
     #   BrianEdge (en-US-BrianNeural) 2026-07-16
     #   Chatterbox (stock voice)      2026-08-07
-    {"name": "Ryan", "id": "en-GB-RyanNeural", "rate": "-4%", "pitch": "-6Hz"},
+    #   Ryan / Thomas / Roger / William  2026-08-07 (audition, "not so much")
+    {"name": "Steffan", "id": "en-US-SteffanNeural", "rate": "-4%", "pitch": "-6Hz"},
     {"name": "Christopher", "id": "en-US-ChristopherNeural", "rate": "+0%", "pitch": "-8Hz"},
 ]
 

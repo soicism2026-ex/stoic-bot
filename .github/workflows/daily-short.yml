@@ -124,12 +124,13 @@ jobs:
           CHATTERBOX_SENTENCE_GAP: "0.25"
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          # With ELEVENLABS_API_KEY set, tts.py uses the "Brian" voice (top
-          # performer: 852 avg views, 93% median retention) for the FIRST post
-          # of each day (ELEVENLABS_POSTS_PER_DAY, default 1 — sized so the
-          # Starter plan's 30k chars/month is never exceeded; set to 4 on the
-          # Creator plan). Remaining posts + credit exhaustion + API failures
-          # all fall back to free edge-tts automatically.
+          # 0 = ElevenLabs never speaks. Two reasons: the key has been 401ing
+          # for weeks, and more importantly a third voice appearing on the
+          # first post of each day would CONTAMINATE the Steffan/Christopher
+          # A/B the owner just asked for — those posts would carry a different
+          # voice while being attributed to the rotation. Raise it only after
+          # the A/B has a verdict, and only if the key is fixed.
+          ELEVENLABS_POSTS_PER_DAY: "0"
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
