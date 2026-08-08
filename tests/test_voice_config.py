@@ -39,16 +39,25 @@ def test_defaults_are_variant_b():
     assert tts._CB_GAP == VARIANT_B["gap"]
 
 
-def test_self_hosted_voice_is_on_by_default(monkeypatch):
-    """$0 voice. Off by default would silently put the bill back."""
+def test_self_hosted_voice_is_off_by_default(monkeypatch):
+    """REVERSED 2026-08-07: the owner rejected Chatterbox's stock voice
+    outright ("I hate the voice, it doesn't fit at all"). It stays wired up and
+    free so a cloned reference voice can switch it back on, but it must not
+    ship by default. Taste outranks the cost saving."""
     m = _reload(monkeypatch, CHATTERBOX_LOCAL=None)
-    assert m._CB_LOCAL is True
+    assert m._CB_LOCAL is False
 
 
 @pytest.mark.parametrize("off", ["0", "false", "False"])
-def test_can_be_turned_off_by_repo_variable(monkeypatch, off):
+def test_stays_off_for_falsey_values(monkeypatch, off):
     m = _reload(monkeypatch, CHATTERBOX_LOCAL=off)
     assert m._CB_LOCAL is False
+
+
+def test_can_be_switched_back_on(monkeypatch):
+    """The path must still work for a future cloned-voice run."""
+    m = _reload(monkeypatch, CHATTERBOX_LOCAL="1")
+    assert m._CB_LOCAL is True
 
 
 def test_pacing_is_env_overridable(monkeypatch):
@@ -84,13 +93,15 @@ def test_sentences_drops_blank_fragments():
 
 # ------------------------------------------------------------- workflow wiring
 
-def test_workflow_enables_local_voice_and_pins_variant_b():
-    """Config in code is worthless if the workflow overrides it."""
+def test_workflow_disables_local_voice_and_keeps_variant_b_pinned():
+    """Config in code is worthless if the workflow overrides it. Chatterbox is
+    off by default now, but the pacing stays pinned so flipping the variable
+    back on restores the tuned settings immediately."""
     yaml = pytest.importorskip("yaml")
     wf = yaml.safe_load((ROOT / ".github/workflows/daily-short.yml").read_text())
     steps = wf["jobs"]["post"]["steps"]
     env = next(s["env"] for s in steps if "CHATTERBOX_LOCAL" in (s.get("env") or {}))
-    assert env["CHATTERBOX_LOCAL"] == "${{ vars.CHATTERBOX_LOCAL || '1' }}"
+    assert env["CHATTERBOX_LOCAL"] == "${{ vars.CHATTERBOX_LOCAL || '0' }}"
     assert float(env["CHATTERBOX_EXAGGERATION"]) == VARIANT_B["exaggeration"]
     assert float(env["CHATTERBOX_CFG_WEIGHT"]) == VARIANT_B["cfg_weight"]
     assert float(env["CHATTERBOX_SENTENCE_GAP"]) == VARIANT_B["gap"]

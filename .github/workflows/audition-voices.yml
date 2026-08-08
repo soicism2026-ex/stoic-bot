@@ -1,0 +1,57 @@
+name: Audition voices
+
+# Manual only. Renders the SAME script in every candidate voice and commits the
+# MP3s to samples/voices/ so they can be played on a phone.
+#
+# Exists because three rounds of guessing at the voice failed — a stock
+# Chatterbox voice, then two attempts to filter it into shape. Filters cannot
+# recast a performance; only the owner's ear settles this.
+#
+# Never touches posting.
+
+on:
+  workflow_dispatch:
+    inputs:
+      text:
+        description: "Script to read (blank = the built-in Seneca sample)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+jobs:
+  audition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install ffmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
+      - name: Install deps
+        run: pip install -r requirements.txt
+
+      - name: Render every candidate voice
+        run: |
+          if [ -n "${{ inputs.text }}" ]; then
+            python scripts/audition_voices.py --text "${{ inputs.text }}"
+          else
+            python scripts/audition_voices.py
+          fi
+
+      - name: Commit samples
+        run: |
+          git config user.name "stoic-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add -f samples/voices/*.mp3
+          git diff --staged --quiet || git commit -m "audition: candidate voices [skip ci]"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase origin main && continue
+          done

@@ -191,6 +191,20 @@ def test_sample_rate_probe_falls_back_safely(tmp_path):
     assert tts._sample_rate(tmp_path / "missing.mp3") == 44100
 
 
-def test_voice_depth_deepens():
+def test_voice_depth_is_off_by_default():
+    """REVERSED 2026-08-07. Two rounds of pitch manipulation produced a
+    chipmunk and then a voice the owner still disliked. Processing cannot
+    recast a performance — pick a voice that is already deep. The machinery
+    stays correct and tested; it just does not run by default."""
     import tts
-    assert 0.80 < tts.VOICE_DEPTH < 1.0, "must deepen, and not synthetically"
+    assert tts.VOICE_DEPTH == 1.0
+
+
+def test_voice_depth_still_works_when_asked_for(monkeypatch):
+    """Kept alive for a chosen voice that needs a nudge."""
+    import importlib, tts
+    monkeypatch.setenv("REEL_VOICE_DEPTH", "0.9")
+    m = importlib.reload(tts)
+    assert m.VOICE_DEPTH == 0.9
+    monkeypatch.delenv("REEL_VOICE_DEPTH")
+    importlib.reload(tts)

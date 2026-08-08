@@ -50,10 +50,18 @@ import requests
 # compression) to close the gap with ElevenLabs. Goal: once analytics show a
 # tuned free voice matching paid Brian (852v / 93% retention), drop ElevenLabs.
 VOICE_POOL = [
-    # Christopher ONLY. The owner listened to and rejected both challengers:
-    # Andrew (2026-07-15, UWhKhyad4w8) and BrianEdge (2026-07-16, UJvuUh_-8p8 +
-    # LXdnsXkSqrY). Taste outranks novelty — the free pool is now a single
-    # trusted voice; paid ElevenLabs Brian covers the first post of each day.
+    # 2026-08-07: the owner rejected Chatterbox outright ("I hate the voice,
+    # it doesn't fit at all"), so the primary is an edge-tts voice again.
+    # Ryan is deep British RP — a classical, measured register that suits
+    # Stoicism better than the American newsreader tone, and it is the one
+    # voice in the deep-male set that has never been auditioned or vetoed.
+    # Run .github/workflows/audition-voices.yml to hear the alternatives;
+    # whichever the owner picks goes at the top of this list.
+    # VETOED, do not reintroduce without the owner's ear:
+    #   Andrew (en-US-AndrewNeural)   2026-07-15
+    #   BrianEdge (en-US-BrianNeural) 2026-07-16
+    #   Chatterbox (stock voice)      2026-08-07
+    {"name": "Ryan", "id": "en-GB-RyanNeural", "rate": "-4%", "pitch": "-6Hz"},
     {"name": "Christopher", "id": "en-US-ChristopherNeural", "rate": "+0%", "pitch": "-8Hz"},
 ]
 
@@ -67,11 +75,14 @@ _EL_VOICE_ID     = os.environ.get("ELEVENLABS_VOICE_ID", "").strip() or (
     _EL_BRIAN_VOICE if _EL_KEY else ""
 )
 
-# Pitch/formant depth. <1.0 deepens. 0.88 is about 2.2 semitones down — the
-# owner asked twice for a deeper read, and 0.92 (1.4 semitones) was not enough
-# once the sample-rate bug that was speeding everything up got fixed. Below
-# ~0.85 the formants start to sound synthetic. Set to 1.0 to disable.
-VOICE_DEPTH = float(os.environ.get("REEL_VOICE_DEPTH", "0.88"))
+# Pitch/formant depth. <1.0 deepens; 1.0 disables it entirely.
+# DEFAULT 1.0 — OFF. Two rounds of pitch manipulation produced a chipmunk (a
+# hardcoded sample rate) and then a voice the owner still disliked. The lesson
+# is that processing cannot substitute for casting: pick a voice that is
+# already deep instead of squeezing a light one. Ryan is deep on its own.
+# The machinery stays, correct and tested, for the case where a chosen voice
+# needs a nudge — but it no longer runs by default.
+VOICE_DEPTH = float(os.environ.get("REEL_VOICE_DEPTH", "1.0"))
 
 MIN_POSTS_FOR_WEIGHT = 5
 
@@ -377,7 +388,10 @@ _CB_GAP          = float(os.environ.get("CHATTERBOX_SENTENCE_GAP", "0.25"))
 # is public, so those minutes are free. Requires torch + chatterbox-tts.
 # DEFAULT ON since 2026-08-06 (owner approved variant B). Set the repo variable
 # CHATTERBOX_LOCAL=0 to fall back to the hosted/edge-tts chain.
-_CB_LOCAL        = os.environ.get("CHATTERBOX_LOCAL", "1") not in ("0", "false", "False")
+# DEFAULT OFF since 2026-08-07: the owner rejected Chatterbox's stock voice
+# outright. It stays wired up (and free) so a cloned reference voice can switch
+# it back on later with CHATTERBOX_LOCAL=1, but it no longer ships by default.
+_CB_LOCAL        = os.environ.get("CHATTERBOX_LOCAL", "0") not in ("0", "false", "False")
 # Optional voice cloning: a public URL to a short reference clip.
 _CB_VOICE_REF    = os.environ.get("CHATTERBOX_VOICE_URL", "").strip()
 
