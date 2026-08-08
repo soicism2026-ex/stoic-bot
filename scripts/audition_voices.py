@@ -39,9 +39,9 @@ CANDIDATES = [
     ("Ryan_GB",      "en-GB-RyanNeural",        "-4%", "-6Hz"),
     ("Thomas_GB",    "en-GB-ThomasNeural",      "-4%", "-4Hz"),
     ("Steffan_US",   "en-US-SteffanNeural",     "-4%", "-6Hz"),
-    ("Tony_US",      "en-US-TonyNeural",        "-4%", "-6Hz"),
-    ("Davis_US",     "en-US-DavisNeural",       "-4%", "-6Hz"),
     ("Roger_US",     "en-US-RogerNeural",       "-4%", "-6Hz"),
+    ("Brandon_US",   "en-US-BrandonNeural",     "-4%", "-6Hz"),
+    ("Connor_IE",    "en-IE-ConnorNeural",      "-4%", "-4Hz"),
     ("William_AU",   "en-AU-WilliamNeural",     "-4%", "-4Hz"),
     ("Christopher",  "en-US-ChristopherNeural", "+0%", "-8Hz"),
 ]
@@ -69,7 +69,7 @@ def main() -> int:
         old.unlink()
 
     print(f"Auditioning {len(CANDIDATES)} voices on {len(args.text.split())} words\n")
-    made = []
+    made, failed = [], []
     for name, vid, rate, pitch in CANDIDATES:
         dst = OUT / f"{name}.mp3"
         try:
@@ -77,15 +77,30 @@ def main() -> int:
         except Exception as e:  # noqa: BLE001
             print(f"  [FAIL] {name}: {str(e)[:110]}")
             continue
+        # edge-tts does NOT raise for an unknown voice id — it just streams
+        # nothing and leaves a 0-byte file. Davis_US and Tony_US did exactly
+        # that on the first audition and were committed as empty MP3s, which
+        # looks like a rendered candidate until you try to play it. Validate,
+        # and delete the corpse so it can never be mistaken for a sample.
+        size = dst.stat().st_size if dst.exists() else 0
+        dur = tts._audio_duration(dst) if size else 0.0
+        if size < 5_000 or dur < 1.0:
+            dst.unlink(missing_ok=True)
+            failed.append(name)
+            print(f"  [FAIL] {name:14} {vid:26} produced {size} bytes / "
+                  f"{dur:.1f}s — voice id is probably not in the catalogue")
+            continue
         if not args.no_master:
             tts._master_voice(dst)
-        dur = tts._audio_duration(dst)
+            dur = tts._audio_duration(dst)
         wpm = len(args.text.split()) / (dur / 60) if dur else 0
         made.append(name)
         print(f"  [ok] {name:14} {vid:26} {dur:5.1f}s  {wpm:3.0f} wpm  "
               f"{dst.stat().st_size / 1000:.0f} kB")
 
     print(f"\n{len(made)}/{len(CANDIDATES)} rendered to {OUT}")
+    if failed:
+        print(f"dropped (unusable): {', '.join(failed)}")
     if made:
         print("Listen, then put the winner at the top of VOICE_POOL in src/tts.py.")
     return 0 if made else 1
