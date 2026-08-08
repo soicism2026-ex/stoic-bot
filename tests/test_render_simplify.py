@@ -149,3 +149,48 @@ def test_quote_has_an_outline_not_a_backing_box(monkeypatch):
     src = (ROOT / "src" / "render.py").read_text()
     assert "borderw=3:bordercolor=black@0.55" in src
     assert "box=0:borderw=3" in src, "must not switch the quote to a filled box"
+
+
+# --------------------------------------------------- generated-source grading
+
+def test_generated_sources_skip_the_contrast_bump(monkeypatch):
+    """increase_contrast deepens shadows — a fifth darkening pass on stills
+    that already arrive dark and graded."""
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "if not _generated_backgrounds_active():" in src
+    assert 'pre_parts.append("curves=preset=increase_contrast")' in src
+
+
+def test_generated_curve_lifts_shadows_instead_of_crushing(monkeypatch):
+    """The stock S-curve maps 0.22 -> 0.13, which crushes blacks. Measured on a
+    dark test source the full stock stack produced mean luma 0.00 — every pixel
+    black. The generated curve lifts that point instead."""
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "0.22/0.26" in src, "generated curve must lift, not crush"
+    assert "gamma=1.10" in src, "generated tone must open midtones"
+    # the stock crushing curve must still exist for real footage
+    assert "0.22/0.13" in src
+
+
+# ---------------------------------------------------------------- voice depth
+
+def test_voice_depth_probes_the_real_sample_rate():
+    """Hardcoding 44100 played Chatterbox's 24 kHz output 1.81x too fast — the
+    chipmunk the owner heard. asetrate must come from the file."""
+    # Strip comments first — the bug is documented in a comment there on
+    # purpose, and matching prose would make this test fail on the explanation
+    # rather than on the code.
+    src = (ROOT / "src" / "tts.py").read_text()
+    code = "\n".join(l.split("#", 1)[0] for l in src.splitlines())
+    assert "asetrate=44100*" not in code, "hardcoded rate is the chipmunk bug"
+    assert "_sample_rate(audio_path)" in code
+
+
+def test_sample_rate_probe_falls_back_safely(tmp_path):
+    import tts
+    assert tts._sample_rate(tmp_path / "missing.mp3") == 44100
+
+
+def test_voice_depth_deepens():
+    import tts
+    assert 0.80 < tts.VOICE_DEPTH < 1.0, "must deepen, and not synthetically"

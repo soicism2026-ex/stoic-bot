@@ -67,10 +67,11 @@ _EL_VOICE_ID     = os.environ.get("ELEVENLABS_VOICE_ID", "").strip() or (
     _EL_BRIAN_VOICE if _EL_KEY else ""
 )
 
-# Pitch/formant depth. <1.0 deepens; 0.92 is roughly 1.4 semitones down, enough
-# to move a light male read into an authoritative one without the cartoonish
-# artefacts that appear below ~0.88. Set to 1.0 to disable.
-VOICE_DEPTH = float(os.environ.get("REEL_VOICE_DEPTH", "0.92"))
+# Pitch/formant depth. <1.0 deepens. 0.88 is about 2.2 semitones down — the
+# owner asked twice for a deeper read, and 0.92 (1.4 semitones) was not enough
+# once the sample-rate bug that was speeding everything up got fixed. Below
+# ~0.85 the formants start to sound synthetic. Set to 1.0 to disable.
+VOICE_DEPTH = float(os.environ.get("REEL_VOICE_DEPTH", "0.88"))
 
 MIN_POSTS_FOR_WEIGHT = 5
 
@@ -198,6 +199,23 @@ async def _edge_stream(text: str, out_path: Path, voice_id: str,
     return word_timings
 
 
+def _sample_rate(audio_path: Path) -> int:
+    """The file's real sample rate. Engines differ — Chatterbox writes 24 kHz,
+    edge-tts 24 kHz, gTTS 22.05 kHz — and any pitch work computed against a
+    hardcoded rate plays the audio at the wrong speed."""
+    try:
+        out = subprocess.run(
+            ["ffprobe", "-v", "error", "-select_streams", "a:0",
+             "-show_entries", "stream=sample_rate", "-of", "csv=p=0",
+             str(audio_path)],
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+        rate = int(out.split(",")[0])
+        return rate if 8000 <= rate <= 192000 else 44100
+    except Exception:  # noqa: BLE001
+        return 44100
+
+
 def _master_voice(audio_path: Path) -> None:
     """Studio-narrator mastering for edge-tts output (in place, best-effort).
 
@@ -217,7 +235,15 @@ def _master_voice(audio_path: Path) -> None:
     # duration-estimated word timings stay valid.
     depth = ""
     if 0.5 < VOICE_DEPTH < 1.0:
-        depth = (f"asetrate=44100*{VOICE_DEPTH},aresample=44100,"
+        # asetrate must be computed from the file's ACTUAL rate. Hardcoding
+        # 44100 was a real bug: Chatterbox writes at model.sr (24 kHz), so
+        # `asetrate=44100*0.92` reinterpreted a 24 kHz stream as 40572 Hz —
+        # 1.69x faster and HIGHER pitched, then atempo sped it up again to
+        # 1.81x total. The owner heard it exactly right: "a chipmunk". It
+        # passed my check only because I verified against a 44.1 kHz sine
+        # instead of real Chatterbox output.
+        rate = _sample_rate(audio_path)
+        depth = (f"asetrate={int(rate * VOICE_DEPTH)},aresample={rate},"
                  f"atempo={1 / VOICE_DEPTH:.4f},")
     try:
         subprocess.run(

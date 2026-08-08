@@ -922,7 +922,13 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         zoompan,
     ]
     if ENHANCE_ON:
-        pre_parts += [ENH_DENOISE, ENH_SHARPEN, "curves=preset=increase_contrast"]
+        # increase_contrast deepens shadows — a fifth darkening pass on
+        # generated stills. Denoise and sharpen still apply; only the contrast
+        # bump is skipped, since the cinematic S-curve below already shapes
+        # tone and does it with a generated-aware curve.
+        pre_parts += [ENH_DENOISE, ENH_SHARPEN]
+        if not _generated_backgrounds_active():
+            pre_parts.append("curves=preset=increase_contrast")
     # GENERATED backgrounds arrive already dark and already graded, unlike the
     # bright flat stock footage this grade was tuned for. Stacking the full
     # darkening on top produced exactly what the visual QA flagged on
@@ -945,12 +951,25 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # blacks and rolls off highlights, and a whisper of desaturation so the
     # colour that remains reads as deliberate. Toggle REEL_CINEMATIC=0.
     if CINEMATIC_ON:
+        # The S-curve's shadow point (0.22 -> 0.13) CRUSHES blacks, and
+        # gamma=0.97 darkens on top. That is correct for bright flat stock and
+        # wrong for generated stills, which arrive dark and already graded —
+        # the fourth darkening stage in a row, and why the owner said "still
+        # too dark" after the first two were eased. For generated sources the
+        # shadow point LIFTS instead (0.22 -> 0.26) and gamma opens up.
+        if _generated_backgrounds_active():
+            curve = ("curves=r='0/0.02 0.22/0.26 0.5/0.54 0.78/0.86 1/1':"
+                     "g='0/0.02 0.5/0.53 1/1':b='0/0.04 0.5/0.52 1/0.98'")
+            tone = "eq=saturation=0.94:contrast=1.02:gamma=1.10"
+        else:
+            curve = ("curves=r='0/0 0.22/0.13 0.5/0.5 0.78/0.85 1/1':"
+                     "g='0/0 0.5/0.49 1/1':b='0/0.02 0.5/0.48 1/0.97'")
+            tone = "eq=saturation=0.92:contrast=1.06:gamma=0.97"
         pre_parts += [
             "colorbalance=rs=-0.08:gs=-0.02:bs=0.10:rm=0.03:bm=-0.03:"
             "rh=0.09:gh=0.03:bh=-0.08",
-            "curves=r='0/0 0.22/0.13 0.5/0.5 0.78/0.85 1/1':"
-            "g='0/0 0.5/0.49 1/1':b='0/0.02 0.5/0.48 1/0.97'",
-            "eq=saturation=0.92:contrast=1.06:gamma=0.97",
+            curve,
+            tone,
         ]
     # Experimental colour-world variants (set by src/experiments.py per post,
     # logged to posts.csv, compared in channel_report). Env: REEL_GRADE_VARIANT.
