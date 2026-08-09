@@ -1995,3 +1995,17 @@ for any recurring defects.
 - Keep one consistent bold high-contrast font across hook and body, and add a slight text scrim behind the Seneca quote so it stays crisp over the face in frame 6.
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-08-09 08:05 UTC
+**File:** `2026-08-09_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rule 3: Give before you're asked.
+**Scores:** hook_strength=7.5 | text_legibility=9.0 | pacing=4.5 | scroll_stop_potential=6.5
+**Reasoning:** Hook text 'Rule 3: Give before you're asked' is a strong, curiosity-driving imperative — the 'Rule 3' framing implies a series and creates an information gap, though 'Rule 3' without context of rules 1-2 slightly weakens standalone appeal (7.5). Text is crisp bold gold/orange on dark purple with excellent contrast, instantly readable at phone size (9.0). Pacing is the weak point: the first four hook frames are visually near-identical — same static text, same candle, only micro-changes in the smoke wisp, giving almost no visual movement in the critical opening 1.5s (4.5). The candle-and-silhouette aesthetic is moody and atmospheric, and the mysterious dark figure adds intrigue, so it will stop some scrollers but the static first frame isn't arresting enough to guarantee a stop (6.5).
+**Issues:**
+- The four hook frames are almost visually identical — no motion or transition energy in the opening 1.5 seconds
+- 'Rule 3' assumes context from a series; a cold viewer has no idea what rules 1 and 2 were
+**Suggestions:**
+- Add a subtle zoom, candle-flicker punch-in, or text pop-in animation across the hook frames to create motion that stops the scroll
+- Consider a micro-subtitle or quick flash establishing the series ('Rule 3 of 7 for real friendships') so the number pays off curiosity instead of confusing new viewers
+**Flagged dims:** pacing
+
