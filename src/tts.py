@@ -757,3 +757,83 @@ def _audio_duration(audio_path: Path) -> float:
         return float(json.loads(out)["format"]["duration"])
     except Exception:
         return 20.0
+
+
+# ---------------------------------------------------------------------------
+# Two-part narration: story → silent reading beat → lesson
+#
+# The owner's note (2026-08-07): "I have a hard time reading the quote while
+# also listening to the dialogue." Reading and listening compete for the same
+# channel, so the quote card used to lose that fight every time.
+#
+# The fix is structural, not cosmetic. The narration is synthesized as TWO
+# pieces with a measured silence between them, and the boundary is handed to
+# render.py so the quote card fades in exactly when the voice stops. The viewer
+# reads in silence, then hears the same words spoken back as the lesson.
+# ---------------------------------------------------------------------------
+
+# How long the quote sits on screen in silence before the lesson begins.
+# Long enough to read ~12 words unhurried; short enough not to feel like a
+# stall on a platform where 2 seconds is an eternity.
+READ_BEAT = float(os.environ.get("REEL_READ_BEAT", "2.4"))
+
+
+def synthesize_two_part(story: str, lesson: str, out_path: Path,
+                        voice_id: str = None) -> tuple:
+    """Synthesize story + silence + lesson.
+
+    Returns (out_path, word_timings, quote_appear_seconds) where
+    quote_appear_seconds is when the story ends — the moment the quote should
+    appear, because that is when the voice stops.
+
+    Falls back to a single joined take if anything goes wrong: a slightly worse
+    edit is always better than a failed post.
+    """
+    story, lesson = (story or "").strip(), (lesson or "").strip()
+    if not story or not lesson:
+        joined = f"{story} {lesson}".strip()
+        path, timings = synthesize_voice(joined, out_path, voice_id=voice_id)
+        return path, timings, 0.0
+
+    tmp_story = out_path.with_suffix(".story.mp3")
+    tmp_lesson = out_path.with_suffix(".lesson.mp3")
+    try:
+        _, story_timings = synthesize_voice(story, tmp_story, voice_id=voice_id)
+        story_dur = _audio_duration(tmp_story)
+        _, lesson_timings = synthesize_voice(lesson, tmp_lesson, voice_id=voice_id)
+
+        # Concat with a real silence in the middle. adelay on the second part
+        # keeps both segments at their natural pace — no time-stretching.
+        subprocess.run(
+            ["ffmpeg", "-y", "-loglevel", "error",
+             "-i", str(tmp_story), "-i", str(tmp_lesson),
+             "-filter_complex",
+             f"[0:a]apad=pad_dur={READ_BEAT}[a0];[a0][1:a]concat=n=2:v=0:a=1[out]",
+             "-map", "[out]", "-c:a", "libmp3lame", "-b:a", "192k",
+             str(out_path)],
+            check=True, capture_output=True,
+        )
+        total = _audio_duration(out_path)
+        if total < story_dur:                     # concat silently produced junk
+            raise RuntimeError(f"joined audio {total:.1f}s shorter than story "
+                               f"{story_dur:.1f}s")
+
+        # Shift the lesson's word timings past the story and the reading beat so
+        # captions/callouts still line up if they are ever switched back on.
+        offset = story_dur + READ_BEAT
+        timings = list(story_timings) + [
+            (w, s + offset, e + offset) for (w, s, e) in (lesson_timings or [])
+        ]
+        print(f"  tts: two-part narration — story {story_dur:.1f}s, "
+              f"read beat {READ_BEAT:.1f}s, total {total:.1f}s "
+              f"(quote appears at {story_dur:.1f}s)")
+        return out_path, timings, story_dur
+    except Exception as e:  # noqa: BLE001
+        print(f"  tts: two-part narration failed ({e}); falling back to one take",
+              file=sys.stderr)
+        joined = f"{story} {lesson}".strip()
+        path, timings = synthesize_voice(joined, out_path, voice_id=voice_id)
+        return path, timings, 0.0
+    finally:
+        tmp_story.unlink(missing_ok=True)
+        tmp_lesson.unlink(missing_ok=True)

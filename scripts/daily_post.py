@@ -23,7 +23,7 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from content import generate_content, _load_rows as _load_post_rows  # noqa: E402
 import tts as tts_mod                      # noqa: E402
-from tts import synthesize_voice, pick_voice  # noqa: E402
+from tts import synthesize_voice, synthesize_two_part, pick_voice  # noqa: E402
 from publish import publish_short, set_thumbnail, post_comment  # noqa: E402
 import publish_instagram                    # noqa: E402
 from logbook import log_post              # noqa: E402
@@ -326,14 +326,25 @@ def main():
 
     hook = content["hook"].strip()
     cta = content.get("cta", "").strip()
-    spoken_text = f"{hook.rstrip('.!? ')}. {content['voiceover_text']}"
+
+    # THREE ACTS (owner's format change, 2026-08-07):
+    #   1. hook + story narrated, NO quote on screen
+    #   2. quote appears, narration STOPS — a silent beat to read it
+    #   3. narration returns, speaking the quote aloud then the lesson
+    # "I have a hard time reading the quote while also listening to the
+    # dialogue." Reading and listening compete; nothing is narrated over the
+    # quote's reading beat any more.
+    act1 = f"{hook.rstrip('.!? ')}. {content['voiceover_story']}"
+    act3 = content["voiceover_lesson"]
     if cta:
-        spoken_text = f"{spoken_text} {cta}"
+        act3 = f"{act3} {cta}"
 
     # Voiceover once; reused across render attempts
     audio_path = ROOT / "data" / f"{today}_voice.mp3"
-    audio_path, word_timings = synthesize_voice(spoken_text, audio_path, voice_id=voice["id"])
-    print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings)")
+    audio_path, word_timings, quote_appear = synthesize_two_part(
+        act1, act3, audio_path, voice_id=voice["id"])
+    print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings, "
+          f"quote appears at {quote_appear:.1f}s)")
 
     video_path = ROOT / "data" / f"{today}_reel.mp4"
 
@@ -456,6 +467,11 @@ def main():
             music_track = score_track
         pack.setdefault("REEL_HOOK_SOUND", "1")
         pack.setdefault("REEL_HOOK_SOUND_PRESET", "cinematic")
+
+    # Tell the renderer when the story narration ends, so the quote card fades
+    # in on silence rather than over the voice.
+    if quote_appear > 0:
+        pack["REEL_QUOTE_APPEAR"] = f"{quote_appear:.2f}"
 
     exp_env = {**exp_env, **pack}
     print(f"  style: {fmt or 'classic'} -> {pack.get('REEL_STYLE','classic')}"

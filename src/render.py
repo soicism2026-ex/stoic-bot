@@ -97,6 +97,10 @@ CALLOUTS_ON = os.environ.get("REEL_CALLOUTS", "0") not in ("0", "false", "False"
 HOOK_TEXT_ON = os.environ.get("REEL_HOOK_TEXT", "1") not in ("0", "false", "False")
 HOOK_SOUND_ON = os.environ.get("REEL_HOOK_SOUND", "1") not in ("0", "false", "False")
 HOOK_HOLD = float(os.environ.get("REEL_HOOK_HOLD", "2.2"))      # seconds fully shown
+# When the quote card fades in, in seconds. 0 = use the old hook-handoff timing.
+# daily_post sets this to the end of the story narration so the quote appears
+# exactly when the voice stops — see the three-act note at the fade site.
+QUOTE_APPEAR = float(os.environ.get("REEL_QUOTE_APPEAR", "0"))
 HOOK_FONTSIZE = int(os.environ.get("REEL_HOOK_FONTSIZE", "94"))
 HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFB830")      # warm amber/gold
 
@@ -988,7 +992,16 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     if show_quote:
         # Fade the quote in as the hook fades out so only one primary text is
         # on screen at a time. If no hook is shown, appear from the start.
-        if hook and HOOK_TEXT_ON:
+        # THREE-ACT TIMING. QUOTE_APPEAR is set by daily_post to the moment the
+        # story narration STOPS, so the quote lands in silence and the viewer
+        # can read it before the lesson speaks. Owner, 2026-08-07: "I have a
+        # hard time reading the quote while also listening to the dialogue."
+        # Falls back to the old hook-handoff timing when unset (backups, manual
+        # renders, any caller that has no two-part audio).
+        if QUOTE_APPEAR > 0:
+            quote_fade_dur = 0.6
+            quote_alpha = f"min(1,max(0,(t-{QUOTE_APPEAR:.2f})/{quote_fade_dur:.2f}))"
+        elif hook and HOOK_TEXT_ON:
             hook_fade = 0.4
             quote_appear = HOOK_HOLD          # start fading in when hook starts fading
             quote_fade_dur = hook_fade + 0.2  # slightly longer for a softer entrance

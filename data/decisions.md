@@ -128,6 +128,19 @@ This file is for OPERATIONAL decisions and taste vetoes.
 - **Current rotation:** [rule, letter, quote, minimal, story] — one per post, LRU.
 
 ## Production quality
+- **2026-08-07 FORMAT — THREE ACTS.** Owner: *"can we wait until the story is
+  said before showing the quote on screen? and then after the quote is shown
+  can we have a voice over of it as a lesson of the video? ... I have a hard
+  time reading the quote while also listening to the dialogue."*
+  1. **Story** — hook + setup narrated, quote NOT on screen.
+  2. **Read beat** — quote fades in, narration STOPS (`REEL_READ_BEAT`, 2.4s).
+  3. **Lesson** — narration returns, SPEAKS THE QUOTE ALOUD, then the takeaway.
+  Reading and listening compete for the same attention, so the quote card was
+  always losing. `content.py` emits `voiceover_story` + `voiceover_lesson`;
+  `tts.synthesize_two_part()` inserts real silence and returns the boundary;
+  `daily_post` passes it as `REEL_QUOTE_APPEAR` so the card fades in exactly
+  when the voice stops. **Rule: never narrate over the quote's reading beat.**
+  Degrades to a single take + old timing if either half is missing.
 - **2026-07-22** "Nolan-level" direction: cinematic mode ON by default —
   teal-orange grade, warm halation, deep vignette, Zimmer-register generated
   score, "BRAAAM" (cinematic) hook sound on classic posts.

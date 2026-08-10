@@ -74,6 +74,16 @@ author's, choose a different real passage rather than guessing.
 - CTA: 1-2 spoken sentences at the very end. Last line loops back to the opening \
 feeling (creates rewatch loops). Reference the next day's theme naturally. Under 25 \
 words. Vary the phrasing.
+- voiceover_story: the SETUP only — the scene, the tension, the moment. It must \
+NOT contain the quote and must not paraphrase it. This plays while the screen \
+shows only the hook and b-roll. 2-4 sentences.
+- voiceover_lesson: what is said AFTER the quote has appeared on screen and the \
+viewer has had a silent beat to read it. It MUST OPEN by speaking the quote \
+aloud, word for word, then land the lesson in 1-2 short sentences. Hearing the \
+words just read is reinforcement, not repetition.
+  WHY THE SPLIT: the owner cannot read the quote and follow narration at the \
+same time — "I have a hard time reading the quote while also listening to the \
+dialogue". Nothing is ever narrated over the quote's reading beat.
 - broll_queries: FOUR stock-video search queries (4-7 words each), in narration \
 order — one for each successive beat of the voiceover, each literally depicting \
 what is being SAID at that moment so the footage cuts in sync with the words in \
@@ -100,7 +110,7 @@ to follow along" or "day N of doing this daily". Lowercase is fine; it should \
 read like a person, not a call-to-action.
 - Caption: 1-2 sentences that reframe the idea for daily life + one specific question.
 - Hashtags: 8-12, mixing broad (#stoicism #discipline) and mid-size niche tags.
-- callout_words: 2-4 concrete nouns that appear verbatim in voiceover_text. They \
+- callout_words: 2-4 concrete nouns that appear verbatim in the voiceover. They \
 flash large on screen when spoken. Concrete only — "phone", "anger", "body", not \
 "virtue" or "wisdom".
 
@@ -270,7 +280,8 @@ Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
   "quote": "...",
   "author": "<the exact author name you were assigned>",
   "hook": "...",
-  "voiceover_text": "...",
+  "voiceover_story": "...",
+  "voiceover_lesson": "...",
   "cta": "...",
   "pinned_comment": "...",
   "caption": "...",
@@ -278,6 +289,38 @@ Respond with ONLY valid JSON, no markdown, no preamble, in this exact shape:
   "callout_words": ["word1", "word2"],
   "broll_queries": ["stock video search 1", "search 2", "search 3"]
 }"""
+
+
+def _repair_script_split(data: dict) -> None:
+    """Guarantee voiceover_story / voiceover_lesson exist.
+
+    The two-part script is what lets the quote be READ in silence before it is
+    spoken — the owner cannot do both at once. But a model that returns the old
+    single `voiceover_text` must not fail the run, and backup JSON written
+    before this change still has the old shape. So: if the split is missing,
+    derive it by putting the last sentences in the lesson, which is where the
+    turn lives in every one of these scripts anyway.
+    """
+    has_story = bool((data.get("voiceover_story") or "").strip())
+    has_lesson = bool((data.get("voiceover_lesson") or "").strip())
+    if has_story and has_lesson:
+        return
+    whole = (data.get("voiceover_text") or "").strip()
+    if not whole:
+        # Nothing to work with; leave it, the required-keys check will complain.
+        return
+    import re as _re
+    parts = [p.strip() for p in _re.split(r"(?<=[.!?])\s+", whole) if p.strip()]
+    if len(parts) < 2:
+        data.setdefault("voiceover_story", whole)
+        data.setdefault("voiceover_lesson", whole)
+        return
+    cut = max(1, len(parts) - 2)          # last two sentences carry the turn
+    data["voiceover_story"] = " ".join(parts[:cut])
+    data["voiceover_lesson"] = " ".join(parts[cut:])
+    print("  content: model returned a single script — split it into "
+          "story/lesson so the quote still gets a silent reading beat",
+          file=sys.stderr)
 
 
 def _load_doctrine() -> str:
@@ -482,8 +525,9 @@ def generate_content() -> dict:
 
     strategy_addendum = _load_doctrine() + _load_strategy()
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-    required = {"format", "theme", "quote", "author", "hook", "voiceover_text",
-                "cta", "pinned_comment", "caption", "hashtags", "callout_words"}
+    required = {"format", "theme", "quote", "author", "hook", "voiceover_story",
+                "voiceover_lesson", "cta", "pinned_comment", "caption",
+                "hashtags", "callout_words"}
     used_norm = {_normalize_quote(q) for q in used_quotes}
 
     # Dedup agent: regenerate (capped at 3) if the model returns a quote we have
@@ -503,6 +547,7 @@ def generate_content() -> dict:
         if raw.startswith("```"):
             raw = raw.split("```")[1].lstrip("json").strip()
         data = json.loads(raw)
+        _repair_script_split(data)
         missing = required - data.keys()
         if missing:
             raise ValueError(f"Claude response missing keys: {missing}")
@@ -519,4 +564,9 @@ def generate_content() -> dict:
               "(better than failing the run)", file=sys.stderr)
 
     data["day_number"] = day_number
+    # Everything downstream that just wants "the script" (callout matching,
+    # logging, backups written before this change) keeps working.
+    data["voiceover_text"] = (
+        f"{data['voiceover_story'].strip()} {data['voiceover_lesson'].strip()}"
+    ).strip()
     return data
