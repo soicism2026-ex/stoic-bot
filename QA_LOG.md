@@ -2023,3 +2023,17 @@ for any recurring defects.
 - Place a semi-transparent dark scrim or shadow behind the author attribution in the body frames so it stays legible against the bright backlight.
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-08-10 00:42 UTC
+**File:** `2026-08-10_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** The source is inside.
+**Scores:** hook_strength=6.0 | text_legibility=8.5 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'THE SOURCE IS INSIDE.' is short and creates mild curiosity but is somewhat vague — it doesn't specify what source, which lowers immediate stopping power (6.0). The moody purple statue visual is atmospheric and on-brand for Stoicism. Text legibility is strong: bold gold caps with dark outline sit well against the dark background, easily readable at phone size, minor deduction only because it overlaps the statue's face (8.5). Pacing is weak across the hook — frames 1-4 are nearly identical with only micro-changes in lighting/zoom, so the opening feels static; the shift to the man and quote card in the body adds some variety but transitions are minimal (4.5). Scroll-stop potential is moderate: the dramatic candle-lit bust is visually interesting but the low-contrast dark tone and static hook won't force every scroller to stop (6.0).
+**Issues:**
+- First 4 hook frames are almost identical — no visual movement or zoom to hold attention in the critical 1.5s window
+- Hook text is vague ('The source' of what?), reducing curiosity payoff for a fast scroller
+**Suggestions:**
+- Add subtle motion (slow push-in, candle flicker, or light sweep) across the hook frames to create energy and stop the scroll
+- Sharpen the hook copy to hint at the payoff, e.g. 'The discipline you're waiting for is already inside you' or a curiosity-driven question
+**Flagged dims:** pacing
+
