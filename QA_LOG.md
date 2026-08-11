@@ -2063,3 +2063,17 @@ for any recurring defects.
 - Add a subtle push-in/zoom or lighting flicker across the candle-lit bust during the hook to create motion energy
 - Reveal the hook text in two beats ('THE ADVISOR' then 'WHO OWNED HALF OF ROME') to build tension and keep the frame changing
 
+
+## Visual QA — 2026-08-11 04:22 UTC
+**File:** `2026-08-11_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rule 19: Stop fighting what's already fixed.
+**Scores:** hook_strength=7.5 | text_legibility=8.5 | pacing=4.5 | scroll_stop_potential=6.5
+**Reasoning:** hook_strength: 'Stop fighting what's already fixed' creates a solid curiosity gap and the numbered rule format implies a series, though 'Rule 19' with no context is a bit generic. text_legibility: The orange bold caps on dark candle-lit background are crisp and high-contrast; the body quote in serif italic is readable but slightly lower contrast against the busy street scene. pacing: The first four hook frames are nearly identical — the candle barely flickers and the text never changes, so the opening feels static and slow with no visual movement to reinforce the audio. scroll_stop_potential: The moody dark aesthetic with the single candle flame is atmospheric and on-brand for Stoicism, but the frame is fairly dim and the subject silhouette is hard to read, so it's a probable-stop rather than a definite one.
+**Issues:**
+- Hook window (frames 1-4) is visually static — same text and near-identical candle image for the full 1.5s, no motion to hold attention
+- Frame 1 subject is a murky silhouette; the visual isn't immediately legible which weakens the instant scroll-stop
+**Suggestions:**
+- Add subtle motion in the hook — a slow push-in, animated text reveal, or a stronger candle flicker — so the first 1.5s feels alive
+- Brighten or add a rim light to the subject in frame 1 and consider revealing the 'STOP FIGHTING' line with a punch-in animation to sharpen the curiosity gap
+**Flagged dims:** pacing
+
