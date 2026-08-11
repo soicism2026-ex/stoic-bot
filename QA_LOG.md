@@ -2077,3 +2077,16 @@ for any recurring defects.
 - Brighten or add a rim light to the subject in frame 1 and consider revealing the 'STOP FIGHTING' line with a punch-in animation to sharpen the curiosity gap
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-08-11 08:27 UTC
+**File:** `2026-08-11_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Still clenching your jaw?
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=5.5 | scroll_stop_potential=7.0
+**Reasoning:** Hook strength is strong: 'Still clenching your jaw?' is a physical, relatable question that immediately targets anyone tense from anger, creating instant self-recognition (8.0). Text legibility is good — the bold gold caps have solid contrast against the dark purple, though the thin outline could be heavier for guaranteed readability at small size (8.5). Pacing suffers because the first four hook frames are nearly identical — same silhouette, same candle, same static text — with almost no visual change over the crucial opening 1.5s, making it feel static (5.5). Scroll-stop potential is decent thanks to the moody candlelit atmosphere and the direct question, but the dark, low-detail silhouette isn't as arresting as a clear face would be (7.0); the striking close-up face only arrives in frame 5.
+**Issues:**
+- Hook frames 1-4 are visually near-identical with no motion or reveal, wasting the opening 1.5s
+- The compelling human face (frame 5) is held back to the body instead of appearing in the hook
+**Suggestions:**
+- Introduce subtle motion or a zoom/text-pop animation across the hook frames to add energy
+- Cut to the dramatic candlelit face earlier or intercut it with the hook text to boost stopping power
+
