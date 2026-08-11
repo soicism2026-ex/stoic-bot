@@ -2090,3 +2090,17 @@ for any recurring defects.
 - Introduce subtle motion or a zoom/text-pop animation across the hook frames to add energy
 - Cut to the dramatic candlelit face earlier or intercut it with the hook text to boost stopping power
 
+
+## Visual QA — 2026-08-11 11:43 UTC
+**File:** `2026-08-11_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Weigh what you chase.
+**Scores:** hook_strength=6.0 | text_legibility=8.0 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'WEIGH WHAT YOU CHASE.' is a solid imperative that invites reflection, but it's more of a slow-burn philosophical prompt than an immediate curiosity spike — it won't stop every scroller, hence 6.0. Text legibility is strong: the amber bold caps have good contrast against the dark candlelit background, with only minor risk of the drop against the busier silhouette, so 8.0. Pacing is the weak point — the first four hook frames are nearly identical (same candle, same silhouette, static text), giving almost no visual movement in the critical opening 1.5s; the body then jumps to a nicely lit ruins quote card, but the hook feels static, so 4.5. Scroll-stop potential is moderate: the moody candle-lit chiaroscuro aesthetic is atmospheric and premium-looking, which earns attention, but the near-frozen opening reduces the punch, landing at 6.0.
+**Issues:**
+- Hook frames 1-4 are visually near-identical with no motion or reveal, wasting the crucial opening 1.5 seconds
+- The subject in the hook is heavily shadowed to the point of being an indistinct dark mass, reducing focal clarity
+**Suggestions:**
+- Add motion in the hook window — a slow push-in on the candle flame, a word-by-word text reveal, or a subtle flicker to create movement that stops the scroll
+- Lighten the subject slightly or add a rim light so the silhouette reads as a recognisable figure/statue, strengthening the visual hook
+**Flagged dims:** pacing
+
