@@ -2130,3 +2130,17 @@ for any recurring defects.
 - Introduce a subtle zoom, parallax, or lighting shift across the hook frames to add motion energy without changing the scene.
 - Brighten or add a rim-light to the statue so the central visual pops more strongly in-feed and complements the text.
 
+
+## Visual QA — 2026-08-12 11:51 UTC
+**File:** `2026-08-12_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rule 24: Carry his faults quietly.
+**Scores:** hook_strength=6.5 | text_legibility=8.5 | pacing=4.0 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'Rule 24: Carry his faults quietly.' creates moderate curiosity — the 'Rule 24' framing implies a series and 'carry his faults' hints at relationship advice, but it isn't instantly gripping for every scroller (6.5). Text legibility is strong: bold yellow all-caps with a dark outline against a deep purple background reads clearly at phone size, minor point off for slight glow softness (8.5). Pacing is weak in the hook window — frames 1–4 are nearly identical, showing the same statue/candle with only micro flicker changes, so the opening 1.5s feels static (4.0). Scroll-stop potential is moderate: the moody purple aesthetic with candle and Stoic statue is atmospheric and on-brand, but it's a common look in this niche and lacks a bold visual disruptor (6.0). The body frames improve — the writing man and the two-friends silhouette with candle are more evocative and well-matched to the friendship theme.
+**Issues:**
+- Hook frames 1-4 are visually near-identical with no motion or reveal, wasting the critical opening 1.5 seconds
+- Statue subject in the hook is dim and low-contrast, competing weakly against the purple background
+**Suggestions:**
+- Introduce motion in the hook — a push-in on the statue, animated candle flicker, or a word-by-word text reveal to break the static feel
+- Brighten or rim-light the statue and add a subtle vignette so the central subject pops harder in frame 1 for stronger scroll-stopping power
+**Flagged dims:** pacing
+
