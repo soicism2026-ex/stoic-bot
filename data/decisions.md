@@ -82,6 +82,22 @@ This file is for OPERATIONAL decisions and taste vetoes.
   scheduled runs); `MAX_POSTS_PER_DAY=3` caps actual posts.
 
 ## Content & creative
+- **2026-08-13 HELPFULNESS OUTRANKS EVERYTHING.** Owner: *"I want the content
+  to be more helpful to people, choose stories that if you watched them you'd
+  feel better about yourself and make as much people get help as possible."*
+  Written into `data/doctrine.md` §5 (injected into every content call) and
+  into `content.py`'s system prompt as a HELPFULNESS TEST placed ABOVE the
+  emotional-core block. The test: *if a man watched this at 2am on a bad night,
+  would he feel better about himself, or smaller?* If smaller, rewrite.
+  Concretely: pick stories where the person GOT THROUGH IT (not just endured
+  or died nobly); give one usable thing tonight; absolve before instructing;
+  write for the ordinary struggle, not the 5am-PR guy — that widens reach AND
+  helps more people, which point the same way here.
+  **Hard ban:** shame as motivation, "nobody is coming to save you", contempt
+  for people struggling, treating needing help as weakness. And if a script
+  drifts toward real despair the turn MUST move the viewer toward people —
+  never "endure it alone, that's what a strong man does". Isolation dressed as
+  strength is the most harmful thing this niche does; this channel does not.
 - **2026-07-06** Meditative/calm vibe baseline; NO flashing callout text (CALLOUTS off).
 - **2026-07-07** Real-time karaoke captions ON — owner wants narration readable as spoken.
   Captions skip the hook's words (hook card shows them; overlap = perceived timing bug).
