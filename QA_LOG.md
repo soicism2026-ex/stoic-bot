@@ -2158,3 +2158,17 @@ for any recurring defects.
 - Reveal the man's face earlier (as in frame 5) or add a strong visual reveal on the hook to boost curiosity and scroll-stop power
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-08-13 08:42 UTC
+**File:** `2026-08-13_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Answer to yourself.
+**Scores:** hook_strength=6.5 | text_legibility=8.5 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** The hook text 'ANSWER TO YOURSELF.' is punchy and creates mild curiosity, but it's a fairly abstract phrase that doesn't hit as hard as a question or bold claim would — earning a mid-high hook score. Text legibility is strong: the bold golden font with dark outline sits cleanly against the dark purple candle background across all hook frames, though the body quote in a thin serif is slightly less crisp against the busy window backdrop. Pacing is weak in the hook window — frames 1–4 are nearly identical with only subtle candle flicker and zero visual movement, meaning the opening 1.5s feels static; the cut to the lantern/bed and then the quote card adds some variety but isn't energetic. Scroll-stop potential is moderate: the moody candle-lit silhouette is atmospheric and on-brand for Stoicism, but the near-static, dim first frame won't universally halt a fast scroller.
+**Issues:**
+- Hook frames 1-4 are visually near-identical with almost no motion, wasting the critical 1.5s window
+- Frame 5 (body) has no text overlay and is a blurry transitional shot, creating a dead moment
+**Suggestions:**
+- Add subtle zoom, text animation, or a word-by-word reveal on the hook to inject motion in the first 1.5s
+- Brighten the opening frame slightly or add a stronger focal contrast so the silhouette pops harder in-feed
+**Flagged dims:** pacing
+
