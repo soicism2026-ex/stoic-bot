@@ -158,3 +158,56 @@ def test_daily_post_passes_the_boundary_through():
     src = (ROOT / "scripts" / "daily_post.py").read_text()
     assert 'pack["REEL_QUOTE_APPEAR"]' in src
     assert "synthesize_two_part" in src
+
+
+# ------------------------------------------------- story-only captions
+
+def _ass_starts(text: str) -> list:
+    out = []
+    for line in text.splitlines():
+        if line.startswith("Dialogue:"):
+            h, m, s = line.split(",")[1].split(":")
+            out.append(int(h) * 3600 + int(m) * 60 + float(s))
+    return out
+
+
+def test_captions_are_on_again():
+    """Owner asked for the read-along back. Removing them entirely on
+    2026-08-07 over-corrected; the collision was with the QUOTE, not with
+    captions as such."""
+    import importlib
+    import render
+    m = importlib.reload(render)
+    assert m.CAPTIONS_ON is True
+
+
+def test_captions_stop_when_the_quote_appears(tmp_path, monkeypatch):
+    """The whole reason they can come back: during act 1 the quote is not on
+    screen, so captions have the frame to themselves. The instant the quote
+    fades in they must stop, or we are back to two competing texts."""
+    import importlib
+    monkeypatch.setenv("REEL_QUOTE_APPEAR", "6.0")
+    import render
+    m = importlib.reload(render)
+    timings = [(f"w{i}", i * 0.5, i * 0.5 + 0.45) for i in range(24)]
+    out = tmp_path / "c.ass"
+    m._build_ass(timings, out)
+    starts = _ass_starts(out.read_text())
+    assert starts, "no captions at all during the story"
+    assert max(starts) < 6.0, f"captions leak past the quote: {max(starts)}"
+    monkeypatch.delenv("REEL_QUOTE_APPEAR")
+    importlib.reload(render)
+
+
+def test_captions_cover_the_whole_video_when_there_is_no_quote_timing(tmp_path, monkeypatch):
+    """caption_only styles and any caller without two-part audio keep the old
+    full-length behaviour."""
+    import importlib
+    monkeypatch.delenv("REEL_QUOTE_APPEAR", raising=False)
+    import render
+    m = importlib.reload(render)
+    timings = [(f"w{i}", i * 0.5, i * 0.5 + 0.45) for i in range(24)]
+    out = tmp_path / "c2.ass"
+    m._build_ass(timings, out)
+    starts = _ass_starts(out.read_text())
+    assert max(starts) > 6.0, "captions were truncated with no quote timing set"

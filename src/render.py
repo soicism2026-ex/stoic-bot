@@ -58,10 +58,13 @@ DIVIDER_COLOR = os.environ.get("REEL_DIVIDER_COLOR", "0xA08040") # darker bronze
 # author, and (in the player) YouTube's own auto-CC. Worse, the karaoke and the
 # narration say the SAME WORDS, so the big yellow caption was duplicating the
 # subtitle underneath it.
-# The quote card IS this channel's identity. It stays; the caption goes.
-# caption_only styles (pov/challenge) still force captions on — there the
-# captions ARE the video and no quote card is drawn.
-CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "0") not in ("0", "false", "False")
+# RESTORED 2026-08-13, but scoped: captions now run during the STORY ONLY and
+# stop the instant the quote appears (see the filter in _build_ass). That gives
+# back the read-along the owner wanted without ever putting two competing texts
+# on screen — which is what made it clutter the first time.
+# caption_only styles (pov/challenge) force captions on for the whole video —
+# there the captions ARE the video and no quote card is drawn.
+CAPTIONS_ON = os.environ.get("REEL_CAPTIONS", "1") not in ("0", "false", "False")
 CAPTIONS_ONLY = os.environ.get("REEL_CAPTIONS_ONLY", "0") not in ("0", "false", "False")
 # Mission strapline ("DAY 64 · UNTIL DISCIPLINE IS COOL AGAIN"). Off by default
 # — see the note at its draw site.
@@ -615,6 +618,15 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     events = []
     for i, line in enumerate(lines):
         start = chunk_starts[i]
+        # STORY-ONLY CAPTIONS. Captions are how the owner reads along with the
+        # narration — they were removed on 2026-08-07 because they collided
+        # with the quote card ("I don't even know what to read first"). The
+        # three-act format resolves that: during act 1 the quote is NOT on
+        # screen, so captions have the frame to themselves. From the moment the
+        # quote fades in, captions stop — the quote is the only thing to read
+        # through the reading beat and the lesson.
+        if QUOTE_APPEAR > 0 and start >= QUOTE_APPEAR - 0.15:
+            continue
         # Minimum 600ms on screen; clamp to just before next chunk appears.
         natural_end = line[-1][2] + 0.15
         min_end     = start + 0.60

@@ -26,16 +26,22 @@ def _reload(monkeypatch, **env):
     return importlib.reload(render)
 
 
-def test_captions_off_by_default(monkeypatch):
-    """The quote card is the identity. The karaoke duplicated the narration."""
+def test_captions_on_but_scoped_to_the_story(monkeypatch):
+    """REVISED 2026-08-13. Removing captions entirely over-corrected: the
+    collision was with the QUOTE, not with captions as such. The owner reads
+    along with them. Under the three-act format the quote is absent during act
+    1, so captions run there and stop the moment it appears — see
+    test_captions_stop_when_the_quote_appears."""
     r = _reload(monkeypatch, REEL_CAPTIONS=None)
-    assert r.CAPTIONS_ON is False
-
-
-def test_captions_can_still_be_forced_on(monkeypatch):
-    """caption_only styles need them — there is no quote card there."""
-    r = _reload(monkeypatch, REEL_CAPTIONS="1")
     assert r.CAPTIONS_ON is True
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "if QUOTE_APPEAR > 0 and start >= QUOTE_APPEAR" in src, \
+        "captions are on with no cutoff — they will collide with the quote again"
+
+
+def test_captions_can_still_be_forced_off(monkeypatch):
+    r = _reload(monkeypatch, REEL_CAPTIONS="0")
+    assert r.CAPTIONS_ON is False
 
 
 def test_mission_strapline_off_by_default(monkeypatch):

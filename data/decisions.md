@@ -98,6 +98,15 @@ This file is for OPERATIONAL decisions and taste vetoes.
   drifts toward real despair the turn MUST move the viewer toward people —
   never "endure it alone, that's what a strong man does". Isolation dressed as
   strength is the most harmful thing this niche does; this channel does not.
+- **2026-08-13 CAPTIONS BACK, BUT STORY-ONLY.** Owner: *"we need the text to
+  speech back"* — meaning the spoken words shown on screen, not the voice
+  (which was running fine; posts logged Christopher/Steffan). Removing captions
+  entirely on 2026-08-07 OVER-CORRECTED: the collision was with the QUOTE, not
+  with captions as such. Under the three-act format they no longer conflict —
+  during act 1 the quote is not on screen, so captions have the frame to
+  themselves, and they stop the instant the quote fades in. `_build_ass` drops
+  any chunk starting at/after `QUOTE_APPEAR`. **Rule: never two competing texts
+  on screen at once — but read-along during the story is wanted.**
 - **2026-07-06** Meditative/calm vibe baseline; NO flashing callout text (CALLOUTS off).
 - **2026-07-07** Real-time karaoke captions ON — owner wants narration readable as spoken.
   Captions skip the hook's words (hook card shows them; overlap = perceived timing bug).
