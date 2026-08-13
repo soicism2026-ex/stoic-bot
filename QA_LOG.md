@@ -2172,3 +2172,17 @@ for any recurring defects.
 - Brighten the opening frame slightly or add a stronger focal contrast so the silhouette pops harder in-feed
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-08-13 11:44 UTC
+**File:** `2026-08-13_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Nothing terrible here.
+**Scores:** hook_strength=6.5 | text_legibility=8.5 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'Nothing terrible here.' is intriguing and paired with a moody candle-lit silhouette that suits the memento mori theme, but the incomplete phrasing creates mild curiosity rather than an instant must-know reaction, so hook_strength lands mid-high. Text legibility is strong: the bold yellow all-caps hook has good contrast against the dark background, and the body serif quote is clean, though the serif font at smaller size and the darker curtain area behind it slightly reduce instant readability, hence 8.5. Pacing is the weak point — the first four hook frames are nearly identical with only a subtle candle flicker/zoom, giving a static feel for the critical opening 1.5s; the jump to the body frames is fine but the hook lacks visual movement. Scroll-stop potential is moderate: the atmospheric lighting and silhouette are aesthetically pleasing and on-theme, but the dark, low-energy opening may not arrest every fast scroller.
+**Issues:**
+- Hook frames 1-4 are almost static, wasting the crucial opening motion window
+- Body serif quote font sits partly over a mid-tone curtain, slightly lowering contrast vs the crisp hook text
+**Suggestions:**
+- Add a subtle animated reveal or word-by-word emphasis to the hook text, or a faster push-in on the candle to inject movement in the first 1.5s
+- Add a soft dark scrim behind the body quote and consider a heavier/bolder serif or all-caps treatment for maximum phone-size legibility
+**Flagged dims:** pacing
+
