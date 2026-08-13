@@ -2144,3 +2144,17 @@ for any recurring defects.
 - Brighten or rim-light the statue and add a subtle vignette so the central subject pops harder in frame 1 for stronger scroll-stopping power
 **Flagged dims:** pacing
 
+
+## Visual QA — 2026-08-13 04:56 UTC
+**File:** `2026-08-13_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** If today felt thankless—
+**Scores:** hook_strength=6.5 | text_legibility=8.5 | pacing=4.0 | scroll_stop_potential=6.0
+**Reasoning:** hook_strength: 'If today felt thankless—' is relatable and creates a mild open loop with the em-dash, but the phrasing is soft and the dark silhouette imagery is atmospheric rather than arresting, so it won't stop every scroller. text_legibility: The bold golden all-caps hook has strong contrast against the dark background and is instantly readable; the body serif quote is slightly smaller and lower-contrast but still legible. pacing: The four hook frames are nearly identical with only tiny candle-flicker changes and static text — visually motionless for the critical opening 1.5s, which drags energy. scroll_stop_potential: The candlelit silhouette and chiaroscuro aesthetic are moody and premium-looking, giving decent stopping power, but the lack of a face or motion in frame 1 limits immediate intrigue.
+**Issues:**
+- Hook frames 1-4 are virtually static — no visual movement or text animation during the make-or-break opening window
+- Frame 1 shows only a dark abstract silhouette with a candle; no human face or dynamic focal point to arrest the scroll
+**Suggestions:**
+- Add subtle motion to the hook — animate the text in word-by-word or push in on the candle/silhouette to create momentum in the first 1.5s
+- Reveal the man's face earlier (as in frame 5) or add a strong visual reveal on the hook to boost curiosity and scroll-stop power
+**Flagged dims:** pacing
+
