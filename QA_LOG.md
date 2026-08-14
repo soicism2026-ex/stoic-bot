@@ -2212,3 +2212,16 @@ for any recurring defects.
 - Add a punchier visual change or motion in the hook window (quick push-in, light flare, or a word-by-word text reveal) to create movement and stop the scroll
 - Add a subtle semi-transparent dark band behind the hook text to guarantee contrast where it overlaps the bright golden statue
 
+
+## Visual QA — 2026-08-14 11:47 UTC
+**File:** `2026-08-14_reel.mp4` | **Verdict:** `PASS`
+**Hook:** If you can't fix it tonight—
+**Scores:** hook_strength=7.5 | text_legibility=8.5 | pacing=5.0 | scroll_stop_potential=7.0
+**Reasoning:** Hook text 'IF YOU CAN'T FIX IT TONIGHT—' creates a genuine open loop and emotional relatability, earning a solid 7.5; the em-dash cliffhanger is a strong device but the phrasing isn't quite arresting enough for a perfect score. Text legibility is strong at 8.5 — bold yellow all-caps with dark outline sits cleanly against the deep purple statue backdrop, though the yellow-on-orange glow near the beard slightly reduces contrast on the lower text lines. Pacing scores a modest 5.0 because the first four hook frames are nearly identical (static statue, identical text), showing almost no visual movement in the crucial opening window. Scroll-stop potential is 7.0 — the moody Stoic statue with candlelight and the curiosity hook would probably stop the right audience, but the static opening and familiar aesthetic won't grab everyone.
+**Issues:**
+- Hook frames 1-4 are visually near-identical, creating a static, low-energy opening with no motion to hold attention
+- Lower text lines ('TONIGHT—') overlap the warm orange glow of the beard, slightly cutting yellow-text contrast
+**Suggestions:**
+- Add subtle motion in the hook window — slow zoom, candle flicker, or animated text reveal — to inject energy and prevent a static first 1.5s
+- Shift the hook text position or add a stronger semi-transparent dark panel behind it so the yellow stays high-contrast over the orange lighting
+
