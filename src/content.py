@@ -44,17 +44,22 @@ AUTHORS = BIG5
 # Themes ranked by avg views (channel_report). 'time' (230v) and 'adversity as
 # training' (276v) owned the entire bottom of the feed and were DROPPED. anger
 # (794v), mortality (736v), friendship (615v) are the strongest and lead.
+# Medians at 1 day old (age-corrected, full history): anger 388, fear 331,
+# resilience 289, mortality 244, ego 199, control 194, discipline 188,
+# duty 184, desire 170, friendship 155.
+# 2026-08-13: friendship and desire DROPPED — the two weakest, and both well
+# under half of anger. The strongest three lead the list so the LRU picker
+# reaches them first. Eight themes kept deliberately: cutting to the top three
+# would triple how often each recurs, and repetition is the thing that hurt us.
 THEMES = [
     "anger",
-    "mortality/memento mori",
-    "friendship",
-    "resilience",
     "fear",
-    "desire",
-    "discipline",
+    "resilience",
+    "mortality/memento mori",
     "ego",
-    "duty/justice",
     "control vs acceptance",
+    "discipline",
+    "duty/justice",
 ]
 
 SYSTEM = """You are the content engine for a faceless Stoicism YouTube Shorts \
@@ -113,6 +118,13 @@ read like a person, not a call-to-action.
 - callout_words: 2-4 concrete nouns that appear verbatim in the voiceover. They \
 flash large on screen when spoken. Concrete only — "phone", "anger", "body", not \
 "virtue" or "wisdom".
+
+OPENER VARIETY (hard rule, 2026-08-13):
+The format pool is down to three, so each one returns every single day. The words have to carry the difference or the feed reads as one video on repeat — which is what the channel is recovering from: it shipped "Rule 7" nine times, one identical music bed thirty times, and the same hook verbatim three times, and 1-day views fell 77%.
+- Your hook must NOT begin with the same word as ANY of the recent hooks you are shown. Recent openers to avoid outright: "Rule", "If", "You", "Nothing", "Nero".
+- Vary the SHAPE of the opening, not just the wording. Rotate between: a bare statement, a second-person observation, a concrete image with no verb, a time marker ("2am."), a number, a short question. Never the same shape two days running.
+- "rule" format: the number is assigned to you. Do not open every rule post with the word "Rule" — lead with the rule itself and let the number sit after it, or open on the image and arrive at the rule.
+- Two hooks that share their first three words are the same hook. Rewrite.
 
 HELPFULNESS TEST (2026-08-13, outranks everything below):
 Before you output, read your script back and ask: if a man watched this at 2am on a bad night, would he feel BETTER about himself, or smaller? If smaller, rewrite it. Sharpness is never worth making someone feel worse.
@@ -431,7 +443,17 @@ def _pick_format(rows: list[dict]) -> str:
     # Emotional-connection era (2026-07-20): 5-format rotation adds "letter" —
     # the intimate direct-message format — for day-to-day variety AND depth. All
     # keep the classic look. EMOTIONAL CORE in SYSTEM raises every format's warmth.
-    ROTATION = ["rule", "letter", "quote", "minimal", "story"]
+    # 2026-08-13 CUT: letter and story. Age-corrected medians at 1 day old
+    # across the full history — quote 253 (n=23), rule 253 (n=16), minimal 209
+    # (n=30), letter 188 (n=10), story 132 (n=24) — and in the last week they
+    # were the floor outright: four of the six worst posts were letters
+    # (17v, 20v, 27v) and a story took 24v.
+    #
+    # Narrowing the pool RAISES the repetition risk that most likely caused the
+    # 77% collapse, so it is paired with a hard opener-variety rule in SYSTEM.
+    # Three formats over three posts a day means each returns daily; the words
+    # have to carry the difference.
+    ROTATION = ["quote", "rule", "minimal"]
     return ROTATION[len(rows) % len(ROTATION)]
 
 
@@ -485,6 +507,21 @@ def generate_content() -> dict:
             "\n\nThe most recent hooks — avoid their PATTERN and rhythm too, not "
             f"just their words (vary rule numbers especially):\n{hooked}"
         )
+        # Name the actual repeated opening words. The model reliably re-uses an
+        # opener even while obeying "don't repeat a hook", because a different
+        # sentence starting the same way still feels new to it. The variety
+        # watchdog caught exactly this: 6 recent hooks opening "Rule", 5 "If",
+        # 4 "You".
+        from collections import Counter as _C
+        openers = _C(h.split()[0].strip('.,:;"\'').lower()
+                     for h in recent_hooks[-15:] if h.split())
+        overused = [w for w, n in openers.items() if n >= 2]
+        if overused:
+            avoid_block += (
+                "\n\nBANNED OPENING WORDS for this hook — each already opens "
+                "two or more recent hooks, and a feed of identical openings is "
+                f"what got this channel suppressed: {', '.join(sorted(overused))}"
+            )
     if used_quotes:
         quoted = "\n".join(f'- "{q}"' for q in used_quotes[-200:])
         # += — a previous `=` here silently ERASED the recent-hooks block above,

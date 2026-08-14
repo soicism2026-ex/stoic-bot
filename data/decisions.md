@@ -82,6 +82,23 @@ This file is for OPERATIONAL decisions and taste vetoes.
   scheduled runs); `MAX_POSTS_PER_DAY=3` caps actual posts.
 
 ## Content & creative
+- **2026-08-13 CUT + VARIETY (paired — never do one without the other).**
+  Owner: *"more variety, shorts out."* Two instructions that pull against each
+  other, resolved together.
+  **CUT.** Formats → `[quote, rule, minimal]`. Age-corrected medians at 1 day:
+  quote 253 (n=23), rule 253 (n=16), minimal 209 (n=30), letter 188 (n=10),
+  story 132 (n=24) — and in the last week letter/story WERE the floor (four of
+  the six worst posts were letters at 17v/20v/27v). Themes → 8, dropping
+  friendship (155) and desire (170), the two weakest; anger/fear/resilience
+  lead so LRU reaches them first.
+  **VARIETY.** Three formats over 3 posts/day means each returns DAILY, which
+  raises the exact repetition risk that most likely caused the 77% collapse.
+  So the cut ships with a hard OPENER VARIETY rule in the system prompt plus a
+  dynamically computed ban list: any word opening ≥2 of the last 15 hooks is
+  named and forbidden. On live data that currently bans "rule", "the",
+  "nothing".
+  **Rule: do not narrow the pool further without strengthening variety inside
+  it. Themes were deliberately kept at 8, not 3, for the same reason.**
 - **2026-08-13 HELPFULNESS OUTRANKS EVERYTHING.** Owner: *"I want the content
   to be more helpful to people, choose stories that if you watched them you'd
   feel better about yourself and make as much people get help as possible."*
