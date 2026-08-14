@@ -183,7 +183,18 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python src/analytics.py
 
+      # DISABLED 2026-08-13. The goal is YPP: 3,000,000 VALID PUBLIC Shorts
+      # views in 90 days. Unlisting a video removes its views from that total
+      # permanently. 113 of 196 videos sit under the 300-view bar, and the
+      # channel's own numbers show the damage: the per-video peak views sum to
+      # 69,176 while the channel total reads 55,290 — roughly 14k views, a
+      # fifth of everything ever earned, deleted from the metric being chased.
+      # The theory was that hiding weak videos improves the channel's quality
+      # signal. There is no evidence for it here: pruning ran throughout the
+      # period in which 1-day views fell 77%. Turn it back on only after YPP is
+      # reached, if ever.
       - name: Prune low-performing videos
+        if: ${{ vars.PRUNE_ENABLED == '1' }}
         # Unlist under-performers older than a week. ADAPTIVE threshold: the
         # floor is 300v but the bar rises automatically as the channel improves
         # (max of 300 and 0.5x the recent median views) — the minimum keeps

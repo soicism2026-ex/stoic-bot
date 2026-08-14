@@ -252,6 +252,16 @@ This file is for OPERATIONAL decisions and taste vetoes.
   (4800/day at 3 posts) always get first claim on the budget.
 
 ## Pruning
+- **2026-08-13 DISABLED.** Gated behind repo variable `PRUNE_ENABLED=1`, off.
+  The goal is YPP: 3,000,000 **valid public** Shorts views in 90 days, and
+  unlisting a video removes its views from that total permanently. 113 of 196
+  videos sit under the 300-view bar. The channel's own numbers show the cost:
+  per-video peak views sum to **69,176** while the channel total reads
+  **55,290** — roughly 14k views, a fifth of everything ever earned, deleted
+  from the exact metric being chased. The theory (hiding weak videos improves
+  the channel quality signal) has no evidence behind it here — pruning ran
+  throughout the period in which 1-day views fell 77%. Re-enable only after YPP
+  is reached, if ever.
 - **2026-07-28 CURRENT:** floor 300 views, only videos >7 days old, ADAPTIVE:
   threshold = max(300, 0.5 × recent median) — bar rises as the channel improves.
   (Supersedes: prune disabled during monetization push; 60v/14d interim.)
