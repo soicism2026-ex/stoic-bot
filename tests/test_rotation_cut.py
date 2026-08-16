@@ -32,9 +32,12 @@ def test_weak_formats_are_gone():
     assert not set(_rotation()) & CUT_FORMATS
 
 
-def test_rotation_still_cycles_evenly():
-    r = _rotation()
-    assert r[:3] == r[3:], "rotation is not a clean cycle"
+def test_rotation_still_cycles_cleanly():
+    """SUPERSEDED 2026-08-16: the cycle is 4 long, not 3, because minimal is
+    weighted double for retention (70.9% vs quote 53.5% / rule 50.3%). It must
+    still be a clean repeating cycle — just a longer one."""
+    r = [content._pick_format([0] * i) for i in range(8)]
+    assert r[:4] == r[4:], "rotation is not a clean cycle"
 
 
 def test_weakest_themes_are_cut():

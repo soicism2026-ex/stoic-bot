@@ -119,6 +119,16 @@ read like a person, not a call-to-action.
 flash large on screen when spoken. Concrete only — "phone", "anger", "body", not \
 "virtue" or "wisdom".
 
+HOOK LENGTH — MEASURED, NOT A STYLE OPINION (2026-08-16):
+Retention against hook length across 100 videos on THIS channel:
+  1-3 words  68.8%      4-5 words  57.3%      6-7 words  54.5%      8+  50.0%
+Correlation -0.29. Every extra word costs retention, and retention is what the
+algorithm ranks on. The current median hook is 5 words.
+- Write the hook in FOUR WORDS OR FEWER. Two or three is better.
+- It must still be a complete thought, not a fragment of one. "Not tomorrow." and "Let it be." are the two highest-retaining hooks this channel has ever published. "Nothing left to prove." held 126%.
+- Do not explain the hook. If it needs a second clause to make sense, it is the wrong hook — find the three words that carry the whole idea.
+- The ONLY exception is the "rule" format when its assigned shape includes the number; even then, keep the imperative itself to four words.
+
 OPENER VARIETY (hard rule, 2026-08-13):
 The format pool is down to three, so each one returns every single day. The words have to carry the difference or the feed reads as one video on repeat — which is what the channel is recovering from: it shipped "Rule 7" nine times, one identical music bed thirty times, and the same hook verbatim three times, and 1-day views fell 77%.
 - Your hook must NOT begin with the same word as ANY of the recent hooks you are shown. Recent openers to avoid outright: "Rule", "If", "You", "Nothing", "Nero".
@@ -453,8 +463,72 @@ def _pick_format(rows: list[dict]) -> str:
     # 77% collapse, so it is paired with a hard opener-variety rule in SYSTEM.
     # Three formats over three posts a day means each returns daily; the words
     # have to carry the difference.
-    ROTATION = ["quote", "rule", "minimal"]
+    # WEIGHTED toward minimal (2026-08-16). Views and retention disagreed, and
+    # retention wins: minimal holds 70.9% median (n=27) against quote 53.5% and
+    # rule 50.3%. Views measure how hard the algorithm pushed a video once;
+    # retention decides whether it pushes the next one. With the channel
+    # suppressed, retention is the lever that recovers distribution.
+    # A 4-slot cycle over 3 posts/day also means the pattern shifts every day
+    # rather than locking each format to a time of day.
+    # Order matters as much as the mix: ["minimal","quote","rule","minimal"]
+    # gives minimal twice in a row at the cycle boundary. Interleaved instead,
+    # so minimal is every other post and no format ever repeats back to back.
+    ROTATION = ["minimal", "quote", "minimal", "rule"]
     return ROTATION[len(rows) % len(ROTATION)]
+
+
+RETENTION_CSV = Path(os.environ.get("RETENTION_CSV", ROOT / "data" / "retention.csv"))
+
+
+def _winning_hooks(rows: list, top: int = 6, min_views: int = 60) -> list:
+    """The best-RETAINED hooks this channel has ever published.
+
+    Until now the content prompt carried SEVEN avoid-blocks and not one example
+    of something that worked — the model was told what not to do and never what
+    to aim at. 189 posts of performance data sat unused.
+
+    Ranked by retention, not views. Views measure how well the algorithm pushed
+    a video; retention measures whether people STAYED, which is what the
+    algorithm ranks on next time. A 27-view short at 126% retention taught us
+    more than a 700-view one at 40%.
+
+    Retention above 100% is real: Shorts loop, so a short video watched twice
+    reports >100%. Those are the strongest signal we have. Capped at 300% so a
+    single freak loop cannot dominate the list.
+    """
+    if not RETENTION_CSV.exists():
+        return []
+    ret: dict = {}
+    try:
+        with open(RETENTION_CSV, newline="", encoding="utf-8") as f:
+            for r in csv.DictReader(f):
+                try:
+                    ret[r["video_id"]] = (min(float(r["avg_view_pct"]), 300.0),
+                                          int(r["views"] or 0))
+                except (ValueError, TypeError, KeyError):
+                    continue
+    except Exception:  # noqa: BLE001
+        return []
+    scored = []
+    for r in rows:
+        vid, hook = (r.get("video_id") or "").strip(), (r.get("hook") or "").strip()
+        if not vid or not hook or vid not in ret:
+            continue
+        pct, views = ret[vid]
+        if views < min_views:      # tiny samples are noise, not signal
+            continue
+        scored.append((pct, hook, r.get("format") or ""))
+    scored.sort(reverse=True)
+    seen, out = set(), []
+    for pct, hook, fmt in scored:
+        key = hook.lower()[:20]
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append((pct, hook, fmt))
+        if len(out) >= top:
+            break
+    return out
 
 
 def _rule_directive(rows: list) -> str:
@@ -560,6 +634,20 @@ def generate_content() -> dict:
                 "two or more recent hooks, and a feed of identical openings is "
                 f"what got this channel suppressed: {', '.join(sorted(overused))}"
             )
+    # POSITIVE signal — the only one in this prompt. Everything else here is a
+    # ban list.
+    winners = _winning_hooks(rows)
+    if winners:
+        won = "\n".join(f'- "{h}"  ({p:.0f}% retention, {f})' for p, h, f in winners)
+        avoid_block += (
+            "\n\nHOOKS THAT ACTUALLY WORKED on this channel, ranked by how long "
+            "people STAYED (over 100% means they watched it twice — Shorts "
+            f"loop):\n{won}\n"
+            "Match their ENERGY and their LENGTH. Do NOT reuse their words — "
+            "every one of them is on the banned list above. Notice what they "
+            "have in common: they are short, they are complete thoughts, and "
+            "they do not explain themselves."
+        )
     if used_quotes:
         quoted = "\n".join(f'- "{q}"' for q in used_quotes[-200:])
         # += — a previous `=` here silently ERASED the recent-hooks block above,

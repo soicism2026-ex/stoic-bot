@@ -82,6 +82,25 @@ This file is for OPERATIONAL decisions and taste vetoes.
   scheduled runs); `MAX_POSTS_PER_DAY=3` caps actual posts.
 
 ## Content & creative
+- **2026-08-16 RETENTION IS THE METRIC, NOT VIEWS.** `data/retention.csv` (175
+  rows) had never been used for anything. Views measure how hard the algorithm
+  pushed a video ONCE; retention decides whether it pushes the next one. Three
+  changes, all measured from this channel's own data:
+  1. **Rotation weighted to `minimal`** — 70.9% median retention (n=27) vs
+     quote 53.5% and rule 50.3%. Rotation is `[minimal, quote, minimal, rule]`
+     — the mix AND the order matter: `[minimal, quote, rule, minimal]` has the
+     same proportions but repeats minimal across the cycle boundary.
+  2. **Hooks capped at FOUR WORDS.** Retention by hook length, n=100,
+     r=-0.29: 1-3w **68.8%**, 4-5w 57.3%, 6-7w 54.5%, 8+w 50.0%. The old median
+     was 5 words. Best hooks ever: "Not tomorrow." (255%), "It's already
+     given." (202%), "Let it be." (166%).
+  3. **Winning hooks fed BACK into the prompt.** It carried SEVEN avoid-blocks
+     and not one example of something that worked — the model was told what not
+     to do and never what to aim at. Top 6 by retention (min 60 views, capped
+     at 300% so one freak loop cannot dominate) are injected each generation as
+     "match their energy and length, do not reuse their words".
+  **Rule: rank content decisions by retention, not views. When the two
+  disagree, retention wins.**
 - **2026-08-13 CUT + VARIETY (paired — never do one without the other).**
   Owner: *"more variety, shorts out."* Two instructions that pull against each
   other, resolved together.
