@@ -86,3 +86,43 @@ def test_banned_openers_fire_on_the_live_history():
     op = Counter(h.split()[0].strip('.,:;"\'').lower() for h in hooks if h.split())
     assert [w for w, n in op.items() if n >= 2], \
         "no repeated openers in live history — check the detector still works"
+
+
+# ------------------------------------- rule hook SHAPE is code-assigned
+
+def _rows(n_rules):
+    return [{"format": "rule", "hook": f"Rule {i}: x"} for i in range(n_rules)]
+
+
+def test_rule_shape_rotates_across_three_forms():
+    got = {content._rule_directive(_rows(k)).split("Hook shape for this post:")[1]
+           for k in range(6)}
+    assert len(got) == 3, "rule hook shape does not cycle through three forms"
+
+
+def test_two_of_three_shapes_forbid_opening_with_rule():
+    """The old directive said "the hook starts with 'Rule N:'" outright, which
+    silently overruled OPENER VARIETY and made "Rule" the most repeated opening
+    word on the channel — every rule post, without exception."""
+    forbids = sum("MUST NOT begin with the word Rule" in content._rule_directive(_rows(k))
+                  for k in range(3))
+    assert forbids == 2, f"only {forbids} of 3 shapes forbid the Rule opener"
+
+
+def test_one_shape_still_allows_the_classic_form():
+    """The 'Rule N:' form is recognisable and worth keeping — just not every time."""
+    allows = sum("EXACTLY 'Rule" in content._rule_directive(_rows(k))
+                 for k in range(3))
+    assert allows == 1
+
+
+def test_rule_number_is_still_code_assigned():
+    """The shape rotation must not have loosened the number rule, which exists
+    because models fixate on 7 and 9."""
+    for k in range(3):
+        assert "MUST use EXACTLY the number" in content._rule_directive(_rows(k))
+
+
+def test_rule_number_avoids_already_used_numbers():
+    used = [{"format": "rule", "hook": "Rule 7: x"}]
+    assert "number 7 " not in content._rule_directive(used)

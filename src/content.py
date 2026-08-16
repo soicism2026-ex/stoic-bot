@@ -457,6 +457,44 @@ def _pick_format(rows: list[dict]) -> str:
     return ROTATION[len(rows) % len(ROTATION)]
 
 
+def _rule_directive(rows: list) -> str:
+    """The rule post's number AND hook shape, both assigned by CODE.
+
+    The number is code-assigned because models gravitate to 7 and 9 no matter
+    what the prompt says ("Rule 9" shipped four days straight, then "Rule 7"
+    nine times once a stale CSV header blinded the dedup).
+
+    The SHAPE is code-assigned for the same reason, discovered 2026-08-16: the
+    old directive ended "the hook starts with 'Rule N:'", a direct order that
+    silently overruled the OPENER VARIETY rule in SYSTEM. Result — every single
+    rule post opened with the word "Rule", making it the most repeated opening
+    word on a channel that was being suppressed for repetition. Two
+    contradicting instructions in one prompt, and the specific imperative wins.
+    So the code rotates the shape rather than arguing with itself.
+    """
+    import re as _re
+    used_ns = set()
+    for r in rows:
+        m = _re.match(r"\s*Rule\s+(\d+)", r.get("hook", "") or "")
+        if m:
+            used_ns.add(int(m.group(1)))
+    order = [7, 12, 3, 19, 24, 5, 31, 14, 21, 4, 28, 11, 17, 35, 8, 26,
+             6, 15, 40, 22, 9, 33, 13, 18, 27, 10, 38, 16, 23, 29]
+    rule_n = next((n for n in order if n not in used_ns),
+                  order[len(rows) % len(order)])
+    n_rules = sum(1 for r in rows if (r.get("format") or "") == "rule")
+    shapes = [
+        f"the hook is EXACTLY 'Rule {rule_n}: <imperative>' - this shape only",
+        f"the hook LEADS with the imperative and puts the number after it, e.g. "
+        f"'<imperative>. Rule {rule_n}.' - it MUST NOT begin with the word Rule",
+        f"the hook is the imperative ALONE with no number in it at all; mention "
+        f"rule {rule_n} once in voiceover_lesson instead. The hook MUST NOT "
+        f"begin with the word Rule",
+    ]
+    return (f"\nThis rule post MUST use EXACTLY the number {rule_n} and no "
+            f"other. Hook shape for this post: {shapes[n_rules % len(shapes)]}.")
+
+
 def _normalize_quote(q: str) -> str:
     """Collapse a quote to letters/digits only for robust duplicate detection
     (ignores punctuation, casing, and 'the fates guide…' vs 'The Fates guide…')."""
@@ -542,19 +580,7 @@ def generate_content() -> dict:
     # Rule format: the CODE assigns the rule number — models gravitate to 7/9
     # no matter the instructions ('Rule 9' shipped 4 days straight). Numbers
     # cycle through a fixed shuffled order, skipping any already used.
-    rule_line = ""
-    if content_format == "rule":
-        import re as _re
-        used_ns = set()
-        for r in rows:
-            m = _re.match(r"\s*Rule\s+(\d+)", r.get("hook", "") or "")
-            if m:
-                used_ns.add(int(m.group(1)))
-        order = [7, 12, 3, 19, 24, 5, 31, 14, 21, 4, 28, 11, 17, 35, 8, 26,
-                 6, 15, 40, 22, 9, 33, 13, 18, 27, 10, 38, 16, 23, 29]
-        rule_n = next((n for n in order if n not in used_ns), order[len(rows) % len(order)])
-        rule_line = (f"\nThis rule post MUST use EXACTLY the number {rule_n}: "
-                     f"the hook starts with 'Rule {rule_n}:'. No other number.")
+    rule_line = _rule_directive(rows) if content_format == "rule" else ""
 
     user_msg = (
         f"Generate today's Stoic Reel.\n"
