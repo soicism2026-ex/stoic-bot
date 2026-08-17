@@ -2331,3 +2331,17 @@ for any recurring defects.
 - Add a subtle motion (parallax pan, light flicker, or a quick punch-in) between the hook frames to create dynamism without changing the composition
 - Replace or sharpen the blurry body clip and consider tightening the quote card timing so transitions feel snappier and match the voiceover cadence
 
+
+## Visual QA — 2026-08-17 11:22 UTC
+**File:** `2026-08-17_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** The harder win.
+**Scores:** hook_strength=5.5 | text_legibility=8.0 | pacing=5.5 | scroll_stop_potential=6.0
+**Reasoning:** The hook text 'THE HARDER WIN.' is intriguing but somewhat vague — it creates mild curiosity without a strong specific promise, so it won't stop every scroller (5.5). The classical bust with warm candle lighting is atmospheric and on-brand for Stoicism, aiding scroll-stop potential (6.0), though the aesthetic is fairly generic within this niche. Text is bold gold with good weight and contrast against the dark background, crisp and readable, though the gold-on-dark could benefit from a subtle stroke or shadow in the busiest frames (8.0). Pacing is a concern: the first four hook frames are nearly identical with minimal visible motion, only a slow zoom, which feels static across the critical opening 1.5s (5.5); the body frames show more variety with the human face and quote card.
+**Issues:**
+- First 4 hook frames are almost identical — little visual movement during the critical opening 1.5 seconds
+- Hook phrase 'THE HARDER WIN.' is abstract and lacks a concrete curiosity gap or stakes
+**Suggestions:**
+- Add a faster punch-in, light flicker, or subtle parallax on the bust during the hook to create motion energy in the opening second
+- Sharpen the hook copy to name the tension explicitly, e.g. 'The war nobody sees' or 'The strongest thing you'll beat tonight' to raise curiosity and stakes
+**Flagged dims:** hook_strength
+
