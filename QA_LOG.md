@@ -2371,3 +2371,16 @@ for any recurring defects.
 - Introduce subtle motion in the hook window — a slow push-in/zoom on the statue or a lighting flicker — so the opening feels alive rather than a still image.
 - Match the body-quote text styling to the bold high-contrast hook caption (heavier weight, stronger stroke) for consistent legibility across the whole short.
 
+
+## Visual QA — 2026-08-18 11:26 UTC
+**File:** `2026-08-18_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Rule 21: Be just where no one checks.
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=5.0 | scroll_stop_potential=7.5
+**Reasoning:** Hook text 'Be just where no one checks' creates strong moral curiosity and pairs well with the dramatic purple-lit statue, earning a solid 8. Text legibility is high with bold yellow all-caps and dark outline on the hook frames, though the body-frame serif quote is thinner and lower contrast against the pink window, slightly dragging the score to 8.5. Pacing is weak: the first four hook frames are nearly identical with only a subtle zoom, giving little visual energy in the crucial opening 1.5 seconds, hence 5. Scroll-stop potential is good thanks to the striking statue and evocative lantern/coin body imagery, but the static hook holds it just under an 8.
+**Issues:**
+- Hook frames 1-4 are almost visually identical — minimal motion or transition energy in the opening 1.5s
+- Body quote uses a thin serif font that is lower contrast against the bright pink window backdrop
+**Suggestions:**
+- Add a punchier visual change or word-by-word text reveal across the hook window to inject motion
+- Increase drop-shadow/outline weight on the Zeno quote or darken the background behind it for stronger legibility
+
