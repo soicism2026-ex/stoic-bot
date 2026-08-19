@@ -218,6 +218,25 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python scripts/reply_to_comments.py
 
+      # RETENTION — the signal the Shorts algorithm actually ranks on, and the
+      # one the content engine now learns from (_winning_hooks feeds the
+      # best-retained hooks back into every generation). scripts/retention.py
+      # existed since 2026-08-07 but was wired into NO workflow: it had run
+      # exactly once, by hand, so the feedback loop would have recommended the
+      # same six hooks forever and never learned from a new post.
+      # Uses the YouTube ANALYTICS API — a separate quota from the Data API's
+      # 10,000/day, so this costs nothing against uploads.
+      # continue-on-error: an older refresh token may lack the
+      # yt-analytics.readonly scope; the script exits cleanly in that case and
+      # a missing signal must never cost a post.
+      - name: Pull retention
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/retention.py
+
       # Judges the OUTPUT, not the code. Every repetition bug so far (Rule 7
       # x13, one music bed x30, the same hook verbatim x3) passed the test
       # suite, because the code was right and posts.csv was wrong. Warn-only:
@@ -237,7 +256,7 @@ jobs:
             -o -name '*.clicks.wav' -o -name '*.mixclick.m4a' -o -name '*.hook.wav' \
             -o -name '*.mix.m4a' -o -name '*.loud.m4a' -o -size +95M \) \
             -delete 2>/dev/null || true
-          git add data/posts.csv data/analytics.csv data/channel_stats.csv data/replied_comments.csv QA_LOG.md backups/
+          git add data/posts.csv data/analytics.csv data/channel_stats.csv data/replied_comments.csv data/retention.csv QA_LOG.md backups/
           git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
           # The 4 daily slots race on pushing to main — rebase-retry instead of
           # failing the run (a lost push means a lost posts.csv row).

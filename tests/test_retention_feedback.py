@@ -102,3 +102,33 @@ def test_prompt_asks_for_energy_not_copying():
     the dedup and waste a post."""
     src = (ROOT / "src" / "content.py").read_text()
     assert "Do NOT reuse their words" in src
+
+
+# ------------------------------------------- retention must stay FRESH
+
+def test_retention_is_pulled_by_the_daily_workflow():
+    """scripts/retention.py existed from 2026-08-07 but was wired into NO
+    workflow — it had run once, by hand. The content engine now LEARNS from
+    retention, so a stale file means _winning_hooks recommends the same six
+    hooks forever and never sees a new post."""
+    yaml = __import__("yaml")
+    wf = yaml.safe_load((ROOT / ".github/workflows/daily-short.yml").read_text())
+    runs = [s.get("run", "") for s in wf["jobs"]["post"]["steps"]]
+    assert any("scripts/retention.py" in r for r in runs), \
+        "retention is never pulled — the feedback loop will go stale"
+
+
+def test_retention_pull_cannot_break_a_post():
+    """Older refresh tokens lack yt-analytics.readonly. A missing signal must
+    never cost a video."""
+    yaml = __import__("yaml")
+    wf = yaml.safe_load((ROOT / ".github/workflows/daily-short.yml").read_text())
+    step = next(s for s in wf["jobs"]["post"]["steps"]
+                if "scripts/retention.py" in s.get("run", ""))
+    assert step.get("continue-on-error") is True
+
+
+def test_retention_file_is_committed():
+    """Pulled but not committed = still stale on the next run's checkout."""
+    wf = (ROOT / ".github/workflows/daily-short.yml").read_text()
+    assert "data/retention.csv" in wf.split("git add")[1][:300]
