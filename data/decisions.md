@@ -303,6 +303,25 @@ This file is for OPERATIONAL decisions and taste vetoes.
   (Supersedes: prune disabled during monetization push; 60v/14d interim.)
 
 ## Goals & reporting
+- **2026-08-19 ROADMAP + TRIPWIRES.** `data/roadmap.md` holds monthly targets
+  Sept 2026 → Jan 2027; `scripts/goal_check.py` prints actual-vs-target and
+  fires the tripwires. **The finding that shapes the plan: YPP's two
+  requirements are wildly asymmetric.** 500 subs is 159 days away at the
+  current +1.71/day — reachable. 3,000,000 views/90d is **99x short**: it needs
+  33,333 views/day (currently 337), or 11,111 per video per day. Even a full
+  recovery to the pre-collapse baseline is still ~25x short.
+  **So YPP is NOT a 5-month goal, and no plan should pretend otherwise.** The
+  Gumroad product is the realistic revenue path in this window because it has
+  no threshold. Views remain the top of that funnel — the input, not the finish
+  line. **Primary monthly metric is views/day, not subs** (subs lag views;
+  optimising subs directly chases the shadow).
+  **Committed tripwires:** 1-day median under 100 past 2026-08-24 means the
+  repetition theory is wrong — change theory rather than defend it; two
+  consecutive months under base-case views/day means the STRATEGY is wrong, not
+  the execution; negative sub growth means audit tone before touching anything
+  else. Highest-value unbuilt mitigation: **a second platform** (Instagram
+  cross-post already exists, dormant) — the whole project currently routes
+  through one YouTube account and one refresh token.
 - **Goal:** YouTube Partner Program — 500 subs + 3M valid public Shorts
   views/90d. Tracked daily in `data/channel_stats.csv`; report leads with it.
 - Auto-improve loop is ADVISORY ONLY (weekly report; never edits code — the old
