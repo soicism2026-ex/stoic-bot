@@ -400,6 +400,33 @@ _CB_LOCAL        = os.environ.get("CHATTERBOX_LOCAL", "0") not in ("0", "false",
 # Optional voice cloning: a public URL to a short reference clip.
 _CB_VOICE_REF    = os.environ.get("CHATTERBOX_VOICE_URL", "").strip()
 
+# LOCAL voice cloning. Point this at a short recording of a real person and
+# every post is spoken in THAT voice, for free, forever.
+#
+# The intended use is the OWNER'S OWN VOICE. That is the version of "a real
+# person's voice" that is legal, free, unique to this channel, and doesn't
+# depend on anyone's permission — and it is the only one compatible with
+# monetisation. Cloning a public figure's voice is someone else's likeness:
+# it risks the channel, and a synthetic voice putting words in a real person's
+# mouth is a different thing from being inspired by them.
+#
+# Record ~30 seconds, quiet room, normal speaking pace, then commit it here.
+CHATTERBOX_VOICE_FILE = os.environ.get(
+    "CHATTERBOX_VOICE_FILE",
+    str(Path(__file__).resolve().parent.parent / "assets" / "voice" / "reference.wav"),
+)
+
+
+def _reference_clip() -> str:
+    """Path to the local reference recording, or "" if there isn't a usable one."""
+    p = Path(CHATTERBOX_VOICE_FILE)
+    try:
+        if p.is_file() and p.stat().st_size > 20_000:   # ~1s of audio minimum
+            return str(p)
+    except Exception:  # noqa: BLE001
+        pass
+    return ""
+
 
 _CB_MODEL_CACHE = None
 
@@ -430,10 +457,17 @@ def _synthesize_chatterbox_local(text: str, out_path: Path) -> tuple:
         _CB_MODEL_CACHE = ChatterboxTTS.from_pretrained(device="cpu")
     model = _CB_MODEL_CACHE
     sr = model.sr
+    # Clone the reference voice when one is committed. Without it Chatterbox
+    # uses its stock voice — which the owner rejected outright on 2026-08-07,
+    # and which is why this whole engine is off by default.
+    ref = _reference_clip()
+    _clone_kwargs = {"audio_prompt_path": ref} if ref else {}
+    if ref:
+        print(f"  tts: cloning reference voice {Path(ref).name}")
 
     pieces = []
     for sentence in _sentences(text) or [text]:
-        wav = model.generate(sentence, exaggeration=_CB_EXAGGERATION,
+        wav = model.generate(sentence, **_clone_kwargs, exaggeration=_CB_EXAGGERATION,
                              cfg_weight=_CB_CFG_WEIGHT)
         pieces.append(wav)
         if _CB_GAP > 0:

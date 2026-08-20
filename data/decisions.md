@@ -16,6 +16,24 @@ This file is for OPERATIONAL decisions and taste vetoes.
 ---
 
 ## Voice
+- **2026-08-19 OWNER'S OWN VOICE via local cloning.** Owner: *"we have to use
+  trending audios, and real people voices from real inspiring people."* The
+  instinct is right — a human who believes the words beats any TTS — but the
+  two literal versions both backfire:
+  - **Trending audio CONFLICTS WITH MONETISATION.** Licensed tracks from the
+    Shorts audio library route Shorts revenue to the rights holders, so a video
+    using one cannot earn. Given the owner asked to be monetised by January,
+    this trades the goal for the tactic. It also fights the voiceover, and
+    YouTube exposes no API for "what's trending" — it would be manual, daily.
+  - **Cloning a public figure is someone else's likeness** — not monetisable,
+    risks the channel, and puts words in a real person's mouth they never said.
+  **The version that gets the whole benefit: clone the OWNER'S OWN voice.**
+  Free, legal, monetisable, unique, and impossible for a competitor to copy.
+  `_synthesize_chatterbox_local` now passes `audio_prompt_path` (it previously
+  could NOT clone at all — the free path only ever used Chatterbox's stock
+  voice, which is exactly why the engine was disabled). Drop a 30-60s recording
+  at `assets/voice/reference.wav`, set `CHATTERBOX_LOCAL=1`. A missing or
+  truncated file falls back to edge-tts rather than cloning noise 3x/day.
 - **2026-07-15** Paid ElevenLabs "Brian" (owner's library voice `Gubgw9l4dtIoQA9YZHgx`)
   voices the FIRST post of each day. Budget: Starter plan (30k chars/mo);
   `ELEVENLABS_POSTS_PER_DAY=1`; live credit guard; never overspend.
