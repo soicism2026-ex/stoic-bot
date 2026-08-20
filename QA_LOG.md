@@ -2437,3 +2437,16 @@ for any recurring defects.
 - Rewrite the hook to pose a relatable tension (e.g. 'Stop arguing with reality' or 'You waste half your day fighting this') instead of an ambiguous rule number
 **Flagged dims:** hook_strength, pacing, scroll_stop_potential
 
+
+## Visual QA — 2026-08-20 07:56 UTC
+**File:** `2026-08-20_reel.mp4` | **Verdict:** `PASS`
+**Hook:** One breath first.
+**Scores:** hook_strength=6.5 | text_legibility=8.5 | pacing=5.0 | scroll_stop_potential=6.0
+**Reasoning:** The hook 'ONE BREATH FIRST.' is short, punchy, and creates mild curiosity — it implies conflict management without spelling it out, which is decent but not maximally intriguing (6.5). The dramatic silhouetted statue against deep blue is atmospheric and moody, aiding scroll-stop (6.0), though the genre is oversaturated on Shorts so it won't stop everyone. Text legibility is strong — bold yellow all-caps on dark background reads instantly, and the body serif quote has good contrast, with only a minor concern that the serif italic in frames 5-6 is slightly less punchy than the hook font (8.5). Pacing is the weakest area: frames 1-4 are nearly identical with only subtle zoom on the same statue, so the hook window feels static rather than energetic (5.0); the caption 'THE HEAT' appears late in frame 4 which is good but overall visual motion is minimal.
+**Issues:**
+- Hook frames 1-4 are almost visually identical (same statue, minimal movement), making the critical 1.5s window feel static
+- The word-by-word caption ('THE HEAT') doesn't appear until frame 4, leaving the earlier hook window with only the static hook line
+**Suggestions:**
+- Add a stronger visual change in the first 1.5s — a faster push-in, light flicker, or cut to a second image — to inject motion during the hook
+- Bring the animated body captions in earlier and sync them tightly to the voiceover to create rhythm and reduce the static feel
+
