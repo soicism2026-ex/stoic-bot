@@ -64,7 +64,6 @@ def generate_hook(quote: str, author: str, theme: str) -> str:
     msg = client.messages.create(
         model=MODEL,
         max_tokens=40,
-        temperature=1.0,
         system=HOOK_SYSTEM,
         messages=[{
             "role": "user",

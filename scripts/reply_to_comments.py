@@ -313,7 +313,6 @@ def _generate_reply(comment_text: str, video_title: str) -> str:
     msg = client.messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=200,
-        temperature=1.0,  # variety — identical phrasing across replies reads as a bot
         messages=[{"role": "user", "content": user}],
         system=system,
     )

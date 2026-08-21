@@ -699,7 +699,15 @@ def generate_content() -> dict:
         msg = client.messages.create(
             model=MODEL,
             max_tokens=1200,
-            temperature=1.0,
+            # anthropic 1.0.0 REMOVED temperature from Messages.create()
+            # (it is not in output_config either — it is gone). An
+            # unpinned `anthropic>=0.39.0` picked up the new major on a
+            # routine `pip install` and every post failed 2 seconds in
+            # with TypeError, four slots in a row, 2026-08-21.
+            # Nothing is lost: it was set to 1.0, the top of the old
+            # range, and variety is now enforced structurally (banned
+            # openers, full-history hook dedup, format rotation) rather
+            # than by a sampling knob.
             system=SYSTEM + strategy_addendum,
             messages=[{"role": "user", "content": user_msg + extra_avoid}],
         )
