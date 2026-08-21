@@ -25,6 +25,10 @@ ANALYTICS = ROOT / "data" / "analytics.csv"
 # Interleaved, never blocked: five F1s in a row would confound the format with
 # the day, the time slot, and whatever the algorithm was doing that afternoon.
 ORDER = ["first_person", "the_screen", "the_question", "the_countdown"]
+# Only formats that are actually BUILT can be scheduled. The owner picked F3
+# first, so it is the only arm live; next_format() must not claim otherwise or
+# the tooling is lying about what is running.
+BUILT = {"the_question"}
 PER_FORMAT = 5
 BREAKOUT = 5_000
 # The bar is 4x the channel's all-time best (1,255 over 210 videos). Anything
@@ -55,10 +59,13 @@ def _peak_views() -> dict:
 
 def next_format() -> str | None:
     """The format the next post should use, or None when the test is complete."""
-    done = _test_rows()
-    if len(done) >= PER_FORMAT * len(ORDER):
+    live = [f for f in ORDER if f in BUILT]
+    if not live:
         return None
-    return ORDER[len(done) % len(ORDER)]
+    done = _test_rows()
+    if len(done) >= PER_FORMAT * len(live):
+        return None
+    return live[len(done) % len(live)]
 
 
 def main(argv: list | None = None) -> int:
@@ -78,7 +85,8 @@ def main(argv: list | None = None) -> int:
 
     rows = _test_rows()
     peak = _peak_views()
-    total = PER_FORMAT * len(ORDER)
+    live = [f for f in ORDER if f in BUILT]
+    total = PER_FORMAT * max(1, len(live))
     print(f"=== Format test: {len(rows)}/{total} posts ===")
     print(f"    breakout bar: {BREAKOUT:,} views "
           f"({BREAKOUT / ALLTIME_BEST:.1f}x the all-time best of {ALLTIME_BEST:,})\n")
@@ -95,7 +103,8 @@ def main(argv: list | None = None) -> int:
     for fmt in ORDER:
         v = by.get(fmt, [])
         if not v:
-            print(f"  {fmt:14} — not run yet")
+            state = "not run yet" if fmt in BUILT else "NOT BUILT"
+            print(f"  {fmt:14} — {state}")
             continue
         best = max(v)
         hit = best >= BREAKOUT

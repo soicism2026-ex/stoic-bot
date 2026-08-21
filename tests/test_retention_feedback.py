@@ -40,7 +40,11 @@ def test_no_format_ever_repeats_back_to_back():
 
 
 def test_all_three_formats_still_appear():
-    assert set(_rotation()) == {"minimal", "quote", "rule"}
+    """SUPERSEDED 2026-08-21: the F3 "question" test arm joined the rotation.
+    The three retention-picked formats must all SURVIVE it — if a format test
+    ever silently displaces the control, the comparison it is meant to provide
+    disappears with it."""
+    assert {"minimal", "quote", "rule"} <= set(_rotation())
 
 
 # --------------------------------------------------------- hook length rule

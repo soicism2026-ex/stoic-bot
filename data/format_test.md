@@ -72,6 +72,18 @@ the calm baseline, which is the point — we are testing the axis, not the trim.
 
 ---
 
+## Protocol change, 2026-08-21 — CONCURRENT control
+
+The owner picked **F3 (THE QUESTION)** to build first. Rather than block five
+F3 posts together, F3 takes **every third slot** in the normal rotation, so the
+existing format keeps running as a live control in the same days, the same time
+slots and the same algorithm conditions. That is strictly better than the
+blocked design below: it removes the time confound entirely instead of trying
+to average it out. Five F3 posts land in ~5 days.
+
+`scripts/format_test.py` schedules only formats listed in `BUILT`, so it cannot
+claim an unbuilt arm is next.
+
 ## Protocol
 
 **Sample:** 5 videos per format, 20 total. At 3 posts/day that is ~7 days.

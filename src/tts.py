@@ -813,7 +813,7 @@ READ_BEAT = float(os.environ.get("REEL_READ_BEAT", "2.4"))
 
 
 def synthesize_two_part(story: str, lesson: str, out_path: Path,
-                        voice_id: str = None) -> tuple:
+                        voice_id: str = None, lead_silence: float = 0.0) -> tuple:
     """Synthesize story + silence + lesson.
 
     Returns (out_path, word_timings, quote_appear_seconds) where
@@ -829,6 +829,13 @@ def synthesize_two_part(story: str, lesson: str, out_path: Path,
         path, timings = synthesize_voice(joined, out_path, voice_id=voice_id)
         return path, timings, 0.0
 
+    # LEAD SILENCE (format F3, "the question"): the video opens on a question
+    # in total silence before any voice arrives. In a feed engineered to be
+    # loud, two seconds of nothing is the pattern interrupt — but it only works
+    # if the silence is REAL, so it is baked into the audio track rather than
+    # faked by delaying the render.
+    lead = max(0.0, float(lead_silence))
+
     tmp_story = out_path.with_suffix(".story.mp3")
     tmp_lesson = out_path.with_suffix(".lesson.mp3")
     try:
@@ -842,11 +849,13 @@ def synthesize_two_part(story: str, lesson: str, out_path: Path,
             ["ffmpeg", "-y", "-loglevel", "error",
              "-i", str(tmp_story), "-i", str(tmp_lesson),
              "-filter_complex",
-             f"[0:a]apad=pad_dur={READ_BEAT}[a0];[a0][1:a]concat=n=2:v=0:a=1[out]",
+             f"[0:a]adelay={int(lead * 1000)}|{int(lead * 1000)},"
+             f"apad=pad_dur={READ_BEAT}[a0];[a0][1:a]concat=n=2:v=0:a=1[out]",
              "-map", "[out]", "-c:a", "libmp3lame", "-b:a", "192k",
              str(out_path)],
             check=True, capture_output=True,
         )
+        story_dur += lead          # the story now starts `lead` seconds in
         total = _audio_duration(out_path)
         if total < story_dur:                     # concat silently produced junk
             raise RuntimeError(f"joined audio {total:.1f}s shorter than story "
@@ -855,6 +864,7 @@ def synthesize_two_part(story: str, lesson: str, out_path: Path,
         # Shift the lesson's word timings past the story and the reading beat so
         # captions/callouts still line up if they are ever switched back on.
         offset = story_dur + READ_BEAT
+        story_timings = [(w, st + lead, e + lead) for (w, st, e) in (story_timings or [])]
         timings = list(story_timings) + [
             (w, s + offset, e + offset) for (w, s, e) in (lesson_timings or [])
         ]

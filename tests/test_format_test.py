@@ -49,27 +49,40 @@ def test_the_four_formats_are_genuinely_four():
     assert len(ft.ORDER) == 4 and len(set(ft.ORDER)) == 4
 
 
+def test_only_built_formats_are_scheduled():
+    """Tooling that claims an unbuilt arm is next is lying about what is
+    running. Only F3 is built so far."""
+    assert ft.BUILT <= set(ft.ORDER)
+    assert ft.next_format() in ft.BUILT
+
+
 def test_rotation_interleaves_rather_than_blocks(tmp_path, monkeypatch):
-    """Five F1s in a row would confound the format with the day, the time slot,
-    and whatever the algorithm happened to be doing that afternoon."""
+    """With more than one arm live, blocking would confound the format with
+    the day, the time slot, and whatever the algorithm was doing that
+    afternoon. Checked against the full ORDER so the property is pinned before
+    the other three arms get built."""
+    monkeypatch.setattr(ft, "BUILT", set(ft.ORDER))
     seq = []
-    for n in range(8):
-        _posts(tmp_path, monkeypatch, [f"ftest:{s}" for s in seq])
+    for _ in range(8):
+        _posts(tmp_path, monkeypatch, [f"ftest:{x}" for x in seq])
         seq.append(ft.next_format())
     assert seq[:4] == ft.ORDER
     assert seq[4:] == ft.ORDER, "second cycle is not interleaved"
 
 
-def test_test_ends_after_twenty(tmp_path, monkeypatch):
-    _posts(tmp_path, monkeypatch, [f"ftest:{ft.ORDER[i % 4]}" for i in range(20)])
+def test_test_ends_when_every_live_arm_has_its_five(tmp_path, monkeypatch):
+    live = [f for f in ft.ORDER if f in ft.BUILT]
+    n = ft.PER_FORMAT * len(live)
+    _posts(tmp_path, monkeypatch,
+           [f"ftest:{live[i % len(live)]}" for i in range(n)])
     assert ft.next_format() is None
 
 
 def test_non_test_posts_are_ignored(tmp_path, monkeypatch):
     """Normal posts must not consume test slots or pollute the result."""
-    _posts(tmp_path, monkeypatch, ["", "cold_open+gold", "ftest:first_person"])
+    _posts(tmp_path, monkeypatch, ["", "cold_open+gold", "ftest:the_question"])
     assert len(ft._test_rows()) == 1
-    assert ft.next_format() == ft.ORDER[1]
+    assert ft.next_format() in ft.BUILT
 
 
 # ------------------------------------------------------------ the bar itself
@@ -86,17 +99,17 @@ def test_breakout_bar_is_well_above_the_all_time_best():
 
 def test_partial_data_refuses_to_report_a_result(tmp_path, monkeypatch, capsys):
     """The failure mode this guards: reading a leaderboard off half the test."""
-    _posts(tmp_path, monkeypatch, [f"ftest:{ft.ORDER[i % 4]}" for i in range(8)])
-    _analytics(tmp_path, monkeypatch, {f"v{i}": 400 for i in range(8)})
+    _posts(tmp_path, monkeypatch, ["ftest:the_question" for _ in range(2)])
+    _analytics(tmp_path, monkeypatch, {f"v{i}": 400 for i in range(2)})
     ft.main()
     out = capsys.readouterr().out
     assert "incomplete" in out and "RESULT" not in out
 
 
 def test_a_breakout_is_called_out(tmp_path, monkeypatch, capsys):
-    _posts(tmp_path, monkeypatch, [f"ftest:{ft.ORDER[i % 4]}" for i in range(20)])
-    views = {f"v{i}": 300 for i in range(20)}
-    views["v2"] = 9_000                       # the_question
+    _posts(tmp_path, monkeypatch, ["ftest:the_question" for _ in range(5)])
+    views = {f"v{i}": 300 for i in range(5)}
+    views["v2"] = 9_000
     _analytics(tmp_path, monkeypatch, views)
     ft.main()
     out = capsys.readouterr().out
@@ -106,8 +119,8 @@ def test_a_breakout_is_called_out(tmp_path, monkeypatch, capsys):
 def test_a_null_result_says_the_format_was_never_the_problem(tmp_path, monkeypatch, capsys):
     """The whole reason to run this. If all four fail, more polish cannot help
     and the checker has to say so plainly."""
-    _posts(tmp_path, monkeypatch, [f"ftest:{ft.ORDER[i % 4]}" for i in range(20)])
-    _analytics(tmp_path, monkeypatch, {f"v{i}": 400 for i in range(20)})
+    _posts(tmp_path, monkeypatch, ["ftest:the_question" for _ in range(5)])
+    _analytics(tmp_path, monkeypatch, {f"v{i}": 400 for i in range(5)})
     ft.main()
     out = capsys.readouterr().out
     assert "never the problem" in out

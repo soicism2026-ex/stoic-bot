@@ -25,7 +25,11 @@ def _rotation():
 
 
 def test_only_the_top_three_formats_rotate():
-    assert set(_rotation()) == KEPT_FORMATS
+    """SUPERSEDED 2026-08-21: "question" (F3) joined the rotation as a format
+    TEST arm, taking every third slot. The three retention-picked formats must
+    all still be present — the test arm adds to them, it does not replace
+    them, so the control runs concurrently."""
+    assert KEPT_FORMATS <= set(_rotation())
 
 
 def test_weak_formats_are_gone():
@@ -33,11 +37,11 @@ def test_weak_formats_are_gone():
 
 
 def test_rotation_still_cycles_cleanly():
-    """SUPERSEDED 2026-08-16: the cycle is 4 long, not 3, because minimal is
-    weighted double for retention (70.9% vs quote 53.5% / rule 50.3%). It must
-    still be a clean repeating cycle — just a longer one."""
-    r = [content._pick_format([0] * i) for i in range(8)]
-    assert r[:4] == r[4:], "rotation is not a clean cycle"
+    """Cycle length has grown twice: 3 -> 4 when minimal was weighted double
+    for retention, then 4 -> 6 when the F3 "question" test arm took every third
+    slot. It must still be a clean repeating cycle, whatever its length."""
+    r = [content._pick_format([0] * i) for i in range(12)]
+    assert r[:6] == r[6:], "rotation is not a clean cycle"
 
 
 def test_weakest_themes_are_cut():

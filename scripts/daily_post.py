@@ -47,6 +47,11 @@ BACKUP_MIN = 3
 # cinematic look). Env-tunable.
 MAX_POSTS_PER_DAY = int(os.environ.get("MAX_POSTS_PER_DAY", "3"))
 
+# F3 "the question": seconds of REAL silence before the voice arrives. Long
+# enough that the viewer registers there is nothing to hear and reads the
+# question; short enough that it is tension rather than a broken video.
+QUESTION_LEAD_SILENCE = float(os.environ.get("REEL_QUESTION_LEAD", "2.0"))
+
 # Visual QA config — reads env vars at import time so GitHub Actions can override
 # VQA_ENABLED=0         Skip visual QA entirely (default: 1 = enabled)
 # VQA_BLOCK_ON_FAIL=1   Treat visual-QA hard-fail as a retry trigger (default: 0 = log only)
@@ -334,7 +339,16 @@ def main():
     # "I have a hard time reading the quote while also listening to the
     # dialogue." Reading and listening compete; nothing is narrated over the
     # quote's reading beat any more.
-    act1 = f"{hook.rstrip('.!? ')}. {content['voiceover_story']}"
+    # F3 "the question" INVERTS act 1: the question sits on screen in silence
+    # and the voice answers it, so the hook is NOT spoken — reading it aloud
+    # while the viewer reads it would destroy the exact pause the format is
+    # built on.
+    is_question = content.get("format") == "question"
+    lead = QUESTION_LEAD_SILENCE if is_question else 0.0
+    if is_question:
+        act1 = content["voiceover_story"]
+    else:
+        act1 = f"{hook.rstrip('.!? ')}. {content['voiceover_story']}"
     act3 = content["voiceover_lesson"]
     if cta:
         act3 = f"{act3} {cta}"
@@ -342,7 +356,7 @@ def main():
     # Voiceover once; reused across render attempts
     audio_path = ROOT / "data" / f"{today}_voice.mp3"
     audio_path, word_timings, quote_appear = synthesize_two_part(
-        act1, act3, audio_path, voice_id=voice["id"])
+        act1, act3, audio_path, voice_id=voice["id"], lead_silence=lead)
     print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings, "
           f"quote appears at {quote_appear:.1f}s)")
 
@@ -395,6 +409,10 @@ def main():
     # Experiment agent: assign this post's intro-sound + colour-grade combo.
     # QA-retry corrections merge ON TOP of this base so the variant sticks.
     exp_name, exp_env = pick_experiment(post_rows)
+    # A format-test post is tagged as such so scripts/format_test.py can count
+    # it. Without this the test would run and be unmeasurable.
+    if content.get("format") == "question":
+        exp_name = "ftest:the_question"
     print(f"  experiment: {exp_name}")
 
     # ---- Style packs: each format gets its own full presentation ----------
@@ -403,6 +421,25 @@ def main():
     STYLE_PACKS = {
         "pov":       {"REEL_STYLE": "caption_only", "_ambience": "rain_night"},
         "challenge": {"REEL_STYLE": "caption_only", "_ambience": "wind_dawn"},
+        # F3 "the question" — the point is that the first frame looks like
+        # NOTHING else in the feed: one question, plain type, near-black, in
+        # silence. Every default that makes the channel look cinematic works
+        # against that here, so they are all turned off deliberately:
+        #   no captions      — the question is the only text on screen
+        #   no motion        — stillness is the interrupt
+        #   no atmosphere    — nothing drifting to look at
+        #   no hook sound    — the silence has to be real
+        #   heavy darkening  — it should read as a black screen with words
+        "question": {
+            "REEL_CAPTIONS": "0",
+            "REEL_MOTION": "0",
+            "REEL_ATMOSPHERE": "0",
+            "REEL_HOOK_SOUND": "0",
+            "REEL_EXTRA_DARKEN": "0.30",
+            "REEL_HOOK_COLOR": "0xF0E6C8",   # parchment, not the gold accent
+            "_lead_silence": QUESTION_LEAD_SILENCE,
+            "_experiment": "ftest:the_question",
+        },
     }
     cinematic = os.environ.get("REEL_CINEMATIC", "1") not in ("0", "false", "False")
     # Per-format visual world — fallback when the content engine's
@@ -415,6 +452,10 @@ def main():
     }
     fmt = content.get("format", "")
     pack = dict(STYLE_PACKS.get(fmt, {}))
+    if fmt == "question":
+        # The question has to stay on screen through the whole silence plus a
+        # beat of the answer, or it vanishes before the viewer has read it.
+        pack["REEL_HOOK_HOLD"] = f"{QUESTION_LEAD_SILENCE + 1.4:.2f}"
 
     # ---- Recurring guide character + real-time scene-matched b-roll ---------
     # A stoic marble statue OPENS and CLOSES every short — the channel's

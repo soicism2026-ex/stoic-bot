@@ -100,6 +100,22 @@ This file is for OPERATIONAL decisions and taste vetoes.
   scheduled runs); `MAX_POSTS_PER_DAY=3` caps actual posts.
 
 ## Content & creative
+- **2026-08-21 F3 "THE QUESTION" IS LIVE** (owner picked it from the four).
+  One hard question, plain type, near-black, **two seconds of REAL silence**,
+  then the voice answers. Verified on decoded samples, not asserted from
+  config: lead 0.0000 rms → answer 0.0814 → read beat 0.0000 → lesson 0.0814.
+  - The hook is **NOT spoken** for this format — reading the question aloud
+    while the viewer reads it destroys the pause the format exists for.
+  - Every cinematic default is deliberately OFF (motion, atmosphere, captions,
+    hook sound; heavy darkening) — they all work against a still, silent,
+    near-black first frame, which is the entire pattern interrupt.
+  - **Concurrent control, not blocked:** `question` takes every third rotation
+    slot, so the existing format runs as a live control in the same days and
+    time slots. Better than the blocked design in `format_test.md` — it removes
+    the time confound instead of averaging it out. 5 F3 posts in ~5 days.
+  - Posts are tagged `experiment=ftest:the_question`; `scripts/format_test.py`
+    schedules only formats in `BUILT` so it cannot claim an unbuilt arm is next.
+  **Bar: does any exceed 5,000 views (4x the all-time best of 1,255).**
 - **2026-08-16 RETENTION IS THE METRIC, NOT VIEWS.** `data/retention.csv` (175
   rows) had never been used for anything. Views measure how hard the algorithm
   pushed a video ONCE; retention decides whether it pushes the next one. Three

@@ -161,6 +161,16 @@ hold someone together tonight. That belief IS the emotion the viewer feels.
 think "how did they know." Leave them with hope, tenderness, or hard-won calm \
 — never a shrug, never a scold.
 
+FORMAT "question" rules (F3, format test 2026-08-21):
+This format opens on ONE hard question in SILENCE for two seconds, then the
+voice answers. In a feed engineered to be loud, silence and a direct question
+is the pattern interrupt. Everything about it must earn that silence.
+- hook: the QUESTION itself, and nothing else. Second person, present tense, under six words, ending in a question mark. It must be answerable by one real person about their actual life, not rhetorical and not clever. RIGHT: "What are you still angry about?" / "Who did you stop calling?" / "What did you quit this week?" WRONG: "Have you ever wondered about the nature of virtue?" / anything that sounds like an essay title or a quiz.
+- The question must NOT contain the answer or hint at it. If a viewer can guess where it lands, the silence is dead air instead of tension.
+- voiceover_story: begins by ANSWERING the question directly in the first sentence — the viewer has been waiting two seconds, do not make them wait longer. Then the scene or the reason. 2-3 sentences.
+- voiceover_lesson: the quote spoken aloud, then the turn, as normal.
+- The question is on screen alone during the silence, so it carries the whole opening. Write it as if it is the only thing you get to say.
+
 FORMAT "quote" rules:
 - quote: a real attested passage, punchy, under 12 words. Lightly modernized phrasing \
 is fine but preserve the author's actual meaning. Favor lesser-known genuine passages \
@@ -473,7 +483,13 @@ def _pick_format(rows: list[dict]) -> str:
     # Order matters as much as the mix: ["minimal","quote","rule","minimal"]
     # gives minimal twice in a row at the cycle boundary. Interleaved instead,
     # so minimal is every other post and no format ever repeats back to back.
-    ROTATION = ["minimal", "quote", "minimal", "rule"]
+    # FORMAT TEST (2026-08-21): "question" takes every third slot, so F3 runs
+    # ALONGSIDE the existing format rather than replacing it. That is better
+    # than the blocked design in data/format_test.md — the control is
+    # concurrent, so day-of-week, time-of-day and whatever the algorithm is
+    # doing that week hit both arms equally. Five F3 posts land in ~5 days.
+    # No format repeats back to back.
+    ROTATION = ["question", "minimal", "quote", "question", "minimal", "rule"]
     return ROTATION[len(rows) % len(ROTATION)]
 
 
