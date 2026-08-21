@@ -2463,3 +2463,16 @@ for any recurring defects.
 - Add subtle motion to the hook (slow zoom, candle flicker emphasis, or a text pop-in) so the first 1.5s feels alive rather than a static image
 - Use a quick visual cut or lighting pulse between hook and body (as seen entering frame 5) earlier and more decisively to boost perceived pace
 
+
+## Visual QA — 2026-08-21 16:37 UTC
+**File:** `2026-08-21_reel.mp4` | **Verdict:** `PASS`
+**Hook:** Fear rules quietly.
+**Scores:** hook_strength=8.0 | text_legibility=8.5 | pacing=5.5 | scroll_stop_potential=8.0
+**Reasoning:** Hook strength is strong (8.0): 'Fear rules quietly' is a concise, paradoxical phrase that sparks curiosity, and the warmly-lit classical bust against darkness is on-theme and atmospheric. Text legibility is high (8.5): the bold golden all-caps hook has good contrast against the dark background, though it slightly overlaps the sculpture's mid-tone face, and the body quote uses a serif with a subtle drop that reads clearly. Pacing scores lower (5.5): the first four hook frames are nearly identical with only micro-zoom on a static bust, so there's little visual rhythm, and the body cuts to a static quote card — energy is muted. Scroll-stop potential is strong (8.0): the candle-lit statue and moody color grade are distinctive enough to arrest a scroller in a feed.
+**Issues:**
+- Hook window is essentially static — four frames of the same bust with imperceptible movement risks feeling slow in the critical first 1.5s
+- Hook text overlaps the bright sculpture face in some frames, slightly reducing contrast on the middle letters
+**Suggestions:**
+- Add a subtle push-in, light flicker, or word-by-word text animation across the hook frames to inject motion energy
+- Add a semi-transparent dark scrim behind the hook text or reposition it over the darker background zone to guarantee full contrast
+
