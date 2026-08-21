@@ -321,6 +321,22 @@ This file is for OPERATIONAL decisions and taste vetoes.
   (Supersedes: prune disabled during monetization push; 60v/14d interim.)
 
 ## Goals & reporting
+- **2026-08-19 THE DIAGNOSIS CHANGED. 210 videos, best ever 1,255 views, ZERO
+  above 5,000.** This channel has never had a breakout — it is not a suppressed
+  channel, it is a channel with a hard ceiling it has never crossed in 210
+  attempts. The 77% "collapse" chased for three weeks was real but was
+  variation between bad and worse; the pre-collapse baseline (242 median @1d,
+  1.09 subs/video) was never good either. **The repetition fixes were genuine
+  bugs worth fixing and were never going to cause a breakout.**
+  Root read: the format — marble statue + AI voice + gold quote card — is the
+  most saturated aesthetic on Shorts. It is excellent execution of a commodity,
+  and the first frame reads as "inspirational content" inside 200ms, which is
+  when the thumb decides. **More polish cannot fix this.**
+  → `data/format_test.md`: 20 videos, 4 genuinely different formats, ONE
+  question — does any exceed 5,000 views (4x the all-time best). Interleaved
+  never blocked; everything else FROZEN for the duration. A null result across
+  all four means positioning/niche is wrong, not execution — which is the
+  outcome three weeks of polish could never have surfaced.
 - **2026-08-19 ROADMAP + TRIPWIRES.** `data/roadmap.md` holds monthly targets
   Sept 2026 → Jan 2027; `scripts/goal_check.py` prints actual-vs-target and
   fires the tripwires. **The finding that shapes the plan: YPP's two
