@@ -394,3 +394,14 @@ This file is for OPERATIONAL decisions and taste vetoes.
   claude/* branch, push HEAD:main.
 - Backups expire after 3 days (stale-aesthetic leak fixed 2026-07-17) — old-code
   videos must never reach the channel.
+- **2026-08-22** Promo copy must be EVERGREEN. Two of the three default CTAs
+  carried deadlines ("FREE this month only", "but only for June"); the
+  2026-08-21 upload published "only for June" to a live video in August.
+  Descriptions stay live forever, so any dated claim becomes false and reads
+  as an abandoned bot. Rewritten to undated copy, and
+  `tests/test_promo.py::TestCopyStaysTrue` now fails the build on month names
+  or urgency phrases — in `src/promo.py` AND in the workflow env, since
+  `daily-short.yml` was overriding the module default. Dead `PROMO_PITCH` knob
+  (set in two workflows, read by nothing) removed. Back-catalogue descriptions
+  still carry the old text — a bulk rewrite needs the owner's call (~10.5k
+  YouTube quota units, over the 10k/day cap).

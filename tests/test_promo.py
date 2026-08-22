@@ -1,5 +1,6 @@
 """Unit tests for src/promo.py."""
 import importlib
+import re
 import os
 import sys
 import unittest
@@ -122,6 +123,94 @@ class TestCustomCopy(unittest.TestCase):
         combined = base + p.description_block()
         self.assertTrue(combined.startswith(base))
         self.assertIn("---", combined)
+
+
+class TestCopyStaysTrue(unittest.TestCase):
+    """The CTA ships in the description of every video and stays live forever.
+
+    A deadline written into it ("only for June", "FREE this month only") is
+    true for a few weeks and false for the rest of the channel's life. Two of
+    the three defaults said exactly that, and the August 21 upload published
+    "but only for June" to a live video. These tests make that class of rot a
+    build failure instead of something a human has to notice.
+    """
+
+    # Words that make a claim the copy cannot keep once time passes.
+    EXPIRING = [
+        "january", "february", "march", "april", "may", "june", "july",
+        "august", "september", "october", "november", "december",
+        "this month", "this week", "today only", "ends soon", "last chance",
+        "limited time", "before the price goes up", "price goes up",
+        "for a limited", "hurry",
+    ]
+
+    def _defaults(self):
+        p = _reload_promo(PROMO_ENABLED="1", PROMO_URL="https://example.com")
+        return p._cta_list()
+
+    @classmethod
+    def _expiring_hit(cls, text):
+        """Return the first expiring phrase in text, or None.
+
+        Word-boundary matched so "maybe" is not read as the month of May and
+        "augustan" is not read as August.
+        """
+        low = text.lower()
+        for word in cls.EXPIRING:
+            if re.search(r"\b" + re.escape(word) + r"\b", low):
+                return word
+        return None
+
+    def test_guard_actually_catches_the_copy_that_shipped(self):
+        """A guard that cannot fail is not a guard.
+
+        These are the two real strings that were live in _DEFAULT_CTAS.
+        """
+        shipped = [
+            "📖 I'm giving away The Stoic Reset journal for free — but only "
+            "for June. 30 days to rebuild your mindset:",
+            "📓 FREE this month only — The Stoic Reset, my 30-day Stoic "
+            "journal. Grab it before the price goes up:",
+        ]
+        for cta in shipped:
+            self.assertIsNotNone(
+                self._expiring_hit(cta),
+                f"guard failed to flag known-stale copy: {cta!r}",
+            )
+
+    def test_no_default_cta_expires(self):
+        for cta in self._defaults():
+            hit = self._expiring_hit(cta)
+            self.assertIsNone(
+                hit,
+                f"CTA makes a time-bound claim that will go stale: {cta!r} "
+                f"(contains {hit!r})",
+            )
+
+    def test_workflow_env_has_no_expiring_copy(self):
+        """A workflow env var silently overrides the module default.
+
+        The stale June pitch survived in daily-short.yml even after the code
+        was correct, so the workflow copy is checked too.
+        """
+        root = Path(__file__).resolve().parent.parent
+        for name in ("daily-short.yml", "repost.yml"):
+            wf = root / ".github" / "workflows" / name
+            if not wf.exists():
+                continue
+            for line in wf.read_text().splitlines():
+                if "PROMO_" not in line or line.strip().startswith("#"):
+                    continue
+                hit = self._expiring_hit(line)
+                self.assertIsNone(
+                    hit,
+                    f"{name} sets promo copy that expires: {line.strip()!r} "
+                    f"(contains {hit!r})",
+                )
+
+    def test_every_default_still_names_the_product(self):
+        for cta in self._defaults():
+            self.assertIn("Stoic Reset", cta)
 
 
 if __name__ == "__main__":

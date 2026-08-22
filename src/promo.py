@@ -12,6 +12,10 @@ PROMO_CTA_VARIATIONS: pipe-delimited (|) list of 3–5 CTA strings that rotate
   Each variation should include {url} or the full URL literally.
 
 Set PROMO_ENABLED=0 to disable all promo behaviour without code changes.
+
+The CTA strings are the only copy knob. (There used to be a PROMO_PITCH
+env var too; nothing ever read it, so editing it silently did nothing.
+It is gone — edit PROMO_CTA_VARIATIONS or _DEFAULT_CTAS instead.)
 """
 import os
 from datetime import date
@@ -20,16 +24,18 @@ PROMO_ENABLED = os.environ.get("PROMO_ENABLED", "0") not in ("0", "false", "Fals
 PROMO_COMMENT_ENABLED = os.environ.get("PROMO_COMMENT", "1") not in ("0", "false", "False")
 
 PROMO_PRODUCT_NAME = os.environ.get("PROMO_PRODUCT_NAME", "The Stoic Reset")
-PROMO_PITCH = os.environ.get(
-    "PROMO_PITCH",
-    "FREE this month only — The Stoic Reset, my 30-day Stoic journal",
-)
 PROMO_URL = os.environ.get("PROMO_URL", "https://soicism.gumroad.com/l/cslosv")
 
 _DEFAULT_CTAS = [
-    "📓 FREE this month only — The Stoic Reset, my 30-day Stoic journal. Grab it before the price goes up:\n{url}",
-    "📖 I'm giving away The Stoic Reset journal for free — but only for June. 30 days to rebuild your mindset:\n{url}",
-    "🪨 The Stoic Reset is free right now. A 30-day journal to put quotes like this into daily practice:\n{url}",
+    # Evergreen only. These strings ship in the description of every video and
+    # stay live forever, so a deadline written here ("only for June", "this
+    # month only") becomes a lie the moment the month turns — and reads to a
+    # viewer like an abandoned bot. tests/test_promo.py enforces this.
+    "📓 The Stoic Reset — my 30-day Stoic journal, free to download:\n{url}",
+    "📖 One quote a day is a start. The Stoic Reset turns it into a 30-day "
+    "practice — free:\n{url}",
+    "🪨 The Stoic Reset — a 30-day journal to put quotes like this into daily "
+    "practice. Free:\n{url}",
 ]
 
 
