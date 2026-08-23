@@ -78,8 +78,24 @@ def _ensure_release(repo: str) -> int:
     return r.json()["id"]
 
 
-def _host_via_github_release(video_path: Path) -> str:
-    """Upload video_path as a release asset and return its public download URL."""
+def _delete_asset(repo: str, asset_id: int) -> None:
+    """Remove a hosted asset. Best effort — never raises into the post."""
+    try:
+        requests.delete(f"{API}/repos/{repo}/releases/assets/{asset_id}",
+                        headers=_gh_headers(), timeout=30)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [instagram] could not clean up asset {asset_id}: {e}",
+              file=sys.stderr)
+
+
+def _host_via_github_release(video_path: Path) -> tuple[str, str, int]:
+    """Upload video_path as a release asset.
+
+    Returns (public_url, repo, asset_id). The caller MUST delete the asset
+    once Instagram has ingested it: this bucket had grown to 59 files and
+    12.2 GB of dead MP4s, one per day since June, because nothing ever
+    removed them.
+    """
     repo = os.environ.get("GITHUB_REPOSITORY", "")
     if not repo:
         raise RuntimeError("GITHUB_REPOSITORY not set — cannot host video")
@@ -106,9 +122,10 @@ def _host_via_github_release(video_path: Path) -> str:
         timeout=300,
     )
     up.raise_for_status()
-    url = up.json()["browser_download_url"]
+    body = up.json()
+    url = body["browser_download_url"]
     print(f"  [instagram] hosted video at {url}")
-    return url
+    return url, repo, body["id"]
 
 
 # ---------------------------------------------------------------------------
@@ -167,6 +184,34 @@ def _publish(ig_user: str, token: str, container_id: str) -> str:
 # Public entry point
 # ---------------------------------------------------------------------------
 
+def _credentials_work(ig_user: str, token: str) -> bool:
+    """One cheap call that answers 'will this attempt fail?'.
+
+    Ordering matters more than it looks. Hosting ran FIRST, so every run
+    since the token expired uploaded the full MP4 to a public release and
+    only then discovered the token was dead — 12.2 GB and several minutes of
+    every run spent on a request that could not have succeeded. Fails closed:
+    anything other than a clear OK means skip.
+    """
+    try:
+        r = requests.get(f"{GRAPH}/{ig_user}",
+                         params={"fields": "id", "access_token": token},
+                         timeout=30)
+    except Exception as e:  # noqa: BLE001
+        print(f"  [instagram] credential check failed: {e}", file=sys.stderr)
+        return False
+    if r.ok:
+        return True
+    detail = ""
+    try:
+        detail = r.json().get("error", {}).get("message", "")
+    except Exception:  # noqa: BLE001
+        detail = r.text[:120]
+    print(f"  [instagram] credentials rejected ({r.status_code}): {detail} "
+          f"— skipping before uploading anything")
+    return False
+
+
 def publish_reel(video_path: Path, caption: str, hashtags: list[str]) -> dict:
     """Cross-post a rendered Short to Instagram Reels.
 
@@ -179,12 +224,16 @@ def publish_reel(video_path: Path, caption: str, hashtags: list[str]) -> dict:
         print("  [instagram] IG_ACCESS_TOKEN/IG_USER_ID not set — skipping cross-post")
         return {"status": "skipped", "reason": "no credentials"}
 
+    if not _credentials_work(ig_user, token):
+        return {"status": "skipped", "reason": "credentials rejected"}
+
     full_caption = caption.strip()
     if hashtags:
         full_caption = f"{full_caption}\n\n{' '.join(hashtags)}"
 
+    repo = asset_id = None
     try:
-        video_url = _host_via_github_release(Path(video_path))
+        video_url, repo, asset_id = _host_via_github_release(Path(video_path))
         container = _create_container(ig_user, token, video_url, full_caption)
         print(f"  [instagram] container {container} created — waiting for processing")
         if not _wait_until_ready(container, token):
@@ -199,3 +248,9 @@ def publish_reel(video_path: Path, caption: str, hashtags: list[str]) -> dict:
     except Exception as e:  # noqa: BLE001
         print(f"  [instagram] cross-post failed: {e}", file=sys.stderr)
         return {"status": "failed", "reason": str(e)}
+    finally:
+        # Safe on every path. On success the container reached FINISHED, which
+        # means Meta has already ingested the file; on failure it is pure
+        # litter. Either way the video lives on YouTube, not here.
+        if repo and asset_id:
+            _delete_asset(repo, asset_id)

@@ -405,3 +405,21 @@ This file is for OPERATIONAL decisions and taste vetoes.
   (set in two workflows, read by nothing) removed. Back-catalogue descriptions
   still carry the old text — a bulk rewrite needs the owner's call (~10.5k
   YouTube quota units, over the 10k/day cap).
+- **2026-08-23** `variety_check.py` warns only on LIVE repeats — a repeat whose
+  most recent occurrence is inside the window. It was exiting 1 on every run
+  with 8 warnings, all of them June/July damage already fixed (rule 7 last used
+  2026-08-06, a Seneca quote 4x last 2026-06-07, 6 verbatim hooks last
+  2026-08-06). A watchdog that always barks is one nobody hears. Detection
+  still scans ALL history — a quote reused after two months is still a
+  block-list failure — and healed repeats print as a dated `past` line. The
+  code-assigned "Rule N:" prefix is stripped before opener analysis: that word
+  comes from `_rule_directive`, not model fixation, so counting it raised a
+  warning no prompt change could clear.
+- **2026-08-23** Instagram cross-post verifies credentials BEFORE hosting the
+  video, and deletes the hosted asset afterwards on every path. The old order
+  uploaded the full MP4 to a public GitHub release, then discovered the token
+  was invalid — for months. The `media-bucket` release had reached 59 assets /
+  12.2 GB of MP4s for cross-posts that never once succeeded.
+  `scripts/prune_media_bucket.py` clears the backlog (dry-run by default,
+  `--delete` to apply, `--keep-days` protects in-flight uploads). NOT RUN —
+  bulk deletion on the live repo is the owner's call.

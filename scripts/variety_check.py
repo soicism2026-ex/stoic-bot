@@ -14,6 +14,14 @@ So this checks the output, not the code. It runs after every post and prints
 loudly. Exit 1 on any WARN, but the workflow step is continue-on-error: the
 point is to surface drift on the run page, never to block a post.
 
+LIVE vs HEALED: repeat detection scans ALL history, because a quote reused
+after two months is still a block-list failure. But it only WARNS when the
+most recent occurrence falls inside the window. Otherwise every bug ever
+fixed warns forever — this check was exiting 1 with eight warnings, all of
+them damage from June and July that had already been repaired, which is
+exactly how a real ninth warning goes unnoticed. Healed repeats print as a
+quiet line instead.
+
     python scripts/variety_check.py            # last 30 posts
     python scripts/variety_check.py --window 60
 """
@@ -37,6 +45,9 @@ MAX_SHARED_OPENER = 2
 
 WARN = "\033[33mWARN\033[0m"
 OK = "\033[32m ok \033[0m"
+# Repeats that happened, were fixed, and have not recurred. Printed for the
+# record; they never fail the check.
+HEALED = "\033[90mpast\033[0m"
 
 
 def _load() -> list[dict]:
@@ -51,33 +62,78 @@ def _hook(row: dict) -> str:
     return (row.get("hook") or "").strip()
 
 
-def check_verbatim_hooks(rows: list[dict], issues: list[str]) -> None:
-    """The same hook, word for word, more than once — ever."""
-    counts = Counter(_hook(r) for r in rows if _hook(r))
-    repeats = {h: n for h, n in counts.items() if n > 1}
-    if repeats:
-        for h, n in sorted(repeats.items(), key=lambda kv: -kv[1])[:5]:
-            issues.append(f"hook published {n}x verbatim: \"{h[:60]}\"")
-    else:
-        print(f"  [{OK}] no hook has ever been published twice verbatim")
+# The "Rule N:" prefix is assigned by code (content._rule_directive), not
+# chosen by the model, so it must not be read as the model finding a formula.
+_RULE_PREFIX = re.compile(r"^\s*rule\s+\d+\s*[:.\-—]?\s*", re.I)
 
 
-def check_rule_numbers(rows: list[dict], issues: list[str]) -> None:
+def _positions(rows: list[dict], key) -> dict:
+    """Map each non-empty key value to the list of row indices holding it."""
+    out: dict = {}
+    for i, r in enumerate(rows):
+        k = key(r)
+        if k:
+            out.setdefault(k, []).append(i)
+    return out
+
+
+def _split_live(groups: dict, first_recent: int) -> tuple[list, list]:
+    """Split repeated values into (live, healed).
+
+    A repeat is LIVE if its most recent occurrence is inside the window —
+    the pipeline is still doing it. If every occurrence predates the window
+    the defect was fixed and reporting it again teaches everyone to ignore
+    this check.
+    """
+    live, healed = [], []
+    for val, idxs in groups.items():
+        if len(idxs) < 2:
+            continue
+        (live if max(idxs) >= first_recent else healed).append((val, idxs))
+    live.sort(key=lambda kv: -len(kv[1]))
+    healed.sort(key=lambda kv: -len(kv[1]))
+    return live, healed
+
+
+def check_verbatim_hooks(rows: list[dict], first_recent: int,
+                         issues: list[str], healed: list[str]) -> None:
+    """The same hook, word for word, more than once."""
+    live, old = _split_live(_positions(rows, _hook), first_recent)
+    for h, idxs in live[:5]:
+        issues.append(f"hook published {len(idxs)}x verbatim, most recently "
+                      f"{rows[idxs[-1]]['date']}: \"{h[:60]}\"")
+    if old:
+        healed.append(f"{len(old)} hook(s) were repeated verbatim before this "
+                      f"window (latest {rows[max(i for _, ix in old for i in ix)]['date']})")
+    if not live:
+        print(f"  [{OK}] no hook repeated verbatim in this window")
+
+
+def _rule_number(row: dict) -> str:
+    m = re.match(r"\s*Rule\s+(\d+)", _hook(row))
+    return m.group(1) if m else ""
+
+
+def check_rule_numbers(rows: list[dict], first_recent: int,
+                       issues: list[str], healed: list[str]) -> None:
     """Rule numbers are code-assigned precisely because models fixate on 7/9."""
-    ns = [int(m.group(1)) for r in rows
-          if (m := re.match(r"\s*Rule\s+(\d+)", _hook(r)))]
-    if not ns:
-        print(f"  [{OK}] no rule posts yet")
+    groups = _positions(rows, _rule_number)
+    if not groups:
+        print(f"  [{OK}] no numbered rule posts yet")
         return
-    counts = Counter(ns)
-    dupes = {n: c for n, c in counts.items() if c > 1}
-    if dupes:
-        worst = max(dupes.items(), key=lambda kv: kv[1])
-        issues.append(
-            f"rule number {worst[0]} used {worst[1]}x (all numbers so far: "
-            f"{sorted(counts)}) — code assignment is not reaching the output")
-    else:
-        print(f"  [{OK}] {len(ns)} rule posts, all distinct numbers")
+    live, old = _split_live(groups, first_recent)
+    for n, idxs in live[:3]:
+        issues.append(f"rule number {n} used {len(idxs)}x, most recently "
+                      f"{rows[idxs[-1]]['date']} — code assignment is not "
+                      f"reaching the output")
+    if old:
+        worst = max(old, key=lambda kv: len(kv[1]))
+        healed.append(f"rule number {worst[0]} was used {len(worst[1])}x up to "
+                      f"{rows[worst[1][-1]]['date']}, none since")
+    if not live:
+        total = sum(len(v) for v in groups.values())
+        print(f"  [{OK}] {total} numbered rule posts, no number reused "
+              f"in this window")
 
 
 def check_dominance(rows: list[dict], column: str, label: str,
@@ -99,9 +155,18 @@ def check_dominance(rows: list[dict], column: str, label: str,
 
 
 def check_hook_openers(rows: list[dict], issues: list[str]) -> None:
-    """Three hooks opening on the same proper noun is a formula, not a style."""
-    openers = [h.split()[0].strip(".,:;\"'").lower()
-               for r in rows if (h := _hook(r)) and h.split()]
+    """Three hooks opening on the same word is a formula, not a style.
+
+    The "Rule N:" prefix is stripped first. That word is written by
+    content._rule_directive, not chosen by the model, so counting it flagged
+    the rule format's own signature as model fixation — a warning no change
+    to the prompt could ever clear. What matters is the word AFTER it.
+    """
+    openers = []
+    for r in rows:
+        h = _RULE_PREFIX.sub("", _hook(r))
+        if h.split():
+            openers.append(h.split()[0].strip(".,:;\"'").lower())
     if not openers:
         return
     for word, n in Counter(openers).most_common(3):
@@ -110,16 +175,22 @@ def check_hook_openers(rows: list[dict], issues: list[str]) -> None:
                           f"'{word}' — the model has found a formula")
 
 
-def check_duplicate_quotes(rows: list[dict], issues: list[str]) -> None:
-    counts = Counter((r.get("quote") or "").strip() for r in rows
-                     if (r.get("quote") or "").strip())
-    dupes = {q: n for q, n in counts.items() if n > 1}
-    if dupes:
-        q, n = max(dupes.items(), key=lambda kv: kv[1])
-        issues.append(f"quote used {n}x: \"{q[:60]}\" — the block list is not "
-                      f"reaching the model")
-    else:
-        print(f"  [{OK}] no quote reused")
+def check_duplicate_quotes(rows: list[dict], first_recent: int,
+                           issues: list[str], healed: list[str]) -> None:
+    """A quote reused at ANY distance is a block-list failure, so this scans
+    all history — but only warns if the reuse itself is recent."""
+    live, old = _split_live(
+        _positions(rows, lambda r: (r.get("quote") or "").strip()), first_recent)
+    for q, idxs in live[:3]:
+        issues.append(f"quote used {len(idxs)}x, most recently "
+                      f"{rows[idxs[-1]]['date']}: \"{q[:60]}\" — the block "
+                      f"list is not reaching the model")
+    if old:
+        worst = max(old, key=lambda kv: len(kv[1]))
+        healed.append(f"{len(old)} quote(s) were reused before this window "
+                      f"(worst {len(worst[1])}x, last {rows[worst[1][-1]]['date']})")
+    if not live:
+        print(f"  [{OK}] no quote reused in this window")
 
 
 def check_header(issues: list[str]) -> None:
@@ -154,13 +225,16 @@ def main() -> int:
     if not rows:
         return 0
     recent = rows[-args.window:]
+    first_recent = max(0, len(rows) - args.window)
     issues: list[str] = []
+    healed: list[str] = []
 
     print(f"=== Variety check ({len(rows)} posts, judging last {len(recent)}) ===")
     check_header(issues)
-    check_verbatim_hooks(rows, issues)          # all history
-    check_rule_numbers(rows, issues)            # all history
-    check_duplicate_quotes(rows, issues)        # all history
+    # Scan all history, warn only on repeats that recur inside the window.
+    check_verbatim_hooks(rows, first_recent, issues, healed)
+    check_rule_numbers(rows, first_recent, issues, healed)
+    check_duplicate_quotes(rows, first_recent, issues, healed)
     for col, label in (("format", "format"), ("theme", "theme"),
                        ("author", "author"), ("music_track", "music"),
                        ("voice_name", "voice")):
@@ -168,6 +242,8 @@ def main() -> int:
     check_hook_openers(recent, issues)
 
     print("=" * 58)
+    for h in healed:
+        print(f"  [{HEALED}] {h}")
     if issues:
         for i in issues:
             print(f"  [{WARN}] {i}")
