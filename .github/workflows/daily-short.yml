@@ -151,12 +151,23 @@ jobs:
           PROMO_COMMENT: "1"
           # PROMO_CTA_VARIATIONS: pipe-delimited (|) list of 3-5 CTA strings.
           # Leave unset to use the three built-in defaults from src/promo.py.
-          # GENERATED BACKGROUNDS (pivot from stock). Add the OPENAI_API_KEY
-          # secret to activate: each background becomes an AI cinematic still
-          # depicting the exact narration beat (~$0.04-0.08/image). Falls back to
-          # stock automatically if the key is absent or any call fails.
+          # GENERATED BACKGROUNDS — OFF since 2026-08-25. They are AI STILLS
+          # with a slow zoom; before them every background was real stock
+          # VIDEO. Comparing day-3 views (same age for every video):
+          #
+          #   stock video, 10 Jul - 6 Aug : n=82  median 217
+          #   AI stills,   7 Aug onward   : n=44  median  58   (3.8x lower)
+          #   Mann-Whitney z = 5.1 — not chance
+          #
+          # Day-level data is noisier (5-6 Aug were already weak), so this is
+          # association, not a proven single cause. But it is the largest
+          # identifiable change coinciding with the largest sustained drop,
+          # and reverting costs one line. Motion is the thing Shorts reward;
+          # a still that zooms is not motion.
+          #
+          # Set back to "1" only with a measured win, not a hunch.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          REEL_IMAGE_BG: "1"
+          REEL_IMAGE_BG: "0"
           # PRIMARY image provider — Cloudflare Workers AI (FLUX.1 schnell).
           # Free allowance is 10,000 neurons/day and a schnell image costs
           # ~43, so ~230/day are free; this channel needs 18. No watermark.

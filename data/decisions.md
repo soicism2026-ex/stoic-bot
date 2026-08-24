@@ -483,3 +483,44 @@ confound it. Long-form also converts subscribers far better than Shorts
 Source material is public-domain Stoic text (Meditations, Letters from a
 Stoic, Discourses) — unlimited, free, and never fabricated, same as the
 quote rule for Shorts.
+
+## 2026-08-25 — THE REGRESSION: AI stills replaced real video
+
+Owner pushed back on the long-form pivot: *"stop avoiding the problem... a
+leader charges through."* Correct. A 7.5x collapse in reach is a BUG, and
+changing category instead of finding it was avoidance. Found it.
+
+Day-3 views, compared at identical video age (analytics time series, so this
+is not an age artifact):
+
+    stock VIDEO backgrounds, 10 Jul - 6 Aug : n=82  median 217
+    AI STILL backgrounds,    7 Aug onward   : n=44  median  58
+    3.8x lower.  Mann-Whitney z = 5.1 — not chance.
+
+`REEL_IMAGE_BG=1` shipped 2026-08-06/07 (commit 0b73767, Cloudflare FLUX.1).
+Every background became an AI still with a slow zoom; before it, every
+background was real stock VIDEO. Motion is what Shorts reward, and a still
+that zooms is not motion.
+
+**Honest limit:** day-level data is noisier — 5-6 Aug were already weak, and
+voice changes landed 08-08, three-act 08-10. So this is association at the
+largest identifiable change, not a proven single cause. Reverting costs one
+line, so it is reverted; `REEL_IMAGE_BG="0"`. Re-enable only on a measured
+win, guarded by test.
+
+Two false leads killed by the same-period test, worth recording so they are
+not re-chased:
+  * MUSIC beds looked damning (cinematic_score 67% win rate vs the five new
+    beds at 0-33%) — but after 2026-08-08 the ORIGINAL bed scores worst of
+    all (median 38). It was a date confound, not the beds.
+  * VOICE: Brian (paid) has the best numbers, but only ever voices the first
+    slot of the day.
+
+**Voice A/B verdict (owner asked to check back):** Christopher leads Steffan
+on every measure over the same days and slots — median 70 vs 44, mean 175 vs
+89 — but z = -1.52, short of significance. Leaning Christopher. NOT called
+yet; keep both running.
+
+**bg_source is now logged in posts.csv** (13th column). The single most
+important production variable was invisible in the data and had to be
+inferred from commit dates. Never again.

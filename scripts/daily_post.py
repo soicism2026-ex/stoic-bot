@@ -31,6 +31,7 @@ from experiments import pick_experiment   # noqa: E402
 import render as render_mod               # noqa: E402
 import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
+import backgrounds                        # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
 from visual_qa import run_visual_qa       # noqa: E402
@@ -642,6 +643,7 @@ def main():
                 hook=content.get("hook", ""),
                 experiment=exp_name,
                 content_format=content.get("format", ""),
+                bg_source=backgrounds.LAST_BG_SOURCE or "",
             )
             print("  logged. done.")
             break

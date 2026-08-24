@@ -13,7 +13,13 @@ LOG = ROOT / "data" / "posts.csv"
 # analyse which hook styles drive views. Trailing position keeps older
 # positional readers and content.py's header-keyed reader working unchanged.
 FIELDS = ["date", "theme", "author", "quote", "caption", "video_url", "video_id",
-          "voice_name", "music_track", "hook", "experiment", "format"]
+          "voice_name", "music_track", "hook", "experiment", "format",
+          # Which provider actually served the backgrounds. Added 2026-08-25
+          # after the switch from stock VIDEO to AI STILLS coincided with a
+          # 3.8x drop in day-3 views and could only be established by
+          # inferring from commit dates, because the single most important
+          # production variable was never recorded. Never again.
+          "bg_source"]
 
 
 def _repair_header() -> bool:
@@ -58,7 +64,8 @@ def _repair_header() -> bool:
 
 def log_post(date, theme, quote, author, caption, publish_result,
              voice_name: str = "", music_track: str = "", hook: str = "",
-             experiment: str = "", content_format: str = ""):
+             experiment: str = "", content_format: str = "",
+             bg_source: str = ""):
     new = not LOG.exists()
     if not new:
         _repair_header()
@@ -79,4 +86,5 @@ def log_post(date, theme, quote, author, caption, publish_result,
             "hook": (hook or "").replace("\n", " ").strip(),
             "experiment": experiment,
             "format": content_format,
+            "bg_source": bg_source,
         })

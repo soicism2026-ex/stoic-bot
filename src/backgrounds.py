@@ -19,6 +19,20 @@ from datetime import date
 
 import requests
 
+# Which provider actually served the most recent clip. Recorded in posts.csv
+# so background source is a MEASURABLE variable: the 2026-08 switch from stock
+# video to AI stills coincided with a 3.8x drop in day-3 views and could only
+# be established by inferring from commit dates, because this was never logged.
+LAST_BG_SOURCE = ""
+
+
+def _note_source(label: str) -> str:
+    global LAST_BG_SOURCE
+    LAST_BG_SOURCE = label
+    return label
+
+
+
 ROOT = Path(__file__).resolve().parent.parent
 BG_DIR = ROOT / "assets" / "backgrounds"
 
@@ -408,7 +422,7 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
         try:
             g = _guide_clip(clip_idx)
             if g is not None:
-                print(f"[background] SOURCE=GUIDE_LIBRARY file={g.name}", flush=True)
+                print(f"[background] SOURCE={_note_source('GUIDE_LIBRARY')} file={g.name}", flush=True)
                 return g
         except Exception as e:  # noqa: BLE001
             print(f"[background] guide library skipped: {e}", file=sys.stderr, flush=True)
@@ -434,7 +448,7 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
             gen_query = f"{query}, {GUIDE_CLOSING_SHOT}"
         gen = imagegen.generate_clip(gen_query, out_path, seed=seed)
         if gen is not None:
-            print(f"[background] SOURCE=GENERATED query='{query}' file={gen.name}", flush=True)
+            print(f"[background] SOURCE={_note_source('GENERATED')} query='{query}' file={gen.name}", flush=True)
             return gen
     except Exception as e:  # noqa: BLE001
         print(f"[background] imagegen skipped: {e}", file=sys.stderr, flush=True)
@@ -446,11 +460,11 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     ]:
         try:
             path = fn()
-            print(f"[background] SOURCE={label} query='{query}' file={path.name}", flush=True)
+            print(f"[background] SOURCE={_note_source(label)} query='{query}' file={path.name}", flush=True)
             return path
         except Exception as e:  # noqa: BLE001
             print(f"[background] {label} failed: {e}", file=sys.stderr, flush=True)
 
     local = _rotate_local()
-    print(f"[background] SOURCE=LOCAL_FALLBACK file={local.name}", flush=True)
+    print(f"[background] SOURCE={_note_source('LOCAL_FALLBACK')} file={local.name}", flush=True)
     return local

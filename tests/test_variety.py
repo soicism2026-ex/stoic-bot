@@ -287,3 +287,41 @@ def test_real_posts_csv_is_currently_clean(tmp_path, monkeypatch):
     r = subprocess.run([sys.executable, str(ROOT / "scripts" / "variety_check.py")],
                        capture_output=True, text=True)
     assert r.returncode == 0, r.stdout + r.stderr
+
+
+# ------------------------------------------------ the background regression
+#
+# 2026-08-25: comparing day-3 views at identical video age, the switch from
+# stock VIDEO backgrounds to AI STILLS coincided with the largest sustained
+# drop in the channel's history:
+#
+#   stock video, 10 Jul - 6 Aug : n=82  median 217
+#   AI stills,   7 Aug onward   : n=44  median  58    Mann-Whitney z = 5.1
+#
+# Day-level data is noisier, so this is association rather than a proven
+# single cause — but it is the biggest identifiable change at the biggest
+# drop, and it was only findable by inferring from COMMIT DATES, because the
+# background provider was never recorded. These tests keep both fixes true.
+
+def test_generated_backgrounds_stay_off_until_a_measured_win():
+    """A revert that silently flips back is not a revert."""
+    wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
+    line = [l for l in wf.splitlines()
+            if "REEL_IMAGE_BG:" in l and not l.strip().startswith("#")]
+    assert line, "REEL_IMAGE_BG is not set in the daily workflow"
+    assert '"0"' in line[0], (
+        f"AI still backgrounds are back on ({line[0].strip()}). They are "
+        f"associated with a 3.8x drop in day-3 views; re-enable only with a "
+        f"measured win.")
+
+
+def test_background_source_is_recorded_for_every_post():
+    """The variable that caused the drop was invisible in the data."""
+    import logbook
+    assert "bg_source" in logbook.FIELDS
+
+
+def test_background_module_reports_what_served_the_clip():
+    import backgrounds
+    backgrounds._note_source("PIXABAY")
+    assert backgrounds.LAST_BG_SOURCE == "PIXABAY"
