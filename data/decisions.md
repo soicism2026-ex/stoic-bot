@@ -436,3 +436,15 @@ This file is for OPERATIONAL decisions and taste vetoes.
   a backup. F3 scores pacing 5.5 against a 5.0 pass bar — deliberately slow,
   and still passing. Prune stays gated off (`vars.PRUNE_ENABLED` unset):
   unlisting removes views from the 3M YPP count.
+- **2026-08-24** The comment reply bot scans recent videos (7d) on every run
+  PLUS a rotating 40-video slice of the back catalogue, sweeping everything
+  about every 2 days. It previously only saw videos posted in the last 7 days
+  — 21 of 229, 9% of the channel — so a viewer commenting on a three-week-old
+  Short was invisible forever. The blind spot grew with the catalogue and the
+  reply rate collapsed with it: 24 replies in June, 5 in July, 1 in August,
+  while ~73 viewer comments sat unanswered. Measured: 171 of 229 videos sit at
+  exactly 2 comments (the bot's own pinned + promo, zero viewers), so the
+  channel's 495 "comments" are ~85% self-generated. Quota-safe: 1 unit per
+  video, 64/run, 192/day against a 10,000 budget where each upload costs 1,600.
+  Rotation uses posts.csv's row count as the run counter — it advances once
+  per post and cannot drift, because it IS the log the pipeline already writes.

@@ -45,7 +45,18 @@ def _replies_today() -> int:
             return sum(1 for r in csv.DictReader(f) if r.get("date") == today)
     except Exception:
         return 0
-LOOKBACK_DAYS       = 7    # only reply on videos posted in the last N days
+LOOKBACK_DAYS       = 7    # videos this recent are checked on EVERY run
+# Videos older than LOOKBACK_DAYS checked per run, rotating through the whole
+# back catalogue. Without this the bot could only ever see comments on the
+# last 7 days of posts — 21 of 229 videos, 9% of the channel. That blind spot
+# grew as the catalogue did, and the reply rate collapsed with it: 24 replies
+# in June, 5 in July, 1 in August, while ~73 viewer comments sat unanswered on
+# older videos. Shorts accrue views (and comments) for weeks after posting.
+#
+# commentThreads.list costs 1 quota unit per video, so 40 costs 40 units
+# against a 10,000/day budget — the three daily uploads cost 1,600 each. At
+# 40/run the whole catalogue is swept about every two days.
+BACKLOG_PER_RUN     = int(os.environ.get("REPLY_BACKLOG_PER_RUN", "40"))
 MIN_COMMENT_LEN     = 20   # ignore very short comments
 REPLY_SCOPES        = [
     "https://www.googleapis.com/auth/youtube.force-ssl",
@@ -70,17 +81,57 @@ def _yt_service():
     return build("youtube", "v3", credentials=creds, cache_discovery=False)
 
 
-def _load_recent_video_ids() -> list[str]:
-    """Return video IDs posted within the last LOOKBACK_DAYS days."""
+def _split_catalogue() -> tuple[list[str], list[str]]:
+    """Return (recent_ids, older_ids) from posts.csv, both deduped in order."""
     if not POSTS_CSV.exists():
-        return []
+        return [], []
     cutoff = (datetime.date.today() - datetime.timedelta(days=LOOKBACK_DAYS)).isoformat()
-    ids = []
+    recent, older = [], []
     with open(POSTS_CSV, newline="", encoding="utf-8") as f:
         for row in csv.DictReader(f):
-            if row.get("date", "") >= cutoff and row.get("video_id"):
-                ids.append(row["video_id"].strip())
-    return list(dict.fromkeys(ids))  # preserve order, dedupe
+            vid = (row.get("video_id") or "").strip()
+            if not vid:
+                continue
+            (recent if row.get("date", "") >= cutoff else older).append(vid)
+    seen = set()
+    recent = [v for v in recent if not (v in seen or seen.add(v))]
+    older = [v for v in older if v not in seen and not (v in seen or seen.add(v))]
+    return recent, older
+
+
+def _backlog_slice(older: list[str], run_counter: int,
+                   per_run: int = None) -> list[str]:
+    """A rotating window over the back catalogue.
+
+    run_counter advances by one per post, so posts.csv's own row count works
+    as a run counter with no extra state file to keep in sync — and one that
+    cannot drift, because it IS the log the pipeline already writes.
+    """
+    per_run = BACKLOG_PER_RUN if per_run is None else per_run
+    if not older or per_run <= 0:
+        return []
+    if per_run >= len(older):
+        return list(older)
+    start = (run_counter * per_run) % len(older)
+    window = older[start:start + per_run]
+    if len(window) < per_run:                      # wrap around the end
+        window += older[:per_run - len(window)]
+    return window
+
+
+def _run_counter() -> int:
+    """Number of rows in posts.csv — increments once per post."""
+    if not POSTS_CSV.exists():
+        return 0
+    with open(POSTS_CSV, newline="", encoding="utf-8") as f:
+        return sum(1 for _ in csv.DictReader(f))
+
+
+def _load_recent_video_ids() -> list[str]:
+    """Videos to check for new comments: everything recent, plus a rotating
+    slice of the back catalogue so old comments are not invisible forever."""
+    recent, older = _split_catalogue()
+    return recent + _backlog_slice(older, _run_counter())
 
 
 def _load_replied_ids() -> set[str]:
@@ -332,7 +383,11 @@ def main():
         print("  No recent videos found in posts.csv — nothing to reply to.")
         return
 
-    print(f"  Checking {len(video_ids)} recent video(s): {video_ids}")
+    recent, older = _split_catalogue()
+    n_backlog = len(video_ids) - len(recent)
+    print(f"  Checking {len(video_ids)} video(s): {len(recent)} recent + "
+          f"{n_backlog} from the {len(older)}-video back catalogue "
+          f"(full sweep every ~{max(1, -(-len(older) // max(1, BACKLOG_PER_RUN)))} runs)")
     replied_ids = _load_replied_ids()
     print(f"  Already replied to {len(replied_ids)} comment(s) in history.")
 
