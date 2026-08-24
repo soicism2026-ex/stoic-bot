@@ -2609,3 +2609,17 @@ for any recurring defects.
 - Add subtle motion to the hook (slow push-in on the statue's face or a text pop/shake on 'AGAIN') to break the static feel and boost stop rate
 - Increase contrast on body-quote text with a heavier weight or a darker gradient scrim behind it, and consider a more unexpected first frame to strengthen the curiosity gap
 
+
+## Visual QA — 2026-08-24 11:28 UTC
+**File:** `2026-08-24_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Rule 4: Keep death in view.
+**Scores:** hook_strength=6.5 | text_legibility=7.5 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text 'Rule 4: Keep death in view' is provocative and taps a strong memento-mori curiosity gap, but the 'Rule 4' framing implies a series and may lose viewers who missed rules 1-3; the waterfall backdrop is pretty but somewhat generic for the topic, hence 6.5. Text legibility is solid — bold yellow font with dark outline reads well against the purple-tinted scene, though the heavy purple wash slightly reduces contrast in brighter frames, so 7.5. Pacing is weak across the hook window: frames 1-4 are nearly identical static footage with the same text, giving no visual momentum in the critical first 1.5s, dropping it to 4.5. Scroll-stop potential is moderate — the death-themed text and moody color grade create some intrigue, but the calm nature scene isn't visually arresting on its own, landing at 6.0.
+**Issues:**
+- Hook frames 1-4 are almost visually static — same text, near-identical waterfall shot — creating no motion or change during the make-or-break opening 1.5s
+- The purple-graded waterfall doesn't thematically connect to 'death/memento mori', creating a disconnect between visual and message
+**Suggestions:**
+- Introduce a visual change or subtle zoom/cut within the hook window, and consider dropping the 'Rule 4' number or animating the word DEATH for a punchier stop
+- Swap or intercut the waterfall for a more mortality-evocative visual (e.g. the moody lantern/candle scene from frame 6) in the opening to reinforce the theme and boost scroll-stop
+**Flagged dims:** pacing
+
