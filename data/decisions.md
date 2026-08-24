@@ -448,3 +448,38 @@ This file is for OPERATIONAL decisions and taste vetoes.
   video, 64/run, 192/day against a 10,000 budget where each upload costs 1,600.
   Rotation uses posts.csv's row count as the run counter — it advances once
   per post and cannot drift, because it IS the log the pipeline already writes.
+
+## Strategy pivot — 2026-08-25 — LONG-FORM FOR THE WATCH-HOUR DOOR
+
+**The Shorts-views path to monetisation is not reachable and the numbers are
+not close.** Measured 2026-08-25 from data/channel_stats.csv:
+
+| metric | actual | YPP (500-sub tier) | gap |
+|---|---|---|---|
+| views/day | 314 (last 7d) | 33,333 (3M/90d) | **106x** |
+| subs | 229, +0.43/day | 500 | 632 days |
+
+Reach is also FALLING, measured at identical video age (day 3, from the
+analytics time series, so this is not an age artifact):
+
+    June median 523 views by day 3 | July 223 | August 70   (7.5x collapse)
+
+The same 500-sub tier has a second door: **3,000 public watch HOURS in 12
+months** instead of 3M Shorts views. Shorts watch time does not count toward
+it; long-form does. Required traffic:
+
+    10-min @ 35% retention -> 141 views/day
+    20-min @ 35% retention ->  70 views/day
+
+The channel already does 314 views/day. It is generating more than enough
+traffic for the achievable door, in a format that cannot count toward it.
+
+**Decision:** add long-form (10-20 min) alongside the Shorts, aimed at the
+watch-hour threshold. Shorts continue unchanged as top-of-funnel discovery
+and the F3 format test runs untouched — long-form is additive and does not
+confound it. Long-form also converts subscribers far better than Shorts
+(this channel: 1.09 subs/video), which attacks the 271-subscriber gap too.
+
+Source material is public-domain Stoic text (Meditations, Letters from a
+Stoic, Discourses) — unlimited, free, and never fabricated, same as the
+quote rule for Shorts.

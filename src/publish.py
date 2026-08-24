@@ -45,11 +45,30 @@ def _service(extra_scopes: list[str] | None = None):
 
 def publish_short(video_path: Path, title: str, description: str,
                   tags: list[str]) -> dict:
+    return _upload(video_path, title, description, tags, shorts=True)
+
+
+def publish_longform(video_path: Path, title: str, description: str,
+                     tags: list[str]) -> dict:
+    """Upload a long-form video — NOT a Short.
+
+    The distinction is the whole point of the format. Shorts watch time does
+    not count toward the 3,000-hour YouTube Partner Program threshold; a
+    long-form video's does. Tagging one of these #Shorts would file it in the
+    category that cannot earn what it was made to earn, and YouTube also
+    treats anything under 3 minutes in a vertical frame as a Short on its own,
+    so the render must stay long and landscape.
+    """
+    return _upload(video_path, title, description, tags, shorts=False)
+
+
+def _upload(video_path: Path, title: str, description: str,
+            tags: list[str], shorts: bool = True) -> dict:
     yt = _service()
 
-    # YouTube titles cap at 100 chars; ensure #Shorts is present.
+    # YouTube titles cap at 100 chars.
     title = title[:90].rstrip()
-    if "#shorts" not in (title + description).lower():
+    if shorts and "#shorts" not in (title + description).lower():
         description = description + "\n\n#Shorts"
 
     body = {
@@ -78,7 +97,9 @@ def publish_short(video_path: Path, title: str, description: str,
     return {
         "status": "published",
         "video_id": vid,
-        "url": f"https://youtube.com/shorts/{vid}",
+        "url": (f"https://youtube.com/shorts/{vid}" if shorts
+                else f"https://youtube.com/watch?v={vid}"),
+        "shorts": shorts,
     }
 
 
