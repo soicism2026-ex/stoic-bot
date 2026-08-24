@@ -423,3 +423,16 @@ This file is for OPERATIONAL decisions and taste vetoes.
   `scripts/prune_media_bucket.py` clears the backlog (dry-run by default,
   `--delete` to apply, `--keep-days` protects in-flight uploads). NOT RUN —
   bulk deletion on the live repo is the owner's call.
+- **2026-08-23** The retention headline reports the best video with >=60 views
+  at a plausible (<=300%) retention, and says how many rows it excluded. It
+  used to print the raw max — "Best retention: qzLbKJVZfbw at 2128.7%", a
+  108-view video someone left looping — which reads as a broken pipeline and
+  says nothing about the channel. `REPORT_MIN_VIEWS` is test-coupled to
+  `content._winning_hooks(min_views)` so the log and the model cannot drift
+  apart. Verified separately: the content engine was NOT learning from the
+  outlier (it has no hook recorded, so the feedback list never saw it).
+- **2026-08-23** Verified, not assumed: visual QA is log-only
+  (`VQA_BLOCK_ON_FAIL=0`), so it cannot silently reject an F3 post and swap in
+  a backup. F3 scores pacing 5.5 against a 5.0 pass bar — deliberately slow,
+  and still passing. Prune stays gated off (`vars.PRUNE_ENABLED` unset):
+  unlisting removes views from the 3M YPP count.

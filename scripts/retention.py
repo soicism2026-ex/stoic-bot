@@ -108,15 +108,46 @@ def write_rows(rows: list[dict]) -> None:
             w.writerow(r)
 
 
+# Below this many views, averageViewPercentage is a handful of sessions and
+# swings wildly — one viewer leaving a Short looping produces figures like the
+# 2128% this line used to headline. Matches content._winning_hooks(min_views).
+REPORT_MIN_VIEWS = 60
+# Shorts loop, so >100% is normal and real. Past this it is a freak session,
+# not a signal. Same ceiling content.py caps the feedback list at.
+PLAUSIBLE_MAX_PCT = 300.0
+
+
+def report_line(rows: list[dict]) -> str:
+    """A headline that means something.
+
+    This used to print max(avg_view_pct) over every row, which reported
+    "Best retention: qzLbKJVZfbw at 2128.7%" — a 108-view video someone left
+    looping. It reads as a broken pipeline and sent me hunting a bug that was
+    not there, while saying nothing about how the channel is doing. The
+    content engine already ignores rows like that; the log should too.
+    """
+    usable = [r for r in rows
+              if int(r.get("views") or 0) >= REPORT_MIN_VIEWS
+              and r["avg_view_pct"] <= PLAUSIBLE_MAX_PCT]
+    head = f"[retention] wrote {len(rows)} rows to {OUT.name}."
+    if not usable:
+        return f"{head} No video yet has {REPORT_MIN_VIEWS}+ views at a " \
+               f"plausible retention — nothing to rank."
+    best = max(usable, key=lambda r: r["avg_view_pct"])
+    excluded = len(rows) - len(usable)
+    return (f"{head} Best retention (>={REPORT_MIN_VIEWS} views): "
+            f"{best['video_id']} at {best['avg_view_pct']}% "
+            f"on {best['views']} views. {excluded} row(s) excluded as "
+            f"low-sample or implausible.")
+
+
 def main():
     rows = fetch_retention()
     if not rows:
         print("[retention] no data written.")
         return
     write_rows(rows)
-    best = max(rows, key=lambda r: r["avg_view_pct"])
-    print(f"[retention] wrote {len(rows)} rows to {OUT.name}. "
-          f"Best retention: {best['video_id']} at {best['avg_view_pct']}%")
+    print(report_line(rows))
 
 
 if __name__ == "__main__":

@@ -136,3 +136,60 @@ def test_retention_file_is_committed():
     """Pulled but not committed = still stale on the next run's checkout."""
     wf = (ROOT / ".github/workflows/daily-short.yml").read_text()
     assert "data/retention.csv" in wf.split("git add")[1][:300]
+
+
+# ------------------------------------------------- the retention headline
+#
+# The daily log printed "Best retention: qzLbKJVZfbw at 2128.7%" — a 108-view
+# video someone left looping. It reads as a broken pipeline (it sent me
+# hunting a bug that did not exist) and says nothing about the channel. The
+# content engine already ignores rows like that; the log now does too.
+
+sys.path.insert(0, str(ROOT / "scripts"))
+import retention  # noqa: E402
+
+
+def _r(vid, views, pct):
+    return {"video_id": vid, "views": views, "avg_view_pct": pct}
+
+
+def test_headline_ignores_the_looping_outlier():
+    rows = [_r("freak", 108, 2128.7), _r("real", 252, 255.2)]
+    line = retention.report_line(rows)
+    assert "real" in line and "freak" not in line
+    assert "2128" not in line
+
+
+def test_headline_ignores_low_sample_videos():
+    """A 12-view video at 400% is three people, not a finding."""
+    rows = [_r("tiny", 12, 400.0), _r("solid", 300, 90.0)]
+    assert "solid" in retention.report_line(rows)
+
+
+def test_headline_keeps_normal_over_100_percent():
+    """Shorts loop; 150% is real and is the strongest signal there is."""
+    rows = [_r("looped", 200, 150.0), _r("plain", 200, 80.0)]
+    assert "looped" in retention.report_line(rows)
+
+
+def test_headline_reports_how_many_rows_it_dropped():
+    rows = [_r("freak", 108, 2128.7), _r("tiny", 5, 99.0), _r("real", 252, 60.0)]
+    assert "2 row(s) excluded" in retention.report_line(rows)
+
+
+def test_headline_says_so_when_nothing_qualifies():
+    """A young channel has no rankable video yet — say that, do not invent one."""
+    line = retention.report_line([_r("tiny", 3, 500.0)])
+    assert "nothing to rank" in line
+
+
+def test_headline_states_the_view_count_behind_the_number():
+    """A percentage without its sample size is how the old line misled."""
+    assert "252 views" in retention.report_line([_r("real", 252, 88.0)])
+
+
+def test_headline_thresholds_match_the_content_engine():
+    """If these drift, the log and the model disagree about what counts."""
+    import inspect
+    sig = inspect.signature(content._winning_hooks)
+    assert retention.REPORT_MIN_VIEWS == sig.parameters["min_views"].default
