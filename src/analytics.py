@@ -18,7 +18,13 @@ ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / "data" / "analytics.csv"
 FIELDS = ["pulled_on", "published_at", "video_id", "title",
           "views", "likes", "comments", "url"]
-MAX_VIDEOS = 15
+# Every video ages out of the analytics window after ~5 days at 3 posts/day,
+# which made day 5+ invisible: the whole back catalogue was unmeasurable, and
+# prune_videos.py (PRUNE_MIN_AGE_DAYS=7) was judging videos on a view count
+# frozen BEFORE it was allowed to look. June videos were still compounding at
+# day 10 (median 429 at d3 -> 936 at d10, 2.2x) and we could not see whether
+# that tail still exists. Raised 2026-08-25.
+MAX_VIDEOS = 200
 
 
 def _service():

@@ -11,7 +11,7 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 > decisions.md (operational) or doctrine.md (creative) in the same turn.
 
 **Channel:** forged.in.stoicism  
-**Posting cadence:** 3 videos/day at 08:00, 15:00, 22:00 UTC (restored 2026-07-24 after 1/day starved views; safe volume because every video is now distinct — 5 formats, statue guide, scene-matched b-roll, cinematic look; goal: 500 subs + 3M Shorts views/90d)  
+**Posting cadence:** 3 videos/day; crons fire 03:00, 07:00, 11:00 UTC (six slots are over-provisioned at 03/07/11/15/19/23 and MAX_POSTS_PER_DAY=3 means the first three always win) (restored 2026-07-24 after 1/day starved views; safe volume because every video is now distinct — 5 formats, statue guide, scene-matched b-roll, cinematic look; goal: 500 subs + 3M Shorts views/90d)  
 **Product:** The Stoic Reset journal — https://soicism.gumroad.com/l/cslosv
 
 ---
