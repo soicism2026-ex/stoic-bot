@@ -32,6 +32,7 @@ import render as render_mod               # noqa: E402
 import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
 import backgrounds                        # noqa: E402
+import stories                            # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
 from visual_qa import run_visual_qa       # noqa: E402
@@ -316,8 +317,24 @@ def main():
         print(f"[{today}] already posted {posts_today}/{MAX_POSTS_PER_DAY} times today — skipping")
         return
 
-    # Generate content once (quote generation logic untouched)
-    content = generate_content()
+    # The curated true-story bank comes FIRST. These are hand-written and
+    # human-approved, and the spoken words are never model-generated — a model
+    # asked for a moving Stoic story invents a fluent, plausible, false one,
+    # and this channel's rule is that quotes are genuine public-domain text.
+    # When the bank is exhausted, fall through to the generated pipeline
+    # rather than repeating one: a viewer who sees the same story twice
+    # learns it was never personal.
+    story = stories.pick(post_rows)
+    if story is not None:
+        content = stories.as_content(story)
+        print(f"  STORY: {story['id']}  "
+              f"(power {story['power']}, leaves-him-better {story['s5']}; "
+              f"{stories.remaining(post_rows) - 1} left in the bank)")
+        if story.get("caveat"):
+            print(f"  caveat: {story['caveat']}")
+    else:
+        print("  story bank exhausted — falling back to generated content")
+        content = generate_content()
     print(f"  theme: {content['theme']}")
     print(f"  quote: {content['quote'][:60]}...")
 
@@ -414,6 +431,10 @@ def main():
     # it. Without this the test would run and be unmeasurable.
     if content.get("format") == "question":
         exp_name = "ftest:the_question"
+    # Story posts carry their id so stories.pick() can tell what has aired.
+    # Without this the bank would re-serve the same script every single day.
+    if content.get("_story_id"):
+        exp_name = f"story:{content['_story_id']}"
     print(f"  experiment: {exp_name}")
 
     # ---- Style packs: each format gets its own full presentation ----------

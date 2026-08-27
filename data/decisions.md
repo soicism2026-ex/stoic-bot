@@ -524,3 +524,54 @@ yet; keep both running.
 **bg_source is now logged in posts.csv** (13th column). The single most
 important production variable was invisible in the data and had to be
 inferred from commit dates. Never again.
+
+## 2026-08-25 — THE STORY ERA
+
+Owner: *"these stories dont make me feel anything I want these to be
+emotionally enticing to the viewer not just fun facts... real stories and real
+substance"* then *"I like these push them and try them out remove the less
+popular voice."*
+
+**15 hand-written true-story scripts ship from `data/stories.json`, ordered by
+(emotional power x leaves-him-better).** Nothing spoken is model-generated —
+`daily_post` does not call Claude at all on a story post. A model asked for a
+moving Stoic story invents a fluent, plausible, false one, and the channel's
+rule is that quotes are genuine public-domain text.
+
+**The craft rule that made the difference** (my first attempt at these failed):
+do NOT write heroism. "Great man overcomes great suffering" makes a man on a
+bad night feel SMALLER, which doctrine section 5 forbids. He is not failing to
+survive a POW camp, he is failing to answer a text. The stories that land are
+the ones where the great man was PATHETIC FIRST. **The mechanism is
+RECOGNITION, not ADMIRATION.** Admiration makes him feel small; recognition
+makes him feel found.
+
+**Permanently banned from the bank**, researched and killed on section-5
+grounds — do not re-propose:
+  * Cato's suicide at Utica (power 10, section-5 **2**) — death framed as
+    dignity is the most dangerous story in Stoicism for a man alone at 11:40pm
+  * Seneca's forced suicide — same failure
+  * Stockdale's torture years — every draft read as *look what he survived,
+    and you can't answer a text*
+  * Musonius on exile — "your problems are small", dressed as perspective
+A test asserts every story scores >= 7 on leaves-him-better, whatever its power.
+
+**Voice A/B CALLED — Steffan removed, Christopher is the only narrator.**
+Christopher led on every measure over the same days and slots (median day-3
+views 70 vs 44, mean 175 vs 89), though z = -1.52 is short of significance, so
+this is a judgement call on a consistent lead. The deciding argument is one the
+A/B could not measure: the channel has used EIGHT narrators across 222 posts,
+and the one thing surviving faceless channels share is a single unmistakable
+voice. Rotating narrators was destroying the asset it was measuring. **One
+voice, forever** — a test stops a second drifting back in.
+
+**Cadence cut 3/day -> 1/day.** Owner: *"we need to bring quality back."* Three
+near-identical uploads a day was also the worst possible exposure to YouTube's
+inauthentic-content test, which asks whether videos "feel interchangeable when
+a viewer watches several in a row from the same channel."
+
+Two quotes independently verified before shipping: the Serenus lines
+(De Tranquillitate Animi I, Stewart) and the Antoninus Pius line (Historia
+Augusta 10.5, Magie). The Historia Augusta is late and sometimes unreliable —
+that story must always be captioned "recorded in the Historia Augusta", never
+"Marcus wrote". Caveats live in the story records themselves.

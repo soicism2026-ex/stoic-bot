@@ -23,8 +23,21 @@ CHOSEN = {"Steffan", "Christopher"}
 REJECTED = {"Ryan", "Thomas", "Roger", "William", "Andrew", "BrianEdge", "Guy"}
 
 
-def test_pool_is_exactly_the_two_chosen_voices():
-    assert {v["name"] for v in tts.VOICE_POOL} == CHOSEN
+def test_the_channel_has_exactly_one_narrator():
+    """SUPERSEDED 2026-08-25: the A/B is called. Owner: "remove the less
+    popular voice."
+
+    Christopher beat Steffan on every measure across the same days and slots
+    (median day-3 views 70 vs 44, mean 175 vs 89; z = -1.52, a consistent lead
+    rather than a proven result). The deciding argument is one the A/B could
+    not measure: the channel has used EIGHT narrators across 222 posts, and
+    the one thing surviving faceless channels share is a single unmistakable
+    voice. Rotating narrators was destroying the asset it was measuring.
+
+    One voice, forever. This test exists to stop a second one drifting back
+    in without a deliberate decision."""
+    assert len(tts.VOICE_POOL) == 1, [v["name"] for v in tts.VOICE_POOL]
+    assert tts.VOICE_POOL[0]["name"] == "Christopher"
 
 
 def test_no_rejected_voice_is_in_the_pool():
@@ -37,22 +50,24 @@ def test_voice_ids_are_real_microsoft_names():
         assert v["id"].startswith("en-"), v["id"]
 
 
-def test_rotation_alternates_strictly():
-    """With two entries, blocking the most recent gives strict alternation —
-    which is what makes the comparison fair rather than lopsided."""
+def test_the_narrator_never_changes():
+    """SUPERSEDED 2026-08-25 — this asserted strict alternation between two
+    voices. The requirement is now the opposite: the viewer must hear the same
+    person every time. A picker that "rotates" a one-entry pool must return
+    that entry, not fall back to something else."""
     hist = []
     picks = []
     for _ in range(8):
         v = tts.pick_voice(hist)
         picks.append(v["name"])
         hist.append({"voice_name": v["name"], "video_id": f"v{len(hist)}"})
-    assert all(a != b for a, b in zip(picks, picks[1:])), picks
-    assert set(picks) == CHOSEN
+    assert set(picks) == {"Christopher"}, picks
 
 
-def test_rotation_alternates_on_the_real_history():
-    """Live posts.csv is heavily weighted toward Christopher; the new voice
-    must still get equal airtime rather than being starved by that history."""
+def test_the_real_history_does_not_resurrect_the_dropped_voice():
+    """SUPERSEDED 2026-08-25. posts.csv contains 24 Steffan posts; the
+    analytics-weighted picker must not be tempted back to a voice that is no
+    longer in the pool."""
     live = ROOT / "data" / "posts.csv"
     if not live.exists():
         pytest.skip("no posts.csv")
@@ -62,8 +77,7 @@ def test_rotation_alternates_on_the_real_history():
         v = tts.pick_voice(hist)
         picks.append(v["name"])
         hist.append({"voice_name": v["name"], "video_id": f"sim{i}"})
-    assert set(picks) == CHOSEN, picks
-    assert abs(picks.count("Steffan") - picks.count("Christopher")) <= 1
+    assert set(picks) == {"Christopher"}, picks
 
 
 def test_elevenlabs_is_silenced_so_the_ab_stays_clean():

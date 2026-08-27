@@ -104,13 +104,19 @@ jobs:
 
       - name: Run self-healing post pipeline
         env:
-          # Cadence is 3/day and scheduled runs must keep it: `inputs` is empty
-          # on a schedule, so this falls through to "3". A manual run can pass a
-          # higher number to force one extra post for review. Deliberately a
-          # STRING passed straight through — comparing an unset input against a
+          # Cadence is 1/day since 2026-08-25. Owner: "we need to bring
+          # quality back." Three near-identical uploads a day was also the
+          # worst possible exposure to YouTube's inauthentic-content test,
+          # which asks whether videos "feel interchangeable when a viewer
+          # watches several in a row from the same channel" — and it split a
+          # tiny audience across three impressions. One hand-written story a
+          # day is worth a week of "Stand unshaken."
+          # `inputs` is empty on a schedule, so this falls through to "1". A
+          # manual run can pass a higher number. Deliberately a STRING passed
+          # straight through — comparing an unset input against a
           # numeric-looking value is the null-casts-to-0 trap that silently
           # disabled the voice steps on 2026-08-07.
-          MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '3' }}
+          MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '1' }}
           # In-process Chatterbox is the primary voice. Defaults to on; set the
           # repo variable CHATTERBOX_LOCAL=0 to fall back to Replicate/edge-tts.
           CHATTERBOX_LOCAL: ${{ vars.CHATTERBOX_LOCAL || '0' }}

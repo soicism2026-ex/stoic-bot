@@ -50,6 +50,17 @@ import requests
 # compression) to close the gap with ElevenLabs. Goal: once analytics show a
 # tuned free voice matching paid Brian (852v / 93% retention), drop ElevenLabs.
 VOICE_POOL = [
+    # 2026-08-25 A/B CALLED. Owner: "remove the less popular voice."
+    # Christopher beat Steffan on every measure over the SAME days and slots,
+    # so this is not a date or time-of-day artifact:
+    #     median day-3 views   70 vs 44
+    #     mean                175 vs 89
+    # Mann-Whitney z = -1.52, short of significance, so this is a judgement
+    # call on a consistent lead rather than a proven result. It is also the
+    # right move for a second reason the A/B could not measure: the channel
+    # has used EIGHT different narrators across 222 posts, and the one thing
+    # surviving faceless channels share is a single unmistakable voice.
+    # Rotating narrators was destroying the asset it was trying to measure.
     # 2026-08-07 AUDITION RESULT. The owner listened to six candidates
     # (samples/voices/) and picked TWO: "I like Steffan and Christopher, the
     # rest not so much — you can cycle between those two and we can check back
@@ -66,7 +77,6 @@ VOICE_POOL = [
     #   BrianEdge (en-US-BrianNeural) 2026-07-16
     #   Chatterbox (stock voice)      2026-08-07
     #   Ryan / Thomas / Roger / William  2026-08-07 (audition, "not so much")
-    {"name": "Steffan", "id": "en-US-SteffanNeural", "rate": "-4%", "pitch": "-6Hz"},
     {"name": "Christopher", "id": "en-US-ChristopherNeural", "rate": "+0%", "pitch": "-8Hz"},
 ]
 
