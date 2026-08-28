@@ -190,3 +190,66 @@ def test_render_exposes_caps_and_wrap_as_settings():
     src = (ROOT / "src" / "render.py").read_text()
     assert "REEL_HOOK_CAPS" in src and "REEL_HOOK_WRAP" in src
     assert "hook.upper(), width=12" not in src, "caps/wrap hardcoded again"
+
+
+# ------------------------------------------------- the bank validator
+#
+# The bank is hand-edited JSON whose words publish verbatim, unreviewed by any
+# other stage. These tests check the checker, because a validator that cannot
+# fail is not a validator.
+
+sys.path.insert(0, str(ROOT / "scripts"))
+import validate_stories as vs  # noqa: E402
+
+
+def test_the_live_bank_is_valid():
+    assert vs.validate() == []
+
+
+def test_validator_catches_a_missing_citation(monkeypatch):
+    bad = [dict(stories.load()[0], id="x", citation="")]
+    monkeypatch.setattr(stories, "load", lambda: bad)
+    assert any("citation" in e for e in vs.validate())
+
+
+def test_validator_catches_a_story_that_would_make_him_smaller(monkeypatch):
+    bad = [dict(stories.load()[0], id="x", s5=3)]
+    monkeypatch.setattr(stories, "load", lambda: bad)
+    assert any("§5 floor" in e for e in vs.validate())
+
+
+def test_validator_catches_banned_material(monkeypatch):
+    bad = [dict(stories.load()[0], id="x",
+                story="He went to Utica and opened his veins.")]
+    monkeypatch.setattr(stories, "load", lambda: bad)
+    assert any("banned" in e for e in vs.validate())
+
+
+def test_validator_catches_a_duplicate_id(monkeypatch):
+    one = stories.load()[0]
+    monkeypatch.setattr(stories, "load", lambda: [one, dict(one)])
+    assert any("duplicate id" in e for e in vs.validate())
+
+
+def test_validator_catches_a_reused_quote(monkeypatch):
+    """Two stories paying off on the same line is a repeat the viewer feels."""
+    a, b = stories.load()[0], dict(stories.load()[1])
+    b["quote"] = a["quote"]
+    monkeypatch.setattr(stories, "load", lambda: [a, b])
+    assert any("already used" in e for e in vs.validate())
+
+
+def test_validator_catches_a_source_that_is_not_a_link(monkeypatch):
+    bad = [dict(stories.load()[0], id="x", source="somewhere in Seneca")]
+    monkeypatch.setattr(stories, "load", lambda: bad)
+    assert any("not a link" in e for e in vs.validate())
+
+
+def test_validator_runs_before_the_post_in_ci():
+    """A validator that runs after publishing validates nothing."""
+    import yaml
+    wf = yaml.safe_load((ROOT / ".github" / "workflows" / "daily-short.yml").read_text())
+    names = [s.get("name") for s in wf["jobs"]["post"]["steps"]
+             if isinstance(s, dict) and s.get("name")]
+    assert names.index("Validate story bank") < \
+        names.index("Run self-healing post pipeline")

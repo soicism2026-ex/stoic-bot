@@ -102,6 +102,13 @@ jobs:
           pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
           pip install -r requirements-voice.txt
 
+      # The story bank is hand-edited JSON and its words publish verbatim,
+      # unreviewed by any other stage. A typo in a citation is a misattributed
+      # quote, which is the one failure this channel has said it cannot
+      # survive. Runs BEFORE the post, and blocks it.
+      - name: Validate story bank
+        run: python scripts/validate_stories.py
+
       - name: Run self-healing post pipeline
         env:
           # Cadence is 1/day since 2026-08-25. Owner: "we need to bring

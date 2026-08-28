@@ -1,0 +1,116 @@
+#!/usr/bin/env python3
+"""
+Validate data/stories.json before it can reach the channel.
+
+The story bank is hand-edited JSON and it is the only part of this pipeline
+whose words are published verbatim, unreviewed by any other stage. A typo in a
+citation is a misattributed quote — the one failure this channel has said it
+cannot survive. So the bank is checked on every run and in CI.
+
+    python scripts/validate_stories.py          # exits 1 on any problem
+    python scripts/validate_stories.py --list   # also print the running order
+"""
+from __future__ import annotations
+
+import argparse
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "src"))
+
+import stories  # noqa: E402
+
+REQUIRED = ("id", "hook", "story", "lesson", "quote", "author", "theme",
+            "citation", "source", "tonight", "broll", "power", "s5")
+
+# Doctrine §5 floor. Cato's suicide scores 10 on power and 2 here; a story that
+# leaves a man on a bad night feeling smaller does not ship whatever its power.
+MIN_S5 = 7
+
+# Stories may use themes the GENERATED pipeline has retired. `friendship`,
+# `desire` and `adversity as training` were cut from content.THEMES for weak
+# view medians as aphorisms — but "a hand-written story about a friend" is a
+# different proposition from "a generated quote about friendship", and the
+# reason for the cut does not transfer.
+EXTRA_THEMES = {"friendship", "desire", "adversity as training", "time"}
+
+# Researched and killed on §5 grounds. Never re-propose.
+BANNED = ("cato", "utica", "opened his veins", "slit his wrists")
+
+MIN_WORDS, MAX_WORDS = 60, 140
+
+
+def validate() -> list[str]:
+    bank = stories.load()
+    errs: list[str] = []
+    if not bank:
+        return ["data/stories.json is empty or unreadable"]
+
+    try:
+        import content
+        valid_themes = set(content.THEMES) | EXTRA_THEMES
+    except Exception:  # noqa: BLE001
+        valid_themes = set()
+
+    seen_ids: set[str] = set()
+    seen_quotes: set[str] = set()
+    for s in bank:
+        sid = s.get("id", "<no id>")
+        for k in REQUIRED:
+            if k not in s or (isinstance(s[k], str) and not s[k].strip()):
+                errs.append(f"{sid}: missing {k}")
+        if sid in seen_ids:
+            errs.append(f"{sid}: duplicate id")
+        seen_ids.add(sid)
+
+        q = (s.get("quote") or "").strip().lower()
+        if q and q in seen_quotes:
+            errs.append(f"{sid}: quote already used by another story")
+        seen_quotes.add(q)
+
+        if s.get("s5", 0) < MIN_S5:
+            errs.append(f"{sid}: s5={s.get('s5')} below the §5 floor of {MIN_S5}")
+        if not str(s.get("source", "")).startswith("http"):
+            errs.append(f"{sid}: source is not a link")
+        if valid_themes and s.get("theme") not in valid_themes:
+            errs.append(f"{sid}: unknown theme {s.get('theme')!r}")
+
+        n = len((s.get("story", "") + " " + s.get("lesson", "")).split())
+        if not MIN_WORDS <= n <= MAX_WORDS:
+            errs.append(f"{sid}: narration {n} words (want {MIN_WORDS}-{MAX_WORDS})")
+
+        if len(s.get("broll") or []) < 3:
+            errs.append(f"{sid}: needs at least 3 b-roll scenes")
+
+        blob = " ".join(str(v) for v in s.values()).lower()
+        for b in BANNED:
+            if b in blob:
+                errs.append(f"{sid}: contains banned material {b!r}")
+    return errs
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--list", action="store_true", help="print the running order")
+    args = ap.parse_args()
+
+    bank = stories.load()
+    errs = validate()
+    print(f"=== story bank: {len(bank)} scripts ===")
+    if args.list:
+        for i, s in enumerate(sorted(bank, key=lambda x: -x.get("score", 0)), 1):
+            print(f"  {i:2d}. [{s.get('score', 0):3d}] {s['id']:<24} {s['hook'][:52]}")
+    if errs:
+        for e in errs:
+            print(f"  FAIL {e}", file=sys.stderr)
+        print(f"\n{len(errs)} problem(s) — not safe to publish", file=sys.stderr)
+        return 1
+    print(f"  all {len(bank)} valid — "
+          f"{len(bank)} days of posts at 1/day")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
