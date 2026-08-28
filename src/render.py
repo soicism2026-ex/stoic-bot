@@ -105,6 +105,13 @@ HOOK_HOLD = float(os.environ.get("REEL_HOOK_HOLD", "2.2"))      # seconds fully 
 # exactly when the voice stops — see the three-act note at the fade site.
 QUOTE_APPEAR = float(os.environ.get("REEL_QUOTE_APPEAR", "0"))
 HOOK_FONTSIZE = int(os.environ.get("REEL_HOOK_FONTSIZE", "94"))
+# ALL CAPS and a 12-char wrap were built for 4-word hooks. A 20-word story
+# hook wrapped that way renders as ELEVEN lines of shouting filling 63% of the
+# frame — the opposite of the confessional register the stories are written in,
+# and caps is grindset vocabulary in a channel trying to stop sounding like
+# that. Both are now per-format, set by the truestory style pack.
+HOOK_CAPS = os.environ.get("REEL_HOOK_CAPS", "1") not in ("0", "false", "False")
+HOOK_WRAP = int(os.environ.get("REEL_HOOK_WRAP", "12"))
 HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFB830")      # warm amber/gold
 
 # Extra darkening on top of the date-rotated grade. Set by the QA retry loop
@@ -1067,7 +1074,8 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         # stays inside the phone-fullscreen safe band. DejaVu Sans Bold averages
         # ~0.62em advance per char; without this, a 15-char hook at 94px rendered
         # wider than the visible area and got cropped on iPhones.
-        hook_lines = textwrap.wrap(hook.upper(), width=12) or [hook.upper()]
+        hook_text = hook.upper() if HOOK_CAPS else hook
+        hook_lines = textwrap.wrap(hook_text, width=HOOK_WRAP) or [hook_text]
         max_chars = max(len(l) for l in hook_lines)
         safe_w = W - 2 * SAFE_PX
         hook_fs = min(HOOK_FONTSIZE, int(safe_w / (0.62 * max_chars)))

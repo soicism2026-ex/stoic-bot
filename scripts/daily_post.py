@@ -452,6 +452,28 @@ def main():
         #   no atmosphere    — nothing drifting to look at
         #   no hook sound    — the silence has to be real
         #   heavy darkening  — it should read as a black screen with words
+        # TRUE STORIES (2026-08-25). These are confessional scripts about
+        # ordinary human failure, and every default in this pipeline was built
+        # for the opposite register:
+        #   caps off      — ALL CAPS is shouting, and shouting is the grindset
+        #                   vocabulary this channel is trying to stop speaking
+        #   wrap 30       — a 20-word hook at the 12-char default renders as
+        #                   ELEVEN lines filling 63% of the frame
+        #   fontsize 56   — auto-fit takes it down from there
+        #   no BRAAAM     — a trailer sting under "I'm not ill, and I'm not
+        #                   well" is a promise the script does not make
+        #   no statue     — the guide bookends open every video on a marble
+        #                   bust, the single most reproduced image in this
+        #                   niche. A story about a man lying awake at 2am
+        #                   should open on a bedroom, not on Rome.
+        "truestory": {
+            "REEL_HOOK_CAPS": "0",
+            "REEL_HOOK_WRAP": "30",
+            "REEL_HOOK_FONTSIZE": "56",
+            "REEL_HOOK_SOUND": "0",
+            "REEL_HOOK_COLOR": "0xF2F2F2",
+            "_no_guide": True,
+        },
         "question": {
             "REEL_CAPTIONS": "0",
             "REEL_MOTION": "0",
@@ -499,14 +521,19 @@ def main():
     guide = STATUE_GUIDE[(day if isinstance(day, int) else 0) % len(STATUE_GUIDE)]
     broll = [q.strip() for q in (content.get("broll_queries") or []) if q and q.strip()]
     scene = broll[:4] or ([FORMAT_BG_FLAVOR[fmt]] if FORMAT_BG_FLAVOR.get(fmt) else [])
-    flavors = ([guide] + scene + [guide]) if scene else [guide, guide]
+    # Formats that opt out of the statue bookends run on their own scenes only.
+    no_guide = bool(pack.pop("_no_guide", False))
+    if no_guide and scene:
+        flavors = list(scene)
+    else:
+        flavors = ([guide] + scene + [guide]) if scene else [guide, guide]
     pack["REEL_BG_CLIPS"] = str(len(flavors))
     for i, q in enumerate(flavors):
         pack[f"REEL_BG_FLAVOR{i if i else ''}"] = q
     # Tell backgrounds.py which slots ARE the guide, so a committed guide
     # library (assets/guide/) can serve them instead of stock search — same
     # character every day instead of a different bust. Harmless when empty.
-    pack["REEL_GUIDE_SLOTS"] = f"0,{len(flavors) - 1}"
+    pack["REEL_GUIDE_SLOTS"] = "" if no_guide else f"0,{len(flavors) - 1}"
 
     # Diegetic ambience replaces the music bed for this style (falls back to
     # the normal generative music if synthesis ever fails).

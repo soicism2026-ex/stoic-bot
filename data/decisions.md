@@ -575,3 +575,20 @@ Two quotes independently verified before shipping: the Serenus lines
 Augusta 10.5, Magie). The Historia Augusta is late and sometimes unreliable —
 that story must always be captioned "recorded in the Historia Augusta", never
 "Marcus wrote". Caveats live in the story records themselves.
+- **2026-08-25** F3 "the question" FORMAT TEST COMPLETE — and it FAILED on its
+  pre-registered terms. 5 posts: [51, 29, 24, 20, 16], median 24, against
+  same-day controls with median 44.5 and a best of 221. It lost to the format
+  it was testing against. `format_test.md` committed in advance to what a null
+  result means: *"no breakouts across four genuinely different formats. The
+  FORMAT was never the problem — positioning or niche is."* That verdict stands
+  and it is what the story pivot acts on. Do not build F1/F2/F4 as further
+  coats of paint on the same positioning.
+- **2026-08-25** Story presentation is its own style pack, because the pipeline
+  defaults were built for 4-word aphorisms and every one of them fights a
+  confessional script: ALL CAPS off (shouting is grindset vocabulary), hook
+  wrap 12 -> 30 (a 20-word hook at the old default rendered as ELEVEN lines
+  filling 63% of the frame), hook sound off (a BRAAAM under "I'm not ill, and
+  I'm not well" is a promise the script does not make), and NO STATUE BOOKENDS
+  — a story about a man lying awake at 2am opens on a bedroom, not on Rome.
+  `REEL_HOOK_CAPS` and `REEL_HOOK_WRAP` are now settings; a test fails if they
+  are hardcoded back.

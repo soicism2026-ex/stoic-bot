@@ -53,7 +53,12 @@ def test_only_built_formats_are_scheduled():
     """Tooling that claims an unbuilt arm is next is lying about what is
     running. Only F3 is built so far."""
     assert ft.BUILT <= set(ft.ORDER)
-    assert ft.next_format() in ft.BUILT
+    # None is correct once every BUILT format has run its posts — the
+    # programme is finished, not broken. It finished 2026-08-25: the_question
+    # scored [51,29,24,20,16] against same-day controls with a median of 44.5,
+    # so it lost to the format it was testing against.
+    nxt = ft.next_format()
+    assert nxt is None or nxt in ft.BUILT
 
 
 def test_rotation_interleaves_rather_than_blocks(tmp_path, monkeypatch):
@@ -82,7 +87,12 @@ def test_non_test_posts_are_ignored(tmp_path, monkeypatch):
     """Normal posts must not consume test slots or pollute the result."""
     _posts(tmp_path, monkeypatch, ["", "cold_open+gold", "ftest:the_question"])
     assert len(ft._test_rows()) == 1
-    assert ft.next_format() in ft.BUILT
+    # None is correct once every BUILT format has run its posts — the
+    # programme is finished, not broken. It finished 2026-08-25: the_question
+    # scored [51,29,24,20,16] against same-day controls with a median of 44.5,
+    # so it lost to the format it was testing against.
+    nxt = ft.next_format()
+    assert nxt is None or nxt in ft.BUILT
 
 
 # ------------------------------------------------------------ the bar itself

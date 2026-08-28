@@ -128,3 +128,65 @@ def test_missing_bank_does_not_crash_the_pipeline(monkeypatch, tmp_path):
     monkeypatch.setattr(stories, "STORIES", tmp_path / "nope.json")
     assert stories.load() == []
     assert stories.pick([]) is None
+
+
+# ------------------------------------------------- how a story RENDERS
+#
+# The scripts were approved on their words. But the pipeline they ship through
+# was built for 4-word aphorisms over marble statues, and every default in it
+# works against a confessional register. These tests exist because a story
+# rendered with the old presentation is just the old channel with new words.
+
+import textwrap  # noqa: E402
+
+
+def _pack():
+    """The truestory STYLE_PACK, read from daily_post rather than duplicated."""
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    i = src.index('"truestory": {')
+    j = src.index("}", i)
+    return src[i:j]
+
+
+def test_story_hooks_are_not_shouted():
+    """ALL CAPS is shouting, and shouting is the vocabulary this channel is
+    trying to stop speaking."""
+    assert '"REEL_HOOK_CAPS": "0"' in _pack()
+
+
+def test_story_hooks_do_not_fill_the_frame():
+    """At the 12-char default a 20-word hook wraps to ELEVEN lines covering
+    63% of the frame. Simulate the real wrap and auto-fit."""
+    wrap, base, safe_w, pad = 30, 56, 840, 18
+    for s in stories.load():
+        lines = textwrap.wrap(s["hook"], width=wrap) or [s["hook"]]
+        fs = min(base, int(safe_w / (0.62 * max(len(l) for l in lines))))
+        block = len(lines) * (fs + pad)
+        assert block < 0.30 * 1920, (
+            f"{s['id']}: hook block {block}px is "
+            f"{block / 1920:.0%} of the frame")
+
+
+def test_a_story_never_opens_on_a_marble_bust():
+    """The statue bookends open every video on the most reproduced image in
+    this niche. A story about a man lying awake at 2am opens on a bedroom."""
+    assert '"_no_guide": True' in _pack()
+
+
+def test_story_broll_describes_the_scene_not_ancient_rome():
+    """The first frame must read as a real room, not as a video."""
+    for s in stories.load():
+        assert len(s.get("broll", [])) >= 3, s["id"]
+
+
+def test_no_trailer_sting_over_a_confession():
+    """A BRAAAM under 'I'm not ill, and I'm not well' is a promise the script
+    does not make."""
+    assert '"REEL_HOOK_SOUND": "0"' in _pack()
+
+
+def test_render_exposes_caps_and_wrap_as_settings():
+    """If these are hardcoded again, the pack silently stops working."""
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "REEL_HOOK_CAPS" in src and "REEL_HOOK_WRAP" in src
+    assert "hook.upper(), width=12" not in src, "caps/wrap hardcoded again"
