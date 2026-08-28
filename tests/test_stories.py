@@ -54,9 +54,16 @@ def test_nothing_high_power_and_low_on_leaving_him_better():
 
 
 def test_the_forbidden_stories_are_absent():
-    blob = json.dumps(stories.load()).lower()
-    for banned in ("cato", "utica", "opened his veins", "slit his"):
-        assert banned not in blob, f"{banned!r} is in the bank"
+    """Checks PUBLISHED text only. A caveat legitimately names what to keep
+    out — relaxed_by_amusement's says Seneca's next example is Cato with wine,
+    cut it — and scanning caveats would force production notes to be vague
+    about exactly the material they exist to exclude."""
+    for s in stories.load():
+        published = " ".join(str(s.get(k, "")) for k in
+                             ("hook", "story", "lesson", "quote", "author",
+                              "tonight")).lower()
+        for banned in ("cato", "utica", "opened his veins", "slit his"):
+            assert banned not in published, f"{banned!r} in {s['id']}"
 
 
 def test_picks_the_highest_scoring_story_first():

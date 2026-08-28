@@ -83,10 +83,17 @@ def validate() -> list[str]:
         if len(s.get("broll") or []) < 3:
             errs.append(f"{sid}: needs at least 3 b-roll scenes")
 
-        blob = " ".join(str(v) for v in s.values()).lower()
+        # Scan only what actually PUBLISHES. A caveat legitimately names the
+        # thing to avoid — relaxed_by_amusement's says "Seneca's next example
+        # is Cato relaxing with wine: CUT IT" — and flagging that would force
+        # production notes to be vague about exactly the material they exist
+        # to keep out.
+        published = " ".join(str(s.get(k, "")) for k in
+                             ("hook", "story", "lesson", "quote", "author",
+                              "tonight", "caption")).lower()
         for b in BANNED:
-            if b in blob:
-                errs.append(f"{sid}: contains banned material {b!r}")
+            if b in published:
+                errs.append(f"{sid}: banned material {b!r} in published text")
     return errs
 
 

@@ -88,6 +88,116 @@
     "score": 90
   },
   {
+    "id": "every_second_day",
+    "power": 9,
+    "s5": 10,
+    "hook": "Epictetus gave his students a sentence to say out loud about their temper. It starts by assuming you lost it every single day.",
+    "story": "He taught that a habit lives on whatever you feed it, so the cure isn't a vow, it's a count. And the count goes: I used to be in passion every day; now every second day; then every third, then every fourth. Reach thirty clear days, he said, and make an offering, because by then it's dying.",
+    "lesson": "Look where he starts you. Not day one of a brand new man. Every day, then slightly less. He isn't asking you to stop losing your temper tonight, he's asking you to start counting. So the thing you said at four o'clock is day zero, not a relapse. Write today's date down.",
+    "quote": "I used to be in passion every day; now every second day; then every third, then every fourth.",
+    "author": "Epictetus",
+    "theme": "anger",
+    "citation": "Discourses II.18, trans. George Long",
+    "source": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.01.0236:text%3Ddisc:book%3D2:chapter%3D18",
+    "caveat": "This is the sentence Epictetus HANDS THE STUDENT to say, not a diary entry. Say 'he wrote it for you to say' - never 'Epictetus confessed'.",
+    "tonight": "Write today's date down. That's day one of the count.",
+    "broll": [
+      "a hand marking a wall calendar",
+      "a man sitting on a kitchen floor at night",
+      "phone face down on a table",
+      "steam on a bathroom mirror"
+    ],
+    "score": 90
+  },
+  {
+    "id": "the_thank_you_list",
+    "power": 9,
+    "s5": 10,
+    "hook": "The only thing Marcus Aurelius ever wrote was private, and he opened it with a list of what he owed other people. Nothing about himself.",
+    "story": "Book one of the Meditations is just names and debts. His grandfather, for his temper. His mother, for the way she lived. His teachers, one by one. And then this entry: from Rusticus I received the impression that my character required improvement and discipline. He is thanking, by name, the man who told him he wasn't good enough yet.",
+    "lesson": "The most powerful man alive, alone with a notebook, concluding that everything decent in him came from somebody else. You've got that list too. You're just not speaking to half of it. Tonight, name three people you owe. Then message the easiest one. No explanation, just: I was thinking about you.",
+    "quote": "From Rusticus I received the impression that my character required improvement and discipline.",
+    "author": "Marcus Aurelius",
+    "theme": "friendship",
+    "citation": "Meditations 1.7, trans. George Long",
+    "source": "https://classics.mit.edu/Antoninus/meditations.1.one.html",
+    "caveat": "",
+    "tonight": "Name three people you owe. Message the easiest one: \"I was thinking about you.\"",
+    "broll": [
+      "a hand writing a list in a notebook",
+      "a phone contacts screen at night",
+      "two men talking on a doorstep",
+      "old letters in a shoebox"
+    ],
+    "score": 90
+  },
+  {
+    "id": "sponge_and_egg",
+    "power": 9,
+    "s5": 10,
+    "hook": "Marcus Aurelius left himself instructions for the morning after he'd failed again. The instruction is not try harder.",
+    "story": "Book five. He tells himself not to be disgusted, nor discouraged, nor dissatisfied when he fails his own principles. When thou hast failed, return back again. Then the gentle part: don't come back to philosophy like a boy to a schoolmaster. Come back the way a man with sore eyes reaches for the sponge and the egg.",
+    "lesson": "Not a punishment. A compress. He wrote it that way because he knew he'd be back again and again. So the streak you broke isn't a verdict on you. The returning is the practice. Tonight, take the smallest version of the thing you quit and do it once. Badly counts.",
+    "quote": "When thou hast failed, return back again, and be content if the greater part of what thou doest is consistent with man's nature.",
+    "author": "Marcus Aurelius",
+    "theme": "discipline",
+    "citation": "Meditations 5.9, trans. George Long",
+    "source": "https://classics.mit.edu/Antoninus/meditations.5.five.html",
+    "caveat": "Same book as the_note (Meditations 5.1) - do not schedule in the same week.",
+    "tonight": "Do the smallest version of the thing you quit. Once. Badly.",
+    "broll": [
+      "unused running shoes by a door",
+      "a man doing one push-up on a bedroom floor",
+      "a crossed-out habit tracker",
+      "kitchen light on late at night"
+    ],
+    "score": 90
+  },
+  {
+    "id": "decide_in_your_own_favour",
+    "power": 9,
+    "s5": 10,
+    "hook": "A man was lying awake over something that hadn't happened yet. Seneca sent him a rule for it that takes about four seconds to use.",
+    "story": "Lucilius was braced for trouble that never arrived. Seneca broke it down: some things torment us more than they ought, some before they ought, and some when they ought not to torment us at all. What you run at midnight is nearly always the second one. Early.",
+    "lesson": "Then the rule: weigh carefully your hopes as well as your fears, and whenever all the elements are in doubt, decide in your own favour. That isn't lying to yourself. It's refusing to hand a tied vote to the worst case. Take the thing you keep replaying and say: I don't know yet, so I'm deciding in my favour. Then put the phone down.",
+    "quote": "Whenever all the elements are in doubt, decide in your own favour.",
+    "author": "Seneca",
+    "theme": "fear",
+    "citation": "Moral Letters 13, trans. Richard M. Gummere",
+    "source": "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_13",
+    "caveat": "The channel already used 'we suffer more in imagination than in reality' (2026-06-30). Keep that line off the card - this runs on 13.13 instead.",
+    "tonight": "Say: \"I don't know yet, so I'm deciding in my favour.\"",
+    "broll": [
+      "a man staring at a dark ceiling",
+      "phone screen at 1am, low brightness",
+      "an unopened envelope on a table",
+      "empty road seen from a bedroom window"
+    ],
+    "score": 90
+  },
+  {
+    "id": "no_wisdom_removes_it",
+    "power": 9,
+    "s5": 10,
+    "hook": "A young man went red in front of Seneca and was mortified about it. Seneca's verdict: no wisdom will ever fix that, so stop trying.",
+    "story": "The kid had real ability, but the colour came up from somewhere deep and he knew the room had seen. Seneca wrote about him with unusual gentleness. Wisdom can never remove this habit, he said. It comes or goes unbidden, and is a law unto itself. What is inborn can be toned down, but not overcome.",
+    "lesson": "Your body does what it does. The heat in your face, the hands, the voice going thin halfway through a sentence: none of it is character, and no discipline was ever going to delete it. The shame stacked on top is the only optional part. Put that down tonight. The blushing can stay.",
+    "quote": "By no wisdom can natural weaknesses of the body be removed.",
+    "author": "Seneca",
+    "theme": "fear",
+    "citation": "Moral Letters 11, trans. Richard M. Gummere",
+    "source": "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_11",
+    "caveat": "Never near unfinished (Letter 87) - both turn on Seneca and blushing.",
+    "tonight": "Put down the shame. The blushing can stay.",
+    "broll": [
+      "a man before a meeting in a stairwell",
+      "hands holding notes, shaking slightly",
+      "a face lit by a laptop screen",
+      "a man breathing out in a parked car"
+    ],
+    "score": 90
+  },
+  {
     "id": "the_note",
     "power": 9,
     "s5": 9,
@@ -154,6 +264,94 @@
     "score": 81
   },
   {
+    "id": "the_ass",
+    "power": 9,
+    "s5": 9,
+    "hook": "The man who took over the Stoic school after Zeno was nicknamed \"the Ass\" by the other students. He kept the name on purpose.",
+    "story": "Cleanthes was a boxer who came to Athens with four drachmas. To study under Zeno he hauled water in gardens all night, and he was so poor he wrote his notes on oyster shells. The other students called him the Ass. He kept it, and told them what it meant: he alone was strong enough to carry Zeno's load.",
+    "lesson": "He wasn't the quick one. He was the one who kept turning up, and when Zeno died he got the school. If you're the slowest man in the room, that's a position, not a verdict. Name the thing you're bad at and say it out loud: I'm still carrying it.",
+    "quote": "He did not mind being called the ass, telling them that he alone was strong enough to carry the load of Zeno.",
+    "author": "Diogenes Laertius",
+    "theme": "resilience",
+    "citation": "Lives of Eminent Philosophers VII.168, trans. R. D. Hicks",
+    "source": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0258%3Abook%3D7%3Achapter%3D5",
+    "caveat": "Compiled centuries later - say 'the story goes'. NEVER mention how Cleanthes died (he starved himself). Doctrine 5 violation; stays out of every version.",
+    "tonight": "Name the thing you're bad at. Say: \"I'm still carrying it.\"",
+    "broll": [
+      "a man carrying water containers at night",
+      "empty gym at closing time",
+      "a tired man on a night bus",
+      "notes written on scrap paper"
+    ],
+    "score": 81
+  },
+  {
+    "id": "off_the_boat",
+    "power": 9,
+    "s5": 9,
+    "hook": "Seneca got seasick on a short crossing, made the captain dump him on the rocks, then wrote it down and sent it to a friend.",
+    "story": "A short hop across the bay of Naples. The water turned, and he went the kind of green that doesn't clear. His own account: I laid down the law to my pilot, forcing him to make for the shore, willy-nilly. The coast was rock. He went over the side in his cloak and scrambled in over the stones.",
+    "lesson": "Then his real point. No man confesses what's wrong with him, he said, because he's still inside it. Saying it out loud is proof you're already surfacing. If you've been answering fine since about March, you don't need a plan tonight. You need one true sentence, said once, to one person.",
+    "quote": "Therefore I laid down the law to my pilot, forcing him to make for the shore, willy-nilly.",
+    "author": "Seneca",
+    "theme": "control vs acceptance",
+    "citation": "Moral Letters 53, trans. Richard M. Gummere",
+    "source": "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_53",
+    "caveat": "Never within two weeks of first_hit or serenus_not_ill - three sea stories close together reads as a gimmick.",
+    "tonight": "Say one true sentence to one person who knows you.",
+    "broll": [
+      "a man leaning on a harbour railing",
+      "grey choppy water from a small boat",
+      "a phone with an unsent message at night",
+      "wet stones on a shoreline at dusk"
+    ],
+    "score": 81
+  },
+  {
+    "id": "felicio",
+    "power": 9,
+    "s5": 9,
+    "hook": "Seneca revisited his childhood home and complained the trees looked old. Then the old man at the door turned out to be his playmate.",
+    "story": "He arrived in a mood: the stonework crumbling, the plane trees gnarled and bare. Then a worn-out old man at the door stood grinning at him, and Seneca asked who the decrepit man was. He said: I am Felicio. You used to bring me little images. My father was the steward here.",
+    "lesson": "Everything he looked at that day was old, and then the mirror walked up and smiled. He didn't spiral. He wrote that no one is so old that it would be improper for him to hope for another day. If the years got away from you, tonight isn't the audit. Put one thing in tomorrow. One.",
+    "quote": "No one is so old that it would be improper for him to hope for another day of existence.",
+    "author": "Seneca",
+    "theme": "mortality/memento mori",
+    "citation": "Moral Letters 12, trans. Richard M. Gummere",
+    "source": "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_12",
+    "caveat": "Felicio was enslaved in Seneca's household. Do not sanitise him into 'an old friend' and do not stop to explain Roman slavery - say 'a man from the household' and keep moving.",
+    "tonight": "Put one thing in tomorrow. One.",
+    "broll": [
+      "an old front door with peeling paint",
+      "a man looking up at a bare tree",
+      "a childhood photograph in a drawer",
+      "empty kitchen in an old family house"
+    ],
+    "score": 81
+  },
+  {
+    "id": "dyed_with_this_dye",
+    "power": 9,
+    "s5": 9,
+    "hook": "Marcus Aurelius wrote himself a warning that the job was turning him into someone he wouldn't like. He was the Emperor of Rome.",
+    "story": "Book six, one line, to nobody but himself: take care that thou art not made into a Caesar, that thou art not dyed with this dye; for such things happen. Dyed. Like cloth in a vat: slowly, evenly, no moment where it happens. Then he lists what to hold on to. Simple. Good. Serious. Kind.",
+    "lesson": "He could feel the job hardening him, and he wrote it down instead of pretending. If you've been getting shorter with people this year, colder than you were, that isn't your real character showing. That's the dye. Noticing is most of the defence. Name one person you've been sharp with. Tomorrow, be normal with them.",
+    "quote": "Take care that thou art not made into a Caesar, that thou art not dyed with this dye.",
+    "author": "Marcus Aurelius",
+    "theme": "ego",
+    "citation": "Meditations 6.30, trans. George Long",
+    "source": "https://classics.mit.edu/Antoninus/meditations.6.six.html",
+    "caveat": "",
+    "tonight": "Name one person you've been sharp with. Tomorrow, be normal with them.",
+    "broll": [
+      "ink spreading through water",
+      "a man's reflection in a dark office window",
+      "someone snapping a laptop shut",
+      "two people not speaking in a car"
+    ],
+    "score": 81
+  },
+  {
     "id": "first_hit",
     "power": 8,
     "s5": 10,
@@ -195,6 +393,28 @@
       "dark bedroom ceiling"
     ],
     "caveat": "",
+    "score": 80
+  },
+  {
+    "id": "relaxed_by_amusement",
+    "power": 8,
+    "s5": 10,
+    "hook": "Seneca's prescription for a man who'd gone flat wasn't discipline or a cold bath. It was: go and be a bit ridiculous for an hour.",
+    "story": "He wrote a book for a friend with no crisis, just nothing working. When he gets to the treatment, it isn't more effort. The mind must not be kept strained to the same pitch, he says; it ought sometimes to be relaxed by amusement. Socrates did not blush to play with little boys.",
+    "lesson": "A Stoic, writing a prescription for messing about. He didn't think rest was the reward for finishing; he thought it was part of the machine, and the mind comes back keener for it. So the guilt you feel doing nothing tonight isn't information. Do one pointless thing you used to enjoy, twenty minutes. Don't earn it first.",
+    "quote": "Neither ought we always to keep the mind strained to the same pitch, but it ought sometimes to be relaxed by amusement.",
+    "author": "Seneca",
+    "theme": "resilience",
+    "citation": "Of Peace of Mind XVII, trans. Aubrey Stewart",
+    "source": "https://en.wikisource.org/wiki/Of_Peace_of_Mind",
+    "caveat": "Same work as serenus_not_ill - not within two weeks. Seneca's next example is Cato relaxing with wine: CUT IT, the viewer may already be drinking more than he means to.",
+    "tonight": "Twenty minutes of something pointless you used to like. Don't earn it first.",
+    "broll": [
+      "a man playing a battered guitar at home",
+      "a football on grass at dusk",
+      "an old games console under a TV",
+      "a man walking a dog on a dark street"
+    ],
     "score": 80
   },
   {
@@ -240,6 +460,116 @@
     ],
     "caveat": "",
     "score": 72
+  },
+  {
+    "id": "end_of_the_couch",
+    "power": 8,
+    "s5": 9,
+    "hook": "The founder of Stoicism couldn't handle crowds. At dinner he sat at the end of the couch so only one person could get near him.",
+    "story": "Diogenes Laertius collected the small stuff: sour-faced, awkward in company, avoided a crowd with great care. Then this. He disliked to be brought too near to people, so that he would take the end seat of a couch, saving himself from one half of the inconvenience. He still went. He just sat where one man could reach him.",
+    "lesson": "The man who founded the whole philosophy of endurance found a room full of people exhausting. Being drained by company isn't coldness and it isn't a defect. So don't cancel Saturday. Go, take the seat at the end, and let yourself leave at ten. Turning up tired still counts.",
+    "quote": "He disliked, they say, to be brought too near to people, so that he would take the end seat of a couch.",
+    "author": "Diogenes Laertius",
+    "theme": "friendship",
+    "citation": "Lives of Eminent Philosophers VII.14, trans. R. D. Hicks",
+    "source": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0258%3Abook%3D7%3Achapter%3D1",
+    "caveat": "Gossip a compiler wrote down centuries later - say 'the story goes'. Never diagnose Zeno with anything modern.",
+    "tonight": "Don't cancel. Go, take the seat at the end, leave at ten.",
+    "broll": [
+      "a man alone at the edge of a busy bar",
+      "a full dinner table seen from the end",
+      "a coat by a front door at night",
+      "a man sitting in a car outside a house"
+    ],
+    "score": 72
+  },
+  {
+    "id": "before_breakfast",
+    "power": 8,
+    "s5": 9,
+    "hook": "Marcus Aurelius had to talk himself into being around people before he got out of bed. He wrote the script down so it was ready.",
+    "story": "Book two opens with it. Begin the morning by saying to thyself, I shall meet with the busybody, the ungrateful, arrogant, deceitful, envious, unsocial. He isn't being bitter, he's bracing. He names them in advance so that when one turns up at nine it's a forecast, not an ambush. Then: I can't hate them, we're built to work together.",
+    "lesson": "The Emperor of Rome needed a run-up to Monday morning. So the dread about tomorrow's room isn't softness, and here's the workaround: have the meeting now, in your head, where it's cheap. Say out loud who is going to be hard work tomorrow. Naming them takes the charge out.",
+    "quote": "Begin the morning by saying to thyself, I shall meet with the busybody, the ungrateful, arrogant, deceitful, envious, unsocial.",
+    "author": "Marcus Aurelius",
+    "theme": "duty/justice",
+    "citation": "Meditations 2.1, trans. George Long",
+    "source": "https://classics.mit.edu/Antoninus/meditations.2.two.html",
+    "caveat": "",
+    "tonight": "Say out loud who's going to be hard work tomorrow.",
+    "broll": [
+      "alarm clock glowing at 5am",
+      "a man sitting on the edge of a bed",
+      "office lift doors opening",
+      "commuters on a platform in the dark"
+    ],
+    "score": 72
+  },
+  {
+    "id": "why_i_am_poor",
+    "power": 8,
+    "s5": 9,
+    "hook": "Seneca wrote the most quoted line there is about wasting time, and in the same letter admitted he was still wasting his.",
+    "story": "Letter one. He tells Lucilius that while we are postponing, life speeds by. Then he opens his own books: I cannot boast that I waste nothing, but I can at least tell you what I am wasting. I can give you the reasons why I am a poor man.",
+    "lesson": "He never claimed to have fixed it. He claimed to know where the leak was, which is a smaller ask than becoming a disciplined man, and it's the only part that ever works. So don't build a system tonight. Name the one hour you lose every day and where it goes. You're allowed to lose it again tomorrow.",
+    "quote": "While we are postponing, life speeds by.",
+    "author": "Seneca",
+    "theme": "time",
+    "citation": "Moral Letters 1, trans. Richard M. Gummere",
+    "source": "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_1",
+    "caveat": "Absolution first. If something must be cut for time, cut the hook, never the 'poor man' confession - without it this becomes a lecture.",
+    "tonight": "Name the one hour you lose every day and where it goes.",
+    "broll": [
+      "a man scrolling in bed in the dark",
+      "clock hands moving on a wall",
+      "an empty desk with a cold coffee",
+      "streetlights through a window at 1am"
+    ],
+    "score": 72
+  },
+  {
+    "id": "know_nothing",
+    "power": 8,
+    "s5": 9,
+    "hook": "Epictetus told beginners the actual price of getting good at anything: for a while, you have to be willing to look stupid.",
+    "story": "Rule thirteen of his handbook is blunt. If you would improve, submit to be considered without sense and foolish. Wish to be considered to know nothing. And if people start treating you as important, he says, distrust yourself. He's talking to men at the start of something, in a room of people already good at it.",
+    "lesson": "Nobody skips the stretch where they're the worst one there. What makes men quit isn't difficulty, it's being watched while they're bad. He says out loud that looking stupid is the entrance fee, not proof you don't belong. Tonight, book the thing you're bad at. Be the worst man in the room on Thursday.",
+    "quote": "If you would improve, submit to be considered without sense and foolish.",
+    "author": "Epictetus",
+    "theme": "ego",
+    "citation": "Enchiridion 13, trans. George Long",
+    "source": "http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0236%3Atext%3Denc%3Achapter%3D13",
+    "caveat": "Long's wording is archaic - read it as written, never paraphrase into a modern-sounding 'quote'. Other translations say 'foolish and stupid'; that is NOT Long and must not carry his name.",
+    "tonight": "Book the thing you're bad at. Be the worst one there on Thursday.",
+    "broll": [
+      "a beginner in the corner of a gym",
+      "a man watching a class from the doorway",
+      "hands fumbling with new equipment",
+      "an empty studio with the lights on"
+    ],
+    "score": 72
+  },
+  {
+    "id": "the_fifth_hour",
+    "power": 8,
+    "s5": 8,
+    "hook": "A Roman senator was being tried in his absence. When the news reached him, he checked the time and went to take his exercise.",
+    "story": "Agrippinus wasn't in the room and couldn't affect it. Word came: the Senate was hearing his case. He said he hoped it went well, noticed it was the fifth hour, his time for exercise and a cold bath, and went. He came back, and they told him: condemned to banishment. He said: let us go to Aricia then, and dine.",
+    "lesson": "That isn't nerve. It's a rule made in advance for what he does while others decide. If you're waiting on a reply that isn't coming until Monday, the waiting doesn't move it and it costs you the evening. Do the ordinary next thing on your list. Then eat.",
+    "quote": "Let us go to Aricia then, and dine.",
+    "author": "Agrippinus, quoted by Epictetus",
+    "theme": "control vs acceptance",
+    "citation": "Discourses I.1, trans. George Long",
+    "source": "https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.01.0236:text%3Ddisc:book%3D1:chapter%3D1",
+    "caveat": "End the script at dinner. Nothing about his end, and never frame the exile itself as the inspiring part.",
+    "tonight": "Do the ordinary next thing on your list. Then eat.",
+    "broll": [
+      "a man tying running shoes in a hallway",
+      "clock on a kitchen wall",
+      "phone lighting up on a desk, ignored",
+      "a plate of food under a kitchen light"
+    ],
+    "score": 64
   },
   {
     "id": "laughed_out",

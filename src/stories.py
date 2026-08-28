@@ -37,7 +37,16 @@ STORIES = ROOT / "data" / "stories.json"
 # Two stories that must never run close together (same person, and the second
 # reveals his death).
 APART: dict[str, tuple[str, int]] = {
+    # failure_column reveals Serenus's death; the opener must land clean.
     "failure_column": ("serenus_not_ill", 14),
+    # Three sea stories close together reads as a gimmick, not a theme.
+    "off_the_boat": ("first_hit", 10),
+    # Both turn on Seneca going red in public.
+    "no_wisdom_removes_it": ("unfinished", 10),
+    # Same work as the opener (De Tranquillitate Animi).
+    "relaxed_by_amusement": ("serenus_not_ill", 10),
+    # Both are Meditations Book 5.
+    "sponge_and_egg": ("the_note", 7),
 }
 
 

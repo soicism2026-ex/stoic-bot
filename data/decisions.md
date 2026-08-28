@@ -592,3 +592,31 @@ that story must always be captioned "recorded in the Historia Augusta", never
   — a story about a man lying awake at 2am opens on a bedroom, not on Rome.
   `REEL_HOOK_CAPS` and `REEL_HOOK_WRAP` are now settings; a test fails if they
   are hardcoded back.
+- **2026-08-25** Story bank volume two: **30 scripts, 30 days at 1/day.** Same
+  craft rule — pathetic first, recognition not admiration. Three quotes spot-
+  verified by me before merging (Marcus 6.30 "dyed with this dye"; Seneca L13
+  "decide in your own favour"; Cleanthes "the ass" D.L. VII.168). One
+  correction made: the narration paraphrased Gummere as "weigh your hopes as
+  carefully as your fears" — his actual wording is "weigh carefully your hopes
+  as well as your fears", and that line is presented as Seneca's rule, so it
+  was fixed rather than left as a near-quote.
+- **2026-08-25** Scheduling conflicts are ENFORCED in `stories.APART`, not left
+  in prose: three sea stories close together reads as a gimmick; two Seneca
+  blushing stories collide; `relaxed_by_amusement` shares a work with the
+  opener; `sponge_and_egg` shares Meditations Book 5 with `the_note`. A test
+  proves all 30 are still reachable — a spacing rule that starves a story is
+  the failure mode.
+- **2026-08-25** The banned-material scan reads PUBLISHED fields only. It first
+  flagged `relaxed_by_amusement`, whose caveat says *"Seneca's next example is
+  Cato relaxing with wine: CUT IT"* — an instruction to exclude. Scanning
+  caveats would force production notes to be vague about exactly the material
+  they exist to keep out.
+- **2026-08-25 — OWNER DECISION NEEDED, deliberately NOT in the bank.** Seneca,
+  Moral Letters 78.2 (Gummere): during a long illness in his twenties he
+  "often entertained the impulse of ending my life then and there; but the
+  thought of my kind old father kept me back... And so I commanded myself to
+  live. For sometimes it is an act of bravery even to live." It resolves toward
+  living and toward a person, which is exactly what §5 asks, and it may be the
+  strongest recognition line in the corpus. It is also the one story that must
+  never be posted by an unattended cron: it needs a support resource in the
+  description and pinned comment, and a human sign-off. Not the pipeline's call.
