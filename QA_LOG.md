@@ -2732,3 +2732,17 @@ for any recurring defects.
 - Add a subtle zoom, color pulse, or cut on the candle background between hook frames to inject movement and improve perceived pacing
 **Flagged dims:** text_legibility
 
+
+## Visual QA — 2026-08-29 02:08 UTC
+**File:** `2026-08-29_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Epictetus had one rule for the person you've stopped speaking to. It's about which end you pick it up by.
+**Scores:** hook_strength=7.5 | text_legibility=6.0 | pacing=5.5 | scroll_stop_potential=5.0
+**Reasoning:** The hook text is intriguing — it opens a curiosity gap by referencing a specific rule from Epictetus about someone you've stopped speaking to, which pulls the reader toward resolution (7.5). However, the hook window frames are murky and near-black with barely-discernible motocross imagery that has no clear connection to the anger theme, weakening scroll-stop potential (5.0). Text legibility suffers in the hook frames: the white bold text sits over very dark, low-contrast footage and is quite long (four lines), taxing readability at phone size, though the body quote card on the deep blue background is clean and readable (6.0 overall). Pacing feels sluggish — the first four frames are essentially the same static overlay over dim, indistinct footage, giving little sense of visual rhythm before the star-field body scene appears (5.5).
+**Issues:**
+- Hook frames are extremely dark and murky; the motocross visuals are barely visible and thematically disconnected from anger
+- Hook text is long (4 lines) and low-contrast over dark footage, slowing readability in the critical first 1.5s
+**Suggestions:**
+- Brighten/color-grade the opening footage or add a subtle dark gradient behind text to boost contrast, and choose visuals that visually echo the anger/conflict theme
+- Shorten and stagger the hook text — reveal 'Epictetus had one rule...' first, then the payoff line — to create movement and reduce cognitive load in the hook window
+**Flagged dims:** text_legibility, scroll_stop_potential
+
