@@ -35,8 +35,20 @@ MIN_S5 = 7
 # reason for the cut does not transfer.
 EXTRA_THEMES = {"friendship", "desire", "adversity as training", "time"}
 
-# Researched and killed on §5 grounds. Never re-propose.
-BANNED = ("cato", "utica", "opened his veins", "slit his wrists")
+# HARD BAN. Owner, 2026-08-25: "dont use any stories about suicide they are
+# restricted on youtube." Suicide and self-harm are advertiser-restricted
+# regardless of framing, so this is a monetisation risk on top of the §5
+# objection — a channel chasing YPP cannot spend videos on it. Not a judgement
+# call, not re-proposable, and enforced here rather than in a doc.
+# Stems, not exact phrases: "end his life" would miss "ending his life",
+# which is precisely the wording that slipped past the first version.
+BANNED = (
+    "cato", "utica", "opened his veins", "slit his wrist",
+    "suicid", "kill himself", "kill myself", "killing himself",
+    "took his own life", "taking his own life", "take his own life",
+    "end his life", "ending his life", "end my life",
+    "ending my life", "self-harm", "self harm", "took his life",
+)
 
 MIN_WORDS, MAX_WORDS = 60, 140
 

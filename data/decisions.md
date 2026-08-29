@@ -611,12 +611,10 @@ that story must always be captioned "recorded in the Historia Augusta", never
   Cato relaxing with wine: CUT IT"* — an instruction to exclude. Scanning
   caveats would force production notes to be vague about exactly the material
   they exist to keep out.
-- **2026-08-25 — OWNER DECISION NEEDED, deliberately NOT in the bank.** Seneca,
-  Moral Letters 78.2 (Gummere): during a long illness in his twenties he
-  "often entertained the impulse of ending my life then and there; but the
-  thought of my kind old father kept me back... And so I commanded myself to
-  live. For sometimes it is an act of bravery even to live." It resolves toward
-  living and toward a person, which is exactly what §5 asks, and it may be the
-  strongest recognition line in the corpus. It is also the one story that must
-  never be posted by an unattended cron: it needs a support resource in the
-  description and pinned comment, and a human sign-off. Not the pipeline's call.
+- **2026-08-25 — HARD BAN: no suicide or self-harm stories, ever.** Owner:
+  *"dont use any stories about suicide they are restricted on youtube you
+  should know that."* Correct — the topic is advertiser-restricted regardless
+  of framing, so it is a monetisation risk on top of the §5 objection. I had
+  flagged Seneca Letter 78 for a decision; that was wrong to surface at all.
+  Enforced in `validate_stories.BANNED`, which blocks the post. Never
+  re-propose, including "carefully handled" versions.

@@ -62,7 +62,8 @@ def test_the_forbidden_stories_are_absent():
         published = " ".join(str(s.get(k, "")) for k in
                              ("hook", "story", "lesson", "quote", "author",
                               "tonight")).lower()
-        for banned in ("cato", "utica", "opened his veins", "slit his"):
+        for banned in ("cato", "utica", "opened his veins", "slit his",
+                       "suicide", "kill himself", "end his life"):
             assert banned not in published, f"{banned!r} in {s['id']}"
 
 
@@ -260,3 +261,22 @@ def test_validator_runs_before_the_post_in_ci():
              if isinstance(s, dict) and s.get("name")]
     assert names.index("Validate story bank") < \
         names.index("Run self-healing post pipeline")
+
+
+def test_suicide_is_banned_in_code_not_just_in_a_doc():
+    """Owner 2026-08-25: restricted on YouTube. Advertiser-restricted whatever
+    the framing, so it is a monetisation risk on top of the doctrine objection.
+    Not re-proposable, including 'carefully handled' versions."""
+    import validate_stories as vs
+    # Stems, so that "ending his life" is caught by "suicid"-style prefixes
+    # rather than needing every inflection listed.
+    for term in ("suicid", "kill himself", "ending his life", "self-harm"):
+        assert term in vs.BANNED, term
+
+
+def test_the_validator_blocks_a_suicide_story(monkeypatch):
+    bad = [dict(stories.load()[0], id="x",
+                story="He often thought about ending his life that winter.")]
+    monkeypatch.setattr(stories, "load", lambda: bad)
+    import validate_stories as vs
+    assert any("banned" in e for e in vs.validate())
