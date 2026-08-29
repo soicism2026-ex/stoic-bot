@@ -466,12 +466,23 @@ def main():
         #                   bust, the single most reproduced image in this
         #                   niche. A story about a man lying awake at 2am
         #                   should open on a bedroom, not on Rome.
+        # Measured on two REAL published videos pulled down and looked at
+        # (2026-08-25): mean luminance was 21.5% on a normal post and 12.8%
+        # on an F3 post, dropping to 10% mid-video — a black rectangle on a
+        # phone at low brightness, which is where this viewer is. The gold
+        # corner brackets plus gold Impact-style caps over an AI statue is
+        # also, frame for frame, the house style of the category YouTube is
+        # demoting. Both go for stories.
         "truestory": {
             "REEL_HOOK_CAPS": "0",
             "REEL_HOOK_WRAP": "30",
             "REEL_HOOK_FONTSIZE": "56",
             "REEL_HOOK_SOUND": "0",
             "REEL_HOOK_COLOR": "0xF2F2F2",
+            "REEL_FRAME": "0",          # no gold corner brackets
+            "REEL_CINEMATIC": "0",      # no teal-orange grade or halation
+            "REEL_EXTRA_DARKEN": "0",
+            "REEL_BRIGHTNESS": "-0.06", # was -0.25; keep mood, stay visible
             "_no_guide": True,
         },
         "question": {

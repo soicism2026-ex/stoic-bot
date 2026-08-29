@@ -280,3 +280,26 @@ def test_the_validator_blocks_a_suicide_story(monkeypatch):
     monkeypatch.setattr(stories, "load", lambda: bad)
     import validate_stories as vs
     assert any("banned" in e for e in vs.validate())
+
+
+def test_stories_are_bright_enough_to_see_on_a_phone():
+    """Measured on real published videos (2026-08-25): mean luminance 21.5%
+    on a normal post, 12.8% on an F3 post, 10% mid-video. That is a black
+    rectangle at low phone brightness, which is where this viewer is."""
+    pack = _pack()
+    assert '"REEL_BRIGHTNESS": "-0.06"' in pack
+    assert '"REEL_EXTRA_DARKEN": "0"' in pack
+
+
+def test_stories_drop_the_template_furniture():
+    """Gold corner brackets + gold caps over a statue is, frame for frame,
+    the house style of the category being demoted."""
+    pack = _pack()
+    assert '"REEL_FRAME": "0"' in pack
+    assert '"REEL_CINEMATIC": "0"' in pack
+
+
+def test_brightness_is_a_setting_not_a_constant():
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "REEL_BRIGHTNESS" in src
+    assert "eq=brightness=-0.25" not in src, "grade hardcoded again"

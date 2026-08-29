@@ -117,6 +117,10 @@ HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFB830")      # warm amber/gol
 # Extra darkening on top of the date-rotated grade. Set by the QA retry loop
 # (scripts/daily_post.py) when a render fails on text contrast.
 EXTRA_DARKEN = float(os.environ.get("REEL_EXTRA_DARKEN", "0"))
+# Base grade brightness. -0.25 measured out at 12.8-21.5% mean luminance on
+# real published videos, which reads as a black rectangle on a phone. Kept as
+# the default so nothing else changes silently; the truestory pack lifts it.
+BRIGHTNESS = float(os.environ.get("REEL_BRIGHTNESS", "-0.25"))
 
 # Brightness added back when backgrounds are AI-GENERATED rather than stock.
 # The _GRADES table darkens by 0.15-0.25 because stock footage is bright and
@@ -681,7 +685,7 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
         vf_parts += [ENH_SHARPEN, "curves=preset=increase_contrast"]
     vf_parts += [
         # Heavily darken so footage becomes pure atmosphere, not a recognisable scene.
-        "eq=brightness=-0.25:saturation=0.65:contrast=1.25",
+        f"eq=brightness={BRIGHTNESS}:saturation=0.65:contrast=1.25",
         "vignette=PI/2.8:eval=init",
         # Second pass: dark gradient-like overlay — heavier at top/bottom, lighter
         # in the centre. Two semi-transparent boxes approximate a vertical gradient.
