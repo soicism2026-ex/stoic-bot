@@ -303,3 +303,22 @@ def test_brightness_is_a_setting_not_a_constant():
     src = (ROOT / "src" / "render.py").read_text()
     assert "REEL_BRIGHTNESS" in src
     assert "eq=brightness=-0.25" not in src, "grade hardcoded again"
+
+
+def test_no_shot_list_is_interchangeable_between_stories():
+    """Doctrine 6: if a clip could illustrate any of the thirty scripts, it is
+    illustrating none of them. Generic mood queries are the failure."""
+    banned = {"a dark bedroom", "moody dark room", "sad man", "cinematic",
+              "dramatic", "ancient rome", "marble bust", "greek statue"}
+    for s in stories.load():
+        for shot in s["broll"]:
+            low = shot.lower()
+            for b in banned:
+                assert b not in low, f"{s['id']}: generic/statue shot {shot!r}"
+
+
+def test_shot_lists_are_specific_enough_to_be_shots():
+    """A shot has a subject and something happening. Three words is a mood."""
+    for s in stories.load():
+        for shot in s["broll"]:
+            assert len(shot.split()) >= 4, f"{s['id']}: {shot!r} is a mood, not a shot"

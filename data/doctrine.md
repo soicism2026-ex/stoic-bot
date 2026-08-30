@@ -84,3 +84,36 @@ does, and this channel does not do it.
 closer, contempt for people who are struggling, anything that treats needing
 help as weakness. These get engagement and they hurt people. Not on this
 channel.
+
+
+## 6. Direct the picture. It is not wallpaper.
+
+_Owner, 2026-08-25: "they're not creative enough... content that's just being
+generated and has no substance for a human to even remotely feel attached to,
+so they just scroll away. Think like a creative director."_
+
+Proven by watching two real published videos: a melted AI marble bust while a
+voice asks "who did you snap at?". The image and the words had no relationship
+at all. That is wallpaper, and wallpaper is what people scroll past.
+
+**Shot 1 must pose a question the picture cannot answer.** The script answers
+it. A statue announces "philosophy video" in 200ms and the thumb moves. Calm
+grey sea under the line "I'm not ill, and I'm not well" makes a viewer wait
+three seconds to find out why the sea.
+
+**Follow the script's OWN image, not its mood.** Serenus said sea-sickness
+without a storm — so the shot is a swell with no storm, a glass of water
+trembling, a rocking chair still moving in an empty room. Not "a sad man in a
+dark bedroom", which is the mood and means nothing.
+
+**Never show what the voice is saying.** If the narration says he lay awake
+and the picture is a man lying awake, the viewer receives one idea twice and
+learns nothing in the gap. Text and image should meet, not repeat.
+
+**Specific beats atmospheric.** "A full glass of water trembling on a table"
+is a shot. "A moody dark room" is a search query. If a clip could illustrate
+any of the thirty scripts, it is illustrating none of them.
+
+**The frame must be visible.** Measured on real output: 12.8-21.5% mean
+luminance, which reads as a black rectangle at the phone brightness this
+viewer uses at midnight. Mood is not the same as darkness.

@@ -13,10 +13,10 @@
     "source": "https://en.wikisource.org/wiki/Of_Peace_of_Mind",
     "tonight": "Text one person: \"I'm not bad, I'm just off.\"",
     "broll": [
-      "a man lying awake in a dark bedroom",
-      "a phone screen glowing at night",
-      "calm open sea from a boat deck",
-      "a hand holding a phone, unsent message"
+      "calm grey open sea, gentle swell, no storm, overcast",
+      "empty rocking chair moving slightly in a still room",
+      "a full glass of water trembling on a table",
+      "a man sitting on the end of a bed, not moving, lamp on"
     ],
     "caveat": "",
     "score": 100
@@ -36,10 +36,10 @@
     "caveat": "The Historia Augusta is a late and sometimes unreliable source. Say 'recorded in the Historia Augusta', never 'Marcus wrote'.",
     "tonight": "Stop swallowing the thing in your throat.",
     "broll": [
-      "marble hall in low light",
-      "a young man alone turning away",
-      "rain on a stone step at dusk",
-      "candle burning low in a dark room"
+      "a grown man's face turned away, jaw tight, holding it in",
+      "hands gripping the edge of a stone table, knuckles pale",
+      "a door closing quietly on a lit room",
+      "candle flame steadying after being disturbed"
     ],
     "score": 100
   },
@@ -57,10 +57,10 @@
     "source": "http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0237%3Atext%3Denc%3Achapter%3D43",
     "tonight": "Send four words: \"Been meaning to reply.\"",
     "broll": [
-      "two hands lifting a heavy clay jar",
-      "an unanswered message on a phone",
-      "two brothers walking apart on a street",
-      "a doorway left open at night"
+      "a heavy clay jar with two handles, one broken off",
+      "a phone screen showing a long unanswered thread",
+      "two chairs at a kitchen table, one pushed back",
+      "a hand reaching for a door handle and stopping"
     ],
     "caveat": "",
     "score": 90
@@ -80,10 +80,10 @@
     "caveat": "Epictetus does argue the man was wrong. Do NOT include that beat - the script sails on 'he loved her, he was overwhelmed'.",
     "tonight": "Go back into the room you walked out of.",
     "broll": [
-      "empty hospital corridor at night",
-      "a father sitting in a parked car",
-      "a child's bedroom door ajar",
-      "dawn light through a kitchen window"
+      "a hospital corridor seen from a doorway, no one in it",
+      "a man sitting in a parked car outside a lit house",
+      "a child's night light glowing in an empty room",
+      "morning light on an unmade bed"
     ],
     "score": 90
   },
@@ -102,10 +102,10 @@
     "caveat": "This is the sentence Epictetus HANDS THE STUDENT to say, not a diary entry. Say 'he wrote it for you to say' - never 'Epictetus confessed'.",
     "tonight": "Write today's date down. That's day one of the count.",
     "broll": [
-      "a hand marking a wall calendar",
-      "a man sitting on a kitchen floor at night",
-      "phone face down on a table",
-      "steam on a bathroom mirror"
+      "a wall calendar with days crossed off, one gap",
+      "a fist unclenching slowly",
+      "a phone face down on a kitchen counter",
+      "a hand marking today's date"
     ],
     "score": 90
   },
@@ -124,10 +124,10 @@
     "caveat": "",
     "tonight": "Name three people you owe. Message the easiest one: \"I was thinking about you.\"",
     "broll": [
-      "a hand writing a list in a notebook",
-      "a phone contacts screen at night",
-      "two men talking on a doorstep",
-      "old letters in a shoebox"
+      "a hand writing a list of names",
+      "a phone contact list scrolling slowly",
+      "two men talking on a doorstep in the cold",
+      "a bundle of old letters tied with string"
     ],
     "score": 90
   },
@@ -146,10 +146,10 @@
     "caveat": "Same book as the_note (Meditations 5.1) - do not schedule in the same week.",
     "tonight": "Do the smallest version of the thing you quit. Once. Badly.",
     "broll": [
-      "unused running shoes by a door",
-      "a man doing one push-up on a bedroom floor",
-      "a crossed-out habit tracker",
-      "kitchen light on late at night"
+      "running shoes by a door, unused, dust on them",
+      "a crossed-out habit tracker on a fridge",
+      "one push-up on a bedroom floor at night",
+      "a kitchen light going on very late"
     ],
     "score": 90
   },
@@ -168,10 +168,10 @@
     "caveat": "The channel already used 'we suffer more in imagination than in reality' (2026-06-30). Keep that line off the card - this runs on 13.13 instead.",
     "tonight": "Say: \"I don't know yet, so I'm deciding in my favour.\"",
     "broll": [
-      "a man staring at a dark ceiling",
-      "phone screen at 1am, low brightness",
-      "an unopened envelope on a table",
-      "empty road seen from a bedroom window"
+      "a dark ceiling above a bed, hours passing",
+      "an unopened envelope on a hall table",
+      "a phone screen at 1am, brightness low",
+      "an empty road seen from a bedroom window"
     ],
     "score": 90
   },
@@ -190,10 +190,10 @@
     "caveat": "Never near unfinished (Letter 87) - both turn on Seneca and blushing.",
     "tonight": "Put down the shame. The blushing can stay.",
     "broll": [
-      "a man before a meeting in a stairwell",
-      "hands holding notes, shaking slightly",
-      "a face lit by a laptop screen",
-      "a man breathing out in a parked car"
+      "a man breathing out in a stairwell before a door",
+      "hands holding paper, shaking very slightly",
+      "a face lit by a laptop, colour rising",
+      "a man exhaling in a parked car afterwards"
     ],
     "score": 90
   },
@@ -211,10 +211,10 @@
     "source": "https://classics.mit.edu/Antoninus/meditations.5.five.html",
     "tonight": "Write one line for tomorrow morning. Then sleep.",
     "broll": [
-      "unmade bed in grey morning light",
-      "a hand writing in a worn notebook",
-      "oil lamp on a desk before dawn",
-      "a man sitting on the edge of a bed"
+      "a handwritten note left on a bedside table",
+      "grey dawn through a gap in curtains",
+      "an unmade bed, the shape of someone still in it",
+      "bare feet stopping on a cold floor"
     ],
     "caveat": "",
     "score": 81
@@ -233,10 +233,10 @@
     "source": "https://classics.mit.edu/Antoninus/meditations.8.eight.html",
     "tonight": "Say the name of the man you didn't become. Then say \"I'm not him.\"",
     "broll": [
-      "a man looking at his reflection in a dark window",
-      "an old photograph face down",
-      "empty office at night",
-      "long road at dusk"
+      "a man looking at his own reflection in a black window",
+      "a framed photograph turned face down",
+      "an empty office at night, one lamp on",
+      "a long straight road at dusk, no traffic"
     ],
     "caveat": "",
     "score": 81
@@ -256,10 +256,10 @@
     "caveat": "Never schedule within two weeks of serenus_not_ill - same Serenus, and this reveals his death.",
     "tonight": "Say the name out loud. Just the name.",
     "broll": [
-      "empty chair by a window",
-      "rain on a dark street",
-      "a man alone at a table",
-      "candle going out"
+      "an empty chair by a rain-streaked window",
+      "a name written on paper, hand still resting on it",
+      "a table set for two with one place untouched",
+      "a candle burning down to nothing"
     ],
     "score": 81
   },
@@ -278,10 +278,10 @@
     "caveat": "Compiled centuries later - say 'the story goes'. NEVER mention how Cleanthes died (he starved himself). Doctrine 5 violation; stays out of every version.",
     "tonight": "Name the thing you're bad at. Say: \"I'm still carrying it.\"",
     "broll": [
-      "a man carrying water containers at night",
-      "empty gym at closing time",
-      "a tired man on a night bus",
-      "notes written on scrap paper"
+      "a man carrying two heavy containers uphill in the dark",
+      "hands raw and shaking under a tap",
+      "writing scratched onto a broken shell",
+      "the same man still walking, much later, still carrying"
     ],
     "score": 81
   },
@@ -300,10 +300,10 @@
     "caveat": "Never within two weeks of first_hit or serenus_not_ill - three sea stories close together reads as a gimmick.",
     "tonight": "Say one true sentence to one person who knows you.",
     "broll": [
-      "a man leaning on a harbour railing",
-      "grey choppy water from a small boat",
-      "a phone with an unsent message at night",
-      "wet stones on a shoreline at dusk"
+      "a small boat pitching on grey water",
+      "a man's face going pale, gripping a rail",
+      "wet black rocks at the waterline",
+      "a soaked figure climbing ashore, upright"
     ],
     "score": 81
   },
@@ -322,10 +322,10 @@
     "caveat": "Felicio was enslaved in Seneca's household. Do not sanitise him into 'an old friend' and do not stop to explain Roman slavery - say 'a man from the household' and keep moving.",
     "tonight": "Put one thing in tomorrow. One.",
     "broll": [
-      "an old front door with peeling paint",
-      "a man looking up at a bare tree",
-      "a childhood photograph in a drawer",
-      "empty kitchen in an old family house"
+      "a peeling front door of an old house",
+      "bare gnarled branches against a white sky",
+      "a stranger's lined face breaking into a grin",
+      "a child's toy found in a drawer"
     ],
     "score": 81
   },
@@ -344,10 +344,10 @@
     "caveat": "",
     "tonight": "Name one person you've been sharp with. Tomorrow, be normal with them.",
     "broll": [
-      "ink spreading through water",
-      "a man's reflection in a dark office window",
-      "someone snapping a laptop shut",
-      "two people not speaking in a car"
+      "a drop of ink spreading through clear water",
+      "a man's reflection hardening in a dark office window",
+      "a laptop snapped shut, too hard",
+      "two people in a car, not speaking"
     ],
     "score": 81
   },
@@ -365,10 +365,10 @@
     "source": "http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A2007.01.0072%3Abook%3D19",
     "tonight": "Hand flat on your chest. Let the first hit pass.",
     "broll": [
-      "storm waves against a ship hull",
-      "a man gripping a railing at sea",
-      "dark clouds over open water",
-      "calm sea after a storm"
+      "a wall of dark water rising past a ship's rail",
+      "white knuckles gripping wet rope",
+      "a man's chest rising and falling too fast",
+      "flat calm sea after a storm, light returning"
     ],
     "caveat": "",
     "score": 80
@@ -387,10 +387,10 @@
     "source": "https://en.wikisource.org/wiki/Of_Anger/Book_III",
     "tonight": "Replay it once. Then say: \"Pardoned. Not again.\"",
     "broll": [
-      "a man switching off a bedside lamp",
-      "hands washing a face in a dim bathroom",
-      "notebook closing",
-      "dark bedroom ceiling"
+      "a hand switching off a bedside lamp",
+      "water running over hands in a dim bathroom",
+      "a notebook closing under a desk lamp",
+      "a dark ceiling seen from a pillow"
     ],
     "caveat": "",
     "score": 80
@@ -410,10 +410,10 @@
     "caveat": "Same work as serenus_not_ill - not within two weeks. Seneca's next example is Cato relaxing with wine: CUT IT, the viewer may already be drinking more than he means to.",
     "tonight": "Twenty minutes of something pointless you used to like. Don't earn it first.",
     "broll": [
-      "a man playing a battered guitar at home",
-      "a football on grass at dusk",
-      "an old games console under a TV",
-      "a man walking a dog on a dark street"
+      "a battered guitar leaning against a wall",
+      "a football rolling to a stop on wet grass",
+      "an old games console under a TV, dusty",
+      "a man walking a dog on an empty street at night"
     ],
     "score": 80
   },
@@ -431,10 +431,10 @@
     "source": "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_87",
     "tonight": "When you catch yourself comparing, say one word: \"unfinished.\"",
     "broll": [
-      "a slow cart on a country road",
-      "expensive cars passing at night",
-      "a man watching from a roadside",
-      "dust settling on a track"
+      "a slow farm cart on a dirt road at dusk",
+      "headlights of a faster car sweeping past",
+      "a man's face lit for a second, then dark again",
+      "dust settling back onto an empty track"
     ],
     "caveat": "",
     "score": 72
@@ -453,10 +453,10 @@
     "source": "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_27",
     "tonight": "Say to yourself, in the voice you'd use on a friend, the thing you'd tell him.",
     "broll": [
-      "two beds in a dim room",
-      "a man writing a letter by lamplight",
-      "hospital window at night",
-      "two chairs facing each other"
+      "two beds side by side in a dim ward",
+      "a letter half written under a lamp",
+      "two men sitting on a wall, not talking",
+      "a hand passing a cup to another hand"
     ],
     "caveat": "",
     "score": 72
@@ -476,10 +476,10 @@
     "caveat": "Gossip a compiler wrote down centuries later - say 'the story goes'. Never diagnose Zeno with anything modern.",
     "tonight": "Don't cancel. Go, take the seat at the end, leave at ten.",
     "broll": [
-      "a man alone at the edge of a busy bar",
-      "a full dinner table seen from the end",
-      "a coat by a front door at night",
-      "a man sitting in a car outside a house"
+      "a crowded warm room seen from the doorway",
+      "one empty seat at the far end of a long table",
+      "a man's hands around a glass, not joining in",
+      "a coat being lifted off a hook by the door"
     ],
     "score": 72
   },
@@ -498,10 +498,10 @@
     "caveat": "",
     "tonight": "Say out loud who's going to be hard work tomorrow.",
     "broll": [
-      "alarm clock glowing at 5am",
-      "a man sitting on the edge of a bed",
-      "office lift doors opening",
-      "commuters on a platform in the dark"
+      "an alarm clock glowing in the dark",
+      "a man sitting on the edge of a bed, head down",
+      "lift doors opening onto a bright office",
+      "a crowded platform before sunrise"
     ],
     "score": 72
   },
@@ -520,10 +520,10 @@
     "caveat": "Absolution first. If something must be cut for time, cut the hook, never the 'poor man' confession - without it this becomes a lecture.",
     "tonight": "Name the one hour you lose every day and where it goes.",
     "broll": [
-      "a man scrolling in bed in the dark",
-      "clock hands moving on a wall",
-      "an empty desk with a cold coffee",
-      "streetlights through a window at 1am"
+      "sand running through fingers",
+      "a phone glowing in a dark room, face lit blue",
+      "a clock's second hand moving",
+      "a cold untouched coffee on a desk"
     ],
     "score": 72
   },
@@ -542,10 +542,10 @@
     "caveat": "Long's wording is archaic - read it as written, never paraphrase into a modern-sounding 'quote'. Other translations say 'foolish and stupid'; that is NOT Long and must not carry his name.",
     "tonight": "Book the thing you're bad at. Be the worst one there on Thursday.",
     "broll": [
-      "a beginner in the corner of a gym",
-      "a man watching a class from the doorway",
-      "hands fumbling with new equipment",
-      "an empty studio with the lights on"
+      "a beginner alone in the corner of a busy gym",
+      "a man watching a class through a doorway",
+      "hands fumbling with unfamiliar equipment",
+      "an empty studio, lights on, waiting"
     ],
     "score": 72
   },
@@ -564,10 +564,10 @@
     "caveat": "End the script at dinner. Nothing about his end, and never frame the exile itself as the inspiring part.",
     "tonight": "Do the ordinary next thing on your list. Then eat.",
     "broll": [
-      "a man tying running shoes in a hallway",
-      "clock on a kitchen wall",
-      "phone lighting up on a desk, ignored",
-      "a plate of food under a kitchen light"
+      "a clock face at the fifth hour",
+      "running shoes being laced in a hallway",
+      "a phone lighting up on a table, ignored",
+      "a plate of food set down under a warm light"
     ],
     "score": 64
   },
@@ -585,10 +585,10 @@
     "source": "https://en.wikisource.org/wiki/The_Histories_(Tacitus)/Book_3",
     "tonight": "Name the humiliation once, in the past tense.",
     "broll": [
-      "a lone figure facing a crowd",
-      "dust on a roman road",
-      "a man walking away across a field",
-      "a teacher with students in a small room"
+      "one figure standing still in a wide empty field",
+      "a crowd's backs turning away",
+      "a man walking off alone down a track",
+      "a small room with a few chairs and one teacher"
     ],
     "caveat": "",
     "score": 63
@@ -608,10 +608,10 @@
     "caveat": "Diogenes Laertius gives two versions. Say 'the story goes', not 'we know'.",
     "tonight": "Name one thing you lost this year. Ask what it made room for.",
     "broll": [
-      "wrecked cargo on a shore",
-      "an old bookshop interior",
-      "a man reading alone",
-      "harbour at first light"
+      "cargo washing in the surf at first light",
+      "a soaked man sitting on a shoreline, nothing left",
+      "a warm lit doorway of a bookshop from the street",
+      "a hand opening a book for the first time"
     ],
     "score": 63
   },
@@ -629,10 +629,10 @@
     "source": "https://en.wikisource.org/wiki/Moral_letters_to_Lucilius/Letter_56",
     "tonight": "Name the thing you've been enduring that has a door.",
     "broll": [
-      "noisy street seen from a window",
-      "a man packing a single bag",
-      "an open door in a dark hallway",
-      "quiet room at last"
+      "a wall shaking faintly with noise from next door",
+      "a man staring at the ceiling, wide awake",
+      "a single packed bag by a door",
+      "a quiet empty room, curtains still"
     ],
     "caveat": "",
     "score": 63
@@ -651,10 +651,10 @@
     "source": "https://en.wikisource.org/wiki/Epictetus,_the_Discourses_as_reported_by_Arrian,_the_Manual,_and_Fragments/Book_1/Chapter_18",
     "tonight": "Pick one grudge that cost under fifty bucks. Say \"earthenware.\"",
     "broll": [
-      "an old oil lamp burning",
-      "an empty shelf at night",
-      "a shuttered window",
-      "a plain clay lamp on a table"
+      "an empty shelf where something used to sit",
+      "an open window at night, curtain moving",
+      "a plain clay lamp being set down on a table",
+      "a hand letting go of something small"
     ],
     "caveat": "",
     "score": 48
