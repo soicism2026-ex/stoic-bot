@@ -618,3 +618,12 @@ that story must always be captioned "recorded in the Historia Augusta", never
   flagged Seneca Letter 78 for a decision; that was wrong to surface at all.
   Enforced in `validate_stories.BANNED`, which blocks the post. Never
   re-propose, including "carefully handled" versions.
+- **2026-08-30 — VOICE: Steffan, on the owner's ear.** He sent
+  `youtube.com/shorts/kIjqfJvj3Ps` — *"the voice on this short was better use
+  this one"*. That post is Steffan. Two days earlier he had said "remove the
+  less popular voice", which by views was Steffan (median day-3 70 vs 44). But
+  z = -1.52 never reached significance, the sample straddles a period when
+  reach was collapsing for unidentified reasons, and view count is a poor proxy
+  for whether a voice sounds like a person. **On a creative call with a weak
+  statistic, the ear wins.** ONE narrator still holds — this swaps which one,
+  it does not reopen the rotation.

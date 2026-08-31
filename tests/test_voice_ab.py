@@ -37,7 +37,11 @@ def test_the_channel_has_exactly_one_narrator():
     One voice, forever. This test exists to stop a second one drifting back
     in without a deliberate decision."""
     assert len(tts.VOICE_POOL) == 1, [v["name"] for v in tts.VOICE_POOL]
-    assert tts.VOICE_POOL[0]["name"] == "Christopher"
+    # 2026-08-30: swapped to Steffan on the owner's ear, after he sent a
+    # specific short and said that voice was better. Christopher led on views
+    # but never significantly, and view count is a poor proxy for whether a
+    # voice sounds like a person. One narrator is the rule; which one is his.
+    assert tts.VOICE_POOL[0]["name"] == "Steffan"
 
 
 def test_no_rejected_voice_is_in_the_pool():
@@ -61,13 +65,12 @@ def test_the_narrator_never_changes():
         v = tts.pick_voice(hist)
         picks.append(v["name"])
         hist.append({"voice_name": v["name"], "video_id": f"v{len(hist)}"})
-    assert set(picks) == {"Christopher"}, picks
+    assert set(picks) == {"Steffan"}, picks
 
 
 def test_the_real_history_does_not_resurrect_the_dropped_voice():
-    """SUPERSEDED 2026-08-25. posts.csv contains 24 Steffan posts; the
-    analytics-weighted picker must not be tempted back to a voice that is no
-    longer in the pool."""
+    """posts.csv contains 80 Christopher posts; the analytics-weighted picker
+    must not be tempted back to a voice that is no longer in the pool."""
     live = ROOT / "data" / "posts.csv"
     if not live.exists():
         pytest.skip("no posts.csv")
@@ -77,7 +80,7 @@ def test_the_real_history_does_not_resurrect_the_dropped_voice():
         v = tts.pick_voice(hist)
         picks.append(v["name"])
         hist.append({"voice_name": v["name"], "video_id": f"sim{i}"})
-    assert set(picks) == {"Christopher"}, picks
+    assert set(picks) == {"Steffan"}, picks
 
 
 def test_elevenlabs_is_silenced_so_the_ab_stays_clean():

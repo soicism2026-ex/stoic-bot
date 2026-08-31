@@ -50,35 +50,23 @@ import requests
 # compression) to close the gap with ElevenLabs. Goal: once analytics show a
 # tuned free voice matching paid Brian (852v / 93% retention), drop ElevenLabs.
 VOICE_POOL = [
-    # 2026-08-25 A/B CALLED. Owner: "remove the less popular voice."
-    # Christopher beat Steffan on every measure over the SAME days and slots,
-    # so this is not a date or time-of-day artifact:
-    #     median day-3 views   70 vs 44
-    #     mean                175 vs 89
-    # Mann-Whitney z = -1.52, short of significance, so this is a judgement
-    # call on a consistent lead rather than a proven result. It is also the
-    # right move for a second reason the A/B could not measure: the channel
-    # has used EIGHT different narrators across 222 posts, and the one thing
-    # surviving faceless channels share is a single unmistakable voice.
-    # Rotating narrators was destroying the asset it was trying to measure.
-    # 2026-08-07 AUDITION RESULT. The owner listened to six candidates
-    # (samples/voices/) and picked TWO: "I like Steffan and Christopher, the
-    # rest not so much — you can cycle between those two and we can check back
-    # in to see which one the audience prefers."
+    # 2026-08-30 OWNER'S EAR OVERRULES THE VIEW COUNT. He sent
+    # youtube.com/shorts/kIjqfJvj3Ps and said "the voice on this short was
+    # better use this one". That post is Steffan.
     #
-    # So this is a deliberate A/B, not a shortlist. pick_voice() alternates
-    # them (it blocks the most recent, and with exactly two entries that means
-    # strict alternation) until each has MIN_POSTS_FOR_WEIGHT posts of view
-    # data, then starts favouring the better performer. Run the channel-report
-    # skill for the voice leaderboard.
+    # Two days earlier he said "remove the less popular voice", and by views
+    # that was Steffan (median day-3 70 vs 44 for Christopher). But z = -1.52
+    # never reached significance, the sample straddles a period when reach was
+    # collapsing for reasons still unidentified, and view count is a terrible
+    # proxy for whether a voice sounds like a person. On a creative call with
+    # a weak statistic, the ear wins.
     #
-    # VETOED, do not reintroduce without the owner's ear:
-    #   Andrew (en-US-AndrewNeural)   2026-07-15
-    #   BrianEdge (en-US-BrianNeural) 2026-07-16
-    #   Chatterbox (stock voice)      2026-08-07
-    #   Ryan / Thomas / Roger / William  2026-08-07 (audition, "not so much")
-    {"name": "Christopher", "id": "en-US-ChristopherNeural", "rate": "+0%", "pitch": "-8Hz"},
+    # ONE narrator still holds: the channel used eight across 222 posts, and
+    # the single thing surviving faceless channels share is one unmistakable
+    # voice. This swaps which one, it does not reopen the rotation.
+    {"name": "Steffan", "id": "en-US-SteffanNeural", "rate": "-4%", "pitch": "-6Hz"},
 ]
+
 
 # ElevenLabs A/B: analytics say the paid voices dominate (Brian 852v, Adam 728v
 # vs the free edge voices' ~150–430v). To switch, add ONE secret —

@@ -82,17 +82,34 @@ def test_banned_opener_list_is_computed_from_real_history():
     assert "n >= 2" in src, "threshold missing — must ban words used twice+"
 
 
-def test_banned_openers_fire_on_the_live_history():
-    """End to end against the real posts.csv, not a fixture."""
+def test_banned_openers_fire_on_a_repetitive_history():
+    """The detector must fire on repetition — tested against a FIXTURE.
+
+    This used to assert the LIVE posts.csv still contained repeated openers,
+    "to check the detector still works". That inverts the contract: it passes
+    only while the channel is repeating itself, and fails the build the moment
+    the writing improves. Which is exactly what happened once the hand-written
+    stories started shipping — every opener distinct, so the suite went red on
+    good news. Same mistake as the variety check asserting the live channel is
+    warning-free: data health is not code health.
+    """
+    from collections import Counter
+    hooks = ["Stop forcing it.", "Stop the spiral.", "Stop asking.",
+             "Let it be.", "Quiet now."]
+    op = Counter(h.split()[0].strip('.,:;"\'').lower() for h in hooks)
+    assert [w for w, n in op.items() if n >= 2] == ["stop"]
+
+
+def test_the_live_history_is_reported_not_asserted(capsys):
+    """Repetition in real data is information for the owner, not a failure."""
     from collections import Counter
     rows = content._load_rows()
-    hooks = [(r.get("hook") or "").strip() for r in rows]
-    hooks = [h for h in hooks if h][-15:]
+    hooks = [h for h in ((r.get("hook") or "").strip() for r in rows) if h][-15:]
     if len(hooks) < 5:
         return
     op = Counter(h.split()[0].strip('.,:;"\'').lower() for h in hooks if h.split())
-    assert [w for w, n in op.items() if n >= 2], \
-        "no repeated openers in live history — check the detector still works"
+    repeats = {w: n for w, n in op.items() if n >= 2}
+    print(f"live repeated openers in last {len(hooks)} hooks: {repeats or 'none'}")
 
 
 # ------------------------------------- rule hook SHAPE is code-assigned
