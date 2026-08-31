@@ -627,3 +627,19 @@ that story must always be captioned "recorded in the Historia Augusta", never
   for whether a voice sounds like a person. **On a creative call with a weak
   statistic, the ear wins.** ONE narrator still holds — this swaps which one,
   it does not reopen the rotation.
+- **2026-08-30 — FEEDBACK: read the retention CURVE, not the average.** Written
+  feedback is structurally unavailable: 171 of 229 videos sit at exactly 2
+  comments (both the bot's own), ~73 genuine viewer comments exist channel-wide,
+  and at ~112 views/day that will not change. But every viewer who scrolls away
+  says exactly WHERE they left. `avg_view_pct` is an average and hides it — 55%
+  could be everyone watching just over half, or half the audience leaving in the
+  first second, and the fixes for those are opposite.
+  `scripts/retention_curve.py` pulls `audienceWatchRatio` against
+  `elapsedVideoTimeRatio` per video and reports the drop in words: *"52% gone by
+  the hook · biggest drop at 45% (the turn into the lesson)"*. Runs daily,
+  committed to `data/retention_curves.csv` so it accumulates.
+- **2026-08-30 — PROMO_COMMENT off.** Under a 20-view video with zero viewer
+  comments, a bot-posted Gumroad CTA is the exact tell that says "this is an
+  automated account, nobody is here". The comment section is the only place a
+  faceless channel gets to be a person; it costs more in personhood than a free
+  journal earns. The description CTA stays.

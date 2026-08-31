@@ -106,6 +106,18 @@ jobs:
       # unreviewed by any other stage. A typo in a citation is a misattributed
       # quote, which is the one failure this channel has said it cannot
       # survive. Runs BEFORE the post, and blocks it.
+      # Written feedback is effectively zero - 171 of 229 videos sit at
+      # exactly 2 comments, both the bot's own. But every viewer who scrolls
+      # away says exactly WHERE they left. avg_view_pct only says how much
+      # they watched; the curve says at which second they went.
+      - name: Pull retention curves
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/retention_curve.py --limit 12 --csv
+
       - name: Validate story bank
         run: python scripts/validate_stories.py
 
@@ -161,7 +173,13 @@ jobs:
           PROMO_ENABLED: "1"
           PROMO_PRODUCT_NAME: "The Stoic Reset"
           PROMO_URL: "https://soicism.gumroad.com/l/cslosv"
-          PROMO_COMMENT: "1"
+          # 2026-08-30: OFF. Under a video with 20 views and zero viewer
+          # comments, a bot-posted Gumroad CTA is the exact tell that says
+          # "this is an automated account, nobody is here" - and the comment
+          # section is the only place this channel can be a person. It costs
+          # more in personhood than a free journal earns. The description CTA
+          # stays; only the comment goes.
+          PROMO_COMMENT: "0"
           # PROMO_CTA_VARIATIONS: pipe-delimited (|) list of 3-5 CTA strings.
           # Leave unset to use the three built-in defaults from src/promo.py.
           # GENERATED BACKGROUNDS — OFF since 2026-08-25. They are AI STILLS
@@ -279,7 +297,7 @@ jobs:
             -o -name '*.clicks.wav' -o -name '*.mixclick.m4a' -o -name '*.hook.wav' \
             -o -name '*.mix.m4a' -o -name '*.loud.m4a' -o -size +95M \) \
             -delete 2>/dev/null || true
-          git add data/posts.csv data/analytics.csv data/channel_stats.csv data/replied_comments.csv data/retention.csv QA_LOG.md backups/
+          git add data/posts.csv data/analytics.csv data/channel_stats.csv data/replied_comments.csv data/retention.csv data/retention_curves.csv QA_LOG.md backups/
           git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
           # The 4 daily slots race on pushing to main — rebase-retry instead of
           # failing the run (a lost push means a lost posts.csv row).
