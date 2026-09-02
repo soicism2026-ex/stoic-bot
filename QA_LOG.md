@@ -2787,3 +2787,72 @@ for any recurring defects.
 - Add a subtle zoom/pan or a brighter focal element on the book in the opening frames, and boost text contrast with a solid semi-transparent bar behind the overlay.
 **Flagged dims:** text_legibility
 
+
+## Visual QA — 2026-09-02 01:05 UTC
+**File:** `2026-09-02_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** A man was lying awake over something that hadn't happened yet. Seneca sent him a rule for it that takes about four seconds to use.
+**Scores:** hook_strength=7.5 | text_legibility=6.5 | pacing=4.0 | scroll_stop_potential=6.0
+**Reasoning:** Hook text is genuinely strong — the narrative setup ('lying awake over something that hadn't happened yet') plus the promise of a four-second Seneca rule creates real curiosity and gets 7.5. Text legibility suffers slightly: the hook overlay is a long 5-line block placed over a moody dark aerial with acceptable but not high contrast, and the small font weight makes it a heavier read at phone size, earning 6.5. Pacing is the weak point — frames 1-4 are essentially identical (same aerial road, same static text) so the entire 1.5s hook window has no visual movement or transition variety, feeling static, hence 4.0. Scroll-stop potential is moderate at 6.0: the aerial road shot is atmospheric and the text intrigues, but the dark, low-energy opening frame won't halt every scroller instantly.
+**Issues:**
+- Hook window (frames 1-4) is visually static — near-identical frames with no transition or motion to create energy in the critical first 1.5s
+- Hook text is a dense 5-line block in a lighter font weight over dark imagery, reducing instant readability at phone size
+**Suggestions:**
+- Introduce a subtle zoom, parallax, or cut within the first 1.5s to add kinetic energy and stop-scroll appeal
+- Trim the hook to a punchier 2-3 lines and add a heavier font weight or stronger drop shadow/stroke for faster legibility; consider highlighting 'four seconds' in an accent colour
+**Flagged dims:** text_legibility, pacing
+
+
+## Visual QA — 2026-09-02 01:15 UTC
+**File:** `2026-09-02_reel.mp4` | **Verdict:** `PASS`
+**Hook:** A man was lying awake over something that hadn't happened yet. Seneca sent him a rule for it that takes about four seconds to use.
+**Scores:** hook_strength=8.0 | text_legibility=7.5 | pacing=5.0 | scroll_stop_potential=6.5
+**Reasoning:** Hook text is strong — it opens with a relatable scenario (lying awake over something that hasn't happened) and promises a fast, specific fix ('four seconds to use'), which creates a real curiosity gap and earns 8.0. Text legibility is good with a bold white sans-serif and slight outline, but the dark autumnal aerial background under the text has some lower-contrast patches and the small road markings distract, keeping it at 7.5. Pacing is weak in the hook window: frames 1–4 are essentially the same aerial road shot with an almost identical static text block, so the opening 1.5s feels visually frozen — the variety only arrives in the body (starry sky, then highway), so 5.0. Scroll-stop is moderate: the aerial road is aesthetic and moody but not arresting on frame 1, and the payoff lives in the text rather than the image, so 6.5.
+**Issues:**
+- Hook window frames 1-4 are visually near-identical, creating a static feel during the crucial first 1.5s
+- Large paragraph of hook text competes with a busy dark background, slowing readability at a glance
+**Suggestions:**
+- Introduce visible motion or a hard cut/zoom within the first 1.5s so the hook doesn't look frozen; animate text in word-by-word to add rhythm
+- Add a semi-transparent dark band or stronger shadow behind the hook text and consider shortening it into two punchy lines to boost instant readability and scroll-stop
+
+
+## Visual QA — 2026-09-02 01:25 UTC
+**File:** `2026-09-02_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** A man was lying awake over something that hadn't happened yet. Seneca sent him a rule for it that takes about four seconds to use.
+**Scores:** hook_strength=7.5 | text_legibility=6.5 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** Hook text is strong — the 'lying awake over something that hadn't happened yet' framing plus the '4-second rule' promise creates real curiosity and specificity, earning a 7.5. Text legibility suffers because the hook is a dense 5-line block in a small white font over a dark, moody aerial that is fairly readable but the sheer volume of text competes for attention and lower-third road markings add clutter; the body quote in serif gold is elegant but the thin strokes reduce phone-size punch, so 6.5. Pacing is weak: frames 1–4 are nearly identical aerial road shots with only a tiny car moving, meaning the entire hook window feels static with no visual rhythm — 4.5. Scroll-stop potential is moderate; the aerial forest-road is aesthetically pleasing and the text intrigues, but the dark tones and text-heavy opening won't stop every thumb, giving 6.0.
+**Issues:**
+- Hook window (frames 1-4) is visually static — same aerial road with negligible movement, no transition energy
+- Opening frame is text-heavy (5 lines) which is slow to read at scroll speed and buries the curiosity payoff
+**Suggestions:**
+- Split the long hook into a punchy 1-2 line opener ('Seneca's 4-second rule for anxiety') and reveal the rest on a visual cut to inject pacing
+- Increase font weight/contrast on the body serif quote and add a subtle zoom or cut every 1-2 seconds to break the static feel
+**Flagged dims:** text_legibility, pacing
+
+
+## Visual QA — 2026-09-02 01:35 UTC
+**File:** `2026-09-02_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** A man was lying awake over something that hadn't happened yet. Seneca sent him a rule for it that takes about four seconds to use.
+**Scores:** hook_strength=7.5 | text_legibility=7.0 | pacing=4.5 | scroll_stop_potential=6.0
+**Reasoning:** The hook text is strong copy — a relatable scenario (lying awake over something that hasn't happened) plus a curiosity gap (a 4-second rule) that promises quick payoff, earning 7.5. However, the hook is delivered as a large paragraph over a nearly static aerial road shot, which drops legibility slightly (7.0) because the block is long and dense for a 1.5s window, and the dark background reduces contrast on some lines. Pacing is weak (4.5): frames 1–4 are essentially the same drone shot with only a car slowly moving, so the opening feels static despite the strong words. The body improves with a starry sky and a highway shot with good serif text. Scroll-stop potential is moderate (6.0) — the aerial forest road is aesthetically pleasing but not arresting, and the heavy text load may deter fast scrollers before they read the payoff.
+**Issues:**
+- Hook window is nearly static — same aerial road across all four hook frames with minimal visual change, killing early momentum
+- Hook overlay is a dense 4-line paragraph, too much to absorb in 1.5 seconds and easy to swipe past
+**Suggestions:**
+- Split the hook into a punchy first line ('He couldn't sleep over something that never happened') displayed large, then reveal the rest, and add a subtle zoom or transition to create motion
+- Increase text contrast with a stronger drop shadow or semi-transparent bar, and consider a bolder opening visual (e.g., a face or restless-in-bed clip) to boost scroll-stop power
+**Flagged dims:** pacing
+
+
+## Visual QA — 2026-09-02 01:45 UTC
+**File:** `2026-09-02_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** A man was lying awake over something that hadn't happened yet. Seneca sent him a rule for it that takes about four seconds to use.
+**Scores:** hook_strength=7.5 | text_legibility=7.0 | pacing=4.5 | scroll_stop_potential=6.5
+**Reasoning:** hook_strength: The hook copy is strong — it opens with a relatable anxiety scenario (lying awake over something that hasn't happened) and promises a fast, actionable Seneca rule in 'four seconds,' which creates real curiosity, though the text is a bit long to absorb in the first 1.5 s. text_legibility: Body text uses white/gold with outlines and is generally readable, but the hook paragraph is dense and set over a busy dark forest background, causing minor contrast strain; the small road-marking text is decorative distraction. pacing: The first four hook frames are nearly identical (same aerial road shot, same static text) so the opening feels static with almost no visual movement — a clear pacing weakness; the body introduces new visuals (Milky Way, highway) which helps. scroll_stop_potential: The aerial road drone shot is atmospheric and moody enough to catch some eyes, and the intriguing hook line supports a stop, but the muted dark palette and text-heavy frame won't stop every scroller.
+**Issues:**
+- First four hook frames are visually static — same aerial shot with identical text overlay, killing early momentum
+- Hook text is a long 4-line paragraph over a busy dark background, slowing readability in the critical opening
+**Suggestions:**
+- Split the hook into punchier phased text (e.g. reveal 'A man lay awake over something that hadn't happened' then 'Seneca's 4-second rule') and add subtle zoom/motion across the first frames
+- Boost contrast with a stronger semi-transparent text plate behind the hook and shorten line length so it reads instantly at phone size
+**Flagged dims:** pacing
+
