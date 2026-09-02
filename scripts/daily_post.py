@@ -33,11 +33,14 @@ import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
 import backgrounds                        # noqa: E402
 import stories                            # noqa: E402
+from preflight import review as preflight_review   # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
 from visual_qa import run_visual_qa       # noqa: E402
 
 BACKUPS_DIR = ROOT / "backups"
+# Contact sheets from every render, so there is always evidence of what shipped.
+FRAMES_DIR = ROOT / "data" / "frames"
 QA_LOG = ROOT / "QA_LOG.md"
 MAX_ATTEMPTS = int(os.environ.get("REEL_MAX_ATTEMPTS", "5"))
 BACKUP_MIN = 3
@@ -426,6 +429,7 @@ def main():
 
     # Experiment agent: assign this post's intro-sound + colour-grade combo.
     # QA-retry corrections merge ON TOP of this base so the variant sticks.
+    preflight_verdict = ""
     exp_name, exp_env = pick_experiment(post_rows)
     # A format-test post is tagged as such so scripts/format_test.py can count
     # it. Without this the test would run and be unmeasurable.
@@ -611,6 +615,24 @@ def main():
         # passes, so we don't waste Opus API calls on renders that are already broken.
         vqa = None
         if _VQA_ENABLED and upload_this:
+            # PREFLIGHT — look at the file before it publishes. Not a
+            # reminder to look: a gate. Six weeks of output shipped without a
+            # single frame being inspected, and when one finally was it showed
+            # a melted AI bust at 12.8% luminance. Both were invisible to
+            # every metric and obvious in ten seconds of looking.
+            pf = preflight_review(video_path, FRAMES_DIR / today)
+            preflight_verdict = pf["verdict"]
+            print(f"  [preflight] {pf['verdict'].upper()} "
+                  f"luma={pf.get('mean_pct', 0):.1%} "
+                  f"text={pf.get('opening_text_frac', 0):.1%}")
+            for f in pf["fails"]:
+                print(f"  [preflight] FAIL {f}")
+            for w in pf["warns"]:
+                print(f"  [preflight] warn {w}")
+            if pf["verdict"] == "fail" and not last_attempt:
+                upload_this = False
+                print("  [preflight] blocking upload — re-rendering")
+
             print(f"  [attempt {attempt}] visual QA...")
             vqa = run_visual_qa(video_path, content)
             print(
@@ -703,6 +725,7 @@ def main():
                 experiment=exp_name,
                 content_format=content.get("format", ""),
                 bg_source=backgrounds.LAST_BG_SOURCE or "",
+                reviewed=preflight_verdict,
             )
             print("  logged. done.")
             break

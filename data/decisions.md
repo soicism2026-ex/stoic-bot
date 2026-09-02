@@ -643,3 +643,19 @@ that story must always be captioned "recorded in the Historia Augusta", never
   automated account, nobody is here". The comment section is the only place a
   faceless channel gets to be a person; it costs more in personhood than a free
   journal earns. The description CTA stays.
+- **2026-09-01 — PREFLIGHT GATE. The answer to "how do I teach you to check".**
+  Owner asked how to make me catch mistakes and actually watch the videos. The
+  honest answer is that teaching does not work: I *knew* to look and didn't, for
+  six weeks, while deciding everything from CSVs. When a published video was
+  finally opened it showed a melted AI bust with garbled pseudo-text at 12.8%
+  luminance — invisible to every metric, obvious in ten seconds of looking.
+  So it is a GATE, not a rule. `scripts/preflight.py` measures every render
+  (mean luminance floor 18%, dead-frame tonal range, opening text coverage),
+  writes the frames to `data/frames/<date>/` as evidence, and BLOCKS the upload
+  on a fail. The verdict is written to the new `reviewed` column in posts.csv,
+  so *"was this post reviewed?"* is answerable from the log — it previously was
+  not. Verified against the two real published videos: the dark one FAILS, the
+  brighter one PASSES.
+  Two bugs in my own checker, caught by its tests: it parsed a stddev key ffmpeg
+  never emits and defaulted to a pass (a check that could never fire), and its
+  near-white text cutoff reported a frame covered in gold caps as having no text.

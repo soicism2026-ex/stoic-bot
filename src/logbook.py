@@ -19,7 +19,12 @@ FIELDS = ["date", "theme", "author", "quote", "caption", "video_url", "video_id"
           # 3.8x drop in day-3 views and could only be established by
           # inferring from commit dates, because the single most important
           # production variable was never recorded. Never again.
-          "bg_source"]
+          "bg_source",
+          # Preflight verdict for the file that actually published: pass / warn
+          # / fail:<reason>. Added 2026-09-01 after the owner asked how to know
+          # whether a post had been reviewed. Previously unanswerable - six
+          # weeks of output shipped without one frame being looked at.
+          "reviewed"]
 
 
 def _repair_header() -> bool:
@@ -65,7 +70,7 @@ def _repair_header() -> bool:
 def log_post(date, theme, quote, author, caption, publish_result,
              voice_name: str = "", music_track: str = "", hook: str = "",
              experiment: str = "", content_format: str = "",
-             bg_source: str = ""):
+             bg_source: str = "", reviewed: str = ""):
     new = not LOG.exists()
     if not new:
         _repair_header()
@@ -87,4 +92,5 @@ def log_post(date, theme, quote, author, caption, publish_result,
             "experiment": experiment,
             "format": content_format,
             "bg_source": bg_source,
+            "reviewed": reviewed,
         })
