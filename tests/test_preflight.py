@@ -107,4 +107,40 @@ def test_preflight_blocks_the_upload_in_the_pipeline():
     src = (ROOT / "scripts" / "daily_post.py").read_text()
     assert "preflight_review(" in src
     assert 'pf["verdict"] == "fail"' in src
-    assert "upload_this = False" in src.split("preflight_review(")[1][:800]
+    # widened from 800 chars: the block grew when the last-attempt exemption
+    # was removed, and the old window no longer reached upload_this
+    assert "upload_this = False" in src.split("preflight_review(")[1][:2000]
+
+
+def test_preflight_blocks_on_the_FINAL_attempt_too():
+    """2026-09-02: the gate correctly failed a render, forced five retries,
+    then published the failing video anyway — posts.csv recorded
+    reviewed=fail against a live URL.
+
+    The other QA gates fail OPEN on the last attempt, which was right at 3
+    posts/day. At one post a day with quality as the whole strategy, shipping
+    a video we KNOW is defective is worse than shipping nothing.
+    """
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    blk = src.split("preflight_review(")[1][:1400]
+    assert 'if pf["verdict"] == "fail":' in blk, "still exempts the last attempt"
+    assert 'and not last_attempt' not in blk.split('if pf["verdict"]')[1][:80]
+
+
+def test_a_failed_gate_does_not_fall_back_to_a_backup():
+    """Backups are older renders of the same pipeline and carry the same
+    defect — swapping one bad video for another is not a fix."""
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    assert 'if last_attempt and preflight_verdict == "fail":' in src
+    i = src.index('if last_attempt and preflight_verdict == "fail":')
+    j = src.index("if last_attempt:", i)
+    assert "_load_backup" not in src[i:j]
+
+
+def test_a_skipped_post_does_not_burn_the_story():
+    """stories.pick() reads what was LOGGED, so an unpublished script runs
+    again tomorrow rather than being silently lost."""
+    import stories
+    rows = [{"experiment": "story:serenus_not_ill"}]
+    first = stories.pick(rows)
+    assert stories.pick(rows)["id"] == first["id"]

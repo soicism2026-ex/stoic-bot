@@ -629,9 +629,20 @@ def main():
                 print(f"  [preflight] FAIL {f}")
             for w in pf["warns"]:
                 print(f"  [preflight] warn {w}")
-            if pf["verdict"] == "fail" and not last_attempt:
+            # BLOCK ON EVERY ATTEMPT, including the last. The other QA gates
+            # fail OPEN on the final try — better a flawed post than none —
+            # and at 3 posts/day that was the right trade. It is the wrong one
+            # now. On 2026-09-02 this gate correctly failed a render, retried
+            # five times, then published the failing video anyway; posts.csv
+            # recorded reviewed=fail against a live URL. At one post a day,
+            # with quality as the entire strategy, shipping a video we KNOW is
+            # defective is worse than shipping nothing. Skipping also costs no
+            # story: stories.pick() reads what was LOGGED, so an unpublished
+            # script simply runs tomorrow.
+            if pf["verdict"] == "fail":
                 upload_this = False
-                print("  [preflight] blocking upload — re-rendering")
+                print("  [preflight] blocking upload"
+                      + ("" if not last_attempt else " — final attempt, skipping today"))
 
             print(f"  [attempt {attempt}] visual QA...")
             vqa = run_visual_qa(video_path, content)
@@ -729,6 +740,17 @@ def main():
             )
             print("  logged. done.")
             break
+
+        if last_attempt and preflight_verdict == "fail":
+            # Do not reach for the backup bank either: the backups are older
+            # renders of the same pipeline and would carry the same defect.
+            print("  [preflight] every attempt failed the visual gate — "
+                  "publishing NOTHING today. The story is not consumed and "
+                  "runs tomorrow.")
+            _append_qa_log(today, attempt,
+                           [f"preflight: {f}" for f in pf["fails"]],
+                           "high", uploaded=False)
+            return
 
         if last_attempt:
             # All 3 failed with high severity — use backup

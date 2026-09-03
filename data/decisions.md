@@ -659,3 +659,14 @@ that story must always be captioned "recorded in the Historia Augusta", never
   Two bugs in my own checker, caught by its tests: it parsed a stddev key ffmpeg
   never emits and defaulted to a pass (a check that could never fire), and its
   near-white text cutoff reported a frame covered in gold caps as having no text.
+- **2026-09-03 — PREFLIGHT NOW BLOCKS ON THE FINAL ATTEMPT TOO.** First live
+  evidence the gate works, and that it had a hole. On 2026-09-02 it correctly
+  failed a render, forced retries across a 53-minute run, then published the
+  failing video anyway — posts.csv shows `reviewed=fail` against a live URL
+  (`RsdpWJ4WyPI`). The other QA gates fail OPEN on the last attempt, which was
+  the right trade at 3 posts/day. At ONE post a day with quality as the whole
+  strategy it is the wrong one: shipping a video we KNOW is defective is worse
+  than shipping nothing. It now blocks on every attempt, does NOT fall back to
+  the backup bank (backups are older renders of the same pipeline and carry the
+  same defect), and skips the day. The story is not consumed — `stories.pick()`
+  reads what was LOGGED, so an unpublished script runs tomorrow.
