@@ -670,3 +670,43 @@ that story must always be captioned "recorded in the Historia Augusta", never
   the backup bank (backups are older renders of the same pipeline and carry the
   same defect), and skips the day. The story is not consumed — `stories.pick()`
   reads what was LOGGED, so an unpublished script runs tomorrow.
+
+## 2026-09-04 — HOOK FOLLOWER, TTS DRIFT, FREE IMAGE MODELS
+
+- **The hook now holds until it has been SPOKEN, and leads the reader word by
+  word.** Owner: *"the hook doesnt stay for long enough to be read, add a
+  follower to read step by step."* `HOOK_HOLD` was a fixed 2.2s, set when hooks
+  were four words — a 20-word story hook cannot be read in that time. Both the
+  hold and the follower are driven by the REAL narration timings (the hook is
+  spoken first, so its words are the opening run of `word_timings`), so the
+  highlight cannot drift from the voice. Matching is by TEXT, not by count, so a
+  TTS engine that splits a token cannot shift the whole follower.
+- **The follower is ASS karaoke, not drawtext.** The first attempt positioned
+  each word with `drawtext` at `0.62 * fontsize * len(word)` — a monospace
+  assumption applied to a proportional font. Rendered, the spacing visibly
+  drifted across the line. libass measures the real font and handles centring
+  and wrapping. **Verified by rendering and looking at the frame**, not by test
+  alone; three separate bugs (a missing `re` import, an unbound variable, and a
+  guard that suppressed the karaoke entirely) only surfaced that way.
+- **Card and follower are mutually exclusive** — when timings exist the karaoke
+  IS the hook, and the static card would stack a second copy of the same words.
+- **TTS drift is measured, not guessed.** `scripts/measure_tts_drift.py`
+  compares edge-tts WordBoundary offsets against the actual first sound in the
+  file, before and after `_master_voice` re-encodes. Two candidate causes: MP3
+  encoder delay (~26ms per LAME pass, and there are two), and WordBoundary
+  marking synthesis position rather than audible onset. **No correction constant
+  has been applied** — the container's proxy blocks edge-tts (SSL interception
+  breaks aiohttp), so it runs in CI and the measured value sets
+  `REEL_CAPTION_OFFSET`. A guessed offset would be indistinguishable from the
+  bug it claims to fix.
+- **FLUX.2 is on the same free Cloudflare tier.** `flux-2-dev`,
+  `flux-2-klein-9b`, `flux-2-klein-4b` — two generations past the
+  `flux-1-schnell` that produced the melted bust. `compare_image_models.py`
+  generates the REAL shot lists on each and stacks them side by side. Free.
+  Note the 10,000 neuron/day budget is shared, and flux-2-dev is a much larger
+  model, so throughput needs measuring rather than assuming.
+- **Paid options priced, both declined for now.** Higgsfield $29-49/mo (Plus,
+  1,000 credits ≈ 200 videos; we need ~120 clips/mo). Artlist $31.99/mo for
+  footage — but its Enterprise API is **music only**, no programmatic footage
+  download, which disqualifies it for an automated pipeline. Neither is worth
+  buying before the retention read on the stories.

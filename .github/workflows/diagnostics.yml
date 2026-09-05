@@ -1,0 +1,51 @@
+name: diagnostics
+
+# Two checks that CANNOT run in the dev container and so have never been run.
+#   * edge-tts is blocked there (the proxy's SSL interception breaks aiohttp),
+#     so the caption drift the owner reports has only ever been theorised
+#   * the Cloudflare secrets live here, so FLUX.1 vs FLUX.2 can only be
+#     compared on a runner
+# Manual only — neither touches the channel.
+on:
+  workflow_dispatch:
+    inputs:
+      story:
+        description: "Story id for the image comparison"
+        default: "serenus_not_ill"
+      shots:
+        description: "How many shots from that story"
+        default: "2"
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+
+      # How far are the reported word timings from the actual audio?
+      - name: Measure TTS caption drift
+        continue-on-error: true
+        run: python scripts/measure_tts_drift.py --master
+
+      # Did FLUX.2 fix the melted-bust problem? Same prompts, side by side.
+      - name: Compare image models
+        continue-on-error: true
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          python scripts/compare_image_models.py \
+            --story "${{ inputs.story }}" --shots "${{ inputs.shots }}"
+
+      - name: Upload comparison images
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: model-comparison
+          path: samples/model_compare/
+          if-no-files-found: ignore

@@ -20,6 +20,7 @@ Composition:
 import os
 import json
 import subprocess
+import re
 import textwrap
 from pathlib import Path
 from datetime import date
@@ -111,6 +112,15 @@ HOOK_FONTSIZE = int(os.environ.get("REEL_HOOK_FONTSIZE", "94"))
 # and caps is grindset vocabulary in a channel trying to stop sounding like
 # that. Both are now per-format, set by the truestory style pack.
 HOOK_CAPS = os.environ.get("REEL_HOOK_CAPS", "1") not in ("0", "false", "False")
+# Word-by-word follower on the hook. The whole line stays readable (so the eye
+# can run ahead) while the spoken word lights up, which leads the reader
+# through instead of flashing a wall at them. Driven by the REAL narration
+# timings, so it cannot drift from the voice.
+HOOK_FOLLOW = os.environ.get("REEL_HOOK_FOLLOW", "1") not in ("0", "false", "False")
+HOOK_DIM = os.environ.get("REEL_HOOK_DIM", "0.45")   # alpha of unspoken words
+# Font size for the hook's ASS karaoke line. Smaller than the drawtext hook
+# because libass wraps within MarginL/R rather than auto-shrinking to fit.
+HOOK_ASS_FS = int(os.environ.get("REEL_HOOK_ASS_FONTSIZE", "62"))
 HOOK_WRAP = int(os.environ.get("REEL_HOOK_WRAP", "12"))
 HOOK_COLOR = os.environ.get("REEL_HOOK_COLOR", "0xFFB830")      # warm amber/gold
 
@@ -584,7 +594,58 @@ def _group_lines(word_timings: list, max_words: int = 2, pause: float = 0.55) ->
     return lines
 
 
-def _build_ass(word_timings: list, out_path: Path) -> Path:
+def _hook_word_times(hook_text: str, timings: list) -> list:
+    """Match the hook's words to the front of the narration timings.
+
+    The hook is spoken first (daily_post builds act1 as hook + story), so
+    its words are the opening run of word_timings. Matching by normalised
+    text rather than by count means a TTS engine that splits or merges a
+    token cannot silently shift the whole follower.
+    """
+    if not timings:
+        return []
+    def norm(w):
+        return re.sub(r"[^a-z0-9]", "", str(w).lower())
+    want = [norm(w) for w in hook_text.split() if norm(w)]
+    out, ti = [], 0
+    for w in want:
+        while ti < len(timings) and norm(timings[ti][0]) != w:
+            ti += 1
+        if ti >= len(timings):
+            return []          # no clean match — fall back to a static hook
+        out.append(float(timings[ti][1]))
+        ti += 1
+    return out
+
+
+def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
+    """One centred ASS line for the hook, filling word by word as it is spoken.
+
+    ASS \k karaoke is the right tool: libass measures the proportional font,
+    centres the block and wraps it. Doing this with per-word drawtext meant
+    guessing each word's pixel width from a fixed character ratio, and the
+    spacing visibly drifted across the line.
+
+    Unsung words sit at SecondaryColour (dim but readable, so the eye can run
+    ahead); each word flips to PrimaryColour on its spoken beat, which leads the
+    reader through instead of flashing the whole line at once.
+    """
+    words = hook.split()
+    if not words or not word_starts or len(word_starts) != len(words):
+        return ""
+    parts = []
+    for i, w in enumerate(words):
+        nxt = word_starts[i + 1] if i + 1 < len(word_starts) else hold
+        cs = max(1, int(round((nxt - word_starts[i]) * 100)))   # centiseconds
+        parts.append(f"{{\\k{cs}}}{_ass_escape(w)} ")
+    start = max(0.0, word_starts[0] - 0.25)
+    return (f"Dialogue: 0,{_ass_time(start)},{_ass_time(hold + 0.4)},"
+            f"Hook,,0,0,0,,{{\\fad(180,320)}}" + "".join(parts).rstrip())
+
+
+def _build_ass(word_timings: list, out_path: Path,
+               hook: str = "", hook_starts: list = None,
+               hook_hold: float = 0.0) -> Path:
     """Write a .ass subtitle file with impactful 2-word karaoke captions.
 
     2 words at a time gives a natural reading rhythm without the chaotic
@@ -600,6 +661,10 @@ def _build_ass(word_timings: list, out_path: Path) -> Path:
     primary = "&H00FFFFFF"
     outline = "&H00000000"
     shadow  = "&H0030B8FF"
+    # Unsung hook words: same white at ~40% alpha (ASS alpha is inverted —
+    # &H99 is mostly transparent). Readable enough to run ahead, dim enough
+    # that the spoken word clearly leads.
+    hook_dim = "&H99FFFFFF"
 
     # caption_only style: captions ARE the show — centre of frame (ASS
     # alignment 5 = middle-centre), ~35% larger, same pop animation.
@@ -618,6 +683,7 @@ ScaledBorderAndShadow: yes
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Karaoke,{CAPTION_FONT},{cap_fs},{primary},{primary},{outline},{shadow},-1,0,0,0,100,100,3,0,1,6,4,{cap_align},{CAPTION_MARGINL},{CAPTION_MARGINR},{cap_marginv},1
+Style: Hook,{CAPTION_FONT},{HOOK_ASS_FS},{primary},{hook_dim},{outline},{outline},-1,0,0,0,100,100,2,0,1,6,3,5,90,90,0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -652,6 +718,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             f"Dialogue: 0,{_ass_time(start)},{_ass_time(end)},"
             f"Karaoke,,0,0,0,,{anim}{text}"
         )
+
+    if hook and hook_starts:
+        ev = _hook_karaoke_events(hook, hook_starts, hook_hold)
+        if ev:
+            events.insert(0, ev)
 
     out_path.write_text(header + "\n".join(events) + "\n", encoding="utf-8")
     return out_path
@@ -1070,14 +1141,23 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             f"alpha='{quote_alpha}'"
         )
 
+    # Hook timing is computed once, independent of the drawtext card: for the
+    # story format the ASS karaoke IS the hook and the card is off entirely.
+    hook_starts = _hook_word_times(hook, word_timings) if (hook and HOOK_FOLLOW) else []
+    # HOLD UNTIL IT HAS BEEN SAID. The fixed 2.2s was set when hooks were four
+    # words; a 20-word story hook cannot be read in that time and the card was
+    # gone before the eye finished.
+    hook_hold = max(HOOK_HOLD, hook_starts[-1] + 0.9) if hook_starts else HOOK_HOLD
+
     # Hook card: big, bold, scroll-stopping text flashed over the opening, then
     # faded out so the clean quote is what remains. Drawn after the quote so it
     # sits on top during those first seconds.
-    if hook and HOOK_TEXT_ON:
-        # Wrap short (12 chars) and auto-fit the fontsize so the longest line
-        # stays inside the phone-fullscreen safe band. DejaVu Sans Bold averages
-        # ~0.62em advance per char; without this, a 15-char hook at 94px rendered
-        # wider than the visible area and got cropped on iPhones.
+    # The karaoke follower IS the hook when narration timings are available;
+    # drawing the static card as well would stack two copies of the same words.
+    if hook and HOOK_TEXT_ON and not hook_starts:
+        # Wrap short and auto-fit the fontsize so the longest line stays inside
+        # the phone-fullscreen safe band. DejaVu Sans Bold averages ~0.62em per
+        # char; without this a 15-char hook at 94px was cropped on iPhones.
         hook_text = hook.upper() if HOOK_CAPS else hook
         hook_lines = textwrap.wrap(hook_text, width=HOOK_WRAP) or [hook_text]
         max_chars = max(len(l) for l in hook_lines)
@@ -1086,18 +1166,31 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         HOOK_LINE_H = hook_fs + 18
         h_half = (len(hook_lines) * HOOK_LINE_H) // 2
         fade = 0.4  # seconds to fade the card out after HOOK_HOLD
+
+        starts = hook_starts        # always empty here by the guard above
+        # HOLD UNTIL IT HAS BEEN SAID. A fixed 2.2s was set when hooks were four
+        # words; a 20-word story hook cannot be read in that time and the card
+        # was gone before the eye finished. With narration timings available the
+        # hook stays until its last word is spoken.
+        hold = hook_hold
+        vis = f"alpha='if(lt(t,{hold}),1,max(0,1-(t-{hold})/{fade}))'"
+        gate = f"enable='lt(t,{hold + fade})'"
+        # The word-by-word follower is drawn by the ASS layer (see
+        # _hook_karaoke_events), which lets libass do proportional layout,
+        # centring and wrapping. A first attempt positioned each word with
+        # drawtext at 0.62*fontsize*len(word) and the spacing visibly drifted —
+        # that ratio is a monospace assumption and the font is proportional.
         for i, line in enumerate(hook_lines):
-            offset = i * HOOK_LINE_H - h_half
-            line_y = f"(h/2)-150{offset:+d}"
-            vf_parts.append(
-                f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
-                f"fontcolor={HOOK_COLOR}:fontsize={hook_fs}:"
-                f"x=(w-text_w)/2:y={line_y}:"
-                f"borderw=7:bordercolor=black@0.9:"
-                f"shadowcolor=black@0.7:shadowx=3:shadowy=3:"
-                f"alpha='if(lt(t,{HOOK_HOLD}),1,max(0,1-(t-{HOOK_HOLD})/{fade}))':"
-                f"enable='lt(t,{HOOK_HOLD + fade})'"
-            )
+                offset = i * HOOK_LINE_H - h_half
+                line_y = f"(h/2)-150{offset:+d}"
+                vf_parts.append(
+                    f"drawtext=fontfile='{FONT}':text='{_escape(line)}':"
+                    f"fontcolor={HOOK_COLOR}:fontsize={hook_fs}:"
+                    f"x=(w-text_w)/2:y={line_y}:"
+                    f"borderw=7:bordercolor=black@0.9:"
+                    f"shadowcolor=black@0.7:shadowx=3:shadowy=3:"
+                    f"{vis}:{gate}"
+                )
 
     # Mission counter — small bronze line at the top of frame ("DAY 47 · UNTIL
     # DISCIPLINE IS COOL AGAIN"). Enrols viewers in the streak; auto-fits the
@@ -1133,12 +1226,18 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         # captions sat directly ON TOP of the hook card). Skip the hook's words
         # in the caption track; captions begin with the voiceover body.
         cap_timings = word_timings
-        if hook and HOOK_TEXT_ON:
+        # The hook's words are carried by the karaoke line (or the drawtext
+        # card); captioning them a second time reads as doubled text.
+        if hook and (hook_starts or HOOK_TEXT_ON):
             n_hook = len(hook.split())
             if len(word_timings) > n_hook + 2:
                 cap_timings = word_timings[n_hook:]
         ass_path = Path(out_path).with_suffix(".captions.ass")
-        _build_ass(cap_timings, ass_path)
+        # Pass the hook through so libass draws the word-by-word follower in
+        # the same subtitle pass — proportional layout and centring for free.
+        _build_ass(cap_timings, ass_path,
+                   hook=hook if hook_starts else "",
+                   hook_starts=hook_starts, hook_hold=hook_hold)
         vf_parts.append(f"ass='{_escape_filter_path(ass_path)}'")
 
     # Thin gold frame + corner brackets, drawn on top of everything.
