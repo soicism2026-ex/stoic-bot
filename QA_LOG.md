@@ -3012,3 +3012,59 @@ for any recurring defects.
 - severity: high
 - issues:
   - preflight: too dark: mean luminance 35.3/255 (13.9%), floor is 45 (18%). This reads as a black rectangle on a phone.
+
+## Visual QA — 2026-09-07 13:36 UTC
+**File:** `2026-09-07_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Seneca revisited his childhood home and complained the trees looked old. Then the old man at the door turned out to be his playmate.
+**Scores:** hook_strength=5.0 | text_legibility=5.0 | pacing=5.0 | scroll_stop_potential=5.0
+**Reasoning:** API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepAmVzNPfNJtxBU4hDGK'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepAmVzNPfNJtxBU4hDGK'}
+**Flagged dims:** api_unreachable
+
+
+## Visual QA — 2026-09-07 13:44 UTC
+**File:** `2026-09-07_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Seneca revisited his childhood home and complained the trees looked old. Then the old man at the door turned out to be his playmate.
+**Scores:** hook_strength=5.0 | text_legibility=5.0 | pacing=5.0 | scroll_stop_potential=5.0
+**Reasoning:** API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepBJxkosfGCTk1v2yZ2j'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepBJxkosfGCTk1v2yZ2j'}
+**Flagged dims:** api_unreachable
+
+
+## Visual QA — 2026-09-07 13:51 UTC
+**File:** `2026-09-07_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Seneca revisited his childhood home and complained the trees looked old. Then the old man at the door turned out to be his playmate.
+**Scores:** hook_strength=5.0 | text_legibility=5.0 | pacing=5.0 | scroll_stop_potential=5.0
+**Reasoning:** API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepBrDyiM7iVtqbrgwggu'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepBrDyiM7iVtqbrgwggu'}
+**Flagged dims:** api_unreachable
+
+
+## Visual QA — 2026-09-07 13:58 UTC
+**File:** `2026-09-07_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Seneca revisited his childhood home and complained the trees looked old. Then the old man at the door turned out to be his playmate.
+**Scores:** hook_strength=5.0 | text_legibility=5.0 | pacing=5.0 | scroll_stop_potential=5.0
+**Reasoning:** API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepCPY6k53iKiRCMHjaS8'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepCPY6k53iKiRCMHjaS8'}
+**Flagged dims:** api_unreachable
+
+
+## Visual QA — 2026-09-07 14:05 UTC
+**File:** `2026-09-07_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Seneca revisited his childhood home and complained the trees looked old. Then the old man at the door turned out to be his playmate.
+**Scores:** hook_strength=5.0 | text_legibility=5.0 | pacing=5.0 | scroll_stop_potential=5.0
+**Reasoning:** API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepCvu7u7YfZRNAz7yg2B'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepCvu7u7YfZRNAz7yg2B'}
+**Flagged dims:** api_unreachable
+
+
+## 2026-09-07 — attempt 5
+- uploaded: False
+- severity: high
+- issues:
+  - preflight: too dark: mean luminance 35.3/255 (13.9%), floor is 45 (18%). This reads as a black rectangle on a phone.
