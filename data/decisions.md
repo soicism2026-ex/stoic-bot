@@ -710,3 +710,16 @@ that story must always be captioned "recorded in the Historia Augusta", never
   footage — but its Enterprise API is **music only**, no programmatic footage
   download, which disqualifies it for an automated pipeline. Neither is worth
   buying before the retention read on the stories.
+- **2026-09-07 — THE 09-05 OUTAGE WAS MY PREFLIGHT GATE.** Six consecutive runs
+  on 2026-09-05 were CANCELLED at the 60-minute job cap and the channel
+  published nothing that day; the pipeline step had gone from ~12 minutes to
+  ~38. Cause: `preflight.py` ran a separate ffmpeg seek-and-decode for every
+  sampled timestamp — six for luminance, six for the contact sheet, two for the
+  text measurement, roughly **fourteen decodes per render attempt**, multiplied
+  by up to five attempts. A quality gate that costs a day of posting is not a
+  quality gate. Now ONE decode pass (`fps=1/N` walks the file once and emits
+  every sample), tunable via `PREFLIGHT_SAMPLE_EVERY`.
+  Also made the gate exception-safe, which a test caught: `review()` claimed it
+  never raises but `_probe_duration` threw on a missing binary. Since the gate
+  BLOCKS posts, a failure to measure must WARN, never fail — otherwise a broken
+  checker silently stops the channel, which is the exact failure being fixed.

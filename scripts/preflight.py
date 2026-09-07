@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import tempfile
@@ -54,37 +55,72 @@ MIN_RANGE = float(40)
 # Fraction of the frame the opening text may cover.
 MAX_TEXT_FRAC = 0.35
 SAMPLE_TIMES = (0.1, 1.0, 3.0, 8.0, 15.0, 25.0)
+# Seconds between sampled frames in the SINGLE decode pass. The first version
+# ran a separate seek-and-decode ffmpeg for every timestamp — six for
+# luminance, six more for the contact sheet, two for the text measurement.
+# Roughly fourteen decodes per render attempt, multiplied by up to five
+# attempts, took the daily run from ~12 minutes to ~38 and pushed six runs on
+# 2026-09-05 past the 60-minute job cap, which cost a whole day of posting.
+# One pass now produces every sample.
+SAMPLE_EVERY = float(os.environ.get("PREFLIGHT_SAMPLE_EVERY", "6"))
 
 
 def _probe_duration(path: Path) -> float:
-    out = subprocess.run(
-        ["ffprobe", "-v", "error", "-show_entries", "format=duration",
-         "-of", "csv=p=0", str(path)],
-        capture_output=True, text=True).stdout.strip()
+    """Duration, or 0.0. Never raises — this gate blocks posts, so a missing
+    binary must not become a crash that stops the channel."""
     try:
+        out = subprocess.run(
+            ["ffprobe", "-v", "error", "-show_entries", "format=duration",
+             "-of", "csv=p=0", str(path)],
+            capture_output=True, text=True).stdout.strip()
         return float(out)
-    except ValueError:
+    except (ValueError, OSError):
         return 0.0
 
 
-def _stats(path: Path, t: float) -> tuple[float, float] | None:
-    """(mean luminance, stddev) for the frame at t, or None."""
-    out = subprocess.run(
-        ["ffmpeg", "-v", "info", "-ss", str(t), "-i", str(path), "-frames:v", "1",
-         "-vf", "signalstats,metadata=print", "-f", "null", "-"],
-        capture_output=True, text=True).stderr
-    avg = ymin = ymax = None
+def _scan(path: Path, frames_dir: Path | None) -> list[dict]:
+    """Every measurement in ONE decode pass.
+
+    `fps=1/N` walks the file once and emits a frame every N seconds;
+    signalstats prints luminance for each, and the same pass writes the
+    contact sheet. Previously this was one ffmpeg seek per sample, which is
+    what made the gate expensive enough to time the job out.
+    """
+    try:
+        return _scan_inner(path, frames_dir)
+    except OSError:
+        return []          # no ffmpeg -> no samples -> the caller WARNS
+
+
+def _scan_inner(path: Path, frames_dir: Path | None) -> list[dict]:
+    args = ["ffmpeg", "-v", "info", "-y", "-i", str(path),
+            "-vf", f"fps=1/{SAMPLE_EVERY},signalstats,metadata=print"]
+    if frames_dir:
+        frames_dir.mkdir(parents=True, exist_ok=True)
+        # -y must precede the output; appending it after "-" made ffmpeg treat
+        # it as a second output and the whole scan returned nothing.
+        args += ["-q:v", "4", str(frames_dir / f"{path.stem}_%02d.jpg")]
+    else:
+        args += ["-f", "null", "-"]
+    out = subprocess.run(args, capture_output=True, text=True).stderr
+
+    samples, cur = [], {}
     for line in out.splitlines():
-        if "YAVG" in line and avg is None:
-            avg = float(line.split("=")[-1])
-        elif "YMIN" in line and ymin is None:
-            ymin = float(line.split("=")[-1])
-        elif "YMAX" in line and ymax is None:
-            ymax = float(line.split("=")[-1])
-    if avg is None:
-        return None
-    rng = (ymax - ymin) if (ymin is not None and ymax is not None) else 255.0
-    return avg, rng
+        if "pts_time:" in line:
+            if cur.get("luma") is not None:
+                samples.append(cur)
+            cur = {"t": float(line.split("pts_time:")[1].split()[0])}
+        elif "YAVG" in line and "luma" not in cur:
+            cur["luma"] = float(line.split("=")[-1])
+        elif "YMIN" in line and "ymin" not in cur:
+            cur["ymin"] = float(line.split("=")[-1])
+        elif "YMAX" in line and "ymax" not in cur:
+            cur["ymax"] = float(line.split("=")[-1])
+    if cur.get("luma") is not None:
+        samples.append(cur)
+    for sm in samples:
+        sm["range"] = sm.get("ymax", 255.0) - sm.get("ymin", 0.0)
+    return samples
 
 
 def _bright_fraction(path: Path, t: float) -> float:
@@ -94,6 +130,13 @@ def _bright_fraction(path: Path, t: float) -> float:
     around 180, so a near-white cutoff reported a frame COVERED in gold caps as
     having no text at all.
     """
+    try:
+        return _bright_fraction_inner(path, t)
+    except OSError:
+        return 0.0
+
+
+def _bright_fraction_inner(path: Path, t: float) -> float:
     with tempfile.TemporaryDirectory() as d:
         png = Path(d) / "f.png"
         subprocess.run(
@@ -121,42 +164,37 @@ def review(path: Path, frames_dir: Path | None = None) -> dict:
         res["verdict"] = "error"
         res["fails"].append("video file does not exist")
         return res
-    dur = _probe_duration(path)
-    res["duration"] = round(dur, 1)
-    times = [t for t in SAMPLE_TIMES if t < max(dur - 0.5, 0.2)] or [0.1]
+    res["duration"] = round(_probe_duration(path), 1)
+
+    samples = _scan(path, frames_dir)
+    if not samples:
+        res["warns"].append("could not sample any frames")
+        res["verdict"] = "warn"
+        return res
 
     lumas = []
-    for t in times:
-        st = _stats(path, t)
-        if st is None:
-            continue
-        avg, rng = st
-        lumas.append(avg)
-        res["checks"].append({"t": t, "luma": round(avg, 1),
-                              "pct": round(avg / 255, 3), "range": round(rng, 1)})
-        if rng < MIN_RANGE:
+    for sm in samples:
+        lumas.append(sm["luma"])
+        res["checks"].append({"t": round(sm["t"], 1), "luma": round(sm["luma"], 1),
+                              "pct": round(sm["luma"] / 255, 3),
+                              "range": round(sm["range"], 1)})
+        if sm["range"] < MIN_RANGE:
             res["fails"].append(
-                f"t={t}s is a dead frame (tonal range {rng:.0f}) — black or frozen")
-        if frames_dir:
-            frames_dir.mkdir(parents=True, exist_ok=True)
-            subprocess.run(
-                ["ffmpeg", "-v", "error", "-ss", str(t), "-i", str(path),
-                 "-frames:v", "1", "-q:v", "4",
-                 str(frames_dir / f"{path.stem}_t{t}.jpg"), "-y"],
-                capture_output=True)
-            res["frames"].append(str(frames_dir / f"{path.stem}_t{t}.jpg"))
+                f"t={sm['t']:.0f}s is a dead frame (tonal range "
+                f"{sm['range']:.0f}) — black or frozen")
+    if frames_dir:
+        res["frames"] = sorted(str(p) for p in frames_dir.glob(f"{path.stem}_*.jpg"))
 
-    if lumas:
-        mean = sum(lumas) / len(lumas)
-        res["mean_luma"] = round(mean, 1)
-        res["mean_pct"] = round(mean / 255, 3)
-        if mean < MIN_LUMA:
-            res["fails"].append(
-                f"too dark: mean luminance {mean:.1f}/255 ({mean / 255:.1%}), "
-                f"floor is {MIN_LUMA:.0f} ({MIN_LUMA / 255:.0%}). This reads as "
-                f"a black rectangle on a phone.")
+    mean = sum(lumas) / len(lumas)
+    res["mean_luma"] = round(mean, 1)
+    res["mean_pct"] = round(mean / 255, 3)
+    if mean < MIN_LUMA:
+        res["fails"].append(
+            f"too dark: mean luminance {mean:.1f}/255 ({mean / 255:.1%}), "
+            f"floor is {MIN_LUMA:.0f} ({MIN_LUMA / 255:.0%}). This reads as a "
+            f"black rectangle on a phone.")
 
-    frac = _bright_fraction(path, times[0])
+    frac = _bright_fraction(path, samples[0]["t"])
     res["opening_text_frac"] = round(frac, 3)
     if frac > MAX_TEXT_FRAC:
         res["fails"].append(
@@ -191,7 +229,8 @@ def main() -> int:
     if "mean_luma" in res:
         print(f"  mean luminance {res['mean_luma']}/255 = {res['mean_pct']:.1%} "
               f"(floor {MIN_LUMA / 255:.0%})")
-    print(f"  opening text covers {res['opening_text_frac']:.1%} of frame")
+    if "opening_text_frac" in res:
+        print(f"  opening text covers {res['opening_text_frac']:.1%} of frame")
     for w in res["warns"]:
         print(f"  WARN {w}")
     for f in res["fails"]:

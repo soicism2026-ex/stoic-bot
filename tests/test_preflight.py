@@ -144,3 +144,65 @@ def test_a_skipped_post_does_not_burn_the_story():
     rows = [{"experiment": "story:serenus_not_ill"}]
     first = stories.pick(rows)
     assert stories.pick(rows)["id"] == first["id"]
+
+
+# ------------------------------------------------- cost of the gate itself
+#
+# 2026-09-05: SIX consecutive runs were cancelled at the 60-minute job cap and
+# the channel published nothing that day. The pipeline step had gone from ~12
+# minutes to ~38. Cause was this gate: it ran a separate ffmpeg seek-and-decode
+# for every sampled timestamp — six for luminance, six for the contact sheet,
+# two for the text measurement — about fourteen decodes per render attempt,
+# multiplied by up to five attempts.
+#
+# A quality gate that costs the channel a day of posting is not a quality gate.
+
+FFMPEG_SAMPLE = """
+[Parsed_metadata_2 @ 0x1] pts_time:0.1
+[Parsed_metadata_2 @ 0x1] lavfi.signalstats.YMIN=9
+[Parsed_metadata_2 @ 0x1] lavfi.signalstats.YAVG=41.9
+[Parsed_metadata_2 @ 0x1] lavfi.signalstats.YMAX=192
+[Parsed_metadata_2 @ 0x1] pts_time:6.1
+[Parsed_metadata_2 @ 0x1] lavfi.signalstats.YMIN=4
+[Parsed_metadata_2 @ 0x1] lavfi.signalstats.YAVG=25.6
+[Parsed_metadata_2 @ 0x1] lavfi.signalstats.YMAX=33
+"""
+
+
+def test_one_decode_pass_not_one_per_sample():
+    """The whole fix. fps=1/N walks the file once and emits every sample."""
+    src = (ROOT / "scripts" / "preflight.py").read_text()
+    assert "fps=1/" in src, "no single-pass sampling"
+    assert "-ss" not in src.split("def _scan")[1].split("def ")[0], \
+        "still seeking per sample inside the scan"
+
+
+def test_scan_parses_every_sample_from_one_stderr(monkeypatch):
+    import subprocess as sp
+
+    class R:
+        stderr = FFMPEG_SAMPLE
+    monkeypatch.setattr(sp, "run", lambda *a, **k: R())
+    samples = preflight._scan(Path("x.mp4"), None)
+    assert len(samples) == 2
+    assert samples[0]["luma"] == 41.9
+    assert samples[1]["range"] == 33 - 4
+
+
+def test_a_broken_scanner_WARNS_rather_than_blocking(monkeypatch, tmp_path):
+    """The gate blocks posts. If it cannot measure, it must not conclude the
+    video is bad — that would silently stop the channel, which is exactly the
+    failure being fixed here."""
+    v = tmp_path / "v.mp4"
+    v.write_bytes(b"x")
+    monkeypatch.setattr(preflight, "_scan", lambda *a, **k: [])
+    res = preflight.review(v)
+    assert res["verdict"] == "warn"
+    assert res["fails"] == []
+
+
+def test_sample_interval_is_tunable():
+    """So the cost can be lowered further without a code change if a run ever
+    approaches the job cap again."""
+    src = (ROOT / "scripts" / "preflight.py").read_text()
+    assert "PREFLIGHT_SAMPLE_EVERY" in src
