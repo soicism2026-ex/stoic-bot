@@ -3068,3 +3068,19 @@ for any recurring defects.
 - severity: high
 - issues:
   - preflight: too dark: mean luminance 35.3/255 (13.9%), floor is 45 (18%). This reads as a black rectangle on a phone.
+
+## Visual QA — 2026-09-07 16:20 UTC
+**File:** `2026-09-07_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Seneca revisited his childhood home and complained the trees looked old. Then the old man at the door turned out to be his playmate.
+**Scores:** hook_strength=5.0 | text_legibility=5.0 | pacing=5.0 | scroll_stop_potential=5.0
+**Reasoning:** API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepPD1LKRqACqGKM4GkoS'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepPD1LKRqACqGKM4GkoS'}
+**Flagged dims:** api_unreachable
+
+
+## 2026-09-07 — attempt 1
+- uploaded: True
+- severity: low
+- issues:
+  - QA API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CepPCE5kU98C8XNZv3sk4'}
