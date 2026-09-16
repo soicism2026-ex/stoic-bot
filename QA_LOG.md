@@ -3148,3 +3148,19 @@ for any recurring defects.
 - severity: low
 - issues:
   - QA API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cf4MfvkK9Vd12FrkVM1Ff'}
+
+## Visual QA — 2026-09-16 01:27 UTC
+**File:** `2026-09-16_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Marcus Aurelius left himself instructions for the morning after he'd failed again. The instruction is not try harder.
+**Scores:** hook_strength=5.0 | text_legibility=5.0 | pacing=5.0 | scroll_stop_potential=5.0
+**Reasoning:** API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cf6FRHc5GPjE1PoUEmyqX'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cf6FRHc5GPjE1PoUEmyqX'}
+**Flagged dims:** api_unreachable
+
+
+## 2026-09-16 — attempt 1
+- uploaded: True
+- severity: low
+- issues:
+  - QA API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cf6FPYp4bEsJiav17HdU1'}
