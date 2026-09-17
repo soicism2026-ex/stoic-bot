@@ -117,6 +117,32 @@ REPORT_MIN_VIEWS = 60
 PLAUSIBLE_MAX_PCT = 300.0
 
 
+# SECONDS WATCHED, not percentage, is the number to steer on.
+# avg_view_pct is watched/duration, so it mechanically rewards short videos.
+# Measured 2026-09-17: story posts sit at 40% retention but 19.0s watched;
+# everything before them sits at 64% but 18.0s. The percentage says the stories
+# are far worse, the seconds say they hold attention slightly better — and
+# seconds are what the 3,000-watch-hour monetisation door actually counts.
+# A retention-percentage target would have killed the format for being long.
+# CAVEAT: YouTube also uses completion rate as a Shorts ranking signal, so a
+# low percentage can still cost distribution even when seconds are healthy.
+# Report both; steer on seconds.
+
+
+def seconds_line(rows: list[dict]) -> str:
+    """Median seconds actually watched — the length-neutral measure."""
+    usable = [r for r in rows if int(r.get("views") or 0) >= REPORT_MIN_VIEWS]
+    if not usable:
+        return ""
+    import statistics
+    secs = [float(r.get("avg_view_seconds") or 0) for r in usable]
+    secs = [s for s in secs if s > 0]
+    if not secs:
+        return ""
+    return (f"[retention] median SECONDS watched: {statistics.median(secs):.1f}s "
+            f"across {len(secs)} videos (length-neutral; steer on this, not %)")
+
+
 def report_line(rows: list[dict]) -> str:
     """A headline that means something.
 
@@ -148,6 +174,9 @@ def main():
         return
     write_rows(rows)
     print(report_line(rows))
+    extra = seconds_line(rows)
+    if extra:
+        print(extra)
 
 
 if __name__ == "__main__":

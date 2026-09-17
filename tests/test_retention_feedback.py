@@ -193,3 +193,48 @@ def test_headline_thresholds_match_the_content_engine():
     import inspect
     sig = inspect.signature(content._winning_hooks)
     assert retention.REPORT_MIN_VIEWS == sig.parameters["min_views"].default
+
+
+# ------------------------------------------------- the metric itself
+#
+# 2026-09-17. I set a 60% retention bar for the story format and reported it as
+# FAILING at 40%. That bar was wrong, and wrong in the same way the four-word
+# hook rule was wrong: avg_view_pct is watched/duration, so it mechanically
+# punishes longer videos.
+#
+#   STORY posts        n=  3   retention 40%   seconds watched 19.0s
+#   everything before  n=188   retention 64%   seconds watched 18.0s
+#
+# The percentage says the stories are far worse. The seconds say they hold
+# attention slightly better — and seconds are what the 3,000-watch-hour
+# monetisation door counts. A percentage target would have killed the format
+# for the crime of being long.
+
+
+def test_retention_reports_seconds_not_only_percent():
+    """A length-normalised number alone cannot compare a 25s aphorism with a
+    49s story."""
+    assert hasattr(retention, "seconds_line")
+
+
+def test_seconds_line_is_length_neutral():
+    rows = [
+        {"video_id": "short", "views": 200, "avg_view_pct": 70.0, "avg_view_seconds": 15.0},
+        {"video_id": "long", "views": 200, "avg_view_pct": 40.0, "avg_view_seconds": 19.0},
+    ]
+    out = retention.seconds_line(rows)
+    assert "17.0s" in out, out          # median of 15 and 19
+    assert "steer on this" in out
+
+
+def test_seconds_line_ignores_low_sample_videos():
+    rows = [{"video_id": "tiny", "views": 3, "avg_view_pct": 90.0, "avg_view_seconds": 40.0}]
+    assert retention.seconds_line(rows) == ""
+
+
+def test_a_longer_video_can_win_on_seconds_while_losing_on_percent():
+    """The exact case that nearly killed the story format."""
+    short = {"views": 200, "avg_view_pct": 64.0, "avg_view_seconds": 18.0}
+    long_ = {"views": 200, "avg_view_pct": 40.0, "avg_view_seconds": 19.0}
+    assert long_["avg_view_pct"] < short["avg_view_pct"]
+    assert long_["avg_view_seconds"] > short["avg_view_seconds"]

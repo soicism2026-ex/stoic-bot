@@ -749,3 +749,26 @@ that story must always be captioned "recorded in the Historia Augusta", never
   The spoken narration is unchanged, because `act1 = hook + ". " + story`; only
   the on-screen boundary moved. Guarded by test: no hook may exceed 5 spoken
   seconds, and none may open on setup.
+- **2026-09-17 — THE RETENTION BAR WAS THE WRONG METRIC.** Five days ago I
+  reported the story format FAILING at 40% against a 60% bar. That bar was
+  wrong, in exactly the way the four-word hook rule was wrong: `avg_view_pct`
+  is watched/duration, so it mechanically punishes longer videos.
+
+      STORY posts        n=  3   retention 40%   seconds watched 19.0s
+      everything before  n=188   retention 64%   seconds watched 18.0s
+
+  The percentage says the stories are far worse; the SECONDS say they hold
+  attention slightly better — and seconds are what the 3,000-watch-hour door
+  counts. A percentage target would have killed the format for being long.
+  `retention.py` now reports median seconds watched alongside the percentage
+  and says plainly which to steer on. **Caveat kept in the code:** YouTube also
+  uses completion rate as a Shorts ranking signal, so a low percentage can
+  still cost distribution even when seconds are healthy. Report both.
+  n=3 on the story side — direction, not proof.
+- **2026-09-17 — WHERE THE AUDIENCE ACTUALLY GOES.** Full curve, averaged over
+  4 videos and normalised to frame 0: 99% → 85% by 4.8s (healthy — most Shorts
+  lose more than that in the first 3s), then **−24% at 4.8-7.2s**, then −15%,
+  −14%, −16% through 14.4s, then it FLATTENS at ~35% and decays gently to 18%.
+  **Everything after 15 seconds is fine.** The entire loss is the first fifteen.
+  The hook fix targets the −24% slice; the 7-15s bleed is still unexplained and
+  is the next thing to look at once new data lands.
