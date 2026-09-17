@@ -322,3 +322,50 @@ def test_shot_lists_are_specific_enough_to_be_shots():
     for s in stories.load():
         for shot in s["broll"]:
             assert len(shot.split()) >= 4, f"{s['id']}: {shot!r} is a mood, not a shot"
+
+
+# ------------------------------------------------- hook DURATION
+#
+# 2026-09-17: the retention curves located the drop precisely — 10-16% into a
+# ~48s video, which is second 4.8 to 7.7. The hook card holds to ~9.2s. So
+# viewers were leaving WHILE STILL READING THE HOOK, not after it.
+#
+# Cause: all 30 hooks ran 18-25 words, a median of 7.9 SPOKEN SECONDS. Nobody
+# waits eight seconds on Shorts for a payoff. When the 4-word cap was removed
+# (correctly — it was built on a duration confound) nothing replaced it.
+#
+# The fix is not fortune cookies. It is front-loading the gap: the payoff line
+# becomes the hook and the setup moves into the story. Spoken narration is
+# unchanged, because act1 = hook + ". " + story — only the on-screen boundary
+# moves.
+
+WORDS_PER_SECOND = 2.9      # measured for Steffan at rate -4%
+MAX_HOOK_SECONDS = 5.0
+
+
+def test_no_hook_outlasts_the_scroll():
+    over = [(s["id"], len(s["hook"].split()) / WORDS_PER_SECOND)
+            for s in stories.load()
+            if len(s["hook"].split()) / WORDS_PER_SECOND > MAX_HOOK_SECONDS]
+    assert over == [], (
+        f"{len(over)} hooks take longer than {MAX_HOOK_SECONDS}s to speak — "
+        f"the measured drop is at 4.8-7.7s: {over[:3]}")
+
+
+def test_the_hook_carries_the_gap_not_the_setup():
+    """A hook that opens 'Two thousand years ago a man wrote...' spends its
+    first eleven words on scene-setting. The line that makes someone stay has
+    to be first."""
+    for s in stories.load():
+        h = s["hook"].lower()
+        assert not h.startswith(("two thousand years ago", "a roman official",
+                                 "the founder of", "the only thing")), \
+            f"{s['id']}: hook still opens on setup"
+
+
+def test_moving_words_did_not_change_what_is_spoken():
+    """act1 is hook + story, so the narration must still contain both halves.
+    If a rewrite dropped words, the audio would no longer match the captions."""
+    for s in stories.load():
+        assert len(s["story"].split()) >= 20, f"{s['id']}: story too thin"
+        assert s["hook"].strip() and s["story"].strip()

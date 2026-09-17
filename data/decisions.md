@@ -737,3 +737,15 @@ that story must always be captioned "recorded in the Historia Augusta", never
   it marks the current attempt final rather than breaking, because breaking
   would abandon the run with nothing published, which is the exact failure
   being fixed.
+- **2026-09-17 — THE HOOKS WERE 8 SECONDS LONG.** The retention curves located
+  the drop exactly: 10-16% into a ~48s video = **second 4.8 to 7.7**, while the
+  hook card still holds to ~9.2s. Viewers were leaving **mid-hook**, not after
+  it. All 30 hooks ran 18-25 words — a median of **7.9 spoken seconds**, 22 of
+  30 over 7s. Nobody waits eight seconds on Shorts for a payoff. This is
+  downstream of my own change: removing the 4-word cap was right (it was built
+  on a duration confound) but nothing replaced it.
+  Fixed by FRONT-LOADING THE GAP — the payoff line becomes the hook, the setup
+  moves into the story. Median hook is now **2.8s**, longest 4.1s, none over 5s.
+  The spoken narration is unchanged, because `act1 = hook + ". " + story`; only
+  the on-screen boundary moved. Guarded by test: no hook may exceed 5 spoken
+  seconds, and none may open on setup.
