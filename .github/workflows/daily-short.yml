@@ -62,6 +62,11 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          # Generated MOTION backgrounds (Kling 3.0 via api.higgsfield.ai).
+          # Format is KEY_ID:KEY_SECRET. Inert until REEL_KLING_BG=1 is
+          # also set, and every failure falls back to the stock chain.
+          HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}
+          REEL_KLING_BG: ${{ vars.REEL_KLING_BG }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
@@ -161,6 +166,11 @@ jobs:
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          # Generated MOTION backgrounds (Kling 3.0 via api.higgsfield.ai).
+          # Format is KEY_ID:KEY_SECRET. Inert until REEL_KLING_BG=1 is
+          # also set, and every failure falls back to the stock chain.
+          HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}
+          REEL_KLING_BG: ${{ vars.REEL_KLING_BG }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           # Instagram cross-post (optional — pipeline skips if unset).

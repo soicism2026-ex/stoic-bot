@@ -57,6 +57,7 @@ After the main post loop, the workflow runs:
 | `src/content.py` | Claude Opus content generation. Author rotation (Big5 × 4 days, Chrysippus × 1), theme LRU rotation, format rotation (3 quote : 1 list). Hard block-list of previously used quotes injected into prompt. |
 | `src/tts.py` | ElevenLabs primary (Brian → George → Adam, analytics-weighted). edge-tts fallback when no key. Returns per-word timings for karaoke. |
 | `src/render.py` | ffmpeg pipeline. 3-clip background (clip 0 = theme query, clip 1 = dramatic nature, clip 2 = ancient stone). Hook text at top, quote + author centred, music mixed. Captions OFF by default (`REEL_CAPTIONS=0`). |
+| `src/kling.py` | Generated MOTION backgrounds via `api.higgsfield.ai` (Kling 3.0 Standard). OFF unless `REEL_KLING_BG=1` + `HIGGSFIELD_API_KEY`. ONE request per narration beat, not per slot: a 15s `multi_prompt`/`multi_shots` master is cut into the three ~4.4s angle slots that share a query, so a 4-beat story costs 4 requests. Spend cap, hard deadline, and falls through to stock on any failure. |
 | `src/imagegen.py` | PIVOT: text-to-image backgrounds. When `REEL_IMAGE_BG=1` + `OPENAI_API_KEY`, each clip is an AI cinematic still depicting the exact narration beat (gpt-image-1) → Ken Burns clip. OFF by default; any failure falls back to stock. |
 | `src/backgrounds.py` | Guide library (bookend slots only) → generated (imagegen) → Pixabay → Pexels → synthetic lavfi fallback. Stock picks from top-`REEL_BG_TOP` (=3) most-relevant results, not a deep index. `clip_idx` drives diversity: idx 0 = theme-specific query, idx 1 = `DIVERSITY_QUERIES[0]` (nature), idx 2 = `DIVERSITY_QUERIES[1]` (stone). |
 | `src/music.py` | 3-track pool: `dark_ambient`, `ancient_minimal`, `focus_underscore`. Analytics-weighted after 5 posts per track, LRU before that. Pixabay music API. |
@@ -102,6 +103,7 @@ After the main post loop, the workflow runs:
 | `YOUTUBE_REFRESH_TOKEN` | same — must include `youtube.force-ssl` scope for thumbnails + comments |
 | `PIXABAY_API_KEY` | backgrounds.py, music.py |
 | `PEXELS_API_KEY` | backgrounds.py fallback |
+| `HIGGSFIELD_API_KEY` | kling.py — generated MOTION backgrounds (Kling 3.0 REST API). `KEY_ID:KEY_SECRET`. Inert unless `REEL_KLING_BG=1` |
 | `REPLICATE_API_TOKEN` | tts.py — Chatterbox voice (primary; open-source, beats ElevenLabs in blind tests, pay-per-second) |
 | `OPENAI_API_KEY` | imagegen.py — activates AI-generated backgrounds (optional, paid) |
 | `IG_ACCESS_TOKEN` | publish_instagram.py (optional) |

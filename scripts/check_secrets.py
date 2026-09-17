@@ -11,7 +11,7 @@ policy existed.
 
 Required keys:  ANTHROPIC_API_KEY, ELEVENLABS_API_KEY, YOUTUBE_CLIENT_ID,
                 YOUTUBE_CLIENT_SECRET, YOUTUBE_REFRESH_TOKEN
-Optional keys:  PEXELS_API_KEY, PIXABAY_API_KEY (fallbacks exist without them)
+Optional keys:  PEXELS_API_KEY, PIXABAY_API_KEY, HIGGSFIELD_API_KEY (fallbacks exist without them)
 """
 import os
 import socket
@@ -264,6 +264,32 @@ def check_pixabay() -> bool:
     return True
 
 
+def check_higgsfield() -> bool:
+    """Optional — generated MOTION backgrounds (Kling 3.0 via api.higgsfield.ai).
+
+    Never fails the run. Without it, backgrounds come from the generated-still
+    or stock chain exactly as before. This check validates the key's SHAPE
+    only: a generation request costs money, and a preflight check is not worth
+    paying for on every run.
+    """
+    key = (os.environ.get("HIGGSFIELD_API_KEY") or "").strip()
+    enabled = os.environ.get("REEL_KLING_BG", "0") not in ("0", "false", "False")
+    if not key:
+        if enabled:
+            print(f"  [{SKIP}] REEL_KLING_BG=1 but HIGGSFIELD_API_KEY is not "
+                  "set — generated motion is OFF, falling back to stock")
+        else:
+            print(f"  [{SKIP}] HIGGSFIELD_API_KEY — not set (generated motion off)")
+        return True
+    if ":" not in key:
+        print(f"  [{SKIP}] HIGGSFIELD_API_KEY — not in KEY_ID:KEY_SECRET form; "
+              "it will be ignored at render time")
+        return True
+    state = "ON" if enabled else "present but REEL_KLING_BG is not 1"
+    print(f"  [{PASS}] HIGGSFIELD_API_KEY — well-formed ({state})")
+    return True
+
+
 def check_cloudflare() -> bool:
     """Optional — free AI backgrounds via Workers AI (FLUX.1 schnell).
 
@@ -341,6 +367,7 @@ def main():
     check_pexels()
     check_pixabay()
     check_cloudflare()
+    check_higgsfield()
     check_instagram()
     print("================================")
     failures = sum(1 for r in required if not r)

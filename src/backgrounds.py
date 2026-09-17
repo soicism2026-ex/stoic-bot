@@ -4,10 +4,13 @@ Background video sourcing for the daily Short.
 Source chain (first that succeeds wins):
   0. Guide library — assets/guide/*.mp4, only for the recurring-character
      bookend slots (REEL_GUIDE_SLOTS). Empty by default.
-  1. Pixabay — portrait clip, works reliably from GitHub Actions (PIXABAY_API_KEY)
-  2. Pexels  — secondary source; free-tier keys may 403 from cloud IPs (PEXELS_API_KEY)
-  3. Synthetic — ffmpeg lavfi dark-gradient; always available, no network needed
-  4. Local rotation — assets/backgrounds/ deterministic fallback
+  1. Generated MOTION — Kling 3.0 via api.higgsfield.ai; the beat as moving
+     footage. OFF unless REEL_KLING_BG=1 + HIGGSFIELD_API_KEY (see kling.py)
+  2. Generated STILL — imagegen.py + Ken Burns. OFF unless REEL_IMAGE_BG=1
+  3. Pixabay — portrait clip, works reliably from GitHub Actions (PIXABAY_API_KEY)
+  4. Pexels  — secondary source; free-tier keys may 403 from cloud IPs (PEXELS_API_KEY)
+  5. Synthetic — ffmpeg lavfi dark-gradient; always available, no network needed
+  6. Local rotation — assets/backgrounds/ deterministic fallback
 
 A run never breaks: every stage catches its own errors and tries the next.
 """
@@ -427,6 +430,23 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
                 return g
         except Exception as e:  # noqa: BLE001
             print(f"[background] guide library skipped: {e}", file=sys.stderr, flush=True)
+
+    # GENERATED MOTION (REEL_KLING_BG=1 + HIGGSFIELD_API_KEY). The owner's
+    # objection to the stock version was not relevance, it was life: "I mean
+    # like actual animated videos that relate exactly to what we're talking
+    # about not just a still video of water". Kling returns the beat as moving
+    # footage. Ranked above imagegen because a generated STILL with a Ken Burns
+    # push is the thing being replaced. Returns None when off or on any
+    # failure, so the chain below is untouched.
+    try:
+        import kling
+        k = kling.fetch_clip(query, out_path)
+        if k is not None:
+            print(f"[background] SOURCE={_note_source('KLING')} "
+                  f"query='{query}' file={k.name}", flush=True)
+            return k
+    except Exception as e:  # noqa: BLE001
+        print(f"[background] kling skipped: {e}", file=sys.stderr, flush=True)
 
     # PIVOT: when image generation is enabled (REEL_IMAGE_BG=1 + OPENAI_API_KEY),
     # generate a cinematic still that depicts THIS query exactly, instead of

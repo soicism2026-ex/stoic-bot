@@ -84,16 +84,47 @@ At the current cadence of 1 post/day that is **~1,470 credits/month**.
 with `gpt_image_2_5` at 9:16: `Error starting generation: Requires basic plan
 or higher.` Nothing was spent; the account holds 4 credits on the free plan.
 
-## This cannot be a pipeline dependency
+## It CAN be a pipeline dependency — via the REST API, not MCP
 
-Higgsfield reaches this project through an **MCP connector in the chat
-session**, not through an API key the GitHub Actions runner could hold. The
-trial is explicit that its credits "exist only in the MCP — they won't appear
-or work anywhere on higgsfield.ai". `daily_post.py` runs unattended on a
-runner and cannot call it.
+Correction to what this file said earlier today. Higgsfield has **two** front
+doors, and only one of them is reachable from CI:
 
-So the shape is **not** "the bot generates animated scenes each morning". It
-is: scenes are generated in a session, normalised, and committed — the same
-pattern as `assets/guide/`, via a script like `scripts/prep_guide_clips.py`.
-Story scenes are story-specific and do not amortise across posts, so the
-credit cost is per video and recurs.
+| | MCP connector | REST API |
+|---|---|---|
+| Lives in | a chat session | `api.higgsfield.ai` |
+| Auth | the connected account | `Authorization: Key KEY_ID:KEY_SECRET` |
+| Usable by a GitHub Actions runner | **no** | **yes** |
+| Trial credits | MCP-only, by their own docs | n/a |
+
+So the pipeline integration is real, and it is built: `src/kling.py`, wired
+into `backgrounds.py` above the generated-still source.
+
+**Model:** `kling-video/v3.0/std/text-to-video` (Kling 3.0 Standard).
+Text-to-video, 3-15s, `9:16` supported, `sound` on/off, and — the part that
+shapes the whole design — `multi_prompt` takes up to **6 sub-shots with their
+own durations** and `multi_shots` cuts between them.
+
+**One request per narration beat, not per slot.** `background_flavors()` now
+asks for the same beat query in three consecutive slots (three angles, ~4.4s
+each). `kling.py` turns the first of those into ONE 15s multi-shot master and
+serves the other two by cutting the next segment out of it. A four-beat story
+is therefore **4 requests, not 12**.
+
+**Turning it on** (both are required — a key alone does nothing):
+
+1. Create a key at `console.higgsfield.ai`, format `KEY_ID:KEY_SECRET`.
+2. Add it as the GitHub Actions secret `HIGGSFIELD_API_KEY`.
+3. Set the repository variable `REEL_KLING_BG` to `1`.
+
+`scripts/check_secrets.py` reports the key's shape and whether the flag is on.
+It does not make a test generation, because that costs money.
+
+**Guards, because the price is unpublished:** `KLING_MAX_BEATS_PER_RUN` (4)
+caps generations per process; `KLING_BEAT_DEADLINE` (420s) bounds the wait, so
+a queued job cannot repeat the five-day hang; and every failure returns None
+and falls through to stock, so the render cannot break. 23 tests, none of
+which touch the network.
+
+**Still unknown:** Higgsfield publishes no price for this endpoint. Check the
+console before flipping the flag. What the code controls is the request count,
+and that is 4 per video.

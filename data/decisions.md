@@ -841,3 +841,28 @@ that story must always be captioned "recorded in the Historia Augusta", never
   scenes in session and committing them, the `assets/guide/` pattern. Story
   scenes are story-specific, so the cost recurs per video and never amortises.
   `docs/animated_story_spec.md` corrected with these verified numbers.
+- **2026-09-17 — CORRECTION: HIGGSFIELD *CAN* BE AUTOMATED. It has a REST API.**
+  Earlier today I recorded that Higgsfield could never be a pipeline dependency
+  because it only reaches this project through an MCP connector in a chat
+  session. **That was wrong** — the owner supplied the docs for
+  `api.higgsfield.ai`, which authenticates with a server-side
+  `Authorization: Key KEY_ID:KEY_SECRET` header. A GitHub Actions runner can
+  hold that. The MCP finding still stands for the *trial credits*, which are
+  MCP-only by Higgsfield's own wording; it does not stand for the product.
+  Built `src/kling.py` against `kling-video/v3.0/std/text-to-video` and wired
+  it into `backgrounds.py` ABOVE the generated-still source — because a
+  generated still with a Ken Burns push is exactly what the owner rejected
+  ("I mean like actual animated videos... not just a still video of water").
+  **Design that keeps the bill down:** the model's `multi_prompt` takes up to 6
+  sub-shots with their own durations and `multi_shots` cuts between them. Since
+  `background_flavors()` now asks for the same beat query in three consecutive
+  slots, the first generates ONE 15s multi-shot master and the other two are
+  cut out of it for free. A four-beat story is **4 requests, not 12**.
+  **Guards, because Higgsfield publishes NO price for this endpoint:**
+  `REEL_KLING_BG` must be 1 AND `HIGGSFIELD_API_KEY` must be set (a key alone
+  does nothing — adding the secret must not start billing); a half-pasted key
+  without the `:` is refused rather than sent; `KLING_MAX_BEATS_PER_RUN`=4 caps
+  generations per process; `KLING_BEAT_DEADLINE`=420s bounds the wait so a
+  queued job cannot repeat the five-day hang; any failure returns None and
+  falls through to the stock chain. 23 tests, none touching the network.
+  **Left OFF.** It needs a key the owner creates and a price they have seen.
