@@ -3164,3 +3164,19 @@ for any recurring defects.
 - severity: low
 - issues:
   - QA API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cf6FPYp4bEsJiav17HdU1'}
+
+## Visual QA — 2026-09-17 01:24 UTC
+**File:** `2026-09-17_reel.mp4` | **Verdict:** `FLAG`
+**Hook:** Seneca wrote the rulebook on how to grieve properly. Then his closest friend died and he did all of it wrong, and published that.
+**Scores:** hook_strength=5.0 | text_legibility=5.0 | pacing=5.0 | scroll_stop_potential=5.0
+**Reasoning:** API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cf892KdHTAyYLWkw6oECe'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cf892KdHTAyYLWkw6oECe'}
+**Flagged dims:** api_unreachable
+
+
+## 2026-09-17 — attempt 1
+- uploaded: True
+- severity: low
+- issues:
+  - QA API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cf891JhSpPNoWkKjVKESM'}
