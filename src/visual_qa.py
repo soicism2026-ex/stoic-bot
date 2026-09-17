@@ -77,13 +77,22 @@ def load_thresholds() -> dict[str, dict[str, float]]:
     return t
 
 
+# A review that did not happen is NOT a middling review. Every failure path
+# below used to return 5.0 across the board, which lands in QA_LOG.md looking
+# exactly like a real verdict — and did, for 51 runs after the Anthropic
+# account ran out of credit on 2026-09-07. Twenty-four rows of the log had to
+# be filtered out by hand before the pacing numbers could be read. This
+# verdict records the ABSENCE of a review, with no scores at all.
+UNREVIEWED = "unreviewed"
+
+
 # ---------------------------------------------------------------------------
 # Result dataclass
 # ---------------------------------------------------------------------------
 
 @dataclass
 class VisualQAResult:
-    verdict: str       # "pass" | "flag" | "fail"
+    verdict: str       # "pass" | "flag" | "fail" | "unreviewed"
     scores: dict       # {dimension: float}
     reasoning: str     # one-paragraph explanation from Claude
     issues: list       # [str] specific problems
@@ -275,24 +284,24 @@ def score_video(
     except Exception as e:
         print(f"  [visual_qa] frame extraction failed: {e}", file=sys.stderr)
         return VisualQAResult(
-            verdict="flag",
-            scores={d: 5.0 for d in DIMENSIONS},
-            reasoning=f"Frame extraction failed: {e}",
-            issues=["frame_extraction_failed"],
+            verdict=UNREVIEWED,
+            scores={},
+            reasoning=f"Not reviewed — frame extraction failed: {e}",
+            issues=[f"frame_extraction_failed: {e}"],
             suggestions=[],
             hard_fails=[],
-            flags=list(DIMENSIONS),
+            flags=["not_reviewed"],
         )
 
     if not frames:
         return VisualQAResult(
-            verdict="flag",
-            scores={d: 5.0 for d in DIMENSIONS},
-            reasoning="No frames extracted.",
+            verdict=UNREVIEWED,
+            scores={},
+            reasoning="Not reviewed — no frames were extracted.",
             issues=["no_frames"],
             suggestions=[],
             hard_fails=[],
-            flags=list(DIMENSIONS),
+            flags=["not_reviewed"],
         )
 
     content_parts = _build_message_content(frames, content_data, n_hook)
@@ -309,13 +318,13 @@ def score_video(
     except Exception as e:
         print(f"  [visual_qa] API call failed: {e}", file=sys.stderr)
         return VisualQAResult(
-            verdict="flag",
-            scores={d: 5.0 for d in DIMENSIONS},
-            reasoning=f"API error: {e}",
+            verdict=UNREVIEWED,
+            scores={},
+            reasoning=f"Not reviewed — API error: {e}",
             issues=[f"api_error: {e}"],
             suggestions=[],
             hard_fails=[],
-            flags=["api_unreachable"],
+            flags=["not_reviewed", "api_unreachable"],
         )
 
     if raw.startswith("```"):
@@ -325,13 +334,13 @@ def score_video(
         data = json.loads(raw.strip())
     except json.JSONDecodeError:
         return VisualQAResult(
-            verdict="flag",
-            scores={d: 5.0 for d in DIMENSIONS},
-            reasoning=f"JSON parse failed: {raw[:300]}",
+            verdict=UNREVIEWED,
+            scores={},
+            reasoning=f"Not reviewed — JSON parse failed: {raw[:300]}",
             issues=["json_parse_error"],
             suggestions=[],
             hard_fails=[],
-            flags=["parse_failed"],
+            flags=["not_reviewed", "parse_failed"],
         )
 
     scores: dict[str, float] = {}
@@ -368,7 +377,8 @@ def score_video(
 
 def _append_log(log_path: Path, video_path: Path, content_data: dict, result: VisualQAResult):
     ts = datetime.utcnow().strftime("%Y-%m-%d %H:%M UTC")
-    score_str = " | ".join(f"{k}={v:.1f}" for k, v in result.scores.items())
+    score_str = (" | ".join(f"{k}={v:.1f}" for k, v in result.scores.items())
+                 or "NOT REVIEWED — no scores were produced")
     lines = [
         f"\n## Visual QA — {ts}",
         f"**File:** `{video_path.name}` | **Verdict:** `{result.verdict.upper()}`",

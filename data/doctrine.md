@@ -117,3 +117,30 @@ any of the thirty scripts, it is illustrating none of them.
 **The frame must be visible.** Measured on real output: 12.8-21.5% mean
 luminance, which reads as a black rectangle at the phone brightness this
 viewer uses at midnight. Mood is not the same as darkness.
+
+## 7. Cut. Nothing holds for thirteen seconds.
+
+The visual reviewer watched 206 of this channel's own videos and scored
+`pacing` below every other dimension — **5.4 out of 10, against 7.9 for
+legibility** — and flagged it 62 times, more than anything else. Its words,
+repeated across the log: frames "visually identical", "no motion", "static
+feel during the crucial first 1.5s".
+
+**A frame that does not change is a frame the thumb leaves.** Reference edits
+in this niche cut every 1.5–2.5 seconds. A measured story run put 52.4 seconds
+of narration across four shots: **13.1 seconds on one picture.** No grade, no
+quote card and no voice saves that. It reads as a slideshow.
+
+**Every written beat gets several shots, not one long hold.** Three angles on
+"an empty chair by a rain-streaked window" is editing. One thirteen-second
+push on it is a screensaver. The narration beat stays the unit of meaning; the
+number of shots inside it is set by how long the words take.
+
+**Motion is spent per shot, not per video.** The same camera push traversed
+over four seconds is visible and over thirteen is not. Shortening the shot
+speeds the move for free — which is why cutting more also fixes "no motion",
+and why a slow drift across a whole video fixes neither.
+
+**More cuts is not more variety.** The pictures must still follow the script's
+own images in order (section 6). Cutting between four unrelated stock clips
+faster just makes the randomness arrive sooner.

@@ -11,6 +11,7 @@ After a successful normal upload: if backup bank < 3 videos, render+QA one
 evergreen short and add it to the bank.
 """
 import importlib
+import math
 import json
 import os
 import time
@@ -75,6 +76,51 @@ _VQA_BLOCK_ON_FAIL = os.environ.get("VQA_BLOCK_ON_FAIL", "0") not in ("0", "fals
 # ---------------------------------------------------------------------------
 # Corrections
 # ---------------------------------------------------------------------------
+
+# Short-form cut rhythm. Reference edits in this niche cut every 1.5-2.5s. Past
+# ~4-5s on one frame the video reads as a slideshow, and the visual reviewer
+# says so: across 206 real reviews in QA_LOG.md, `pacing` is the channel's
+# WORST dimension (mean 5.4 against 7.9 for legibility) and the most-flagged
+# one (62 flags), with 273 separate remarks about frames being "visually
+# identical" or having "no motion". This is the bar the shot list is sized to.
+MAX_SECONDS_PER_CLIP = float(os.environ.get("REEL_MAX_SECONDS_PER_CLIP", "4.5"))
+
+# Ceiling on how many times one shot intent may be requested. backgrounds.py
+# only ever picks from the top-REEL_BG_TOP (=3) most relevant search results
+# and render.py spaces consecutive slots 7 apart, so asking the same query 3
+# times returns 3 DIFFERENT clips — while a 4th would repeat one exactly.
+MAX_SHOTS_PER_BEAT = 3
+
+
+def background_flavors(scene: list, guide: str, no_guide: bool,
+                       seconds: float = 0.0) -> list:
+    """The ordered background search queries, one per clip slot.
+
+    Formats that keep the recurring statue GUIDE bookend it: the statue opens
+    and closes, the scene shots sit between.
+
+    Formats that opt out (`_no_guide`) run on their own scenes only, and the
+    shot list is SIZED TO THE NARRATION so no single frame outstays
+    MAX_SECONDS_PER_CLIP. A measured production run: 52.4 seconds of story
+    across four shots left each background on screen for 13.1 SECONDS. Cutting
+    the statue bookends was right, but it made the rhythm worse — it took the
+    slot count from 6 to 4.
+
+    Each shot intent is therefore requested as many times as the length needs.
+    render.py spaces the pick per slot (REEL_BG_OFFSET = base + i*7) and
+    backgrounds.py picks index (day + offset) % 3, so adjacent slots sharing a
+    query come back with DIFFERENT footage from the same search rather than the
+    same clip twice. Same story beats, several angles on each — which is how
+    the beat gets three cuts instead of one thirteen-second hold.
+    """
+    if no_guide and scene:
+        repeat = 1
+        if seconds > 0:
+            need = seconds / (MAX_SECONDS_PER_CLIP * len(scene))
+            repeat = min(MAX_SHOTS_PER_BEAT, max(1, math.ceil(need)))
+        return [q for q in scene for _ in range(repeat)]
+    return ([guide] + scene + [guide]) if scene else [guide, guide]
+
 
 def _apply_corrections(env: dict, issues: list, attempt: int) -> dict:
     """Return updated env-var dict based on QA issues for the next render."""
@@ -546,10 +592,10 @@ def main():
     scene = broll[:4] or ([FORMAT_BG_FLAVOR[fmt]] if FORMAT_BG_FLAVOR.get(fmt) else [])
     # Formats that opt out of the statue bookends run on their own scenes only.
     no_guide = bool(pack.pop("_no_guide", False))
-    if no_guide and scene:
-        flavors = list(scene)
-    else:
-        flavors = ([guide] + scene + [guide]) if scene else [guide, guide]
+    # The voiceover already exists, so the shot list can be sized to its real
+    # length rather than to a guess about how long a story runs.
+    spoken_seconds = float(word_timings[-1][2]) if word_timings else 0.0
+    flavors = background_flavors(scene, guide, no_guide, spoken_seconds)
     pack["REEL_BG_CLIPS"] = str(len(flavors))
     for i, q in enumerate(flavors):
         pack[f"REEL_BG_FLAVOR{i if i else ''}"] = q
@@ -668,7 +714,8 @@ def main():
             vqa = run_visual_qa(video_path, content)
             print(
                 f"  [visual_qa] verdict={vqa.verdict} "
-                + " ".join(f"{k}={v:.1f}" for k, v in vqa.scores.items())
+                + (" ".join(f"{k}={v:.1f}" for k, v in vqa.scores.items())
+                   or f"({vqa.reasoning[:120]})")
             )
             # Block upload only when explicitly enabled and we still have retries left
             if vqa.verdict == "fail" and _VQA_BLOCK_ON_FAIL and not last_attempt:

@@ -772,3 +772,56 @@ that story must always be captioned "recorded in the Historia Augusta", never
   **Everything after 15 seconds is fine.** The entire loss is the first fifteen.
   The hook fix targets the −24% slice; the 7-15s bleed is still unexplained and
   is the next thing to look at once new data lands.
+- **2026-09-17 — THE 7-15s BLEED: THE PICTURE WAS NOT MOVING.** Kept digging on
+  the unexplained −15%/−14%/−16% stretch. The answer was already in the repo,
+  written by the reviewer that watches every video. Across **206 real reviews**
+  in `QA_LOG.md`, `pacing` is the worst-scoring dimension by a wide margin
+  (mean **5.4/10** vs 7.9 legibility, 6.3 scroll-stop, 7.0 hook) and the
+  most-flagged one (**62 flags**, ahead of everything), with 273 separate
+  remarks that frames are "visually identical" or have "no motion".
+  Cause was arithmetic, and mine: dropping the statue bookends off the story
+  format was right, but it took the slot count from 6 to 4. The 2026-09-17
+  production log measures the result — **52.4s of narration over 4 shots =
+  13.1 SECONDS on one frame**, against a short-form benchmark of a cut every
+  1.5-2.5s. Only 4 clips were fetched (`bg`, `bg1`, `bg2`, `bg3`).
+  Fixed by SIZING THE SHOT LIST TO THE NARRATION rather than to a guess:
+  `daily_post.background_flavors()` repeats each written beat until no frame
+  outstays `MAX_SECONDS_PER_CLIP` (4.5s), capped at `MAX_SHOTS_PER_BEAT` (3).
+  Story format goes 4 slots → **12 slots, ~4.4s a cut.** The beats and their
+  order are unchanged; each one now gets three angles instead of one long hold.
+  Two properties elsewhere make this work, and both are now pinned by tests:
+  render.py offsets the pick per slot (`REEL_BG_OFFSET = base + i*7`) against
+  backgrounds.py's `(day + offset) % 3` window, so the three slots of a beat
+  return three DIFFERENT clips (verified for every day and every retry offset);
+  and the camera move is applied per segment, so a 4.4s shot traverses the same
+  amplitude 3× faster — which is the direct answer to "no motion".
+  **Cost measured before shipping, not assumed:** render time is FLAT in clip
+  count — 151.3s at 4 clips, 145.0s at 8, 144.3s at 12 — because each clip is
+  trimmed to `dur / n_bg`, so total decode work is set by the output length.
+  The only added cost is 8 more stock fetches at ~2.4s each (~19s on a 10m55s
+  run). 15 tests. `MAX_SHOTS_PER_BEAT` is capped at the relevance window
+  because a 4th request of a query returns a clip already used.
+- **2026-09-17 — THE ANTHROPIC API HAS BEEN OUT OF CREDIT SINCE 09-07.**
+  Found in the logs while measuring the above, and it is the owner's to fix:
+  `Your credit balance is too low to access the Anthropic API`, 51 occurrences,
+  first on **2026-09-07**. Consequences, in order of damage:
+  1. **Visual QA has been blind for 11 days.** On an API error it records
+     `hook_strength=5.0 text_legibility=5.0 pacing=5.0 scroll_stop=5.0` and
+     `verdict=flag`, then the pipeline treats it as a non-blocking issue and
+     publishes (`pass=True severity=low`). The gate the owner asked for
+     ("actually watch the videos") is off, and its scores are placeholders —
+     do not read any all-5.0 row in `QA_LOG.md` as a review.
+  2. `reply_to_comments.py` (Haiku) cannot run its receptivity screen.
+  3. Generated content (`content.py`, Opus) would fail outright. The channel
+     only kept posting because the story bank bypasses Claude entirely — which
+     is the reason posts resumed at all on 09-14.
+  Preflight (`scripts/preflight.py`) is pure ffmpeg and is unaffected, so the
+  `reviewed` column in `posts.csv` is still meaningful. Nothing in the code
+  can fix this; it needs credit on the account.
+  **What I did fix in code:** `visual_qa.py` now returns `verdict="unreviewed"`
+  with **no scores at all** on every path where no review happened (API error,
+  frame extraction failure, empty frames, unparseable reply), and `QA_LOG.md`
+  writes `NOT REVIEWED — no scores were produced` instead of a row that looks
+  like a verdict. It still does not block the post: a paid reviewer being
+  unreachable is not evidence the video is bad, and preflight (free, ffmpeg)
+  is the gate that blocks. Tests pin both halves.

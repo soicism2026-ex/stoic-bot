@@ -197,7 +197,7 @@ class TestJSONParsing(unittest.TestCase):
 )
 class TestVisualQAResult(unittest.TestCase):
 
-    def test_api_error_returns_flag(self):
+    def test_api_error_is_recorded_as_unreviewed_not_as_a_5_out_of_10(self):
         # anthropic is imported lazily inside score_video, so patch at the package level
         with patch("anthropic.Anthropic") as mock_anthropic_class:
             mock_client = MagicMock()
@@ -210,16 +210,48 @@ class TestVisualQAResult(unittest.TestCase):
                     with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}):
                         result = vqa.score_video(Path("/fake/video.mp4"), {})
 
-        self.assertEqual(result.verdict, "flag")
+        # A review that did not happen must not look like a middling one.
+        # 51 runs after the Anthropic account ran out of credit recorded
+        # "pacing=5.0" in QA_LOG.md, and those rows had to be filtered out by
+        # hand before the real pacing numbers could be read.
+        self.assertEqual(result.verdict, vqa.UNREVIEWED)
+        self.assertEqual(result.scores, {})
+        self.assertIn("not_reviewed", result.flags)
         self.assertTrue(any("api_error" in i for i in result.issues))
+        # ...and it must still not block the day's post: the paid reviewer
+        # being unreachable is not evidence the video is bad. preflight.py is
+        # the blocking gate and it needs no API.
+        self.assertNotEqual(result.verdict, "fail")
 
-    def test_frame_extraction_failure_returns_flag(self):
+    def test_frame_extraction_failure_is_recorded_as_unreviewed(self):
         with patch("visual_qa.extract_hook_frames") as mock_frames:
             mock_frames.side_effect = subprocess.CalledProcessError(1, "ffmpeg")
             result = vqa.score_video(Path("/nonexistent/video.mp4"), {})
 
-        self.assertEqual(result.verdict, "flag")
-        self.assertIn("frame_extraction_failed", result.issues)
+        self.assertEqual(result.verdict, vqa.UNREVIEWED)
+        self.assertEqual(result.scores, {})
+        self.assertTrue(any("frame_extraction_failed" in i for i in result.issues))
+
+    def test_an_unreviewed_run_says_so_in_the_log(self):
+        """QA_LOG.md is read by a person and grepped by me. An empty score
+        line reads as a formatting bug; it has to say what happened."""
+        result = vqa.VisualQAResult(
+            verdict=vqa.UNREVIEWED, scores={},
+            reasoning="Not reviewed — API error: credit balance too low",
+            issues=["api_error: credit balance too low"], suggestions=[],
+            hard_fails=[], flags=["not_reviewed", "api_unreachable"],
+        )
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".md", delete=False) as f:
+            log = Path(f.name)
+        try:
+            vqa._append_log(log, Path("v.mp4"), {"hook": "h"}, result)
+            text = log.read_text()
+            self.assertIn("NOT REVIEWED", text)
+            self.assertIn("UNREVIEWED", text)
+            # and no fabricated number anywhere in the row
+            self.assertNotIn("pacing=5.0", text)
+        finally:
+            log.unlink(missing_ok=True)
 
     def test_log_appended(self):
         result = vqa.VisualQAResult(
