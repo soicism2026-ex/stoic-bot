@@ -24,6 +24,7 @@ that. Enable deliberately.
 import base64
 import os
 import subprocess
+import proc
 import sys
 from pathlib import Path
 
@@ -225,7 +226,7 @@ def generate_clip(prompt: str, out_path: Path, dur: float = 6.5,
             return None
         # Still -> looping clip with a gentle push-in so a single frame doesn't
         # read as frozen. (render.py layers its own grade/motion on top.)
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-y", "-loop", "1", "-i", str(png), "-t", f"{dur:.1f}",
              "-vf",
              f"scale={width}:{height}:force_original_aspect_ratio=increase,"

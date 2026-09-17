@@ -16,6 +16,7 @@ from datetime import date
 from pathlib import Path
 
 import requests
+import proc
 
 ROOT = Path(__file__).resolve().parent.parent
 MUSIC_DIR = ROOT / "assets" / "music"
@@ -285,7 +286,7 @@ def fetch_ambience(name: str, dur: float = 26.0) -> Path | None:
     if cached.exists() and cached.stat().st_size > 5_000:
         return cached
     try:
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-y", "-filter_complex", fc.format(d=dur), "-t", f"{dur:.0f}",
              "-ar", "44100", "-ac", "2", "-c:a", "libmp3lame", "-b:a", "128k",
              str(cached)],
@@ -309,7 +310,7 @@ def _synthesize_music(track: dict, out_path: Path, dur: float = 24.0) -> Path | 
     name = track.get("name", "dark_ambient")
     fc = _MUSIC_SYNTH.get(name, _MUSIC_SYNTH["dark_ambient"]).format(d=dur)
     try:
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-y", "-filter_complex", fc, "-t", f"{dur:.0f}",
              "-ar", "44100", "-ac", "2", "-c:a", "libmp3lame", "-b:a", "128k",
              str(out_path)],

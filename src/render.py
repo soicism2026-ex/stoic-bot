@@ -20,6 +20,7 @@ Composition:
 import os
 import json
 import subprocess
+import proc
 import re
 import textwrap
 from pathlib import Path
@@ -445,7 +446,7 @@ def _make_hook_sound(out_path: Path, dur: float = 1.3) -> Path:
             f"afade=t=out:st={dur-0.25:.3f}:d=0.25,volume=2.2,alimiter=limit=0.95"
         )
 
-    subprocess.run(
+    proc.run(
         ["ffmpeg", "-y", "-filter_complex", fc, "-ar", "44100", "-ac", "2",
          str(out_path)],
         check=True, capture_output=True,
@@ -467,7 +468,7 @@ def _mix_intro_sound(voice_path: Path, hook_path: Path, out_path: Path) -> Path:
         # overlap of a loud word and the whoosh can never clip.
         "volume=1.9,alimiter=limit=0.95[a]"
     )
-    subprocess.run(
+    proc.run(
         ["ffmpeg", "-y", "-i", str(voice_path), "-i", str(hook_path),
          "-filter_complex", fc, "-map", "[a]",
          "-c:a", "aac", "-b:a", "192k", str(out_path)],
@@ -527,7 +528,7 @@ def _mix_word_clicks(voice_path: Path, click_path: Path, out_path: Path) -> Path
         "[v][c]amix=inputs=2:duration=first:dropout_transition=0,"
         "volume=1.3,alimiter=limit=0.95[a]"
     )
-    subprocess.run(
+    proc.run(
         ["ffmpeg", "-y", "-i", str(voice_path), "-i", str(click_path),
          "-filter_complex", fc, "-map", "[a]",
          "-c:a", "aac", "-b:a", "192k", str(out_path)],
@@ -812,7 +813,7 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
         str(out_path),
     ]
     try:
-        subprocess.run(cmd, check=True, capture_output=True)
+        proc.run(cmd, check=True, capture_output=True)
         return out_path
     except Exception as e:
         print(f"  [thumbnail] generation failed: {e}", file=__import__("sys").stderr)
@@ -1344,5 +1345,5 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         "-r", "30",
         str(out_path),
     ]
-    subprocess.run(cmd, check=True, capture_output=True)
+    proc.run(cmd, check=True, capture_output=True)
     return out_path

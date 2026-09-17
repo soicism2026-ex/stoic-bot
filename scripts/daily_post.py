@@ -13,6 +13,7 @@ evergreen short and add it to the bank.
 import importlib
 import json
 import os
+import time
 import sys
 import datetime
 import urllib.request
@@ -43,6 +44,13 @@ BACKUPS_DIR = ROOT / "backups"
 FRAMES_DIR = ROOT / "data" / "frames"
 QA_LOG = ROOT / "QA_LOG.md"
 MAX_ATTEMPTS = int(os.environ.get("REEL_MAX_ATTEMPTS", "5"))
+# WALL-CLOCK BUDGET for the whole post. The GitHub job cap is 60 minutes and
+# hitting it cancels the run with nothing published — that cost the channel
+# 2026-09-05, 09-08, 09-09, 09-10 and 09-13, five days out of fifteen.
+# Per-process timeouts (src/proc.py) stop any single call hanging; this stops
+# retries ACCUMULATING past the cap. At the budget we stop retrying and publish
+# the best attempt so far rather than being killed mid-render with nothing.
+POST_BUDGET_SECONDS = float(os.environ.get("POST_BUDGET_SECONDS", "2100"))  # 35 min
 BACKUP_MIN = 3
 # Per-DAY upload total (not per-run). The single 17:00 UTC cron slot posts once;
 # this cap is the backstop against a same-day double-post.
@@ -589,8 +597,20 @@ def main():
     upload_result = None
     used_backup = False
 
+    _deadline = time.monotonic() + POST_BUDGET_SECONDS
     for attempt in range(1, MAX_ATTEMPTS + 1):
-        print(f"  [attempt {attempt}/{MAX_ATTEMPTS}] rendering...")
+        left = _deadline - time.monotonic()
+        # Under one render's worth of budget, treat THIS attempt as the last
+        # one. Not a break: breaking here would abandon the run with nothing
+        # published, which is the exact failure being fixed. Marking it final
+        # lets the normal end-of-loop handling (backup bank, QA fail-open) do
+        # its job before the job cap can cancel us.
+        budget_spent = left < 600
+        if budget_spent:
+            print(f"  [budget] {left / 60:.1f} min left of "
+                  f"{POST_BUDGET_SECONDS / 60:.0f} — final attempt")
+        print(f"  [attempt {attempt}/{MAX_ATTEMPTS}] rendering... "
+              f"({left / 60:.0f} min budget left)")
         _render_with_env(
             current_env,
             quote=content["quote"], author=content["author"],
@@ -608,7 +628,7 @@ def main():
             f"severity={qa['severity']} issues={qa['issues']}"
         )
 
-        last_attempt = (attempt == MAX_ATTEMPTS)
+        last_attempt = (attempt == MAX_ATTEMPTS) or budget_spent
         upload_this = qa["pass"] or (last_attempt and qa["severity"] == "low")
 
         # Visual QA (Claude Opus content-quality scoring) — only when technical QA

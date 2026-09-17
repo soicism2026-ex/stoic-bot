@@ -28,6 +28,7 @@ import base64
 import json
 import os
 import subprocess
+import proc
 import sys
 import tempfile
 from dataclasses import dataclass
@@ -105,7 +106,7 @@ def extract_hook_frames(
     Extract frames dense in the hook window (first hook_window seconds)
     and sparse across the body. Returns JPEG paths in chronological order.
     """
-    probe = subprocess.run(
+    probe = proc.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration",
          "-of", "json", str(video_path)],
         capture_output=True, text=True, check=True,
@@ -118,7 +119,7 @@ def extract_hook_frames(
     for i in range(n_hook):
         ts = (i / max(n_hook - 1, 1)) * hook_end
         out_path = out_dir / f"hook_{i:02d}.jpg"
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-y", "-ss", f"{ts:.3f}", "-i", str(video_path),
              "-vframes", "1", "-vf", "scale=540:-2", "-q:v", "4", str(out_path)],
             capture_output=True, check=True,
@@ -131,7 +132,7 @@ def extract_hook_frames(
         for i in range(n_body):
             ts = hook_window + (i + 0.5) / n_body * body_span
             out_path = out_dir / f"body_{i:02d}.jpg"
-            subprocess.run(
+            proc.run(
                 ["ffmpeg", "-y", "-ss", f"{ts:.3f}", "-i", str(video_path),
                  "-vframes", "1", "-vf", "scale=540:-2", "-q:v", "4", str(out_path)],
                 capture_output=True, check=True,

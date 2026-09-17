@@ -30,6 +30,7 @@ import json
 import os
 import re
 import subprocess
+import proc
 import sys
 from datetime import date
 from pathlib import Path
@@ -155,7 +156,7 @@ def _mean_volume_db(audio_path: Path) -> float:
     Returns -91.0 if it can't be measured, so callers treat 'unknown' as silent.
     """
     try:
-        out = subprocess.run(
+        out = proc.run(
             ["ffmpeg", "-i", str(audio_path), "-af", "volumedetect", "-f", "null", "-"],
             capture_output=True, text=True,
         )
@@ -218,7 +219,7 @@ def _sample_rate(audio_path: Path) -> int:
     edge-tts 24 kHz, gTTS 22.05 kHz — and any pitch work computed against a
     hardcoded rate plays the audio at the wrong speed."""
     try:
-        out = subprocess.run(
+        out = proc.run(
             ["ffprobe", "-v", "error", "-select_streams", "a:0",
              "-show_entries", "stream=sample_rate", "-of", "csv=p=0",
              str(audio_path)],
@@ -260,7 +261,7 @@ def _master_voice(audio_path: Path) -> None:
         depth = (f"asetrate={int(rate * VOICE_DEPTH)},aresample={rate},"
                  f"atempo={1 / VOICE_DEPTH:.4f},")
     try:
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-y", "-i", str(audio_path), "-af",
              f"{depth}"
              "highpass=f=70,"
@@ -475,7 +476,7 @@ def _synthesize_chatterbox_local(text: str, out_path: Path) -> tuple:
     # Chatterbox emits WAV; the rest of the pipeline expects an mp3 path.
     wav_tmp = Path(out_path).with_suffix(".cb.wav")
     torchaudio.save(str(wav_tmp), audio, sr)
-    subprocess.run(
+    proc.run(
         ["ffmpeg", "-y", "-loglevel", "error", "-i", str(wav_tmp),
          "-c:a", "libmp3lame", "-b:a", "192k", str(out_path)],
         check=True, capture_output=True,
@@ -843,7 +844,7 @@ def synthesize_two_part(story: str, lesson: str, out_path: Path,
 
         # Concat with a real silence in the middle. adelay on the second part
         # keeps both segments at their natural pace — no time-stretching.
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-y", "-loglevel", "error",
              "-i", str(tmp_story), "-i", str(tmp_lesson),
              "-filter_complex",

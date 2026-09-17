@@ -13,6 +13,7 @@ A run never breaks: every stage catches its own errors and tries the next.
 """
 import os
 import subprocess
+import proc
 import sys
 from pathlib import Path
 from datetime import date
@@ -397,7 +398,7 @@ def _fetch_synthetic(theme: str, out_path: Path) -> Path:
         "-pix_fmt", "yuv420p",
         str(out_path),
     ]
-    subprocess.run(cmd, check=True, capture_output=True)
+    proc.run(cmd, check=True, capture_output=True)
     if not out_path.exists() or out_path.stat().st_size < 1_000:
         raise RuntimeError("Synthetic background generation failed")
     return out_path

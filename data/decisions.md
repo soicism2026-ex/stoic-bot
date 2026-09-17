@@ -723,3 +723,17 @@ that story must always be captioned "recorded in the Historia Augusta", never
   never raises but `_probe_duration` threw on a missing binary. Since the gate
   BLOCKS posts, a failure to measure must WARN, never fail — otherwise a broken
   checker silently stops the channel, which is the exact failure being fixed.
+- **2026-09-17 — FIVE LOST DAYS: unbounded subprocess calls.** The channel
+  published nothing on 2026-09-05, 09-08, 09-09, 09-10 and 09-13 — five of
+  fifteen days. On each, ALL SIX scheduled runs sat at exactly 60:00 and were
+  cancelled by the job cap. The signature is bimodal, not a slowdown: a healthy
+  post takes 11-17 minutes, a failing day's runs all hit the cap exactly. That
+  is a HANG. The pipeline made **38 subprocess calls with no timeout** — ffmpeg
+  on a stalled network stream waits forever and nothing under the cap
+  interrupts it. `src/proc.py` now injects a deadline on every external process
+  (420s default, 90s for probes); all 38 call sites were converted and a test
+  fails on any bare `subprocess.run` in the pipeline. Separately,
+  `POST_BUDGET_SECONDS` (35 min) stops RETRIES accumulating past the cap — and
+  it marks the current attempt final rather than breaking, because breaking
+  would abandon the run with nothing published, which is the exact failure
+  being fixed.

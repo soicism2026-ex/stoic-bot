@@ -11,13 +11,14 @@ import sys
 import json
 import base64
 import subprocess
+import proc
 import tempfile
 from pathlib import Path
 
 
 def extract_frames(video_path: Path, max_frames: int = 20) -> list:
     """Extract up to max_frames frames at 540px width, 1 every ≥2 seconds."""
-    result = subprocess.run(
+    result = proc.run(
         ["ffprobe", "-v", "error", "-show_entries", "format=duration",
          "-of", "json", str(video_path)],
         capture_output=True, text=True, check=True,
@@ -26,7 +27,7 @@ def extract_frames(video_path: Path, max_frames: int = 20) -> list:
     interval = max(2.0, duration / max_frames)
 
     out_dir = Path(tempfile.mkdtemp())
-    subprocess.run(
+    proc.run(
         ["ffmpeg", "-y", "-i", str(video_path),
          "-vf", f"fps=1/{interval:.2f},scale=540:-2",
          "-frames:v", str(max_frames),
@@ -38,7 +39,7 @@ def extract_frames(video_path: Path, max_frames: int = 20) -> list:
 
 def _has_audio_stream(video_path: Path) -> bool:
     """Return True if the video has at least one audio stream with content."""
-    result = subprocess.run(
+    result = proc.run(
         ["ffprobe", "-v", "error", "-select_streams", "a",
          "-show_entries", "stream=codec_type,duration",
          "-of", "json", str(video_path)],

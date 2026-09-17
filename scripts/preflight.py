@@ -38,6 +38,7 @@ import argparse
 import json
 import os
 import subprocess
+import proc
 import sys
 import tempfile
 from pathlib import Path
@@ -69,7 +70,7 @@ def _probe_duration(path: Path) -> float:
     """Duration, or 0.0. Never raises — this gate blocks posts, so a missing
     binary must not become a crash that stops the channel."""
     try:
-        out = subprocess.run(
+        out = proc.run(
             ["ffprobe", "-v", "error", "-show_entries", "format=duration",
              "-of", "csv=p=0", str(path)],
             capture_output=True, text=True).stdout.strip()
@@ -102,7 +103,7 @@ def _scan_inner(path: Path, frames_dir: Path | None) -> list[dict]:
         args += ["-q:v", "4", str(frames_dir / f"{path.stem}_%02d.jpg")]
     else:
         args += ["-f", "null", "-"]
-    out = subprocess.run(args, capture_output=True, text=True).stderr
+    out = proc.run(args, capture_output=True, text=True).stderr
 
     samples, cur = [], {}
     for line in out.splitlines():
@@ -139,14 +140,14 @@ def _bright_fraction(path: Path, t: float) -> float:
 def _bright_fraction_inner(path: Path, t: float) -> float:
     with tempfile.TemporaryDirectory() as d:
         png = Path(d) / "f.png"
-        subprocess.run(
+        proc.run(
             ["ffmpeg", "-v", "error", "-ss", str(t), "-i", str(path),
              "-frames:v", "1", "-vf",
              "scale=216:384,format=gray,lut=y='if(gt(val,165),255,0)'", str(png)],
             capture_output=True)
         if not png.exists():
             return 0.0
-        out = subprocess.run(
+        out = proc.run(
             ["ffmpeg", "-v", "info", "-i", str(png), "-vf",
              "signalstats,metadata=print", "-f", "null", "-"],
             capture_output=True, text=True).stderr
