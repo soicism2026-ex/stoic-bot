@@ -825,3 +825,19 @@ that story must always be captioned "recorded in the Historia Augusta", never
   like a verdict. It still does not block the post: a paid reviewer being
   unreachable is not evidence the video is bad, and preflight (free, ffmpeg)
   is the gate that blocks. Tests pin both halves.
+- **2026-09-17 — HIGGSFIELD IS NOT FREE. Re-tested, not assumed.** Owner asked
+  whether we can start using it now that it's free. Checked the live account:
+  **free plan, 4 credits**, and a real generation attempt
+  (`gpt_image_2_5`, 9:16) returns `Requires basic plan or higher` — same wall
+  as before. Nothing was spent. What is actually free is a **3-day MCP trial,
+  100 credits, card required, auto-renews at $49/mo unless cancelled**.
+  Verified pricing: image 1 credit (was 0.5), 6s clip 6 credits, so a 7-scene
+  animated story ≈ **49 credits**. At 1 post/day that is ~1,470 credits/month
+  → **Ultra, $99/mo annual**; Plus (1,000) covers only ~20 videos/month.
+  **STRUCTURAL LIMIT, recorded so it is not rediscovered:** Higgsfield reaches
+  this project through an MCP connector in the CHAT SESSION, not an API key the
+  GitHub Actions runner can hold — and the trial states its credits "exist only
+  in the MCP". The bot cannot call it unattended. Any use is me generating
+  scenes in session and committing them, the `assets/guide/` pattern. Story
+  scenes are story-specific, so the cost recurs per video and never amortises.
+  `docs/animated_story_spec.md` corrected with these verified numbers.

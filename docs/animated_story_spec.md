@@ -63,16 +63,37 @@ the sea with no man, no boat, no letter, no reason to care.
   because `minimax_hailuo` ignores `aspect_ratio` — pick a model that honours
   it (`cinematic_studio_video_v2`, `minimax_h3`) or generate wide and crop.
 
-## Cost, measured not estimated
+## Cost, verified 2026-09-17 against the live account
 
 | Item | Credits |
 |---|---|
-| Scene still (`gpt_image_2`, 1k) | 0.5 |
+| Scene still (`gpt_image_2_5`, 9:16) | 1 (was 0.5 — price changed) |
 | Animated clip, 6s (`minimax_hailuo`) | 6 |
-| **7-scene story video** | **~45** |
+| **7-scene story video** | **~49** |
 
-- 20 videos/month ≈ 900 credits → **Plus, $29/mo annual (1,000)**
-- 30 videos/month ≈ 1,350 credits → **Ultra, $70/mo annual (3,000)**
+At the current cadence of 1 post/day that is **~1,470 credits/month**.
 
-Free tier cannot generate a single frame: image generation returns
-*"Requires basic plan or higher."*
+| Plan | Credits/mo | Monthly | Annual | Covers |
+|---|---|---|---|---|
+| Free | — | $0 | — | **nothing — generation is blocked** |
+| 3-day MCP trial | 100 (once) | $0 | — | 2 animated stories, then auto-renews to Plus |
+| Plus | 1,000 | $49 | $39/mo | ~20 videos/mo |
+| Ultra | 3,000 | $129 | $99/mo | ~60 videos/mo — the one that fits 1/day |
+
+**The free tier still cannot generate a single frame.** Re-tested 2026-09-17
+with `gpt_image_2_5` at 9:16: `Error starting generation: Requires basic plan
+or higher.` Nothing was spent; the account holds 4 credits on the free plan.
+
+## This cannot be a pipeline dependency
+
+Higgsfield reaches this project through an **MCP connector in the chat
+session**, not through an API key the GitHub Actions runner could hold. The
+trial is explicit that its credits "exist only in the MCP — they won't appear
+or work anywhere on higgsfield.ai". `daily_post.py` runs unattended on a
+runner and cannot call it.
+
+So the shape is **not** "the bot generates animated scenes each morning". It
+is: scenes are generated in a session, normalised, and committed — the same
+pattern as `assets/guide/`, via a script like `scripts/prep_guide_clips.py`.
+Story scenes are story-specific and do not amortise across posts, so the
+credit cost is per video and recurs.
