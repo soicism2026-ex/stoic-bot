@@ -30,6 +30,7 @@ import os
 import subprocess
 import proc
 import sys
+import llm
 import tempfile
 from dataclasses import dataclass
 from datetime import datetime
@@ -278,6 +279,21 @@ def score_video(
     import anthropic
 
     thresholds = load_thresholds()
+
+    # The reviewer is a PAID call. Ask before spending, and when it is off say
+    # so as "unreviewed" rather than letting the request fail and reading the
+    # failure as a verdict.
+    if not llm.available():
+        print(llm.skip_note("visual_qa"), file=sys.stderr)
+        return VisualQAResult(
+            verdict=UNREVIEWED,
+            scores={},
+            reasoning=f"Not reviewed — language model calls are off ({llm.reason()}).",
+            issues=[f"llm_disabled: {llm.reason()}"],
+            suggestions=[],
+            hard_fails=[],
+            flags=["not_reviewed", "llm_disabled"],
+        )
 
     try:
         frames = extract_hook_frames(video_path, n_hook=n_hook, n_body=n_body)

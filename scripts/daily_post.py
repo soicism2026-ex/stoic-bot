@@ -23,8 +23,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
-from content import generate_content, _load_rows as _load_post_rows  # noqa: E402
+from content import (generate_content, ContentUnavailable,  # noqa: E402
+                     _load_rows as _load_post_rows)
 import tts as tts_mod                      # noqa: E402
+import llm                                 # noqa: E402
 from tts import synthesize_voice, synthesize_two_part, pick_voice  # noqa: E402
 from publish import publish_short, set_thumbnail, post_comment  # noqa: E402
 import publish_instagram                    # noqa: E402
@@ -286,6 +288,13 @@ def _remove_backup(meta_file: Path):
 
 def _add_to_backup_bank(today: str, music_track: dict):
     """Render, QA, and store one evergreen short in the backup bank."""
+    # The bank exists to cover a QA failure with a DIFFERENT video, so it can
+    # only be topped up by the generator. With generation off there is nothing
+    # to add; say so once instead of raising inside the try below.
+    if not llm.available():
+        print(f"  [backup] top-up skipped ({llm.reason()}) — bank stays as it is")
+        return
+
     print("  [backup] rendering evergreen short...")
     try:
         content = generate_content()
@@ -391,7 +400,17 @@ def main():
             print(f"  caveat: {story['caveat']}")
     else:
         print("  story bank exhausted — falling back to generated content")
-        content = generate_content()
+        try:
+            content = generate_content()
+        except ContentUnavailable as e:
+            # Not a render failure. Burning five attempts and the backup bank
+            # on this would be spending compute to fix something that is not
+            # broken: there is simply no script for today.
+            print(f"  NO SCRIPT TODAY: {e}", file=sys.stderr)
+            print("  Nothing published. Write more scripts into "
+                  "data/stories.json and the next run picks them up.",
+                  file=sys.stderr)
+            return
     print(f"  theme: {content['theme']}")
     print(f"  quote: {content['quote'][:60]}...")
 

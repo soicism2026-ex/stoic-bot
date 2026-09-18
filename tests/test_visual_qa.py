@@ -224,7 +224,10 @@ class TestVisualQAResult(unittest.TestCase):
         self.assertNotEqual(result.verdict, "fail")
 
     def test_frame_extraction_failure_is_recorded_as_unreviewed(self):
-        with patch("visual_qa.extract_hook_frames") as mock_frames:
+        # A key must be present, or the llm gate short-circuits before frames
+        # are ever extracted and this would test the wrong path.
+        with patch.dict(os.environ, {"ANTHROPIC_API_KEY": "test-key"}), \
+                patch("visual_qa.extract_hook_frames") as mock_frames:
             mock_frames.side_effect = subprocess.CalledProcessError(1, "ffmpeg")
             result = vqa.score_video(Path("/nonexistent/video.mp4"), {})
 

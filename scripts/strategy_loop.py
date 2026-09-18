@@ -35,6 +35,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
 
 import youtube_analytics as yt_a  # noqa: E402
+import llm  # noqa: E402
 
 STRATEGY_PATH = ROOT / "data" / "strategy.md"
 MODEL = "claude-opus-4-8"
@@ -433,6 +434,12 @@ def main():
 
     print("[strategy] building analysis prompt...")
     parts = _build_analysis_prompt(window, analytics, existing_strategy)
+
+    if not llm.available():
+        print(llm.skip_note("strategy"))
+        print("[strategy] data/strategy.md left as it is — a stale strategy is "
+              "better than an empty one.")
+        return None
 
     print("[strategy] calling Claude Opus for correlation analysis...")
     client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])

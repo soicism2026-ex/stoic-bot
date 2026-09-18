@@ -12,6 +12,7 @@ import json
 import base64
 import subprocess
 import proc
+import llm
 import tempfile
 from pathlib import Path
 
@@ -122,6 +123,15 @@ def run_qa(video_path, intended_quote: str) -> dict:
             'If no issues: {"pass": true, "issues": [], "severity": "low"}'
         ),
     })
+
+    # Vision QA is a paid call. Without it the ffmpeg checks above still ran,
+    # so this is a REDUCED check, not a passed one — say which.
+    if not llm.available():
+        print(llm.skip_note("qa_vision"), file=sys.stderr)
+        return {"pass": True,
+                "issues": [f"vision check skipped ({llm.reason()}); "
+                           "ffmpeg checks only"],
+                "severity": "low"}
 
     try:
         client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])

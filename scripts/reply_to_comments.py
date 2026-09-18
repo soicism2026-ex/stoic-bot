@@ -24,6 +24,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "src"))
+import llm  # noqa: E402
 POSTS_CSV    = ROOT / "data" / "posts.csv"
 REPLIED_CSV  = ROOT / "data" / "replied_comments.csv"
 TOKEN_URI    = "https://oauth2.googleapis.com/token"
@@ -377,6 +379,16 @@ def _generate_reply(comment_text: str, video_title: str) -> str:
 
 def main():
     print("=== Comment auto-reply ===")
+
+    # Both halves of this script are language-model calls: the receptivity
+    # screen and the reply itself. With calls off there is nothing to do, and
+    # posting a canned reply would be worse than posting none — the whole
+    # point of the screen is that a real person answers a real comment.
+    if not llm.available():
+        print(llm.skip_note("replies"))
+        print("  Nothing posted. No comment is marked as replied, so the "
+              "backlog is intact whenever calls come back.")
+        return
 
     video_ids = _load_recent_video_ids()
     if not video_ids:

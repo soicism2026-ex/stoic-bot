@@ -866,3 +866,48 @@ that story must always be captioned "recorded in the Historia Augusta", never
   queued job cannot repeat the five-day hang; any failure returns None and
   falls through to the stock chain. 23 tests, none touching the network.
   **Left OFF.** It needs a key the owner creates and a price they have seen.
+- **2026-09-18 — NO MORE PAID CLAUDE API.** Owner: *"i dont want to pay for the
+  separate claude api anymore and i just want to use higgfield."* Done — the
+  pipeline now runs to completion with no `ANTHROPIC_API_KEY` at all.
+  `src/llm.py` is the single switch (`available()` / `reason()` /
+  `skip_note()`), plus `LLM_DISABLED=1` to force the no-API path while the
+  secret still exists. **The rule everywhere: ASK BEFORE SPENDING, and when
+  calls are off, SKIP AND SAY SO — never call-and-catch, never substitute a
+  made-up value.** That is what produced 51 runs of fabricated `pacing=5.0`.
+  What changed, feature by feature:
+  * `content.py` raises `ContentUnavailable` (a named error naming the fix),
+    and `daily_post` treats it as "no script today" — a clean stop, NOT a
+    render failure that would burn 5 attempts and the backup bank.
+  * `visual_qa` returns `unreviewed` with **no scores**, and no longer even
+    extracts frames.
+  * `qa_check` reports "vision check skipped; ffmpeg checks only" — reduced,
+    not passed.
+  * `reply_to_comments` exits without posting and marks nothing as replied, so
+    the backlog survives.
+  * `strategy_loop` leaves `data/strategy.md` alone; stale beats empty.
+  * `check_secrets`: ANTHROPIC_API_KEY is now **optional** (a missing key is a
+    choice; a present-but-bad key still fails the run). It used to exit 1 and
+    would have failed every run.
+  * `_add_to_backup_bank` skips instead of raising — only the generator can
+    fill that bank.
+  **THE RUNWAY IS NOW THE WHOLE CONTENT SUPPLY.** `validate_stories.py` prints
+  unposted-script count every run and warns at `STORY_LOW_WATER` (7). **13 left
+  today.** When it empties the channel stops posting — scripts are written by
+  hand in session (on the owner's Claude subscription, not the API), which is
+  also doctrine: nothing spoken is model-generated.
+  `data/costs.json`: the $3/mo API line is moved to `cancelled` (not deleted).
+  Monthly burn $28 → **$25**. 18 tests. Suite 530.
+- **2026-09-18 — HIGGSFIELD VIDEO ANALYSIS IS FREE, AND IT FOUND A REAL BUG.**
+  Tested `video_analysis_create` on a published Short (y-qAVFf8DRU) on the FREE
+  plan: accepted, no paywall, completed in 80 seconds, returned a
+  scene-by-scene breakdown with shot types, visual descriptions and the audio
+  over each. It watches the WHOLE video; the paid Claude reviewer only ever saw
+  4 hook frames plus 2 body frames.
+  **What it found:** two of the four b-roll beats returned completely unrelated
+  stock. "a name written on paper, hand still resting on it" got a **snow-capped
+  Mount Fuji reflected in a lake**. "a table set for two with one place
+  untouched" got **six shots of motocross riders crashing**, playing under the
+  line *"The most quoted man in Rome, filing himself in the failure column."*
+  Only beats 1 (rain on a window) and 4 (a candle) were right.
+  Caveat: MCP-only, so a runner cannot call it — this is a check I run in
+  session, not a pipeline stage.

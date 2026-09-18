@@ -13,6 +13,7 @@ cannot survive. So the bank is checked on every run and in CI.
 from __future__ import annotations
 
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -109,6 +110,23 @@ def validate() -> list[str]:
     return errs
 
 
+# Days of content left before the channel has nothing to post. Warn here
+# rather than discovering it on the morning it runs out.
+LOW_WATER = int(os.environ.get("STORY_LOW_WATER", "7"))
+
+
+def _remaining() -> int:
+    """Scripts in the bank that have not aired yet. Never raises — a missing
+    or unreadable posts.csv must not fail the publish gate."""
+    try:
+        import csv
+        rows = list(csv.DictReader(open(ROOT / "data" / "posts.csv",
+                                        encoding="utf-8")))
+        return stories.remaining(rows)
+    except Exception:  # noqa: BLE001
+        return len(stories.load())
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__,
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
@@ -126,8 +144,19 @@ def main() -> int:
             print(f"  FAIL {e}", file=sys.stderr)
         print(f"\n{len(errs)} problem(s) — not safe to publish", file=sys.stderr)
         return 1
-    print(f"  all {len(bank)} valid — "
-          f"{len(bank)} days of posts at 1/day")
+    # RUNWAY. With the paid content generator switched off (owner decision
+    # 2026-09-18), this bank IS the channel's content supply — when it empties
+    # the channel stops posting. That must never be a surprise, so every run
+    # prints how many days are left and shouts before it matters.
+    left = _remaining()
+    print(f"  all {len(bank)} valid — {left} unposted "
+          f"({left} more days at 1/day)")
+    if left <= 0:
+        print("  RUNWAY: EMPTY. The next run has no script and will publish "
+              "nothing. Write more into data/stories.json.", file=sys.stderr)
+    elif left <= LOW_WATER:
+        print(f"  RUNWAY WARNING: only {left} script(s) left — write more "
+              f"into data/stories.json before it runs dry.", file=sys.stderr)
     return 0
 
 

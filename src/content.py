@@ -19,6 +19,8 @@ import os
 import sys
 from pathlib import Path
 
+import llm
+
 MODEL = "claude-opus-4-8"
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -592,8 +594,28 @@ def _normalize_quote(q: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", (q or "").lower()).strip()
 
 
+class ContentUnavailable(RuntimeError):
+    """Raised when a post cannot be written because generation is switched off.
+
+    Deliberately a distinct type. `daily_post` treats this as "today has no
+    script", which is a clean stop, and NOT as a render failure, which would
+    burn all five attempts and the backup bank trying to fix something that is
+    not broken.
+    """
+
+
 def generate_content() -> dict:
     import anthropic
+
+    # OWNER DECISION 2026-09-18: no paid Claude API. Generated posts are
+    # therefore off, and the channel runs on the hand-written story bank.
+    # Fail with a sentence that says what to do, not a KeyError on os.environ.
+    if not llm.available():
+        raise ContentUnavailable(
+            f"generated content is off ({llm.reason()}). This channel's posts "
+            "come from data/stories.json; write more scripts there, or set "
+            "ANTHROPIC_API_KEY to turn the generator back on."
+        )
     rows = _load_rows()
     used_quotes = [r["quote"] for r in rows if r.get("quote")]
     required_author, required_theme = _pick_rotation(rows)

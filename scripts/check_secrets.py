@@ -79,10 +79,19 @@ def _retrying(fn, label: str):
 
 
 def check_anthropic() -> bool:
+    """OPTIONAL since 2026-09-18, when the owner dropped the paid Claude API.
+
+    The channel posts from the hand-written story bank, which calls no model at
+    all, so a missing key is a configuration choice and not a broken secret.
+    What it costs is listed rather than hidden, because a silent run must never
+    be mistaken for a working one.
+    """
     key = os.environ.get("ANTHROPIC_API_KEY", "")
     if not key:
-        print(f"  [{FAIL}] ANTHROPIC_API_KEY — not set")
-        return False
+        print(f"  [{SKIP}] ANTHROPIC_API_KEY — not set. Off: generated posts, "
+              "the visual reviewer, vision QA, comment replies, the strategy "
+              "rewrite. Posting runs on data/stories.json.")
+        return True
     def _call():
         req = urllib.request.Request(
             "https://api.anthropic.com/v1/models",
@@ -358,7 +367,9 @@ def check_instagram() -> bool:
 
 def main():
     print("=== Secrets pre-flight check ===")
-    # Required: Anthropic, ElevenLabs, YouTube. Pexels/Pixabay/Instagram optional.
+    # Required: ElevenLabs, YouTube. Anthropic is OPTIONAL since the owner
+    # dropped the paid API (2026-09-18) — a bad key still fails, a missing
+    # one is a choice. Pexels/Pixabay/Higgsfield/Instagram optional.
     required = [
         check_anthropic(),
         check_elevenlabs(),

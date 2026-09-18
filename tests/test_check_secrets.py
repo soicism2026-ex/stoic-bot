@@ -183,6 +183,10 @@ def test_anthropic_401_fails(monkeypatch):
     assert cs.check_anthropic() is False
 
 
-def test_anthropic_missing_key_fails(monkeypatch):
+def test_anthropic_missing_key_no_longer_blocks_the_run(monkeypatch):
+    """OWNER DECISION 2026-09-18: no paid Claude API. The channel posts from
+    the hand-written story bank, which calls no model, so a MISSING key is a
+    configuration choice — not a broken secret worth failing the whole run
+    over. A key that is present and bad is still a failure (below)."""
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
-    assert cs.check_anthropic() is False
+    assert cs.check_anthropic() is True
