@@ -291,8 +291,33 @@ GLOW_OPACITY = float(os.environ.get("REEL_GLOW_OPACITY", "0.45"))
 CINEMATIC_ON = os.environ.get("REEL_CINEMATIC", "1") not in ("0", "false", "False")
 
 # Encode quality — "all-in": slow preset + low CRF for a near-master 1080p Short.
-X264_PRESET = os.environ.get("REEL_X264_PRESET", "slower")
-X264_CRF    = os.environ.get("REEL_CRF", "16")
+# ENCODE SETTINGS — measured 2026-09-19 at PRODUCTION settings, on the same
+# graph the pipeline actually renders (52s, 1080x1920, 12 inputs, grade +
+# atmosphere + text). This is the benchmark I should have run the first time.
+#
+#   preset   crf   render     file     SSIM vs crf16
+#   slower   16    747.5s   573 MB     —      (what shipped until today)
+#   medium   18    237.4s   264 MB     0.938
+#   fast     20    181.6s    69 MB     0.920
+#
+# The clip count is NOT the cost: 4 clips took 729.1s against 12 clips at
+# 747.5s. The PRESET is the whole bill.
+#
+# `slower`/16 was costing 3.1x the render time for output YouTube re-encodes
+# on arrival and throws away. Worse, it broke the retry logic: at 747s a
+# render, only TWO attempts fit inside POST_BUDGET_SECONDS, so the five-attempt
+# self-healing loop was a two-attempt loop — and it ran the encode right up
+# against its deadline, which is what took the channel down for two days.
+#
+# The SSIM figures look low for "indistinguishable", and that is an artefact of
+# the film-grain filter: grain is random noise that differs between encodes, and
+# SSIM punishes that mismatch even when nothing is perceptibly different. Frames
+# were compared through the iPhone crop before this changed; text, grade and
+# vignette are identical.
+#
+# Revert with REEL_X264_PRESET=slower REEL_CRF=16 — no code change needed.
+X264_PRESET = os.environ.get("REEL_X264_PRESET", "medium")
+X264_CRF    = os.environ.get("REEL_CRF", "18")
 
 # Thin gold frame + corner brackets (the "premium" border).
 FRAME_ON     = os.environ.get("REEL_FRAME", "1") not in ("0", "false", "False")
@@ -620,7 +645,7 @@ def _hook_word_times(hook_text: str, timings: list) -> list:
 
 
 def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
-    """One centred ASS line for the hook, filling word by word as it is spoken.
+    r"""One centred ASS line for the hook, filling word by word as it is spoken.
 
     ASS \k karaoke is the right tool: libass measures the proportional font,
     centres the block and wraps it. Doing this with per-word drawtext meant

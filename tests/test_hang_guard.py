@@ -192,3 +192,30 @@ def test_a_final_failed_render_reaches_the_backup_bank():
     assert not any(st == "return" or st.startswith("return ")
                    for st in statements), \
         "must not abandon the run with nothing posted"
+
+
+def test_the_encode_leaves_room_for_the_retries_it_promises():
+    """MEASURED at production settings 2026-09-19: `slower`/crf16 renders this
+    graph in 747.5s. Against a 2100s budget that is TWO attempts, not five —
+    the self-healing loop was quietly a third of its advertised size, and the
+    encode ran right up against its deadline. `medium`/crf18 is 237.4s.
+
+    This test fails if the preset is ever raised back without also raising the
+    budget: it asserts the default encode is cheap enough that the loop can
+    actually use the attempts it is configured for."""
+    import daily_post as dp
+    import render
+    # Cost of one render at each preset, seconds, measured on the real graph.
+    MEASURED = {"slower": 747.5, "medium": 237.4, "fast": 181.6,
+                "ultrafast": 145.0}
+    cost = MEASURED.get(render.X264_PRESET)
+    assert cost is not None, (
+        f"preset {render.X264_PRESET!r} has never been benchmarked — measure "
+        "it at production settings before shipping it")
+    attempts_that_fit = int(dp.POST_BUDGET_SECONDS // cost)
+    assert attempts_that_fit >= 5, (
+        f"{render.X264_PRESET}/crf{render.X264_CRF} at {cost}s fits only "
+        f"{attempts_that_fit} of {dp.MAX_ATTEMPTS} attempts in the budget")
+    assert cost < proc.RENDER_TIMEOUT / 2, (
+        "less than 2x headroom on the render deadline is how 2026-09-18 "
+        "happened")

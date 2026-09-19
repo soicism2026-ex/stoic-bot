@@ -935,3 +935,28 @@ that story must always be captioned "recorded in the Historia Augusta", never
   **NOTE FOR NEXT TIME: this is twice that a fix for an outage has caused the
   next one.** Both times the mechanism was the same — a guard whose threshold
   came from a measurement taken under different conditions than production.
+- **2026-09-19 — THE ENCODE PRESET WAS THE BILL, NOT THE CLIP COUNT.**
+  Benchmarked properly this time: same graph the pipeline actually renders
+  (52s, 1080×1920, 12 inputs, grade + atmosphere + text), at PRODUCTION
+  settings.
+
+      preset   crf   render     file     SSIM vs crf16
+      slower   16    747.5s   573 MB     —      (shipped until today)
+      medium   18    237.4s   264 MB     0.938
+      fast     20    181.6s    69 MB     0.920
+
+  **The clip count is not the cost: 4 clips 729.1s vs 12 clips 747.5s.** My
+  09-17 claim that render time is flat in clip count was RIGHT; the absolute
+  numbers I quoted alongside it were not, and those were what mattered.
+  `slower`/16 spent 3.1× the time producing a 573 MB file that YouTube
+  re-encodes on arrival and discards. Worse, it broke the retry design: at
+  747s a render, only **two** attempts fit in `POST_BUDGET_SECONDS`, so the
+  five-attempt self-healing loop was a two-attempt loop — and it ran the encode
+  right up against its deadline, which is what took the channel down.
+  Default is now **`medium`/crf 18**: 3.1× faster, 8 attempts fit, 5× deadline
+  headroom. SSIM 0.938 understates it — grain is random noise that differs
+  between encodes and SSIM punishes the mismatch; frames were compared through
+  the iPhone crop and text, grade and vignette are identical.
+  **Revert with `REEL_X264_PRESET=slower REEL_CRF=16`, no code change.**
+  A test now refuses any preset that has never been benchmarked, and fails if
+  the default is too expensive for the attempts the loop is configured for.
