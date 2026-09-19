@@ -676,25 +676,49 @@ def main():
                   f"{POST_BUDGET_SECONDS / 60:.0f} — final attempt")
         print(f"  [attempt {attempt}/{MAX_ATTEMPTS}] rendering... "
               f"({left / 60:.0f} min budget left)")
-        _render_with_env(
-            current_env,
-            quote=content["quote"], author=content["author"],
-            audio_path=audio_path, out_path=video_path,
-            theme=content["theme"], word_timings=word_timings, hook=hook,
-            callout_words=content.get("callout_words", []),
-            music_path=music_path, mission=mission_overlay,
-        )
-
-        print(f"  [attempt {attempt}] QA check...")
-        qa = run_qa(video_path, content["quote"])
-        all_qa.append(qa)
-        print(
-            f"  [attempt {attempt}] pass={qa['pass']} "
-            f"severity={qa['severity']} issues={qa['issues']}"
-        )
+        # A RENDER THAT CRASHES IS A FAILED ATTEMPT, NOT A FAILED DAY.
+        # This call used to be bare, inside a loop described as "self-healing"
+        # that in fact only healed QA failures. One ffmpeg timeout escaped it
+        # and killed the whole run — no retry, no backup, nothing published.
+        # Every scheduled run from 2026-09-18 01:07 died exactly here.
+        render_error = None
+        try:
+            _render_with_env(
+                current_env,
+                quote=content["quote"], author=content["author"],
+                audio_path=audio_path, out_path=video_path,
+                theme=content["theme"], word_timings=word_timings, hook=hook,
+                callout_words=content.get("callout_words", []),
+                music_path=music_path, mission=mission_overlay,
+            )
+        except Exception as e:  # noqa: BLE001
+            render_error = f"render failed: {type(e).__name__}: {str(e)[:300]}"
+            print(f"  [attempt {attempt}] {render_error}", file=sys.stderr)
 
         last_attempt = (attempt == MAX_ATTEMPTS) or budget_spent
-        upload_this = qa["pass"] or (last_attempt and qa["severity"] == "low")
+
+        if render_error:
+            qa = {"pass": False, "issues": [render_error], "severity": "high"}
+            all_qa.append(qa)
+            if not last_attempt:
+                # Retry with corrections — a different clip pick often is the
+                # difference between a pathological input and a clean one.
+                current_env = _apply_corrections(current_env, [render_error],
+                                                 attempt)
+                continue
+            # Out of attempts. Fall through with nothing to upload, which
+            # hands the day to the backup bank below instead of returning
+            # empty-handed.
+            upload_this = False
+        else:
+            print(f"  [attempt {attempt}] QA check...")
+            qa = run_qa(video_path, content["quote"])
+            all_qa.append(qa)
+            print(
+                f"  [attempt {attempt}] pass={qa['pass']} "
+                f"severity={qa['severity']} issues={qa['issues']}"
+            )
+            upload_this = qa["pass"] or (last_attempt and qa["severity"] == "low")
 
         # Visual QA (Claude Opus content-quality scoring) — only when technical QA
         # passes, so we don't waste Opus API calls on renders that are already broken.

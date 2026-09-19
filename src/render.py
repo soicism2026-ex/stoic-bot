@@ -1345,5 +1345,9 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         "-r", "30",
         str(out_path),
     ]
-    proc.run(cmd, check=True, capture_output=True)
+    # The one call in this pipeline that is SUPPOSED to take minutes. It gets
+    # its own deadline rather than the short default, which is what killed
+    # every run from 2026-09-18 onward.
+    proc.run(cmd, check=True, capture_output=True,
+             timeout=proc.RENDER_TIMEOUT)
     return out_path

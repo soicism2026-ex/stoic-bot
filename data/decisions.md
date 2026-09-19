@@ -911,3 +911,27 @@ that story must always be captioned "recorded in the Historia Augusta", never
   Only beats 1 (rain on a window) and 4 (a candle) were right.
   Caveat: MCP-only, so a runner cannot call it — this is a check I run in
   session, not a pipeline stage.
+- **2026-09-19 — TWO DAYS DOWN. THE TIMEOUT I ADDED TO FIX THE LAST OUTAGE
+  CAUSED THIS ONE.** No posts on 09-18 or 09-19. Every scheduled run since
+  **09-18 01:07** failed, all at the same place:
+  `subprocess.TimeoutExpired: ffmpeg ... timed out after 420.0 seconds`.
+  **Root cause 1 — a number I guessed from the wrong benchmark.**
+  `PROC_TIMEOUT=420` was sized from a local measurement I took at
+  `REEL_X264_PRESET=ultrafast` + `REEL_CRF=30`. Production encodes at
+  `-preset slower -crf 16`, which is an order of magnitude slower — the
+  09-17 production log shows ~10 minutes between the last background fetch and
+  QA. My own comment in `proc.py` read *"generous enough for a full render
+  (measured at 3-5 minutes)"*. **Bounding a call was right; guessing its cost
+  from a benchmark at different settings was not.** The main encode now has its
+  own `PROC_RENDER_TIMEOUT` (1200s), passed explicitly, sized so
+  `(POST_BUDGET − 600) + RENDER_TIMEOUT + tail < 60 min` — pinned by a test,
+  because the old job-cap test multiplied attempts by `DEFAULT_TIMEOUT`, a
+  number renders never obeyed.
+  **Root cause 2 — the "self-healing" loop only healed QA failures.** The
+  render call was bare, so the timeout escaped the attempt loop and killed the
+  run outright: no retry, no backup bank, nothing published. A render that
+  crashes is now a FAILED ATTEMPT — it retries with corrections, and on the
+  last attempt falls through to the backup bank instead of returning empty.
+  **NOTE FOR NEXT TIME: this is twice that a fix for an outage has caused the
+  next one.** Both times the mechanism was the same — a guard whose threshold
+  came from a measurement taken under different conditions than production.

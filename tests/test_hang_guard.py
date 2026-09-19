@@ -92,12 +92,20 @@ def test_a_hanging_process_actually_raises():
         proc.run([sys.executable, "-c", "import time; time.sleep(30)"], timeout=1)
 
 
-def test_five_attempts_cannot_reach_the_job_cap():
-    """The arithmetic that caused the outage: attempts x per-call timeout must
-    stay under 60 minutes."""
+def test_the_worst_case_run_still_fits_inside_the_job_cap():
+    """The arithmetic that caused BOTH outages.
+
+    The first version of this test multiplied MAX_ATTEMPTS by
+    proc.DEFAULT_TIMEOUT — but renders do not use that timeout, so it was
+    checking a number nothing obeyed. The real bound is the budget: an attempt
+    may START with as little as 600s left, and then run a full render on top
+    of it. Everything after that (QA, preflight, upload, logging) has to fit
+    in what remains of the 60-minute cap."""
     import daily_post as dp
-    worst = dp.MAX_ATTEMPTS * proc.DEFAULT_TIMEOUT
-    assert worst < 60 * 60, f"{worst / 60:.0f} min of renders fits inside a 60 min cap"
+    worst = (dp.POST_BUDGET_SECONDS - 600) + proc.RENDER_TIMEOUT
+    tail = 600  # QA + preflight + upload + thumbnail + comments + push
+    assert worst + tail < 60 * 60, (
+        f"{(worst + tail) / 60:.0f} min worst case against a 60 min cap")
 
 
 def test_the_budget_makes_the_attempt_final_rather_than_abandoning_it():
@@ -116,3 +124,71 @@ def test_the_budget_leaves_room_under_the_cap():
     assert dp.POST_BUDGET_SECONDS < 60 * 60
     assert 60 * 60 - dp.POST_BUDGET_SECONDS >= 600, \
         "needs a render's worth of headroom below the cap"
+
+
+# ---------------------------------------------------------------------------
+# The timeout that caused the outage it was written to prevent.
+#
+# PROC_TIMEOUT=420 was sized from a local benchmark run at
+# REEL_X264_PRESET=ultrafast / REEL_CRF=30 — a PREVIEW encode. Production runs
+# `-preset slower -crf 16`, which is an order of magnitude slower. Every
+# scheduled run from 2026-09-18 01:07 onward died at exactly 420.0s inside the
+# final ffmpeg call, and because that call was bare the exception escaped the
+# retry loop and killed the run outright: no retry, no backup, nothing posted.
+# ---------------------------------------------------------------------------
+
+def test_the_main_encode_does_not_use_the_short_default():
+    """The long call must ask for the long deadline explicitly."""
+    src = (ROOT / "src" / "render.py").read_text()
+    i = src.rindex("proc.run(cmd")
+    call = src[i:i + 200]
+    assert "timeout=proc.RENDER_TIMEOUT" in call, (
+        "the main render must pass its own timeout, not inherit PROC_TIMEOUT")
+
+
+def test_the_render_deadline_is_longer_than_the_default():
+    import proc
+    assert proc.RENDER_TIMEOUT > proc.DEFAULT_TIMEOUT
+
+
+def test_the_render_deadline_still_fits_inside_the_post_budget():
+    """Bounded, not unbounded. If one render could outlast the budget, the
+    budget guard stops being what decides when to give up — the 60-minute job
+    cap does, and that is the original five-day outage."""
+    import proc
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import daily_post
+    assert proc.RENDER_TIMEOUT < daily_post.POST_BUDGET_SECONDS
+    assert proc.RENDER_TIMEOUT < 3600, "must stay under the GitHub job cap"
+
+
+def test_a_render_crash_is_an_attempt_failure_not_a_run_failure():
+    """The loop calls itself self-healing; it only ever healed QA failures."""
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    loop = src[src.index("for attempt in range(1, MAX_ATTEMPTS + 1):"):]
+    call = loop.index("_render_with_env(")
+    assert "try:" in loop[:call], "the render call must be guarded"
+    handler = loop[call:call + 1200]
+    assert "except Exception" in handler
+    assert "render_error" in handler
+
+
+def test_a_failed_render_retries_before_giving_up():
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    blk = src[src.index("if render_error:"):]
+    blk = blk[:blk.index("else:")]
+    assert "continue" in blk, "a non-final failure must retry"
+    assert "_apply_corrections" in blk, "and retry with corrections"
+
+
+def test_a_final_failed_render_reaches_the_backup_bank():
+    """Falling through with upload_this=False is what hands the day over."""
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    blk = src[src.index("if render_error:"):]
+    blk = blk[:blk.index("else:")]
+    assert "upload_this = False" in blk
+    statements = [ln.strip() for ln in blk.splitlines()
+                  if ln.strip() and not ln.strip().startswith("#")]
+    assert not any(st == "return" or st.startswith("return ")
+                   for st in statements), \
+        "must not abandon the run with nothing posted"
