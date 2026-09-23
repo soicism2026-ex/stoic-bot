@@ -198,9 +198,25 @@ def review(path: Path, frames_dir: Path | None = None) -> dict:
     frac = _bright_fraction(path, samples[0]["t"])
     res["opening_text_frac"] = round(frac, 3)
     if frac > MAX_TEXT_FRAC:
-        res["fails"].append(
-            f"opening frame is a wall of text ({frac:.0%} covered, max "
-            f"{MAX_TEXT_FRAC:.0%})")
+        # A WARNING, NOT A BLOCK. This measures BRIGHTNESS, not text: it counts
+        # pixels above luma 165, and a lit room counts the same as a caption.
+        # On 2026-09-22 it blocked all five attempts of `end_of_the_couch` —
+        # opening shot "a crowded warm room seen from the doorway" — at 39%,
+        # with a 43-character hook. A blocked story is not consumed, so it came
+        # straight back as the next pick and would have blocked every run,
+        # every day, indefinitely. A heuristic that cannot tell text from a
+        # warm room must not be able to stop the channel.
+        #
+        # What this check existed to catch — the 11-line hook covering 63% of
+        # the frame — is prevented upstream for every story by
+        # tests/test_stories.py::test_story_hooks_do_not_fill_the_frame, which
+        # measures the hook's real wrapped geometry instead of guessing from
+        # pixels. The luma floor above still blocks: that one measures what it
+        # claims to.
+        res["warns"].append(
+            f"opening frame is {frac:.0%} bright pixels (max "
+            f"{MAX_TEXT_FRAC:.0%}) — a text wall OR a bright shot; this "
+            f"check cannot tell which")
     elif frac < 0.005:
         res["warns"].append(
             "opening frame has almost no text — nothing to read in the first "

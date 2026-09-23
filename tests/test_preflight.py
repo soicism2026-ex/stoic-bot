@@ -206,3 +206,28 @@ def test_sample_interval_is_tunable():
     approaches the job cap again."""
     src = (ROOT / "scripts" / "preflight.py").read_text()
     assert "PREFLIGHT_SAMPLE_EVERY" in src
+
+
+def test_a_bright_shot_with_no_text_does_not_block_the_post(tmp_path):
+    """2026-09-22: `end_of_the_couch` opened on "a crowded warm room seen from
+    the doorway" and failed all five attempts as a "wall of text" (39%) with a
+    43-character hook. The measure counts bright PIXELS, not text. A blocked
+    story is not consumed, so it came straight back as the next pick — one
+    bright shot would have stopped the channel indefinitely.
+
+    Render a bright, text-free clip and prove it warns without failing."""
+    import subprocess
+    import preflight
+    clip = tmp_path / "bright.mp4"
+    subprocess.run(
+        ["ffmpeg", "-y", "-v", "error", "-f", "lavfi",
+         "-i", "color=c=0xE8D8B0:s=1080x1920:d=8:r=30,noise=alls=60:allf=t",
+         "-f", "lavfi", "-i", "sine=frequency=220:duration=8",
+         "-shortest", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+         "-c:a", "aac", str(clip)],
+        check=True, timeout=120)
+    res = preflight.review(clip, tmp_path / "frames")
+    assert res.get("opening_text_frac", 0) > preflight.MAX_TEXT_FRAC, (
+        "fixture must actually trip the brightness measure")
+    assert res["verdict"] != "fail", res["fails"]
+    assert any("bright" in w for w in res["warns"])

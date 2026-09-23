@@ -960,3 +960,18 @@ that story must always be captioned "recorded in the Historia Augusta", never
   **Revert with `REEL_X264_PRESET=slower REEL_CRF=16`, no code change.**
   A test now refuses any preset that has never been benchmarked, and fails if
   the default is too expensive for the attempts the loop is configured for.
+- **2026-09-23 — THE CHANNEL WAS STUCK ON ONE STORY, BY MY OWN GATE.** Posts
+  09-19 and 09-21 only. On 09-22 four runs each went green in ~26 min and
+  published nothing: `preflight: opening frame is a wall of text (39%)`. The
+  story was `end_of_the_couch` — hook 43 characters. The "text" measure counts
+  pixels brighter than luma 165, and the opening shot is "a crowded warm room
+  seen from the doorway". A lit room reads as a text wall; every retry renders
+  the same clips, so 5/5 blocked. **A blocked story is not consumed, so it came
+  straight back as the next pick: the channel would have stayed silent
+  indefinitely.** The check is now a WARNING, not a block — a heuristic that
+  cannot tell text from a warm room must not be able to stop the channel. What
+  it existed to catch (the 11-line hook) is prevented upstream by
+  `test_story_hooks_do_not_fill_the_frame`, which measures real wrapped
+  geometry. The luma floor still blocks: that one measures what it claims to.
+  **Third time a guard of mine has taken the channel down.** Same root every
+  time: the threshold was never tested against the footage production uses.
