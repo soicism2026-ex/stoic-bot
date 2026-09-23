@@ -1,0 +1,33 @@
+{
+  "_readme": "Machine-readable storyboards. Human version and scripts: docs/storyboards.md. DRAFTS until the owner approves. model: 'kling' = Soul 9:16 still -> Kling 2.5 image-to-video (people); 'wan' = Wan 3.0 text-to-video (settings, objects). 'who' pulls a fixed cast description + seed so one character stays one person.",
+  "before_breakfast": {
+    "status": "draft",
+    "cast": {
+      "modern": {"seed": 4101, "look": "a man in his early thirties with short dark hair and a grey t-shirt, in a plain modern apartment"},
+      "marcus": {"seed": 4102, "look": "Marcus Aurelius, a Roman emperor in his fifties with a curly greying beard, plain wool tunic and cloak"}
+    },
+    "shots": [
+      {"model": "kling", "who": "modern", "seconds": 3.5,
+       "picture": "sitting on the edge of his bed in a dark bedroom at dawn, phone alarm glowing on the nightstand beside him, not reaching for it, wide shot from the doorway",
+       "motion": "he stays completely still, only breathing, the phone screen pulses"},
+      {"model": "kling", "who": "marcus", "seconds": 3.5,
+       "picture": "sitting on the edge of a camp cot inside a leather army tent before dawn, same pose, one small oil lamp on a stool beside him, wide shot from the tent entrance",
+       "motion": "he stays completely still, only breathing, the lamp flame flickers"},
+      {"model": "wan", "seconds": 3.5,
+       "picture": "extreme close-up of an old man's hand pressing a bronze stylus into a wax tablet by oil lamp light"},
+      {"model": "wan", "seconds": 3.5,
+       "picture": "inside a Roman army tent, the entrance flap stirring in the wind, beyond it rows of tents in blue pre-dawn light and smoke rising from a campfire"},
+      {"model": "kling", "who": "marcus", "seconds": 5.5,
+       "picture": "in profile inside the lamp-lit tent, eyes closed, calm, close-up",
+       "motion": "his lips move silently as if rehearsing words, very slow push in"},
+      {"model": "kling", "who": "modern", "seconds": 3.5,
+       "picture": "standing at a bathroom mirror in soft morning light, still, eyes steady, medium shot",
+       "motion": "his lips move silently as if naming people, he stays calm"},
+      {"model": "wan", "seconds": 4.0,
+       "picture": "lift doors sliding open onto a bright modern office in the morning, a man in a shirt steps out and nods to a colleague"},
+      {"model": "kling", "who": "modern", "seconds": 8.0,
+       "picture": "sitting on the edge of his bed at night, warm bedside lamp on, shoulders relaxed, wide shot from the doorway",
+       "motion": "he exhales slowly and lies back onto the bed"}
+    ]
+  }
+}
