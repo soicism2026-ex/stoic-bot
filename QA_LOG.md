@@ -3828,3 +3828,19 @@ for any recurring defects.
 - severity: high
 - issues:
   - preflight: opening frame is a wall of text (39% covered, max 35%)
+
+## Visual QA — 2026-09-23 01:03 UTC
+**File:** `2026-09-23_reel.mp4` | **Verdict:** `UNREVIEWED`
+**Hook:** He sat at the end of the couch on purpose.
+**Scores:** NOT REVIEWED — no scores were produced
+**Reasoning:** Not reviewed — API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfKUG3ybDD56zrEaBmaLK'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfKUG3ybDD56zrEaBmaLK'}
+**Flagged dims:** not_reviewed, api_unreachable
+
+
+## 2026-09-23 — attempt 1
+- uploaded: True
+- severity: low
+- issues:
+  - QA API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CfKUF442MCkDfphvQzsKm'}
