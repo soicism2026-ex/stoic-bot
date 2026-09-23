@@ -975,3 +975,14 @@ that story must always be captioned "recorded in the Historia Augusta", never
   geometry. The luma floor still blocks: that one measures what it claims to.
   **Third time a guard of mine has taken the channel down.** Same root every
   time: the threshold was never tested against the footage production uses.
+- **2026-09-23 — KLING WORKS ON THE BOT.** The owner added the
+  `HIGGSFIELD_API_KEY` secret. The `kling-smoke` workflow (run 35806145749) made
+  one request: 15.0s 9:16 master (720×1280), cut into three 1080×1920 5s shots
+  in ~3.5 min. The key and request format are proven against the real API.
+  Looked at the frames: wide / push-in / close on the right beat — a lit, clearly
+  visible bedroom, the literal scene doctrine §6 asks for. Known limits: output
+  is 720p upscaled to 1080p, and the close shot's man is not quite the same
+  person as the wide shots. The daily bot is still OFF until the repo variable
+  `REEL_KLING_BG=1` is set; I can't set repo variables from here. Cost per
+  request is not visible from here — the MCP account still shows 4 credits, so
+  the API key bills a different balance.
