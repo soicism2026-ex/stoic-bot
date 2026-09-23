@@ -1,0 +1,57 @@
+name: kling-smoke
+
+# ONE billable Kling request, to prove the HIGGSFIELD_API_KEY secret and the
+# request shape against the real API before the daily bot is allowed to spend.
+# Manual only. Never posts, never commits. KLING_MAX_BEATS_PER_RUN=1 caps it at
+# a single generation even if the code misbehaves.
+on:
+  workflow_dispatch:
+    inputs:
+      beat:
+        description: "Scene to generate"
+        default: "a man sitting on the edge of a bed at dawn, head down"
+
+jobs:
+  smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - run: sudo apt-get update && sudo apt-get install -y ffmpeg
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements.txt
+      - name: Generate one beat
+        env:
+          HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}
+          REEL_KLING_BG: "1"
+          KLING_MAX_BEATS_PER_RUN: "1"
+          BEAT: ${{ github.event.inputs.beat }}
+        run: |
+          python scripts/check_secrets.py | grep -i higgsfield || true
+          mkdir -p out
+          python - <<'PY'
+          import os, sys
+          sys.path.insert(0, "src")
+          import kling
+          from pathlib import Path
+          if not kling.enabled():
+              print("KLING NOT ENABLED - secret missing or not KEY_ID:KEY_SECRET"); sys.exit(1)
+          clips = []
+          for i in range(kling.SHOTS_PER_BEAT):          # 3 cuts, 1 request
+              c = kling.fetch_clip(os.environ["BEAT"], Path(f"out/shot{i}.mp4"))
+              print(f"shot {i}:", c)
+              if c is None:
+                  sys.exit(1)
+              clips.append(c)
+          print("REQUESTS MADE:", kling._BEATS_GENERATED)
+          PY
+          for f in out/*.mp4; do
+            echo "== $f"; ffprobe -v error -show_entries stream=width,height,codec_type -show_entries format=duration -of compact "$f"
+          done
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: kling-smoke
+          path: out/
+          if-no-files-found: ignore
