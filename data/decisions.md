@@ -993,3 +993,20 @@ that story must always be captioned "recorded in the Historia Augusta", never
   defaults to 1: beat 0 is generated (three cuts from one master), later beats
   use stock. Raise to 4 for fully generated videos. Still inert until the repo
   variable `REEL_KLING_BG=1` is set. Logged as an ESTIMATE in costs.json.
+- **2026-09-23 — WAN 3.0 + KLING 2.5 ON THE BOT: FIRST STORYBOARD RENDERED.**
+  Owner has both at a 7-day discount (Wan $0.03/s, Kling 2.5 $0.021/s) and
+  asked to try them and plan storyboards. Model docs pulled on a runner:
+  Wan 3.0 = `alibaba/wan-3.0/text-to-video` (native 9:16, 2-30s);
+  Kling 2.5 = `kling-video/v2.5-turbo/standard/image-to-video` (its
+  text-to-video has NO aspect_ratio, so every Kling shot starts from a 9:16
+  `higgsfield-ai/soul/standard` still). `src/hfgen.py` + `data/storyboards.json`
+  + `storyboard-test.yml` rendered storyboard #1 (`before_breakfast`): **8/8
+  shots, 35s, 13 requests, ~$1.** Every shot is on-script, lit, vertical — a
+  step change from stock. Seen in the frames, needs fixing before air:
+  (1) the match cut is not a match — shot 1 is a doorway wide, shot 2 a
+  centred frontal; the prompts need identical framing language;
+  (2) identity drifts — Marcus in shots 2 and 5 are different men, the modern
+  man's face changes in shot 6, and shot 7 (Wan, no cast) is a stranger in a
+  white shirt. A seed does not hold identity across different prompts.
+  Five storyboards in `docs/storyboards.md` await owner approval of the
+  trimmed scripts; `know_nothing` held back (truncated quote changes meaning).
