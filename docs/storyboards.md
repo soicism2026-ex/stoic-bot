@@ -44,7 +44,9 @@ Measured from the Higgsfield API docs, 2026-09-23:
   editor trims from, so the cut lands on motion, not on a start frame.
 
 Timing uses the voice's measured rate, 2.65 words/second, plus the 2.4s silent
-read beat when the quote comes up.
+read beat when the quote comes up. The quote is NOT read aloud (act 3 is the
+lesson only), so spoken length is hook + story + lesson. Shot timings are
+planned against that; the renderer re-times shots to the real voiceover.
 
 ---
 
@@ -63,7 +65,8 @@ greying beard, plain wool tunic and cloak, Roman military camp.*
 > thyself, I shall meet with the busybody, the ungrateful, arrogant, deceitful,
 > envious, unsocial.* — Meditations 2.1, trans. George Long
 > That isn't bitterness. It's a forecast, so nine o'clock isn't an ambush. Have
-> tomorrow's meeting now, in your head, where it's cheap. Tonight, say out loud
+> tomorrow's meeting now, in your head, where it's cheap. A few lines on, he says
+> he can't hate them, because we're built to work together. Tonight, say out loud
 > who'll be hard work. Naming them takes the charge out.
 
 | # | Time | Voice over it | Picture | Camera |
@@ -126,7 +129,8 @@ Spacing caveat checked: must not air within two weeks of `first_hit` or
 
 > **Hook:** You've been saying "fine" since March.
 > Seneca did the same, until a short boat trip across the bay of Naples made him
-> so sick he forced the captain to put him ashore on the rocks.
+> so sick he forced the captain to put him ashore on the rocks. He went over
+> the side in his cloak and scrambled in over the stones.
 > **[quote on screen]** *Therefore I laid down the law to my pilot, forcing him
 > to make for the shore, willy-nilly.* — Moral Letters 53, trans. Gummere
 > Then his point: no one confesses what's wrong with him while he's still
@@ -193,7 +197,8 @@ philosopher's cloak.*
 > argue for peace.
 > **[quote on screen]** *Many thought it ridiculous, more thought it tiresome.*
 > — Tacitus, Histories III.81, trans. Church and Brodribb
-> He stopped, and walked away having achieved nothing, in front of everyone.
+> Some were ready to knock him down, so he stopped, and walked away having
+> achieved nothing, in front of everyone.
 > Then he went home and kept teaching. One of the young men in his room became
 > Epictetus. Tonight, name the humiliation once, in the past tense.
 

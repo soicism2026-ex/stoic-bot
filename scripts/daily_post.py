@@ -429,7 +429,8 @@ def main():
     # THREE ACTS (owner's format change, 2026-08-07):
     #   1. hook + story narrated, NO quote on screen
     #   2. quote appears, narration STOPS — a silent beat to read it
-    #   3. narration returns, speaking the quote aloud then the lesson
+    #   3. narration returns with the LESSON (the quote is not read aloud;
+    #      act3 below is voiceover_lesson + cta only)
     # "I have a hard time reading the quote while also listening to the
     # dialogue." Reading and listening compete; nothing is narrated over the
     # quote's reading beat any more.
