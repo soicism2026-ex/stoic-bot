@@ -144,3 +144,23 @@ and why a slow drift across a whole video fixes neither.
 **More cuts is not more variety.** The pictures must still follow the script's
 own images in order (section 6). Cutting between four unrelated stock clips
 faster just makes the randomness arrive sooner.
+
+## 8. Lead with THEIR problem. Land it in 30-40 seconds.
+
+Owner direction, 2026-09-23.
+
+**Open on the viewer's own problem, then give the ancient proof.** Not "He sat
+at the end of the couch on purpose" — the viewer has to work out why they
+should care. Instead: *"Dreading tomorrow's people doesn't make you weak."*
+Then Marcus Aurelius as the evidence. Third-person openers make the viewer do
+the connecting; a second-person opener does it for them, and recognition is the
+mechanism this whole channel runs on (see the story bank's craft rule). Keep
+it a permission, not an order — "doesn't make you weak", not "stop being weak".
+Still under 5 spoken seconds.
+
+**30-40 seconds, not 52.** Correction of 2026-09-17, which said to steer on
+seconds watched "because seconds are what the watch-hour door counts". Wrong
+for this channel: **Shorts watch time does not count toward YPP watch hours.**
+A Shorts channel monetises on VIEWS (3M in 90 days), and Shorts distribution
+is decided largely by swipe-away and completion. Shorter lifts completion and
+replays, and that is what buys views.
