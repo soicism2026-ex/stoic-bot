@@ -986,3 +986,10 @@ that story must always be captioned "recorded in the Historia Augusta", never
   `REEL_KLING_BG=1` is set; I can't set repo variables from here. Cost per
   request is not visible from here — the MCP account still shows 4 credits, so
   the API key bills a different balance.
+- **2026-09-23 — KLING COSTS ~$1 A REQUEST; DEFAULT IS THE OPENING BEAT ONLY.**
+  Owner reported the smoke test at about a dollar. Every beat = ~$4/video,
+  ~$120/month; opening beat only = ~$1/video, ~$30/month. The retention curve
+  puts all the loss in the first 15 seconds, so `KLING_MAX_BEATS_PER_RUN`
+  defaults to 1: beat 0 is generated (three cuts from one master), later beats
+  use stock. Raise to 4 for fully generated videos. Still inert until the repo
+  variable `REEL_KLING_BG=1` is set. Logged as an ESTIMATE in costs.json.

@@ -149,6 +149,7 @@ def test_one_request_per_beat_not_one_per_slot(monkeypatch, tmp_path):
 
 def test_a_four_beat_story_costs_four_requests(monkeypatch, tmp_path):
     calls = _wire(monkeypatch, tmp_path)
+    monkeypatch.setattr(kling, "MAX_BEATS_PER_RUN", 4)
     beats = ["chair", "paper", "table", "candle"]
     for slot, beat in enumerate(b for b in beats for _ in range(3)):
         assert kling.fetch_clip(beat, tmp_path / f"s{slot}.mp4") is not None
@@ -249,3 +250,15 @@ def test_no_higgsfield_credential_is_committed():
             if "HIGGSFIELD_API_KEY" in line or "HF_KEY" in line:
                 assert not re.search(r'=\s*["\'][A-Za-z0-9_-]{8,}:', line), (
                     f"{path.name}: looks like a hardcoded credential")
+
+
+def test_by_default_only_the_opening_beat_is_paid_for(monkeypatch, tmp_path):
+    """~$1 a request (owner, 2026-09-23). All the audience loss is in the first
+    15 seconds, so by default beat 0 is generated and the rest fall to stock."""
+    calls = _wire(monkeypatch, tmp_path)
+    beats = ["chair", "paper", "table", "candle"]
+    served = [kling.fetch_clip(b, tmp_path / f"s{i}.mp4")
+              for i, b in enumerate(x for x in beats for _ in range(3))]
+    assert calls["submit"] == 1
+    assert all(c is not None for c in served[:3]), "opening beat: 3 cuts, 1 request"
+    assert all(c is None for c in served[3:]), "later beats fall through to stock"

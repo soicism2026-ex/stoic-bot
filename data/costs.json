@@ -12,6 +12,12 @@
       "monthly_usd": 5.0,
       "start": "2026-07-15",
       "note": "Brian voice, 1 post/day budget (30k chars/mo cap)"
+    },
+    {
+      "name": "Higgsfield API (Kling 3.0, opening beat only)",
+      "monthly_usd": 30.0,
+      "start": "2026-09-23",
+      "note": "ESTIMATE: ~$1 per 15s generation (owner, 2026-09-23 smoke test) x 1/video x 30/month. Only billed once REEL_KLING_BG=1 is set."
     }
   ],
   "one_time": [

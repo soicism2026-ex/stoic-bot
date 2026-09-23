@@ -64,7 +64,15 @@ SECONDS_PER_SHOT = int(os.environ.get("KLING_SECONDS_PER_SHOT", "5"))
 # Spend guard. Pricing is not published, so the number of REQUESTS is the thing
 # under our control. Four beats per video is the current shot list; anything
 # past this ceiling in one process is a bug, not a longer story.
-MAX_BEATS_PER_RUN = int(os.environ.get("KLING_MAX_BEATS_PER_RUN", "4"))
+#
+# DEFAULT 1 = THE OPENING BEAT ONLY. Measured 2026-09-23: one request (a 15s
+# master) cost the owner ~$1. Every beat would be ~$4/video, ~$120/month at one
+# post a day. The retention curve says all the loss is in the first 15 seconds
+# and it is flat after, so the dollar goes where the swipe decision is made:
+# beat 0 is generated, its three slots are cut from that one master, and beats
+# 1-3 hit this cap and fall through to stock. ~$1/video, ~$30/month.
+# Raise to 4 for fully generated videos.
+MAX_BEATS_PER_RUN = int(os.environ.get("KLING_MAX_BEATS_PER_RUN", "1"))
 
 # Deadlines. A queued video generation can take minutes; it must never take
 # forever. SUBMIT/POLL are per-HTTP-call, BEAT bounds the whole wait.
