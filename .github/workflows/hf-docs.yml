@@ -7,7 +7,7 @@ on:
     inputs:
       match:
         description: "Regex of model names to pull docs for"
-        default: "wan|kling-video/v2"
+        default: "wan|kling"
 
 jobs:
   docs:
@@ -30,6 +30,33 @@ jobs:
             curl -sSL --max-time 60 "$u" -o "out/page_$i.txt" || true
             echo "$i $u" >> out/pages.txt
           done < out/matched_urls.txt
+          # The model catalogue: openapi.json paths, then each model's llms.txt.
+          curl -sSL --max-time 60 https://docs.higgsfield.ai/docs/openapi.json -o out/openapi.json || true
+          curl -sSL --max-time 60 https://dash.higgsfield.ai/models/llms.txt -o out/models_index.txt || true
+          curl -sSL --max-time 60 https://console.higgsfield.ai/models -o out/console_models.html || true
+          python3 - <<'PY2'
+          import json, re, os, pathlib
+          out = pathlib.Path("out"); pat = re.compile(os.environ["MATCH"], re.I)
+          ids = set()
+          try:
+              ids |= {p.strip("/") for p in json.load(open(out/"openapi.json")).get("paths", {})}
+          except Exception as e:
+              print("openapi:", e)
+          for f in ("models_index.txt", "console_models.html"):
+              t = (out/f).read_text(errors="ignore") if (out/f).exists() else ""
+              ids |= set(re.findall(r'models/([a-z0-9._-]+(?:/[a-z0-9._-]+){1,4})', t))
+          (out/"all_ids.txt").write_text("\n".join(sorted(ids)))
+          hits = sorted(i for i in ids if pat.search(i))
+          (out/"hit_ids.txt").write_text("\n".join(hits))
+          print("ids:", len(ids), "hits:", hits)
+          PY2
+          n=0
+          while read -r id; do
+            [ -z "$id" ] && continue; n=$((n+1))
+            curl -sSL --max-time 60 "https://dash.higgsfield.ai/models/$id/llms.txt" -o "out/model_$n.txt" || true
+            echo "$n $id $(wc -c < out/model_$n.txt)" >> out/model_pages.txt
+          done < out/hit_ids.txt
+          cat out/model_pages.txt 2>/dev/null
           ls -la out
       - uses: actions/upload-artifact@v4
         with:
