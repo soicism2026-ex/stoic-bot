@@ -7,7 +7,10 @@ on:
     inputs:
       match:
         description: "Regex of model names to pull docs for"
-        default: "wan|kling"
+        default: "wan|kling|soul"
+      guess:
+        description: "Extra model ids to try directly, space separated"
+        default: "wan/v3.0/text-to-video wan/v3.0/image-to-video wan-video/v3.0/text-to-video alibaba/wan-3.0/text-to-video wan/3.0/text-to-video"
 
 jobs:
   docs:
@@ -17,6 +20,7 @@ jobs:
       - name: Fetch index and matching model pages
         env:
           MATCH: ${{ github.event.inputs.match }}
+          GUESS: ${{ github.event.inputs.guess }}
         run: |
           mkdir -p out
           curl -sSL --max-time 60 https://docs.higgsfield.ai/docs/llms.txt -o out/index.txt || true
@@ -56,6 +60,11 @@ jobs:
             curl -sSL --max-time 60 "https://dash.higgsfield.ai/models/$id/llms.txt" -o "out/model_$n.txt" || true
             echo "$n $id $(wc -c < out/model_$n.txt)" >> out/model_pages.txt
           done < out/hit_ids.txt
+          for id in $GUESS; do
+            n=$((n+1))
+            code=$(curl -sSL --max-time 30 -o "out/model_$n.txt" -w '%{http_code}' "https://dash.higgsfield.ai/models/$id/llms.txt" || true)
+            echo "$n $id http=$code $(wc -c < out/model_$n.txt)" >> out/model_pages.txt
+          done
           cat out/model_pages.txt 2>/dev/null
           ls -la out
       - uses: actions/upload-artifact@v4
