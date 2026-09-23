@@ -103,6 +103,7 @@ After the main post loop, the workflow runs:
 | `YOUTUBE_REFRESH_TOKEN` | same — must include `youtube.force-ssl` scope for thumbnails + comments |
 | `PIXABAY_API_KEY` | backgrounds.py, music.py |
 | `PEXELS_API_KEY` | backgrounds.py fallback |
+| `HF_KEY` | `main.py` — official Higgsfield SDK example (Seedance 2.5). `KEY_ID:KEY_SECRET`. Locally in `.env.local` (git-ignored; template `.env.example`). kling.py also accepts it |
 | `HIGGSFIELD_API_KEY` | kling.py — generated MOTION backgrounds (Kling 3.0 REST API). `KEY_ID:KEY_SECRET`. Inert unless `REEL_KLING_BG=1` |
 | `REPLICATE_API_TOKEN` | tts.py — Chatterbox voice (primary; open-source, beats ElevenLabs in blind tests, pay-per-second) |
 | `OPENAI_API_KEY` | imagegen.py — activates AI-generated backgrounds (optional, paid) |

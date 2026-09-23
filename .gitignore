@@ -4,6 +4,9 @@ data/*_voice.mp3
 data/*_reel.mp4
 data/improve_prompt.txt
 .env
+# Local credentials (HF_KEY for the Higgsfield SDK). Never commit.
+.env.local
+.env.*.local
 client_secret.json
 assets/backgrounds/*.mp4
 assets/backgrounds/*.webm
