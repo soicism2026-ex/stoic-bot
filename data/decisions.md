@@ -1056,3 +1056,17 @@ that story must always be captioned "recorded in the Historia Augusta", never
   approved boards, and the story bank keeps the old script until the owner
   approves the new one. Fact fixed on the way: the thief came through the
   DOOR (Discourses I.18, Long), not the window the bank's version said.
+- **2026-09-24 — THE VOICE READS THE QUOTE; THE CARD FOLLOWS IT.** Owner:
+  *"The end quote honestly feels almost annoying to read when im trying to
+  listen to what the voice is saying we need to either remove the quote or
+  have it show later and also talk over it and have it be followed in."*
+  Chose the second: act 3 now opens with the voice reading the quote (after a
+  0.7s breath, `REEL_QUOTE_BREATH`, replacing the 2.4s silent read beat). The
+  quote shows ONLY while it is being spoken, filling word by word in the quote's
+  serif with the author credit beneath, and disappears at the next spoken word,
+  where the lesson's captions take over (`REEL_QUOTE_SPOKEN`, render.py
+  `_phrase_times` + `_quote_karaoke_event`). One text on screen, and it is the
+  one being heard. If the quote's words can't be found in the narration the old
+  static card is used rather than nothing. This reverses the 2026-08-07 silent
+  read beat, which solved the same complaint the other way; the reason it came
+  back is that the card then stayed up under the whole lesson.

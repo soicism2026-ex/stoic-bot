@@ -812,7 +812,8 @@ READ_BEAT = float(os.environ.get("REEL_READ_BEAT", "2.4"))
 
 
 def synthesize_two_part(story: str, lesson: str, out_path: Path,
-                        voice_id: str = None, lead_silence: float = 0.0) -> tuple:
+                        voice_id: str = None, lead_silence: float = 0.0,
+                        read_beat: float | None = None) -> tuple:
     """Synthesize story + silence + lesson.
 
     Returns (out_path, word_timings, quote_appear_seconds) where
@@ -834,6 +835,9 @@ def synthesize_two_part(story: str, lesson: str, out_path: Path,
     # if the silence is REAL, so it is baked into the audio track rather than
     # faked by delaying the render.
     lead = max(0.0, float(lead_silence))
+    # The pause between the acts. The full READ_BEAT is for a quote read in
+    # silence; when the voice reads the quote itself, a breath is enough.
+    beat = READ_BEAT if read_beat is None else max(0.0, float(read_beat))
 
     tmp_story = out_path.with_suffix(".story.mp3")
     tmp_lesson = out_path.with_suffix(".lesson.mp3")
@@ -849,7 +853,7 @@ def synthesize_two_part(story: str, lesson: str, out_path: Path,
              "-i", str(tmp_story), "-i", str(tmp_lesson),
              "-filter_complex",
              f"[0:a]adelay={int(lead * 1000)}|{int(lead * 1000)},"
-             f"apad=pad_dur={READ_BEAT}[a0];[a0][1:a]concat=n=2:v=0:a=1[out]",
+             f"apad=pad_dur={beat}[a0];[a0][1:a]concat=n=2:v=0:a=1[out]",
              "-map", "[out]", "-c:a", "libmp3lame", "-b:a", "192k",
              str(out_path)],
             check=True, capture_output=True,
@@ -862,13 +866,13 @@ def synthesize_two_part(story: str, lesson: str, out_path: Path,
 
         # Shift the lesson's word timings past the story and the reading beat so
         # captions/callouts still line up if they are ever switched back on.
-        offset = story_dur + READ_BEAT
+        offset = story_dur + beat
         story_timings = [(w, st + lead, e + lead) for (w, st, e) in (story_timings or [])]
         timings = list(story_timings) + [
             (w, s + offset, e + offset) for (w, s, e) in (lesson_timings or [])
         ]
         print(f"  tts: two-part narration — story {story_dur:.1f}s, "
-              f"read beat {READ_BEAT:.1f}s, total {total:.1f}s "
+              f"read beat {beat:.1f}s, total {total:.1f}s "
               f"(quote appears at {story_dur:.1f}s)")
         return out_path, timings, story_dur
     except Exception as e:  # noqa: BLE001

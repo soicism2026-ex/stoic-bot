@@ -125,3 +125,44 @@ def test_hook_line_and_captions_never_share_the_screen(tmp_path, monkeypatch):
     captioned = " ".join(c.split("}")[-1] for c in caps)
     assert "DREADING" not in captioned and "WEAK" not in captioned, "hook words captioned twice"
     assert "EMPEROR" in captioned, "the story's words must still be captioned"
+
+
+def test_the_quote_is_spoken_shown_only_while_spoken_and_then_hands_over(tmp_path, monkeypatch):
+    """Owner, 2026-09-24: reading the quote while the voice said something else
+    was annoying. The voice now reads the quote; the line shows only while it
+    is spoken, word by word, and the lesson's captions resume after."""
+    import render
+    monkeypatch.setattr(render, "QUOTE_APPEAR", 5.0)
+    quote = "Begin the morning by saying to thyself, I shall meet with the busybody."
+    story = "Marcus wrote himself a script".split()
+    wt = [(w, 0.5 + i * 0.4, 0.8 + i * 0.4) for i, w in enumerate(story)]
+    t = 5.7
+    for w in quote.split() + "That isn't bitterness at all".split():
+        wt.append((w, t, t + 0.35)); t += 0.4
+    qt = render._phrase_times(quote, wt, 5.0)
+    assert len(qt) == len(quote.split())
+    q_end = qt[-1][1]
+    hide = max(q_end + 0.35, [w[1] for w in wt if w[1] > q_end + 0.02][0])
+    ass = render._build_ass(wt, tmp_path / "q.ass", quote=quote, author="Marcus Aurelius",
+                            quote_times=qt, quote_hide=hide).read_text()
+    ev = [l for l in ass.splitlines() if l.startswith("Dialogue:")]
+    qline = [e for e in ev if ",Quote," in e]
+    assert len(qline) == 1 and "\\k" in qline[0] and "MARCUS AURELIUS" in qline[0]
+    caps = " ".join(e.split("}")[-1] for e in ev if ",Karaoke," in e)
+    assert "BUSYBODY" not in caps and "THYSELF" not in caps, "quote captioned twice"
+    assert "BITTERNESS" in caps, "the lesson must be captioned after the quote"
+
+
+def test_quote_matching_is_bounded_to_where_the_quote_is_spoken():
+    """A word that recurs later in the lesson must not drag the match."""
+    import render
+    wt = [(w, 1.0 + i * 0.4, 1.3 + i * 0.4) for i, w in enumerate("so then he went home".split())]
+    wt += [("Begin", 9.0, 9.3), ("now", 9.4, 9.6)]
+    assert render._phrase_times("Begin now", wt, after=1.0) == []
+    assert len(render._phrase_times("Begin now", wt, after=8.9)) == 2
+
+
+def test_daily_post_has_the_voice_read_the_quote():
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    assert 'act3 = f"{content[\'quote\'].strip()} {act3}"' in src
+    assert 'pack["REEL_QUOTE_SPOKEN"] = "1"' in src

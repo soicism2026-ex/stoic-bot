@@ -54,6 +54,9 @@ MAX_ATTEMPTS = int(os.environ.get("REEL_MAX_ATTEMPTS", "5"))
 # Per-process timeouts (src/proc.py) stop any single call hanging; this stops
 # retries ACCUMULATING past the cap. At the budget we stop retrying and publish
 # the best attempt so far rather than being killed mid-render with nothing.
+# Pause before the voice reads the quote: a breath, not the old 2.4s silent
+# read beat, because the viewer now hears the quote instead of reading it cold.
+QUOTE_BREATH = float(os.environ.get("REEL_QUOTE_BREATH", "0.7"))
 POST_BUDGET_SECONDS = float(os.environ.get("POST_BUDGET_SECONDS", "2100"))  # 35 min
 BACKUP_MIN = 3
 # Per-DAY upload total (not per-run). The single 17:00 UTC cron slot posts once;
@@ -448,11 +451,24 @@ def main():
     act3 = content["voiceover_lesson"]
     if cta:
         act3 = f"{act3} {cta}"
+    # THE VOICE READS THE QUOTE. Owner, 2026-09-24: "The end quote honestly
+    # feels almost annoying to read when im trying to listen to what the voice
+    # is saying ... have it show later and also talk over it and have it be
+    # followed in." The card used to arrive in a 2.4s silence and then stay up
+    # while the lesson was spoken over it — reading one thing while hearing
+    # another. Now the voice speaks the quote, the card shows ONLY while it is
+    # spoken and highlights word by word (render.py, REEL_QUOTE_SPOKEN), and
+    # then hands over to the lesson's captions. One text, and it is the one
+    # being heard.
+    spoken_quote = (not is_question) and bool(content.get("quote", "").strip())
+    if spoken_quote:
+        act3 = f"{content['quote'].strip()} {act3}"
 
     # Voiceover once; reused across render attempts
     audio_path = ROOT / "data" / f"{today}_voice.mp3"
     audio_path, word_timings, quote_appear = synthesize_two_part(
-        act1, act3, audio_path, voice_id=voice["id"], lead_silence=lead)
+        act1, act3, audio_path, voice_id=voice["id"], lead_silence=lead,
+        read_beat=QUOTE_BREATH if spoken_quote else None)
     print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings, "
           f"quote appears at {quote_appear:.1f}s)")
 
@@ -685,6 +701,8 @@ def main():
     # in on silence rather than over the voice.
     if quote_appear > 0:
         pack["REEL_QUOTE_APPEAR"] = f"{quote_appear:.2f}"
+    if spoken_quote:
+        pack["REEL_QUOTE_SPOKEN"] = "1"
 
     exp_env = {**exp_env, **pack}
     print(f"  style: {fmt or 'classic'} -> {pack.get('REEL_STYLE','classic')}"

@@ -106,6 +106,10 @@ HOOK_HOLD = float(os.environ.get("REEL_HOOK_HOLD", "2.2"))      # seconds fully 
 # daily_post sets this to the end of the story narration so the quote appears
 # exactly when the voice stops — see the three-act note at the fade site.
 QUOTE_APPEAR = float(os.environ.get("REEL_QUOTE_APPEAR", "0"))
+# The voice reads the quote (daily_post, owner 2026-09-24). The card then shows
+# ONLY while it is spoken, word by word, instead of sitting on screen while
+# the lesson is talked over it.
+QUOTE_SPOKEN = os.environ.get("REEL_QUOTE_SPOKEN", "0") not in ("0", "", "false", "False")
 HOOK_FONTSIZE = int(os.environ.get("REEL_HOOK_FONTSIZE", "94"))
 # ALL CAPS and a 12-char wrap were built for 4-word hooks. A 20-word story
 # hook wrapped that way renders as ELEVEN lines of shouting filling 63% of the
@@ -682,6 +686,57 @@ def _hook_word_times(hook_text: str, timings: list) -> list:
     return out
 
 
+def _phrase_times(text: str, timings: list, after: float = 0.0) -> list:
+    """(start, end) for each word of `text`, matched in the narration at or
+    after `after`. Bounded: the phrase must begin within the first few words
+    after that point, so a word that recurs later in the lesson cannot drag the
+    match (the hook matcher's known weakness). [] if there is no clean match."""
+    def norm(w):
+        return re.sub(r"[^a-z0-9]", "", str(w).lower())
+    want = [norm(w) for w in text.split() if norm(w)]
+    sub = [t for t in (timings or []) if float(t[1]) >= after - 0.05]
+    if not want or not sub:
+        return []
+    for first in range(min(3, len(sub))):
+        if norm(sub[first][0]) != want[0]:
+            continue
+        out, ti = [], first
+        for w in want:
+            gap = 0
+            # allow at most two stray tokens (a TTS that splits "thyself," into
+            # two boundaries) between consecutive words of the phrase
+            while ti < len(sub) and norm(sub[ti][0]) != w and gap < 2:
+                ti += 1
+                gap += 1
+            if ti >= len(sub) or norm(sub[ti][0]) != w:
+                break
+            out.append((float(sub[ti][1]), float(sub[ti][2])))
+            ti += 1
+        if len(out) == len(want):
+            return out
+    return []
+
+
+def _quote_karaoke_event(quote: str, author: str, times: list, hide: float) -> str:
+    """The spoken quote as one ASS line that fills word by word, with the
+    author credit underneath at full strength from the start."""
+    words = quote.split()
+    if not words or len(times) != len(words):
+        return ""
+    parts = []
+    for i, w in enumerate(words):
+        nxt = times[i + 1][0] if i + 1 < len(times) else times[-1][1]
+        cs = max(1, int(round((nxt - times[i][0]) * 100)))
+        parts.append(f"{{\\k{cs}}}{_ass_escape(w)} ")
+    # \2a&H00& too: the style's dim SecondaryColour carries 60% alpha, and
+    # without resetting it the credit waited, dimmed, for the last word.
+    credit = (f"\\N{{\\r}}{{\\fs40\\1c{AUTHOR_ASS}\\2c{AUTHOR_ASS}\\2a&H00&\\bord2}}"
+              f"— {_ass_escape(author.upper())}")
+    start = max(0.0, times[0][0] - 0.3)
+    return (f"Dialogue: 1,{_ass_time(start)},{_ass_time(hide)},"
+            f"Quote,,0,0,0,,{{\\fad(220,260)}}" + "".join(parts).rstrip() + credit)
+
+
 def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
     r"""One centred ASS line for the hook, filling word by word as it is spoken.
 
@@ -715,11 +770,27 @@ def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
 # 160 = the 120px crop + a 40px breathing edge, so libass wraps inside what
 # the viewer actually sees.
 HOOK_MARGIN = int(os.environ.get("REEL_HOOK_MARGIN", "160"))
+# Spoken-quote line: the quote card's serif, top-anchored about a third of the
+# way down where the static card used to sit.
+QUOTE_ASS_FONT = os.environ.get("REEL_QUOTE_ASS_FONT", "Liberation Serif")
+QUOTE_ASS_FS = int(os.environ.get("REEL_QUOTE_ASS_FS", "70"))
+QUOTE_ASS_MARGINV = int(os.environ.get("REEL_QUOTE_ASS_MARGINV", "470"))
+
+
+def _hex_to_ass(hex_rgb: str, alpha: str = "00") -> str:
+    """0xRRGGBB -> ASS &HAABBGGRR."""
+    h = hex_rgb.replace("0x", "").replace("#", "").rjust(6, "0")[-6:]
+    return f"&H{alpha}{h[4:6]}{h[2:4]}{h[0:2]}".upper()
+
+
+AUTHOR_ASS = _hex_to_ass(AUTHOR_COLOR)
 
 
 def _build_ass(word_timings: list, out_path: Path,
                hook: str = "", hook_starts: list = None,
-               hook_hold: float = 0.0, captions_from: float = 0.0) -> Path:
+               hook_hold: float = 0.0, captions_from: float = 0.0,
+               quote: str = "", author: str = "", quote_times: list = None,
+               quote_hide: float = 0.0) -> Path:
     """Write a .ass subtitle file with impactful 2-word karaoke captions.
 
     2 words at a time gives a natural reading rhythm without the chaotic
@@ -739,6 +810,9 @@ def _build_ass(word_timings: list, out_path: Path,
     # &H99 is mostly transparent). Readable enough to run ahead, dim enough
     # that the spoken word clearly leads.
     hook_dim = "&H99FFFFFF"
+    # Spoken quote: parchment when said, the same parchment dimmed before.
+    quote_on = _hex_to_ass(QUOTE_COLOR)
+    quote_dim = _hex_to_ass(QUOTE_COLOR, "99")
 
     # caption_only style: captions ARE the show — centre of frame (ASS
     # alignment 5 = middle-centre), ~35% larger, same pop animation.
@@ -758,6 +832,7 @@ ScaledBorderAndShadow: yes
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Karaoke,{CAPTION_FONT},{cap_fs},{primary},{primary},{outline},{shadow},-1,0,0,0,100,100,3,0,1,6,4,{cap_align},{CAPTION_MARGINL},{CAPTION_MARGINR},{cap_marginv},1
 Style: Hook,{CAPTION_FONT},{HOOK_ASS_FS},{primary},{hook_dim},{outline},{outline},-1,0,0,0,100,100,2,0,1,6,3,5,{HOOK_MARGIN},{HOOK_MARGIN},0,1
+Style: Quote,{QUOTE_ASS_FONT},{QUOTE_ASS_FS},{quote_on},{quote_dim},{outline},{outline},-1,0,0,0,100,100,1,0,1,4,3,8,{HOOK_MARGIN},{HOOK_MARGIN},{QUOTE_ASS_MARGINV},1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -776,7 +851,12 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         # screen, so captions have the frame to themselves. From the moment the
         # quote fades in, captions stop — the quote is the only thing to read
         # through the reading beat and the lesson.
-        if QUOTE_APPEAR > 0 and start >= QUOTE_APPEAR - 0.15:
+        if quote_times:
+            # Spoken quote: captions pause only while the quote line is up,
+            # then resume for the lesson.
+            if quote_times[0][0] - 0.35 <= start < quote_hide - 0.05:
+                continue
+        elif QUOTE_APPEAR > 0 and start >= QUOTE_APPEAR - 0.15:
             continue
         # While the hook line is on screen it is the only text: no caption
         # chunk that would start under it (the hook's own words, captioned a
@@ -802,6 +882,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         ev = _hook_karaoke_events(hook, hook_starts, hook_hold)
         if ev:
             events.insert(0, ev)
+    if quote and quote_times:
+        qev = _quote_karaoke_event(quote, author, quote_times, quote_hide)
+        if qev:
+            events.append(qev)
 
     out_path.write_text(header + "\n".join(events) + "\n", encoding="utf-8")
     return out_path
@@ -1162,7 +1246,23 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # enhancement chain has finished grading the footage.
     vf_parts: list = []
 
-    if show_quote:
+    # SPOKEN QUOTE: when the voice reads the quote, find its words in the
+    # narration. If they match, the static card is replaced by a word-by-word
+    # line that is on screen only while the quote is being said, then hands
+    # over to the lesson's captions at the next spoken word. No match (older
+    # audio, a TTS that mangled a word) falls back to the static card.
+    quote_times, quote_hide = [], 0.0
+    if QUOTE_SPOKEN and QUOTE_APPEAR > 0 and quote:
+        quote_times = _phrase_times(quote, word_timings, QUOTE_APPEAR)
+        if quote_times:
+            q_end = quote_times[-1][1]
+            nxt = [float(w[1]) for w in word_timings if float(w[1]) > q_end + 0.02]
+            quote_hide = max(q_end + 0.35, nxt[0]) if nxt else q_end + 1.0
+            print(f"  spoken quote: {quote_times[0][0]:.1f}s -> {quote_hide:.1f}s")
+        else:
+            print("  spoken quote: words not found in narration — static card")
+
+    if show_quote and not quote_times:
         # Fade the quote in as the hook fades out so only one primary text is
         # on screen at a time. If no hook is shown, appear from the start.
         # THREE-ACT TIMING. QUOTE_APPEAR is set by daily_post to the moment the
@@ -1311,7 +1411,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
 
     # burn in karaoke captions last so they sit on top
     ass_path = None
-    if caption_band:
+    if caption_band or quote_times:
         # The hook is SPOKEN first, and its words are already on screen as the
         # big hook card — captioning them too made the intro read as doubled
         # text with off-looking timing (and in caption_only style the centred
@@ -1327,10 +1427,12 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         ass_path = Path(out_path).with_suffix(".captions.ass")
         # Pass the hook through so libass draws the word-by-word follower in
         # the same subtitle pass — proportional layout and centring for free.
-        _build_ass(cap_timings, ass_path,
+        _build_ass(cap_timings if caption_band else [], ass_path,
                    hook=hook if hook_starts else "",
                    hook_starts=hook_starts, hook_hold=hook_hold,
-                   captions_from=caption_from)
+                   captions_from=caption_from,
+                   quote=quote if quote_times else "", author=author,
+                   quote_times=quote_times, quote_hide=quote_hide)
         vf_parts.append(f"ass='{_escape_filter_path(ass_path)}'")
 
     # Thin gold frame + corner brackets, drawn on top of everything.
