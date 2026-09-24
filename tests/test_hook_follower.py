@@ -94,3 +94,34 @@ def test_the_card_and_the_follower_are_never_both_drawn():
     """Two copies of the same words stacked on each other."""
     src = (ROOT / "src" / "render.py").read_text()
     assert "if hook and HOOK_TEXT_ON and not hook_starts:" in src
+
+
+def test_hook_line_and_captions_never_share_the_screen(tmp_path, monkeypatch):
+    """Owner, 2026-09-24: the hook showed twice — the white hook line and the
+    bigger gold-shadowed captions of the same words. One text at a time: the
+    hook ends exactly when the first caption begins, decided by timing."""
+    import render
+    monkeypatch.setattr(render, "QUOTE_APPEAR", 0.0)
+    words = "Dreading tomorrow's people doesn't make you weak The Emperor of Rome felt it too".split()
+    wt = [(w, 0.3 + i * 0.4, 0.3 + i * 0.4 + 0.35) for i, w in enumerate(words)]
+    hook = "Dreading tomorrow's people doesn't make you weak."
+    starts = render._hook_word_times(hook, wt)
+    assert len(starts) == 7
+    nxt = wt[7][1]
+    hold = max(starts[-1] + 0.4, min(max(2.2, starts[-1] + 0.9), nxt))
+    ass = render._build_ass(wt, tmp_path / "c.ass", hook=hook, hook_starts=starts,
+                            hook_hold=hold, captions_from=hold).read_text()
+    ev = [l for l in ass.splitlines() if l.startswith("Dialogue:")]
+
+    def t(x):
+        h, m, sec = x.split(":")
+        return int(h) * 3600 + int(m) * 60 + float(sec)
+    hook_ev = [e for e in ev if ",Hook," in e]
+    caps = [e for e in ev if ",Karaoke," in e]
+    assert len(hook_ev) == 1
+    hook_end = t(hook_ev[0].split(",")[2])
+    first_cap = min(t(c.split(",")[1]) for c in caps)
+    assert first_cap >= hook_end - 0.06, "captions start while the hook is still up"
+    captioned = " ".join(c.split("}")[-1] for c in caps)
+    assert "DREADING" not in captioned and "WEAK" not in captioned, "hook words captioned twice"
+    assert "EMPEROR" in captioned, "the story's words must still be captioned"

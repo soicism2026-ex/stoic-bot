@@ -1039,3 +1039,13 @@ that story must always be captioned "recorded in the Historia Augusta", never
     Storyboard footage also sets `REEL_BG_GENERATED=1` so the stock grade stops
     darkening already-graded footage twice. Pinned by a test that renders the
     real blend on an orange frame.
+- **2026-09-24 — ONE TEXT AT A TIME.** Owner: *"We have the hook tts displayed
+  double one with white blackoutlined text and one with white gold larger text
+  it should be just one."* The hook line and the word-by-word captions both
+  showed the hook's words. The old guard skipped the first N caption words by
+  COUNTING, which broke whenever the voice tokenised the hook differently from
+  the script. Now decided by TIME: the hook line holds until the next spoken
+  word begins and ends exactly there; captions start from that word. The
+  frame check also caught the hook line running off both edges under the
+  iPhone crop ("reading tomorrow's peopl") — its side margin was 90px against a
+  120px crop; now 160px (`REEL_HOOK_MARGIN`).

@@ -703,13 +703,23 @@ def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
         cs = max(1, int(round((nxt - word_starts[i]) * 100)))   # centiseconds
         parts.append(f"{{\\k{cs}}}{_ass_escape(w)} ")
     start = max(0.0, word_starts[0] - 0.25)
-    return (f"Dialogue: 0,{_ass_time(start)},{_ass_time(hold + 0.4)},"
+    # Ends AT `hold`, not 0.4s after: hold is now the moment the captions take
+    # over, and any linger would put both texts on screen together again.
+    return (f"Dialogue: 0,{_ass_time(start)},{_ass_time(hold)},"
             f"Hook,,0,0,0,,{{\\fad(180,320)}}" + "".join(parts).rstrip())
+
+
+# Side margin for the hook line. iPhones crop ~120px off EACH side of a 9:16
+# Short; at the old 90px the line was wrapped wider than what a phone shows,
+# and "Dreading tomorrow's people" rendered as "reading tomorrow's peopl".
+# 160 = the 120px crop + a 40px breathing edge, so libass wraps inside what
+# the viewer actually sees.
+HOOK_MARGIN = int(os.environ.get("REEL_HOOK_MARGIN", "160"))
 
 
 def _build_ass(word_timings: list, out_path: Path,
                hook: str = "", hook_starts: list = None,
-               hook_hold: float = 0.0) -> Path:
+               hook_hold: float = 0.0, captions_from: float = 0.0) -> Path:
     """Write a .ass subtitle file with impactful 2-word karaoke captions.
 
     2 words at a time gives a natural reading rhythm without the chaotic
@@ -747,7 +757,7 @@ ScaledBorderAndShadow: yes
 [V4+ Styles]
 Format: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding
 Style: Karaoke,{CAPTION_FONT},{cap_fs},{primary},{primary},{outline},{shadow},-1,0,0,0,100,100,3,0,1,6,4,{cap_align},{CAPTION_MARGINL},{CAPTION_MARGINR},{cap_marginv},1
-Style: Hook,{CAPTION_FONT},{HOOK_ASS_FS},{primary},{hook_dim},{outline},{outline},-1,0,0,0,100,100,2,0,1,6,3,5,90,90,0,1
+Style: Hook,{CAPTION_FONT},{HOOK_ASS_FS},{primary},{hook_dim},{outline},{outline},-1,0,0,0,100,100,2,0,1,6,3,5,{HOOK_MARGIN},{HOOK_MARGIN},0,1
 
 [Events]
 Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
@@ -767,6 +777,11 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         # quote fades in, captions stop — the quote is the only thing to read
         # through the reading beat and the lesson.
         if QUOTE_APPEAR > 0 and start >= QUOTE_APPEAR - 0.15:
+            continue
+        # While the hook line is on screen it is the only text: no caption
+        # chunk that would start under it (the hook's own words, captioned a
+        # second time, bigger and gold-shadowed).
+        if captions_from > 0 and start < captions_from - 0.05:
             continue
         # Minimum 600ms on screen; clamp to just before next chunk appears.
         natural_end = line[-1][2] + 0.15
@@ -1212,6 +1227,19 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # words; a 20-word story hook cannot be read in that time and the card was
     # gone before the eye finished.
     hook_hold = max(HOOK_HOLD, hook_starts[-1] + 0.9) if hook_starts else HOOK_HOLD
+    # ONE TEXT AT A TIME. Owner, 2026-09-24: "the hook tts displayed double,
+    # one with white black-outlined text and one with white gold larger text —
+    # it should be just one." The hook line holds until the NEXT spoken word
+    # begins, and the captions start from that word (see _build_ass
+    # captions_from), so the two layers hand over instead of overlapping.
+    # Decided by TIME, not by counting words: the old word-count skip broke
+    # whenever the voice engine tokenised the hook differently from the script.
+    caption_from = 0.0
+    if hook_starts:
+        nxt = [w[1] for w in word_timings if w[1] > hook_starts[-1] + 0.05]
+        if nxt:
+            hook_hold = max(hook_starts[-1] + 0.4, min(hook_hold, nxt[0]))
+        caption_from = hook_hold
 
     # Hook card: big, bold, scroll-stopping text flashed over the opening, then
     # faded out so the clean quote is what remains. Drawn after the quote so it
@@ -1301,7 +1329,8 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         # the same subtitle pass — proportional layout and centring for free.
         _build_ass(cap_timings, ass_path,
                    hook=hook if hook_starts else "",
-                   hook_starts=hook_starts, hook_hold=hook_hold)
+                   hook_starts=hook_starts, hook_hold=hook_hold,
+                   captions_from=caption_from)
         vf_parts.append(f"ass='{_escape_filter_path(ass_path)}'")
 
     # Thin gold frame + corner brackets, drawn on top of everything.
