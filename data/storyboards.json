@@ -325,5 +325,75 @@
     "motion": "he pushes the chair in, pauses, and switches off the light calmly"
    }
   ]
+ },
+ "earthenware": {
+  "status": "draft",
+  "tone": "deadpan comedy - locked-off camera, no camera moves, the joke is in the cut and the stillness. Never mocks the viewer; the joke is on the size of the problem.",
+  "script": {
+   "hook": "Most of what's eating you tonight costs under fifty bucks.",
+   "story": "Epictetus heard a noise at the door one night, ran down, and his iron lamp was gone. He didn't rage. He worked out exactly what had happened.",
+   "lesson": "Fair enough. And the thief paid for that lamp by becoming a thief. His plan for tomorrow: buy an earthenware one. That's the whole philosophy. Pick one thing you're still angry about that cost under fifty bucks. Say earthenware, and drop it."
+  },
+  "cast": {
+   "modern": {
+    "seed": 4601,
+    "look": "a lanky man, 30, messy light brown hair, dark green hoodie, completely expressionless face"
+   },
+   "epictetus": {
+    "seed": 4602,
+    "look": "Epictetus, a thin Greek philosopher aged 60, balding with a short grey beard, plain rough brown tunic, leaning on a wooden walking stick"
+   }
+  },
+  "shots": [
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 3.5,
+    "picture": "standing on a city pavement at night under a streetlight, staring blankly at a cut bike lock dangling from an empty bike rail, locked-off wide shot, the man in the centre",
+    "motion": "he does not move at all, he blinks once slowly"
+   },
+   {
+    "model": "wan",
+    "seconds": 3.0,
+    "picture": "a small stone household shrine in a dark Roman house at night with tiny clay figurines, and an obviously empty space in the middle with a clean ring in the dust where a lamp stood, locked-off static shot"
+   },
+   {
+    "model": "kling",
+    "who": "epictetus",
+    "seconds": 3.5,
+    "picture": "standing at the bottom of a stone staircase in a dark Roman house at night holding a small candle, looking at an empty household shrine, locked-off wide shot",
+    "motion": "he stares at the empty spot, completely still, then tilts his head slightly"
+   },
+   {
+    "model": "wan",
+    "seconds": 3.0,
+    "picture": "a heavy wooden door of a Roman house at night standing slightly ajar, cold moonlight through the gap, locked-off static shot"
+   },
+   {
+    "model": "kling",
+    "who": "epictetus",
+    "seconds": 5.5,
+    "picture": "sitting down on a wooden stool in a dark Roman room lit by his candle, stroking his grey beard, locked-off medium shot",
+    "motion": "he nods slowly to himself as if genuinely impressed",
+    "quote": true
+   },
+   {
+    "model": "wan",
+    "seconds": 4.0,
+    "picture": "a thief in a dark Roman alley at night clutching an iron oil lamp to his chest, glancing nervously over his shoulder, then hurrying away, static wide shot"
+   },
+   {
+    "model": "wan",
+    "seconds": 4.0,
+    "picture": "a sunny ancient Greek market stall in the morning with a row of plain cheap clay oil lamps, a hand picks up the plainest one, locked-off close shot"
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 6.0,
+    "picture": "on the same city pavement in bright daylight, chaining a very old rusty cheap bicycle to the same bike rail with a flimsy lock, locked-off wide shot",
+    "motion": "he clicks the lock shut, pats the rusty seat twice, and walks off calmly"
+   }
+  ]
  }
 }

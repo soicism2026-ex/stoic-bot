@@ -164,3 +164,20 @@ for this channel: **Shorts watch time does not count toward YPP watch hours.**
 A Shorts channel monetises on VIEWS (3M in 90 days), and Shorts distribution
 is decided largely by swipe-away and completion. Shorter lifts completion and
 replays, and that is what buys views.
+
+## 9. Funny is allowed. Deadpan, never mocking.
+
+Owner, 2026-09-24: *"Humor might be just what we need to get more attention.
+Lets try it."*
+
+The Stoics were funny — Epictetus's answer to a stolen lamp is "buy a cheaper
+one" — and a laugh is the thing people share. Rules for comedy on this channel:
+- **Deadpan.** The camera doesn't move, the face doesn't react, and the joke
+  lives in the cut and the stillness. No sound effects, no zoom-punches, no
+  meme text.
+- **The joke is on the size of the problem, never on the viewer.** "Most of
+  what's eating you tonight costs under fifty bucks" shrinks the problem; it
+  does not call the viewer petty. Doctrine §5 still outranks everything.
+- **Still true.** A funny story is a true story told with timing. The quote is
+  still verbatim and the facts are still checked (e.g. the lamp thief came
+  through the DOOR in Discourses I.18, not a window).

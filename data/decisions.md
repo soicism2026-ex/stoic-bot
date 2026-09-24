@@ -1049,3 +1049,10 @@ that story must always be captioned "recorded in the Historia Augusta", never
   frame check also caught the hook line running off both edges under the
   iPhone crop ("reading tomorrow's peopl") — its side margin was 90px against a
   120px crop; now 160px (`REEL_HOOK_MARGIN`).
+- **2026-09-24 — HUMOUR: FIRST FUNNY SHORT DRAFTED.** Owner: *"Humor might be
+  just what we need to get more attention. Lets try it."* Doctrine §9 added
+  (deadpan, the joke is on the problem's size, never the viewer). `earthenware`
+  storyboarded as a deadpan comedy, **status: draft** — the bot generates only
+  approved boards, and the story bank keeps the old script until the owner
+  approves the new one. Fact fixed on the way: the thief came through the
+  DOOR (Discourses I.18, Long), not the window the bank's version said.
