@@ -27,6 +27,7 @@ from content import (generate_content, ContentUnavailable,  # noqa: E402
                      _load_rows as _load_post_rows)
 import tts as tts_mod                      # noqa: E402
 import llm                                 # noqa: E402
+import storyboard                          # noqa: E402
 from tts import synthesize_voice, synthesize_two_part, pick_voice  # noqa: E402
 from publish import publish_short, set_thumbnail, post_comment  # noqa: E402
 import publish_instagram                    # noqa: E402
@@ -623,6 +624,39 @@ def main():
     # library (assets/guide/) can serve them instead of stock search — same
     # character every day instead of a different bust. Harmless when empty.
     pack["REEL_GUIDE_SLOTS"] = "" if no_guide else f"0,{len(flavors) - 1}"
+
+    # ---- STORYBOARD: generated shots for stories with an approved board ------
+    # Owner, 2026-09-24, on the first rendered storyboard: "the story board
+    # looks promising. Work now". An approved board replaces stock search for
+    # this post: every shot is generated to the script (hfgen: Wan 3.0 for
+    # places, Soul -> Kling 2.5 for people), timed so the quote shot lands when
+    # the quote card appears. A failed shot keeps its slot and falls back to a
+    # stock search for the story's own b-roll, so a shot can never cost the post.
+    backgrounds.PRESET.clear()
+    board = storyboard.load(content.get("_story_id", "")) if content.get("_story_id") else None
+    if board and storyboard.enabled():
+        total = render_mod._audio_duration(audio_path) + 1.0
+        secs = storyboard.plan_seconds(board, quote_appear, total)
+        print(f"  [storyboard] {content['_story_id']}: generating "
+              f"{len(board['shots'])} shots...", flush=True)
+        clips = storyboard.generate(board, ROOT / "data" / f"{today}_sb")
+        fallback = scene or [guide]
+        pack["REEL_BG_CLIPS"] = str(len(clips))
+        pack["REEL_BG_SECONDS"] = ",".join(f"{x:.3f}" for x in secs)
+        for i in range(len(clips)):
+            pack[f"REEL_BG_FLAVOR{i if i else ''}"] = fallback[i % len(fallback)]
+            if clips[i] is not None:
+                backgrounds.PRESET[i] = clips[i]
+        pack["REEL_GUIDE_SLOTS"] = ""
+        if backgrounds.PRESET:
+            # Generated shots are already graded; stop the stock-footage grade
+            # darkening them a second time.
+            pack["REEL_BG_GENERATED"] = "1"
+        print(f"  [storyboard] {len(backgrounds.PRESET)}/{len(clips)} shots "
+              f"generated; the rest fall back to stock", flush=True)
+    elif board:
+        print("  [storyboard] approved board exists but generation is off "
+              "(REEL_STORYBOARDS=0 or no HIGGSFIELD_API_KEY) — stock b-roll")
 
     # Diegetic ambience replaces the music bed for this style (falls back to
     # the normal generative music if synthesis ever fails).

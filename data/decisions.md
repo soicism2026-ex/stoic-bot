@@ -1010,3 +1010,32 @@ that story must always be captioned "recorded in the Historia Augusta", never
   white shirt. A seed does not hold identity across different prompts.
   Five storyboards in `docs/storyboards.md` await owner approval of the
   trimmed scripts; `know_nothing` held back (truncated quote changes meaning).
+- **2026-09-24 — STORYBOARDS ARE LIVE ON THE BOT, AND EVERY VIDEO WAS PURPLE.**
+  Owner on the first rendered board: *"the story board looks promising. Work
+  now"* — taken as approval of the five boards and their trimmed scripts
+  (`know_nothing` still held). What shipped:
+  * `data/storyboards.json`: all five boards, `status: approved`, with the
+    rough-cut fixes — each match cut shares one framing string verbatim; each
+    character has a detailed fixed look + seed; fewer full-face ancient shots;
+    every modern-man shot goes through Kling with his look (no strangers).
+  * `data/stories.json`: the five stories now speak the trimmed 30-34s scripts
+    (originals kept under `original`, never deleted).
+  * `daily_post` + `src/storyboard.py`: a story with an approved board gets its
+    shots generated in parallel (4 at a time, 360s per-shot deadline, ~12 min
+    worst case — fits the job cap), timed so the quote shot starts exactly when
+    the quote card appears (`REEL_BG_SECONDS`, proportional per-shot lengths in
+    render.py). A failed shot keeps its slot and falls back to stock b-roll.
+    On by default when the key exists; `REEL_STORYBOARDS=0` switches it off.
+  * **THE PURPLE.** Rendering the board end-to-end locally showed the warm,
+    well-lit generated footage coming out dark magenta. Cause: the bloom and
+    haze used `blend=all_mode=screen`, which on YUV screens the CHROMA planes
+    too. Measured: neutral grey (128,128,128) -> (204,126,216); orange
+    (192,96,32) -> PINK (235,80,123). Every short the channel ever made carried
+    this cast; Higgsfield's analysis of a published post called its sky
+    "purplish-gray" and "deep indigo to faint magenta". Fixed: luma-only screen
+    with the base's own chroma (`c1_expr=A:c2_expr=A`) — orange stays orange.
+    (First attempt, `c1_mode=normal:c1_opacity=0`, came out GREY — opacity 0 is
+    ignored. Caught by looking at frames, not by the grey-only unit test.)
+    Storyboard footage also sets `REEL_BG_GENERATED=1` so the stock grade stops
+    darkening already-graded footage twice. Pinned by a test that renders the
+    real blend on an orange frame.

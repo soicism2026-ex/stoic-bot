@@ -367,5 +367,8 @@ def test_moving_words_did_not_change_what_is_spoken():
     """act1 is hook + story, so the narration must still contain both halves.
     If a rewrite dropped words, the audio would no longer match the captions."""
     for s in stories.load():
-        assert len(s["story"].split()) >= 20, f"{s['id']}: story too thin"
+        # 15, not 20: the owner's 30-40s direction (doctrine §8, 2026-09-23)
+        # deliberately trimmed the setup. This guards against an EMPTY story,
+        # not a short one.
+        assert len(s["story"].split()) >= 15, f"{s['id']}: story too thin"
         assert s["hook"].strip() and s["story"].strip()

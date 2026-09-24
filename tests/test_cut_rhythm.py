@@ -176,7 +176,9 @@ def test_the_camera_move_is_per_segment_so_shorter_shots_move_faster():
     src = (ROOT / "src" / "render.py").read_text()
     assert "seg_dur = dur / n_bg" in src
     assert "seg_frames = max(1, int(seg_dur * 30))" in src
-    assert "_motion(_i, seg_frames)" in src, "camera move no longer per-segment"
+    assert ("_motion(_i, seg_frames)" in src
+            or "_motion(_i, max(1, int(seg_durs[_i] * 30)))" in src), \
+        "camera move no longer per-segment"
 
 
 def test_shots_on_the_same_beat_get_different_camera_moves():

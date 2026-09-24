@@ -43,7 +43,7 @@ def test_wan_is_vertical_silent_and_billed_for_its_own_length(api, tmp_path):
     model, p = api[0]
     assert model == "alibaba/wan-3.0/text-to-video"
     assert p["aspect_ratio"] == "9:16" and p["generate_audio"] is False
-    assert p["duration"] == 4 and 2 <= p["duration"] <= 30
+    assert p["duration"] == 5 and 2 <= p["duration"] <= 30   # 3.5s + 1.5s handle
 
 
 def test_kling_starts_from_a_vertical_soul_still(api, tmp_path):

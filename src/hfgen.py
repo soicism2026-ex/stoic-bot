@@ -43,7 +43,9 @@ KLING_I2V = os.environ.get("HF_KLING_I2V",
 SUBMIT_TIMEOUT = 60
 POLL_TIMEOUT = 30
 DOWNLOAD_TIMEOUT = 180
-DEADLINE = float(os.environ.get("HF_SHOT_DEADLINE", "480"))
+# 360s per shot, 4 in parallel: 8 shots fit in ~12 min worst case, which
+# keeps setup + storyboard + the 35 min post budget under the 60 min job cap.
+DEADLINE = float(os.environ.get("HF_SHOT_DEADLINE", "360"))
 POLL_EVERY = 5
 
 W, H = 1080, 1920
@@ -125,9 +127,11 @@ def _download(url: str, out: Path) -> Path | None:
 
 
 def _normalise(src: Path, out: Path, seconds: float) -> Path | None:
-    """1080x1920, no audio, trimmed to the shot's length."""
+    """1080x1920, no audio. NOT trimmed to the planned length: the renderer
+    scales the plan to the real voiceover, so a shot can land a little longer
+    than planned, and a clip trimmed to the plan would visibly loop."""
     try:
-        proc.run(["ffmpeg", "-y", "-v", "error", "-i", str(src), "-t", f"{seconds:.2f}",
+        proc.run(["ffmpeg", "-y", "-v", "error", "-i", str(src),
                   "-vf", f"scale={W}:{H}:force_original_aspect_ratio=increase,"
                          f"crop={W}:{H},setsar=1,fps=30",
                   "-an", "-c:v", "libx264", "-preset", "veryfast", "-crf", "20",
@@ -151,7 +155,7 @@ def still(prompt: str, seed: int | None = None) -> str | None:
 
 def wan(prompt: str, seconds: float, out: Path, seed: int | None = None) -> Path | None:
     """A setting/object shot, billed for exactly its own length (min 2s)."""
-    dur = max(2, min(30, round(seconds + 0.5)))   # half-second trim handle
+    dur = max(2, min(30, round(seconds + 1.5)))   # 1.5s handle for re-timing
     p = {"prompt": f"{prompt}. {LOOK}", "duration": dur, "resolution": "720p",
          "aspect_ratio": "9:16", "generate_audio": False}
     if seed is not None:

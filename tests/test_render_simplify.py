@@ -117,7 +117,7 @@ def test_atmosphere_defaults_on_and_is_subtle(monkeypatch):
 def test_atmosphere_graph_wires_labels(monkeypatch):
     r = _reload(monkeypatch)
     g = r._atmosphere_graph("enh", "atmos", 12.0)
-    assert "[enh]" in g and "[atmos]" in g and "blend=all_mode=screen" in g
+    assert "[enh]" in g and "[atmos]" in g and "c0_mode=screen" in g and "c1_expr=A" in g
 
 
 # ----------------------------------------------------- hook motion curve
@@ -214,3 +214,24 @@ def test_voice_depth_still_works_when_asked_for(monkeypatch):
     assert m.VOICE_DEPTH == 0.9
     monkeypatch.delenv("REEL_VOICE_DEPTH")
     importlib.reload(tts)
+
+
+def test_screen_blends_do_not_tint_the_picture():
+    """`blend=all_mode=screen` screens the chroma planes too, and on YUV that is
+    magenta: orange (192,96,32) came out pink (235,80,123). Every short had a
+    purple cast from the bloom and haze. Render the real blend on a coloured
+    frame and require the hue to survive."""
+    import subprocess
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "all_mode=screen" not in src.split("# c0 (luma) is screened")[1], \
+        "a chroma-screening blend is back"
+    expr = "c1_expr=A:c2_expr=A:c0_mode=screen:c0_opacity=0.45"
+    assert expr.split(":c0_opacity")[0] in src
+    out = subprocess.run(
+        ["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=c=0xC06020:s=16x16:d=1",
+         "-f", "lavfi", "-i", "color=c=0x303030:s=16x16:d=1", "-filter_complex",
+         f"[0]format=yuv420p[a];[1]format=yuv420p[b];[a][b]blend={expr},format=rgb24",
+         "-frames:v", "1", "-f", "rawvideo", "-"], capture_output=True, timeout=60).stdout
+    r, g, b = out[0], out[1], out[2]
+    assert r > g > b, f"orange must stay orange, got {(r, g, b)}"
+    assert r >= 192, "and screen must brighten, not darken"

@@ -202,6 +202,28 @@ def _ease_out(frames: int) -> str:
 HOOK_MOTION_AMP = float(os.environ.get("REEL_HOOK_MOTION_AMP", "0.18"))
 
 
+def _segment_durations(dur: float, n_bg: int) -> list:
+    """How long each background clip stays on screen.
+
+    Default: equal slices. A storyboard sets REEL_BG_SECONDS to its planned
+    shot lengths (comma separated); they are scaled to fill `dur` exactly, so
+    the plan keeps its PROPORTIONS — the long quote shot stays long, the match
+    cut stays quick — whatever the real voiceover length turns out to be. A
+    malformed or mismatched list is ignored rather than trusted.
+    """
+    raw = os.environ.get("REEL_BG_SECONDS", "").strip()
+    if raw:
+        try:
+            plan = [float(x) for x in raw.split(",")]
+            if len(plan) == n_bg and all(x > 0 for x in plan):
+                k = dur / sum(plan)
+                return [x * k for x in plan]
+        except ValueError:
+            pass
+        print(f"  REEL_BG_SECONDS ignored (need {n_bg} positive numbers)")
+    return [dur / n_bg] * n_bg
+
+
 def _motion(clip_idx: int, frames: int) -> str:
     """zoompan for one clip: an eased move chosen by position in the sequence."""
     # Clip 0 is the hook: front-loaded motion and a bigger push.
@@ -237,6 +259,17 @@ ATMOS_ON = os.environ.get("REEL_ATMOSPHERE", "1") not in ("0", "false", "False")
 ATMOS_OPACITY = float(os.environ.get("REEL_ATMOSPHERE_OPACITY", "0.10"))
 
 
+# SCREEN BLENDS ARE LUMA-ONLY. `blend=all_mode=screen` on a YUV frame screens
+# the CHROMA planes too; they are centred on 128, so screening pushes U and V up
+# together — which is magenta. Measured: a neutral grey (128,128,128) came out
+# (204,126,216). Every short this channel ever rendered had its bloom and haze
+# tinting the picture purple; Higgsfield's scene analysis of a published post
+# described "a purplish-gray twilight sky" and "deep indigo to faint magenta".
+# On a coloured frame it is worse: orange (192,96,32) came out PINK (235,80,123).
+# c0 (luma) is screened; `c1_expr=A:c2_expr=A` keeps the base frame's own
+# chroma — orange stays orange (207,109,47). NOTE: `c1_mode=normal` with
+# `c1_opacity=0` does NOT do this (it came out grey); opacity 0 is ignored.
+
 def _atmosphere_graph(src_label: str, out_label: str, dur: float) -> str:
     """Screen a slow-drifting haze layer over the graded footage."""
     return (
@@ -246,8 +279,8 @@ def _atmosphere_graph(src_label: str, out_label: str, dur: float) -> str:
         f"[atm0]noise=alls=100:allf=t+u,gblur=sigma=16,"
         f"eq=contrast=1.7:brightness=-0.15,"
         f"scale={W}:{H},format=yuv420p[atm];"
-        f"[{src_label}][atm]blend=all_mode=screen:"
-        f"all_opacity={ATMOS_OPACITY}[{out_label}]"
+        f"[{src_label}][atm]blend=c1_expr=A:c2_expr=A:c0_mode=screen:"
+        f"c0_opacity={ATMOS_OPACITY}[{out_label}]"
     )
 
 
@@ -258,6 +291,11 @@ def _generated_backgrounds_active() -> bool:
     whole-run switch, so either every slot is generated or the provider was
     never configured and all of them are stock.
     """
+    # Storyboard shots (Wan / Kling) arrive graded and correctly exposed, like
+    # the image-model stills this switch was written for. daily_post sets
+    # REEL_BG_GENERATED=1 when a storyboard supplies the backgrounds.
+    if os.environ.get("REEL_BG_GENERATED", "0") not in ("0", "", "false", "False"):
+        return True
     try:
         import imagegen
         return imagegen.enabled()
@@ -935,7 +973,7 @@ def _enhance_graph(src_label: str, out_label: str) -> str:
     return (
         f"[{src_label}]split[base][glowsrc];"
         f"[glowsrc]gblur=sigma={GLOW_SIGMA},eq=brightness={GLOW_BRIGHT}{glow_tint}[glow];"
-        f"[base][glow]blend=all_mode=screen:all_opacity={GLOW_OPACITY}"
+        f"[base][glow]blend=c1_expr=A:c2_expr=A:c0_mode=screen:c0_opacity={GLOW_OPACITY}"
         f"{grain},{vig}[{out_label}]"
     )
 
@@ -1276,6 +1314,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     overlay_chain = ",".join(vf_parts)
     if n_bg > 1:
         seg_dur = dur / n_bg
+        seg_durs = _segment_durations(dur, n_bg)
         # Normalise every clip to identical SAR, fps and pixel format BEFORE
         # concat. Stock clips arrive with mixed sample-aspect-ratios and frame
         # rates; the concat filter rejects mismatched segments ("Error
@@ -1290,8 +1329,8 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         # segment's own length.
         seg_frames = max(1, int(seg_dur * 30))
         bg_segs = [
-            f"[{_i}:v]{geo},trim=0:end={seg_dur:.3f},setpts=PTS-STARTPTS"
-            + (f",{_motion(_i, seg_frames)}" if MOTION_ON else "")
+            f"[{_i}:v]{geo},trim=0:end={seg_durs[_i]:.3f},setpts=PTS-STARTPTS"
+            + (f",{_motion(_i, max(1, int(seg_durs[_i] * 30)))}" if MOTION_ON else "")
             + f"[bgseg{_i}]"
             for _i in range(n_bg)
         ]

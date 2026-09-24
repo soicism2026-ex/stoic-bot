@@ -1,33 +1,329 @@
 {
-  "_readme": "Machine-readable storyboards. Human version and scripts: docs/storyboards.md. DRAFTS until the owner approves. model: 'kling' = Soul 9:16 still -> Kling 2.5 image-to-video (people); 'wan' = Wan 3.0 text-to-video (settings, objects). 'who' pulls a fixed cast description + seed so one character stays one person.",
-  "before_breakfast": {
-    "status": "draft",
-    "cast": {
-      "modern": {"seed": 4101, "look": "a man in his early thirties with short dark hair and a grey t-shirt, in a plain modern apartment"},
-      "marcus": {"seed": 4102, "look": "Marcus Aurelius, a Roman emperor in his fifties with a curly greying beard, plain wool tunic and cloak"}
-    },
-    "shots": [
-      {"model": "kling", "who": "modern", "seconds": 3.5,
-       "picture": "sitting on the edge of his bed in a dark bedroom at dawn, phone alarm glowing on the nightstand beside him, not reaching for it, wide shot from the doorway",
-       "motion": "he stays completely still, only breathing, the phone screen pulses"},
-      {"model": "kling", "who": "marcus", "seconds": 3.5,
-       "picture": "sitting on the edge of a camp cot inside a leather army tent before dawn, same pose, one small oil lamp on a stool beside him, wide shot from the tent entrance",
-       "motion": "he stays completely still, only breathing, the lamp flame flickers"},
-      {"model": "wan", "seconds": 3.5,
-       "picture": "extreme close-up of an old man's hand pressing a bronze stylus into a wax tablet by oil lamp light"},
-      {"model": "wan", "seconds": 3.5,
-       "picture": "inside a Roman army tent, the entrance flap stirring in the wind, beyond it rows of tents in blue pre-dawn light and smoke rising from a campfire"},
-      {"model": "kling", "who": "marcus", "seconds": 5.5,
-       "picture": "in profile inside the lamp-lit tent, eyes closed, calm, close-up",
-       "motion": "his lips move silently as if rehearsing words, very slow push in"},
-      {"model": "kling", "who": "modern", "seconds": 3.5,
-       "picture": "standing at a bathroom mirror in soft morning light, still, eyes steady, medium shot",
-       "motion": "his lips move silently as if naming people, he stays calm"},
-      {"model": "wan", "seconds": 4.0,
-       "picture": "lift doors sliding open onto a bright modern office in the morning, a man in a shirt steps out and nods to a colleague"},
-      {"model": "kling", "who": "modern", "seconds": 8.0,
-       "picture": "sitting on the edge of his bed at night, warm bedside lamp on, shoulders relaxed, wide shot from the doorway",
-       "motion": "he exhales slowly and lies back onto the bed"}
-    ]
-  }
+ "_readme": "Machine-readable storyboards; human version + scripts in docs/storyboards.md. status 'approved' = the daily bot generates these shots for that story (daily_post.py, REEL_STORYBOARDS). 'kling' = seeded 9:16 Soul still -> Kling 2.5 image-to-video (people). 'wan' = Wan 3.0 text-to-video (places, objects, hands). 'who' pulls a fixed cast look + seed. 'frame' is shared verbatim by both halves of a match cut so the composition lines up. 'quote': true marks the shot under the silent read beat.",
+ "before_breakfast": {
+  "status": "approved",
+  "cast": {
+   "modern": {
+    "seed": 4101,
+    "look": "a lean man, 32, short dark brown hair, light stubble, grey crew-neck t-shirt, dark navy sweatpants"
+   },
+   "marcus": {
+    "seed": 4102,
+    "look": "Marcus Aurelius, a Roman emperor aged 55, thick curly grey-brown hair, full curly grey beard, deep-set tired eyes, plain undyed wool tunic under a dark red military cloak"
+   }
+  },
+  "shots": [
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 3.5,
+    "picture": "wide shot through an open doorway, one figure seated on the left edge of a low bed facing right, knees together, hands clasped, head bowed, a single small light source on the right, a modern dark bedroom at dawn, the light is a phone alarm glowing on the nightstand",
+    "motion": "he stays completely still, only breathing, the phone screen pulses"
+   },
+   {
+    "model": "kling",
+    "who": "marcus",
+    "seconds": 3.5,
+    "picture": "wide shot through an open doorway, one figure seated on the left edge of a low bed facing right, knees together, hands clasped, head bowed, a single small light source on the right, inside a leather Roman army tent before dawn, the light is one small bronze oil lamp on a stool",
+    "motion": "he stays completely still, only breathing, the lamp flame flickers"
+   },
+   {
+    "model": "wan",
+    "seconds": 3.5,
+    "picture": "extreme close-up of an old man's hand pressing a bronze stylus into a dark wax tablet by warm oil lamp light"
+   },
+   {
+    "model": "wan",
+    "seconds": 3.5,
+    "picture": "inside a Roman army tent, the entrance flap stirring in the wind, beyond it rows of canvas tents in blue pre-dawn light and smoke rising from a campfire"
+   },
+   {
+    "model": "kling",
+    "who": "marcus",
+    "seconds": 5.5,
+    "picture": "seen from behind over his shoulder inside the lamp-lit tent, looking down at a wax tablet in his lap",
+    "motion": "he sits still and breathes slowly, the lamp flickers, very slow push in",
+    "quote": true
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 3.5,
+    "picture": "standing at a bathroom mirror in soft morning window light, calm, seen in the mirror, medium shot",
+    "motion": "his lips move silently as if naming people, he stays calm"
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 4.0,
+    "picture": "stepping out of an office lift into a bright open-plan office in the morning, a coffee in his hand, medium shot",
+    "motion": "he walks forward and gives a small relaxed nod to someone off screen"
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 8.0,
+    "picture": "wide shot through an open doorway, one figure seated on the left edge of a low bed facing right, knees together, hands clasped, head bowed, a single small light source on the right, the same modern bedroom at night, a warm bedside lamp on, shoulders relaxed, head up",
+    "motion": "he exhales slowly and lies back onto the bed"
+   }
+  ]
+ },
+ "why_i_am_poor": {
+  "status": "approved",
+  "cast": {
+   "modern": {
+    "seed": 4201,
+    "look": "a man, 28, messy black hair, short beard stubble, dark grey hoodie"
+   },
+   "seneca": {
+    "seed": 4202,
+    "look": "Seneca, a Roman philosopher aged 60, balding with short grey hair at the sides, short neat grey beard, fine white wool toga"
+   }
+  },
+  "shots": [
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 3.5,
+    "picture": "medium shot from the side, a figure seated at the left of frame, face lit by one small light source held low in front of him, thumb moving slowly, dark room, sitting up in bed at night, the light is his phone screen, cold blue glow",
+    "motion": "his thumb scrolls slowly, his face is blank and tired"
+   },
+   {
+    "model": "kling",
+    "who": "seneca",
+    "seconds": 3.5,
+    "picture": "medium shot from the side, a figure seated at the left of frame, face lit by one small light source held low in front of him, thumb moving slowly, dark room, sitting at a wooden desk at night, the light is a small oil lamp, warm gold glow, a scroll in his hands",
+    "motion": "his thumb slowly unrolls the scroll, his face is thoughtful"
+   },
+   {
+    "model": "kling",
+    "who": "seneca",
+    "seconds": 3.5,
+    "picture": "at his desk at night, he has stopped reading and looks toward a dark window, profile, medium close-up",
+    "motion": "he stays still, the lamp flickers, a slight tired exhale"
+   },
+   {
+    "model": "wan",
+    "seconds": 5.5,
+    "picture": "close-up of a glass hourglass on a wooden desk, fine sand falling, a small oil lamp glowing behind it, dark room",
+    "quote": true
+   },
+   {
+    "model": "wan",
+    "seconds": 4.0,
+    "picture": "over-the-shoulder close-up of an old man's hand writing columns of figures in ink in a ledger by lamp light"
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 4.0,
+    "picture": "sitting on the edge of his bed at night, phone face down beside him, writing one short line on a yellow sticky note, top-down shot",
+    "motion": "he writes slowly, then pauses and looks at it"
+   },
+   {
+    "model": "wan",
+    "seconds": 4.0,
+    "picture": "macro shot of a yellow sticky note stuck on the back of a black phone on a bedside table, soft lamp light, the writing on it is out of focus and unreadable"
+   },
+   {
+    "model": "wan",
+    "seconds": 5.0,
+    "picture": "a dark bedroom at night, a sleeping figure under a duvet, a phone dark on the nightstand, slow light from a passing car moving across the ceiling"
+   }
+  ]
+ },
+ "off_the_boat": {
+  "status": "approved",
+  "cast": {
+   "modern": {
+    "seed": 4301,
+    "look": "a man, 35, short neat dark hair, clean shaven, light blue work shirt with sleeves rolled up"
+   },
+   "seneca": {
+    "seed": 4302,
+    "look": "Seneca, a Roman philosopher aged 60, balding with short grey hair at the sides, short neat grey beard, heavy dark brown wool cloak"
+   }
+  },
+  "shots": [
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 3.5,
+    "picture": "medium shot, a man at the right of frame, three-quarter view, his forced polite smile slowly falling away, looking down, sitting at a desk in a bright open-plan office",
+    "motion": "a colleague's hand leaves his shoulder and his smile slowly drops"
+   },
+   {
+    "model": "kling",
+    "who": "seneca",
+    "seconds": 3.5,
+    "picture": "medium shot, a man at the right of frame, three-quarter view, his forced polite smile slowly falling away, looking down, standing on a small wooden sailing boat gripping the rail, grey sea and flat grey sky behind",
+    "motion": "the boat rocks and his smile slowly drops, he looks queasy"
+   },
+   {
+    "model": "wan",
+    "seconds": 3.5,
+    "picture": "a small ancient wooden sailing boat pitching on a grey swell under a flat overcast sky, wide shot, the horizon rolling"
+   },
+   {
+    "model": "wan",
+    "seconds": 3.5,
+    "picture": "low angle from wet black rocks at the waterline, a figure in a heavy cloak dropping over the side of a small wooden boat into the shallows"
+   },
+   {
+    "model": "kling",
+    "who": "seneca",
+    "seconds": 5.5,
+    "picture": "soaked, climbing up wet black rocks on a grey shore, seen from below, wide shot",
+    "motion": "he hauls himself up the last stone and stands upright, breathing hard",
+    "quote": true
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 4.0,
+    "picture": "alone in a concrete office stairwell, phone in his hand, his thumb hovering over the screen, medium close-up",
+    "motion": "he hesitates, thumb hovering, then taps the screen"
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 5.0,
+    "picture": "alone in the stairwell holding the phone to his ear, medium shot",
+    "motion": "someone answers and his shoulders visibly drop as he starts to talk"
+   },
+   {
+    "model": "wan",
+    "seconds": 6.0,
+    "picture": "evening, two men sitting on a park bench seen from behind, one talking and one listening, city lights blurred in the distance, wide static shot"
+   }
+  ]
+ },
+ "the_fifth_hour": {
+  "status": "approved",
+  "cast": {
+   "modern": {
+    "seed": 4401,
+    "look": "an athletic man, 33, short sandy-brown hair, light stubble, plain white t-shirt"
+   },
+   "agrippinus": {
+    "seed": 4402,
+    "look": "Agrippinus, a lean Roman senator aged 55, close-cut grey hair, clean shaven, calm face, white toga with a purple stripe"
+   }
+  },
+  "shots": [
+   {
+    "model": "wan",
+    "seconds": 3.5,
+    "picture": "top-down shot of a table surface, an object in the centre, a man's hand entering from the right, hovering over it, then withdrawing, the table is a modern wooden kitchen table, the object is a phone face up, its screen lighting and dimming"
+   },
+   {
+    "model": "wan",
+    "seconds": 3.5,
+    "picture": "top-down shot of a table surface, an object in the centre, a man's hand entering from the right, hovering over it, then withdrawing, the table is a Roman stone table in a courtyard, the object is a sealed wax tablet a messenger has just set down, an old signet ring on the hand"
+   },
+   {
+    "model": "wan",
+    "seconds": 3.5,
+    "picture": "a stone sundial in a sunny Roman courtyard, the shadow sitting on one of the hour lines, slow push in"
+   },
+   {
+    "model": "kling",
+    "who": "agrippinus",
+    "seconds": 3.5,
+    "picture": "stepping calmly down stone steps into a cold plunge pool in a Roman bath house, shafts of light through steam, wide low shot",
+    "motion": "he lowers himself into the cold water slowly and calmly"
+   },
+   {
+    "model": "kling",
+    "who": "agrippinus",
+    "seconds": 3.5,
+    "picture": "drying off with a linen towel in a Roman bath house, a servant speaking to him from the doorway, medium shot",
+    "motion": "he listens and nods once, calmly, then keeps drying off"
+   },
+   {
+    "model": "wan",
+    "seconds": 5.5,
+    "picture": "a long wooden table in a warm Roman villa at dusk, bread, olives and oil being laid out by candle light, slow dolly along the table",
+    "quote": true
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 5.0,
+    "picture": "crouched in an apartment hallway lacing running shoes, a phone left on a side table behind him, low angle",
+    "motion": "he pulls the laces tight and stands up without looking at the phone"
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 6.0,
+    "picture": "sitting down at a kitchen table under a warm pendant lamp with a plate of food, a phone on the counter behind him, medium shot",
+    "motion": "he picks up his fork and starts to eat, the phone lights up behind him and he doesn't turn"
+   }
+  ]
+ },
+ "laughed_out": {
+  "status": "approved",
+  "cast": {
+   "modern": {
+    "seed": 4501,
+    "look": "a man, 29, short dark curly hair, clean shaven, navy suit jacket over a white shirt"
+   },
+   "musonius": {
+    "seed": 4502,
+    "look": "Musonius Rufus, a Roman philosopher aged 45, short dark beard, dark hair, plain rough grey philosopher's cloak"
+   }
+  },
+  "shots": [
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 3.5,
+    "picture": "wide shot from behind a group, one man standing at the far end facing them, mid-sentence, one hand raised, the people nearest camera turning their heads away, a modern glass-walled meeting room, the people are colleagues around a table looking at their phones",
+    "motion": "he keeps talking while they look away"
+   },
+   {
+    "model": "kling",
+    "who": "musonius",
+    "seconds": 3.5,
+    "picture": "wide shot from behind a group, one man standing at the far end facing them, mid-sentence, one hand raised, the people nearest camera turning their heads away, an open field in ancient Italy, the people are Roman soldiers in helmets holding spears",
+    "motion": "he keeps talking while the soldiers turn away"
+   },
+   {
+    "model": "wan",
+    "seconds": 3.5,
+    "picture": "tight shot of Roman soldiers' helmets and spear tips against a grey sky, one soldier smirking, slight handheld"
+   },
+   {
+    "model": "wan",
+    "seconds": 5.5,
+    "picture": "wide shot of Roman soldiers' backs walking away across trampled grass, one cloaked figure left standing alone in the field",
+    "quote": true
+   },
+   {
+    "model": "kling",
+    "who": "musonius",
+    "seconds": 4.0,
+    "picture": "walking alone away from camera down a dirt track at dusk, seen from behind, wide shot",
+    "motion": "he walks slowly away down the track"
+   },
+   {
+    "model": "wan",
+    "seconds": 4.0,
+    "picture": "a small plain room with wooden benches lit by oil lamps, a few young men in simple tunics listening to a teacher, slow push in"
+   },
+   {
+    "model": "wan",
+    "seconds": 4.0,
+    "picture": "close-up of one young man in a plain tunic at the back of a lamp-lit room, listening intently, his face in warm light"
+   },
+   {
+    "model": "kling",
+    "who": "modern",
+    "seconds": 5.0,
+    "picture": "alone in the empty glass meeting room in the evening, straightening a chair, city lights outside, wide static shot",
+    "motion": "he pushes the chair in, pauses, and switches off the light calmly"
+   }
+  ]
+ }
 }

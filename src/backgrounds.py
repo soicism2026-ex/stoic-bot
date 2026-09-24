@@ -407,6 +407,10 @@ def _fetch_synthetic(theme: str, out_path: Path) -> Path:
     return out_path
 
 
+# slot index -> pre-generated storyboard clip (set by daily_post; empty = off)
+PRESET: dict = {}
+
+
 def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     """
     Return a background clip for today's Short.
@@ -416,6 +420,19 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     Every stage catches its own failures so a run never breaks.
     """
     out_path = Path(out_path)
+
+    # STORYBOARD (highest priority). daily_post pre-generates the approved
+    # storyboard's shots and registers them here by slot. A slot whose shot
+    # failed is simply absent, and falls through to the normal chain below.
+    pre = PRESET.get(clip_idx)
+    if pre is not None and Path(pre).exists():
+        if Path(pre).resolve() != out_path.resolve():
+            import shutil
+            shutil.copyfile(pre, out_path)
+        print(f"[background] SOURCE={_note_source('STORYBOARD')} "
+              f"slot={clip_idx} file={out_path.name}", flush=True)
+        return out_path
+
     query = _search_term(theme, clip_idx=clip_idx)
 
     # GUIDE LIBRARY (highest priority, zero cost, zero network). If this clip is
