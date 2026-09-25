@@ -1070,3 +1070,30 @@ that story must always be captioned "recorded in the Historia Augusta", never
   static card is used rather than nothing. This reverses the 2026-08-07 silent
   read beat, which solved the same complaint the other way; the reason it came
   back is that the card then stayed up under the whole lesson.
+- **2026-09-25 — AI-VIDEO GLITCH AUDIT + A FREE CHECK BEFORE EVERY PAID CALL.**
+  Owner: *"Find issues with our most recent posts ... Check for weird ai video
+  bugs like double hands, writing properly and make sure all videos we create
+  are improved by making better prompts before using tokens on higgsfield."*
+  Reviewed every generated shot at FOUR moments (glitches appear mid-motion)
+  plus Higgsfield's free scene analysis of both aired storyboard posts.
+  Found: near-frozen clips from "stays completely still"; a candle fused onto
+  a walking stick; a ghost blob on a bedroom wall; a dropped mirror
+  reflection; a glass lantern in Rome; **in the AIRED posts** a "bronze stylus
+  on wax" rendered as an ornate fountain pen, Seneca writing in a notebook and
+  a leather-bound journal before a chalkboard, the modern man writing on the
+  sticky note; and before_breakfast's resolution shot airing as *distress*
+  (head in hands) instead of relief. Plus a cost bug: any Kling shot planned
+  over 5s was billed as a 10s clip. No extra fingers seen — but the analyser
+  is not a hand inspector, so that is reassurance, not proof.
+  Built `src/prompt_lint.py`, run FREE before any Higgsfield call and in CI:
+  ERROR (refused, slot falls back to stock) on visible writing/text, mirrors,
+  stillness without a camera move, Kling >5.5s, anachronisms in ancient shots
+  (incl. pen/notebook/journal/book/chalkboard), and resolution shots that don't
+  name the facial expression; WARN on two held objects, fine finger work,
+  crowds. Every prompt is hardened: anatomy + no-lettering guard, an explicit
+  ancient-writing-tools/lighting guard for antiquity, Kling `negative_prompt`
+  (extra fingers, fused fingers, duplicate person, text, morphing...), and a
+  camera move on every Kling motion. All six boards rewritten to pass.
+  `daily-short` now saves each post's generated shots + a 4-moment review sheet
+  as an artifact (`storyboard-shots`, 30 days) so what actually aired can be
+  inspected — previously the shots were discarded after render.

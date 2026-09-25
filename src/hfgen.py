@@ -33,6 +33,7 @@ from pathlib import Path
 import requests
 
 import proc
+import prompt_lint as lint
 
 BASE = os.environ.get("HF_BASE_URL", "https://api.higgsfield.ai")
 WAN = "alibaba/wan-3.0/text-to-video"
@@ -142,9 +143,19 @@ def _normalise(src: Path, out: Path, seconds: float) -> Path | None:
         return None
 
 
+def _guarded(prompt: str) -> str:
+    """The shot's own prompt, then the house look, then the anatomy/text guard,
+    then the period guard for anything set in antiquity. Positive phrasing
+    only — these models have no reliable "not"."""
+    parts = [prompt, LOOK, lint.SAFE_POSITIVE]
+    if lint.is_ancient(prompt):
+        parts.append(lint.ERA_GUARD)
+    return ". ".join(parts)
+
+
 def still(prompt: str, seed: int | None = None) -> str | None:
     """A 9:16 Soul keyframe. Returns its URL (Kling takes a URL as start frame)."""
-    p = {"prompt": f"{prompt}. {LOOK}", "aspect_ratio": "9:16",
+    p = {"prompt": _guarded(prompt), "aspect_ratio": "9:16",
          "resolution": "1080p", "batch_size": 1}
     if seed is not None:
         p["seed"] = int(seed)
@@ -156,7 +167,7 @@ def still(prompt: str, seed: int | None = None) -> str | None:
 def wan(prompt: str, seconds: float, out: Path, seed: int | None = None) -> Path | None:
     """A setting/object shot, billed for exactly its own length (min 2s)."""
     dur = max(2, min(30, round(seconds + 1.5)))   # 1.5s handle for re-timing
-    p = {"prompt": f"{prompt}. {LOOK}", "duration": dur, "resolution": "720p",
+    p = {"prompt": _guarded(prompt), "duration": dur, "resolution": "720p",
          "aspect_ratio": "9:16", "generate_audio": False}
     if seed is not None:
         p["seed"] = int(seed)
@@ -172,8 +183,12 @@ def kling(still_prompt: str, motion: str, seconds: float, out: Path,
     img = still(still_prompt, seed)
     if not img:
         return None
-    d = _run(KLING_I2V, {"image_url": img, "prompt": f"{motion}. {LOOK}",
-                         "duration": 5 if seconds <= 5 else 10})
+    d = _run(KLING_I2V, {"image_url": img,
+                         "prompt": f"{lint.harden_motion(motion)}. {LOOK}",
+                         "negative_prompt": lint.KLING_NEGATIVE,
+                         # 5s covers every shot up to 5.5s (the render loops
+                         # the last half-second at most); 10s bills DOUBLE.
+                         "duration": 5 if seconds <= 5.5 else 10})
     url = ((d or {}).get("video") or {}).get("url")
     raw = _download(url, out.with_suffix(".raw.mp4")) if url else None
     return _normalise(raw, out, seconds) if raw else None
@@ -183,6 +198,13 @@ def shot(spec: dict, cast: dict, out: Path) -> Path | None:
     """Render one storyboard shot. spec: {model, seconds, picture, motion?, who?}.
     `who` names a cast member; their fixed description and seed are prepended
     so the same man is the same man in every shot."""
+    # FREE CHECK BEFORE ANY PAID CALL. A shot with a known failure (visible
+    # writing, a mirror, a frozen-motion request, a double-cost duration, an
+    # anachronism) is not generated; its slot falls back to stock.
+    errors = [m for lvl, m in lint.check_shot(spec, cast) if lvl == "ERROR"]
+    if errors:
+        _log(f"shot refused before spending: {'; '.join(errors)}")
+        return None
     who = spec.get("who")
     person = cast.get(who, {}) if who else {}
     desc = f"{person['look']}, {spec['picture']}" if person else spec["picture"]

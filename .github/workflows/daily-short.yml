@@ -296,6 +296,28 @@ jobs:
         continue-on-error: true
         run: python scripts/variety_check.py
 
+      # Keep today's generated storyboard shots + a 4-moments-per-shot review
+      # sheet, so AI glitches (extra fingers, fused objects, ghosts) in what
+      # ACTUALLY aired can be checked. Without this the shots are discarded
+      # after the render and only test renders could ever be reviewed.
+      - name: Review sheet for generated shots
+        if: always()
+        continue-on-error: true
+        run: |
+          d=$(ls -d data/*_sb 2>/dev/null | tail -1)
+          if [ -n "$d" ]; then python scripts/review_shots.py "$d" "$d/review.png"; fi
+      - uses: actions/upload-artifact@v4
+        if: always()
+        continue-on-error: true
+        with:
+          name: storyboard-shots
+          path: |
+            data/*_sb/*.mp4
+            data/*_sb/review.png
+            !data/*_sb/*.raw.mp4
+          if-no-files-found: ignore
+          retention-days: 30
+
       - name: Commit log and backups
         run: |
           git config user.name "stoic-bot"
