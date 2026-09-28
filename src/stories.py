@@ -102,16 +102,56 @@ def pick(post_rows: list[dict]) -> dict | None:
     used = _used_ids(post_rows)
     seen = set(used)
     bank = load()
+    jammed = jammed_ids()
     for s in sorted(bank, key=lambda x: -x.get("score", 0)):
         if s["id"] in seen or _blocked(s, used, len(bank)):
+            continue
+        # HELD: pulled by a person (e.g. a quote problem) — never airs until
+        # the hold is lifted in data/stories.json.
+        if s.get("hold"):
+            continue
+        # JAMMED: blocked by the preflight gate on several separate runs. Skip
+        # it so one un-renderable story cannot stop the channel.
+        if s["id"] in jammed:
             continue
         return s
     return None
 
 
+BLOCKS = ROOT / "data" / "story_blocks.csv"
+MAX_BLOCKS = int(__import__("os").environ.get("STORY_MAX_BLOCKS", "2"))
+
+
+def record_block(story_id: str, date: str, reason: str) -> None:
+    """Append one fully-blocked run for this story."""
+    import csv
+    new = not BLOCKS.exists()
+    with open(BLOCKS, "a", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        if new:
+            w.writerow(["date", "story_id", "reason"])
+        w.writerow([date, story_id, reason])
+
+
+def jammed_ids() -> set:
+    """Stories blocked on at least MAX_BLOCKS separate runs."""
+    import csv
+    from collections import Counter
+    if not BLOCKS.exists():
+        return set()
+    try:
+        c = Counter(r["story_id"] for r in csv.DictReader(open(BLOCKS, encoding="utf-8")))
+    except Exception:  # noqa: BLE001
+        return set()
+    return {sid for sid, n in c.items() if n >= MAX_BLOCKS}
+
+
 def remaining(post_rows: list[dict]) -> int:
+    """Stories that can still air: not used, not held, not jammed."""
     seen = set(_used_ids(post_rows))
-    return sum(1 for s in load() if s["id"] not in seen)
+    jammed = jammed_ids()
+    return sum(1 for s in load() if s["id"] not in seen
+               and not s.get("hold") and s["id"] not in jammed)
 
 
 def as_content(story: dict) -> dict:

@@ -1097,3 +1097,21 @@ that story must always be captioned "recorded in the Historia Augusta", never
   `daily-short` now saves each post's generated shots + a 4-moment review sheet
   as an artifact (`storyboard-shots`, 30 days) so what actually aired can be
   inspected — previously the shots were discarded after render.
+- **2026-09-28 — THREE SILENT DAYS: A "HELD" STORY WAS NEVER HELD.** Owner:
+  *"Why did we stop posting?"* No post 09-26/27/28; every run green. The bot
+  was stuck on `know_nothing` — the story I said on 09-23 I was holding
+  (truncated quote changes Epictetus's meaning). The hold lived only in
+  `docs/storyboards.md`; nothing stopped the bot picking it. With no storyboard
+  it used stock gym footage, rendered at 12.4% luma, and preflight (18% floor)
+  blocked all five attempts, every run. **Two more bugs made it a jam, not a
+  miss:** (1) preflight failures never reached `_apply_corrections`, so all
+  five retries re-rendered the identical dark frame; (2) a blocked story is
+  not consumed, so it came back as the next pick forever — the SAME trap as
+  the 09-22 "wall of text" jam. No Higgsfield money spent (stock story), and
+  the misquote never aired. Fixed: `know_nothing` has `"hold"` in
+  `data/stories.json` and `pick()` skips held stories; "too dark" retries now
+  lift `REEL_BRIGHTNESS` +0.07/attempt, zero extra darkening, new clips; a
+  story fully blocked on `STORY_MAX_BLOCKS` (2) separate runs is logged to
+  `data/story_blocks.csv` and skipped. **Standing rule: a decision to hold,
+  pull, or change something must be made in the data the bot reads, never
+  only in a doc.**

@@ -219,3 +219,15 @@ def test_the_encode_leaves_room_for_the_retries_it_promises():
     assert cost < proc.RENDER_TIMEOUT / 2, (
         "less than 2x headroom on the render deadline is how 2026-09-18 "
         "happened")
+
+
+def test_a_too_dark_render_is_brightened_on_retry():
+    """Until 2026-09-28 preflight failures never reached the corrections, so
+    five attempts re-rendered the same 12%-luma frame."""
+    import daily_post as dp
+    env = dp._apply_corrections({"REEL_BRIGHTNESS": "-0.06"},
+                                ["preflight: too dark: mean luminance 31.6/255"], 1)
+    assert float(env["REEL_BRIGHTNESS"]) > -0.06
+    assert env["REEL_EXTRA_DARKEN"] == "0"
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    assert "qa[\"issues\"] + pf_issues" in src

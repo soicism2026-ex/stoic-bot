@@ -153,6 +153,16 @@ def _apply_corrections(env: dict, issues: list, attempt: int) -> dict:
         # Shift the deterministic background pick so the retry gets a new clip
         env["REEL_BG_OFFSET"] = str(attempt)
 
+    if "too dark" in joined:
+        # The preflight luma floor. Until 2026-09-28 retries never saw this
+        # (only qa_check issues reached this function), so all five attempts
+        # re-rendered the same 12% frame. Lift the exposure a step per attempt,
+        # drop any extra darkening, and try different clips.
+        br = float(env.get("REEL_BRIGHTNESS", "-0.06"))
+        env["REEL_BRIGHTNESS"] = f"{min(br + 0.07, 0.20):.2f}"
+        env["REEL_EXTRA_DARKEN"] = "0"
+        env["REEL_BG_OFFSET"] = str(attempt)
+
     if "desync" in joined or "sync" in joined or "mispronounce" in joined:
         # Shift caption vertical margin slightly
         marginv = int(env.get("REEL_CAPTION_MARGINV", "470"))
@@ -717,6 +727,7 @@ def main():
 
     _deadline = time.monotonic() + POST_BUDGET_SECONDS
     for attempt in range(1, MAX_ATTEMPTS + 1):
+        pf = None      # this attempt's preflight result, if it ran
         left = _deadline - time.monotonic()
         # Under one render's worth of budget, treat THIS attempt as the last
         # one. Not a break: breaking here would abandon the run with nothing
@@ -913,6 +924,14 @@ def main():
             _append_qa_log(today, attempt,
                            [f"preflight: {f}" for f in pf["fails"]],
                            "high", uploaded=False)
+            # A blocked story is not consumed, so it comes straight back as the
+            # next pick. Twice now (the "wall of text" on 09-22, "too dark" on
+            # 09-26..28) one story jammed the channel for days. Record the
+            # block; stories.pick() skips a story blocked on STORY_MAX_BLOCKS
+            # separate runs, so the channel moves on to the next one.
+            if content.get("_story_id"):
+                stories.record_block(content["_story_id"], today,
+                                     "; ".join(pf["fails"])[:200])
             return
 
         if last_attempt:
@@ -959,7 +978,10 @@ def main():
 
             _open_github_issue("Daily render failed - investigate", issue_body)
         else:
-            current_env = _apply_corrections(current_env, qa["issues"], attempt)
+            # Preflight failures must reach the corrections too — otherwise a
+            # too-dark render is retried unchanged five times.
+            pf_issues = [f"preflight: {f}" for f in (pf or {}).get("fails", [])]
+            current_env = _apply_corrections(current_env, qa["issues"] + pf_issues, attempt)
             # Supplement with corrections derived from visual QA when it blocked upload
             if vqa and vqa.verdict == "fail" and _VQA_BLOCK_ON_FAIL:
                 if "text_legibility" in vqa.hard_fails or "text_legibility" in vqa.flags:

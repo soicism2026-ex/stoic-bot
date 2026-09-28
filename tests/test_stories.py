@@ -83,7 +83,8 @@ def test_never_repeats_a_story():
         assert s["id"] not in seen, f"{s['id']} served twice"
         seen.add(s["id"])
         rows.append({"experiment": f"story:{s['id']}"})
-    assert len(seen) == len(stories.load())
+    # every story airs exactly once — except those a person has put on hold
+    assert len(seen) == len([s for s in stories.load() if not s.get("hold")])
 
 
 def test_exhausted_bank_returns_none_rather_than_looping():
@@ -372,3 +373,38 @@ def test_moving_words_did_not_change_what_is_spoken():
         # not a short one.
         assert len(s["story"].split()) >= 15, f"{s['id']}: story too thin"
         assert s["hook"].strip() and s["story"].strip()
+
+
+# ------------------------------------------------ nothing may jam the queue
+
+def test_a_held_story_never_airs(monkeypatch):
+    """know_nothing was 'held' only in a doc, so the bot picked it anyway and
+    was stuck on it for three days (2026-09-26..28)."""
+    held = [s for s in stories.load() if s.get("hold")]
+    assert any(s["id"] == "know_nothing" for s in held)
+    import csv
+    rows = list(csv.DictReader(open(ROOT / "data" / "posts.csv")))
+    for _ in range(40):
+        s = stories.pick(rows)
+        if s is None:
+            break
+        assert not s.get("hold"), f"held story {s['id']} was picked"
+        rows.append({"date": "2099-01-01", "experiment": f"story:{s['id']}"})
+
+
+def test_a_story_blocked_on_two_runs_is_skipped(tmp_path, monkeypatch):
+    monkeypatch.setattr(stories, "BLOCKS", tmp_path / "b.csv")
+    import csv
+    rows = list(csv.DictReader(open(ROOT / "data" / "posts.csv")))
+    first = stories.pick(rows)["id"]
+    stories.record_block(first, "2026-09-26", "too dark")
+    assert stories.pick(rows)["id"] == first, "one block is not enough to skip"
+    stories.record_block(first, "2026-09-27", "too dark")
+    assert stories.pick(rows)["id"] != first
+
+
+def test_the_workflow_commits_the_block_log_and_it_exists():
+    """git add of a missing path fails the commit step — the file must exist."""
+    wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
+    assert "data/story_blocks.csv" in wf
+    assert (ROOT / "data" / "story_blocks.csv").exists()
