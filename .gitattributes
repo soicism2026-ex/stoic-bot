@@ -1,0 +1,11 @@
+# APPEND-ONLY LOGS MERGE BY UNION. Each workflow run checks out the commit it
+# was triggered at; a run queued behind another then rebases its own appended
+# lines onto a file that grew underneath it. As a normal merge that is a
+# CONFLICT, the push fails, and the posts.csv row for a video that DID publish
+# is lost - so the bot re-picks the same story and posts it twice. Happened
+# 2026-09-28 (the_fifth_hour, rrv6nff14Hs; row restored by hand). Union keeps
+# both sides' appended lines, which is exactly right for append-only files.
+QA_LOG.md merge=union
+data/posts.csv merge=union
+data/story_blocks.csv merge=union
+data/replied_comments.csv merge=union

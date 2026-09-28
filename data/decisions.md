@@ -1115,3 +1115,17 @@ that story must always be captioned "recorded in the Historia Augusta", never
   `data/story_blocks.csv` and skipped. **Standing rule: a decision to hold,
   pull, or change something must be made in the data the bot reads, never
   only in a doc.**
+- **2026-09-28 (later) — POSTED, BUT THE LOG ROW WAS LOST; AND HIGGSFIELD IS
+  OUT OF CREDIT.** The verification run published `the_fifth_hour`
+  (https://youtube.com/shorts/rrv6nff14Hs, preflight PASS 25.9% luma) and then
+  failed to push: it was queued behind a scheduled run, checked out the commit
+  it was triggered at, and its QA_LOG.md append conflicted on rebase. The
+  posts.csv row was lost, so the bot would have posted the same story again.
+  Row restored by hand. Fix: `.gitattributes` merges the append-only logs
+  (QA_LOG.md, posts.csv, story_blocks.csv, replied_comments.csv) by UNION, so
+  concurrent appends keep both sides — proven with a real rebase. **Also:
+  the Higgsfield API returned `not_enough_credits`** — only 1 of 8 storyboard
+  shots generated; the other 7 fell back to stock (by design, the post still
+  went out). Storyboards need a top-up to continue. The YouTube thumbnail
+  upload also returned 403 "can't be set for the specified video" on this run —
+  watch whether it repeats.

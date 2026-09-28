@@ -231,3 +231,12 @@ def test_a_too_dark_render_is_brightened_on_retry():
     assert env["REEL_EXTRA_DARKEN"] == "0"
     src = (ROOT / "scripts" / "daily_post.py").read_text()
     assert "qa[\"issues\"] + pf_issues" in src
+
+
+def test_append_only_logs_merge_by_union():
+    """2026-09-28: two queued runs both appended to QA_LOG.md; the rebase
+    conflicted, the push failed, and the posts.csv row for a video that DID
+    publish was lost — so the story would have posted twice."""
+    attrs = (ROOT / ".gitattributes").read_text()
+    for f in ("QA_LOG.md", "data/posts.csv", "data/story_blocks.csv"):
+        assert f"{f} merge=union" in attrs, f
