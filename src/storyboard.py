@@ -32,7 +32,10 @@ WORKERS = int(os.environ.get("STORYBOARD_WORKERS", "4"))
 
 def enabled() -> bool:
     import hfgen
-    on = os.environ.get("REEL_STORYBOARDS", "1") not in ("0", "false", "False", "")
+    # OFF BY DEFAULT since 2026-09-29. Owner: "Higgsfield is too expensive for
+    # the views we are getting." ~$1-2 a video against 5-40 views. The code is
+    # kept; REEL_STORYBOARDS=1 turns it back on if views ever justify it.
+    on = os.environ.get("REEL_STORYBOARDS", "0") not in ("0", "false", "False", "")
     return on and bool(hfgen.key())
 
 

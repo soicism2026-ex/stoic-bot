@@ -1129,3 +1129,11 @@ that story must always be captioned "recorded in the Historia Augusta", never
   went out). Storyboards need a top-up to continue. The YouTube thumbnail
   upload also returned 403 "can't be set for the specified video" on this run —
   watch whether it repeats.
+- **2026-09-29 — HIGGSFIELD OFF. TOO EXPENSIVE FOR THE VIEWS.** Owner:
+  *"Higgsfield is too expensive for the views we are getting."* ~$1-2 a video
+  against 5-40 views; credits ran out 2026-09-28. `REEL_STORYBOARDS` now
+  defaults OFF (a key alone never spends); `REEL_KLING_BG` was already off.
+  Code, boards and the free prompt checker are kept — `REEL_STORYBOARDS=1`
+  turns it back on if views justify it. Posts use stock b-roll again, which
+  still carries the relevance bug (Mount Fuji / motocross on unrelated lines).
+  Moved to `cancelled` in costs.json. Monthly burn back to $25.

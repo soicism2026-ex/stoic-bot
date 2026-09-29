@@ -45,6 +45,10 @@ def test_off_without_a_key_or_with_the_switch(monkeypatch):
     monkeypatch.delenv("HF_KEY", raising=False)
     assert storyboard.enabled() is False
     monkeypatch.setenv("HIGGSFIELD_API_KEY", "a:b")
+    # 2026-09-29: off by default — a key alone must not start spending
+    monkeypatch.delenv("REEL_STORYBOARDS", raising=False)
+    assert storyboard.enabled() is False
+    monkeypatch.setenv("REEL_STORYBOARDS", "1")
     assert storyboard.enabled() is True
     monkeypatch.setenv("REEL_STORYBOARDS", "0")
     assert storyboard.enabled() is False
