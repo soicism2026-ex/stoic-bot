@@ -27,12 +27,23 @@ def slate(out: Path, seconds: float, label: str) -> Path:
 
 def main() -> int:
     sid, out_dir = sys.argv[1], Path(sys.argv[2])
+    stills = "--stills" in sys.argv   # free Cloudflare stills instead of paid video
     out_dir.mkdir(parents=True, exist_ok=True)
     board = json.loads((ROOT / "data" / "storyboards.json").read_text())[sid]
     clips, report = [], []
+    if stills:
+        import os
+        os.environ["REEL_IMAGE_BG"] = "1"
+        import storyboard
+        gen = storyboard.generate_images(board, out_dir)
     for i, spec in enumerate(board["shots"], 1):
-        path = out_dir / f"shot{i:02d}_{spec['model']}.mp4"
-        got = hfgen.shot(spec, board.get("cast", {}), path)
+        path = out_dir / f"shot{i:02d}_{'still' if stills else spec['model']}.mp4"
+        if stills:
+            got = gen[i - 1]
+            if got is not None:
+                got.rename(path); got = path
+        else:
+            got = hfgen.shot(spec, board.get("cast", {}), path)
         ok = got is not None
         report.append(f"shot {i:2d} {spec['model']:5s} {spec['seconds']:>4}s  "
                       f"{'OK' if ok else 'FAILED'}  {spec['picture'][:60]}")

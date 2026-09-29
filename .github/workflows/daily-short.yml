@@ -207,8 +207,17 @@ jobs:
           # a still that zooms is not motion.
           #
           # Set back to "1" only with a measured win, not a hunch.
+          #
+          # 2026-09-29: BACK ON, owner's decision (Higgsfield too expensive;
+          # chose free Cloudflare stills). The attribution above did not survive
+          # re-checking: the drop happened 5-6 Aug, BEFORE this flag landed
+          # (13h after that day's last post), crossing the boundary added
+          # nothing (z=-0.37), and a mid-July placebo showed a bigger drop that
+          # self-recovered. Stills were never shown to be the cause. bg_source
+          # is logged per post (GENERATED / STORYBOARD / PIXABAY), so this time
+          # it is measured. OpenAI stays unset: Cloudflare is free.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          REEL_IMAGE_BG: "0"
+          REEL_IMAGE_BG: "1"
           # PRIMARY image provider — Cloudflare Workers AI (FLUX.1 schnell).
           # Free allowance is 10,000 neurons/day and a schnell image costs
           # ~43, so ~230/day are free; this channel needs 18. No watermark.

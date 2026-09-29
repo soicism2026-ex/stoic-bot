@@ -87,6 +87,10 @@ CF_TIMEOUT = float(os.environ.get("CLOUDFLARE_IMAGE_TIMEOUT", "45"))
 # module's normal "fall back to stock" path, so the post still ships.
 MAX_IMAGES_PER_RUN = int(os.environ.get("REEL_IMAGE_MAX_PER_RUN", "12"))
 _generated = 0
+# (prompt, seed) -> the still already generated this run. The QA loop re-renders
+# up to five times and asks for every background again; without this each
+# retry re-spent the budget and later attempts silently fell back to stock.
+_CACHE: dict = {}
 
 
 def cloudflare_ready() -> bool:
@@ -215,15 +219,25 @@ def generate_clip(prompt: str, out_path: Path, dur: float = 6.5,
     global _generated
     if not enabled():
         return None
-    if _generated >= MAX_IMAGES_PER_RUN:
+    if _generated >= MAX_IMAGES_PER_RUN and (prompt, seed) not in _CACHE:
         print(f"[imagegen] budget reached ({MAX_IMAGES_PER_RUN} images this "
               f"run); using stock for the rest", flush=True)
         return None
     try:
         png = out_path.with_suffix(".gen.png")
-        _generated += 1
-        if not _generate_image(prompt, png, seed=seed):
-            return None
+        cached = _CACHE.get((prompt, seed))
+        if cached is not None and Path(cached).exists():
+            import shutil
+            shutil.copyfile(cached, png)
+            print(f"[imagegen] reused still for: {prompt[:50]}", flush=True)
+        else:
+            _generated += 1
+            if not _generate_image(prompt, png, seed=seed):
+                return None
+            keep = png.with_name(png.stem + ".keep.png")
+            import shutil
+            shutil.copyfile(png, keep)
+            _CACHE[(prompt, seed)] = keep
         # Still -> looping clip with a gentle push-in so a single frame doesn't
         # read as frozen. (render.py layers its own grade/motion on top.)
         proc.run(

@@ -88,3 +88,66 @@ def generate(board: dict, out_dir: Path) -> list[Path | None]:
 
     with ThreadPoolExecutor(max_workers=max(1, WORKERS)) as pool:
         return list(pool.map(one, enumerate(board["shots"])))
+
+
+# ---------------------------------------------------------------------------
+# FREE PATH: one AI still per shot (Cloudflare FLUX via imagegen).
+# Owner, 2026-09-29, chose this after Higgsfield proved too expensive for the
+# views. Same shot descriptions, same fixed character look + seed, same
+# anatomy / period guards and the same free prompt check — only the picture is
+# a still with a camera move instead of generated motion. Costs nothing
+# (~230 free images/day; a post needs ~9).
+# ---------------------------------------------------------------------------
+
+def images_enabled() -> bool:
+    import imagegen
+    on = os.environ.get("REEL_STORYBOARD_IMAGES", "1") not in ("0", "false", "False", "")
+    return on and imagegen.cloudflare_ready()
+
+
+# FLUX schnell returns a SQUARE image and the clip is centre-cropped to 9:16,
+# so the outer thirds are lost. Ask for a centred, vertical composition.
+VERTICAL = "vertical portrait composition, the subject centred in the middle third of the frame"
+
+
+def image_prompt(spec: dict, cast: dict) -> str:
+    import hfgen
+    import prompt_lint as lint
+    who = spec.get("who")
+    person = cast.get(who, {}) if who else {}
+    desc = f"{person['look']}, {spec['picture']}" if person else spec["picture"]
+    # A resolution shot's emotion lives in its motion line for video; a still
+    # has no motion, so carry the facial cue into the picture.
+    if spec.get("resolve") and not lint.resolves_without_a_face({**spec, "motion": ""}):
+        pass
+    elif spec.get("resolve"):
+        desc += ", " + spec.get("motion", "")
+    return f"{hfgen._guarded(desc)}. {VERTICAL}"
+
+
+def generate_images(board: dict, out_dir: Path) -> list[Path | None]:
+    """One still-based clip per shot; None where a shot was refused or failed."""
+    import imagegen
+    import prompt_lint as lint
+    out_dir.mkdir(parents=True, exist_ok=True)
+    cast = board.get("cast", {})
+    clips = []
+    for i, spec in enumerate(board["shots"]):
+        # Stills cannot freeze or bill double, so only the rules about what is
+        # IN the picture apply: writing, mirrors, anachronisms, faces.
+        errs = [m for lvl, m in lint.check_shot(spec, cast) if lvl == "ERROR"
+                and not m.startswith(("motion asks", "kling shot has no motion"))
+                and "bills as a 10s" not in m]
+        if errs:
+            print(f"  [storyboard] shot {i + 1} refused: {errs[0][:80]}", flush=True)
+            clips.append(None)
+            continue
+        person = cast.get(spec.get("who"), {}) if spec.get("who") else {}
+        seed = person.get("seed") or (7000 + i)
+        path = out_dir / f"sb_img{i:02d}.mp4"
+        got = imagegen.generate_clip(image_prompt(spec, cast), path,
+                                     dur=float(spec["seconds"]) + 1.5, seed=seed)
+        print(f"  [storyboard] shot {i + 1}/{len(board['shots'])} still "
+              f"{'OK' if got else 'FAILED -> stock'}", flush=True)
+        clips.append(got)
+    return clips

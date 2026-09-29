@@ -1137,3 +1137,13 @@ that story must always be captioned "recorded in the Historia Augusta", never
   turns it back on if views justify it. Posts use stock b-roll again, which
   still carries the relevance bug (Mount Fuji / motocross on unrelated lines).
   Moved to `cancelled` in costs.json. Monthly burn back to $25.
+- **2026-09-29 — FREE AI STILLS INSTEAD (option 2).** Owner chose free
+  Cloudflare FLUX stills over stock after dropping Higgsfield. Storyboard
+  stories now get one still per shot from the SAME board descriptions,
+  character look + seed, anatomy/period guards and prompt check (video-only
+  rules skipped); stories without a board get stills from their b-roll lines
+  (`REEL_IMAGE_BG=1`). Stills are cached per (prompt, seed) so QA retries reuse
+  them instead of burning the 12/run budget into stock. Composition asked
+  vertical/centred (FLUX schnell is square, centre-cropped). The Aug-25 "AI
+  stills caused a 3.8x drop" comment is corrected in the workflow — that
+  attribution failed re-checking. `bg_source` per post makes it measurable.

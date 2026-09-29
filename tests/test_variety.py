@@ -311,16 +311,17 @@ def test_the_healed_warnings_stay_healed(tmp_path, monkeypatch):
 # drop, and it was only findable by inferring from COMMIT DATES, because the
 # background provider was never recorded. These tests keep both fixes true.
 
-def test_generated_backgrounds_stay_off_until_a_measured_win():
-    """A revert that silently flips back is not a revert."""
+def test_generated_backgrounds_are_an_explicit_recorded_decision():
+    """Originally: stay off until a measured win (off 2026-08-25). On
+    2026-09-29 the owner turned free Cloudflare stills back on, and the
+    attribution behind the ban did not survive re-checking (the drop predates
+    the flag). What must hold now: the flag is set explicitly, and the reason
+    sits next to it, so a flip is never silent."""
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
     line = [l for l in wf.splitlines()
             if "REEL_IMAGE_BG:" in l and not l.strip().startswith("#")]
     assert line, "REEL_IMAGE_BG is not set in the daily workflow"
-    assert '"0"' in line[0], (
-        f"AI still backgrounds are back on ({line[0].strip()}). They are "
-        f"associated with a 3.8x drop in day-3 views; re-enable only with a "
-        f"measured win.")
+    assert "2026-09-29: BACK ON, owner's decision" in wf
 
 
 def test_background_source_is_recorded_for_every_post():

@@ -9,6 +9,9 @@ on:
       story:
         description: "Storyboard id in data/storyboards.json"
         default: "before_breakfast"
+      stills:
+        description: "1 = free Cloudflare stills instead of paid Higgsfield video"
+        default: "1"
 
 jobs:
   render:
@@ -23,7 +26,12 @@ jobs:
       - name: Render storyboard
         env:
           HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}
-        run: python scripts/render_storyboard.py "${{ github.event.inputs.story }}" out
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          python scripts/render_storyboard.py "${{ github.event.inputs.story }}" out \
+            $([ "${{ github.event.inputs.stills }}" = "1" ] && echo --stills)
+          python scripts/review_shots.py out out/review.png || true
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -31,4 +39,5 @@ jobs:
           path: |
             out/*.mp4
             out/report.txt
+            out/review.png
           if-no-files-found: ignore

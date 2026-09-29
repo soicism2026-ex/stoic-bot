@@ -660,12 +660,16 @@ def main():
     # stock search for the story's own b-roll, so a shot can never cost the post.
     backgrounds.PRESET.clear()
     board = storyboard.load(content.get("_story_id", "")) if content.get("_story_id") else None
-    if board and storyboard.enabled():
+    use_video = bool(board) and storyboard.enabled()
+    use_stills = bool(board) and not use_video and storyboard.images_enabled()
+    if use_video or use_stills:
         total = render_mod._audio_duration(audio_path) + 1.0
         secs = storyboard.plan_seconds(board, quote_appear, total)
         print(f"  [storyboard] {content['_story_id']}: generating "
-              f"{len(board['shots'])} shots...", flush=True)
-        clips = storyboard.generate(board, ROOT / "data" / f"{today}_sb")
+              f"{len(board['shots'])} {'video shots' if use_video else 'stills (free)'}...",
+              flush=True)
+        clips = (storyboard.generate(board, ROOT / "data" / f"{today}_sb") if use_video
+                 else storyboard.generate_images(board, ROOT / "data" / f"{today}_sb"))
         fallback = scene or [guide]
         pack["REEL_BG_CLIPS"] = str(len(clips))
         pack["REEL_BG_SECONDS"] = ",".join(f"{x:.3f}" for x in secs)
