@@ -29,3 +29,4 @@ backups/*.loud.m4a
 # Preflight contact sheets — evidence of what shipped, kept locally + in CI
 # logs. Not committed: they are JPEGs on every render and would bloat the repo.
 data/frames/
+preview2/

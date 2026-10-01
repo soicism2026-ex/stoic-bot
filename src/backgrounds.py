@@ -340,6 +340,25 @@ def _off_tone(tags: str) -> bool:
     return any(w in bad or any(b in w.split() for b in bad) for w in words)
 
 
+_GENERIC_WORDS = {"man", "men", "person", "people", "alone", "the", "a", "of",
+                  "in", "on", "and", "close", "up", "dark", "cinematic"}
+
+
+def _relevant_hits(hits: list, query: str) -> list:
+    words = [w for w in query.lower().split() if w not in _GENERIC_WORDS]
+    if not words:
+        return hits
+
+    def has(h, w):
+        # short stem so boxer~boxing, running~runner
+        stem = w[:4] if len(w) > 5 else w[:3]
+        return any(t.strip().startswith(stem) or f" {stem}" in f" {t.strip()}"
+                   for t in (h.get("tags") or "").lower().split(","))
+
+    every = [h for h in hits if all(has(h, w) for w in words)]
+    return every or [h for h in hits if has(h, words[0])]
+
+
 def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "") -> Path:
     """Download a portrait video from Pixabay (requires PIXABAY_API_KEY)."""
     api_key = os.environ.get("PIXABAY_API_KEY")
@@ -375,6 +394,11 @@ def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "") -> Path:
     # every hit, so drop the off-tone ones before picking; if that empties
     # the pool, keep the unfiltered one rather than lose the slot.
     pool = [h for h in pool if not _off_tone(h.get("tags", ""))] or pool
+    # RELEVANCE. order=popular ranks by popularity among anything that
+    # matches ONE word, so "boxer training" returned a training ship and
+    # "man running rain" a herd of horses. Prefer hits tagged with every
+    # meaningful query word, then with the first one; else keep the pool.
+    pool = _relevant_hits(pool, query) or pool
     if not pool:
         raise RuntimeError(f"Pixabay returned no videos for '{query}'")
 

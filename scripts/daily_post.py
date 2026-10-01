@@ -620,6 +620,8 @@ def main():
             # Higgsfield is cancelled (owner, 2026-09-29). The repo variable
             # still said 1, so every slot spent ~7s on a refused request.
             "REEL_KLING_BG": "0",
+            # Let the music carry 2s past the quote instead of cutting dead.
+            "REEL_TAIL": "2.0",
             "_no_guide": True,
             "_epic": True,
         },
@@ -744,7 +746,8 @@ def main():
         # Real orchestral music, starting just before its loudest section,
         # cut to the length of the video (CC BY 4.0 — credited below).
         track = epic_music.pick(post_rows)
-        dur = render_mod._audio_duration(audio_path) + 1.5
+        dur = (render_mod._audio_duration(audio_path)
+               + float(pack.get("REEL_TAIL", "1.0")) + 0.5)
         got = epic_music.fetch(track, ROOT / "data" / f"{today}_epic.mp3", dur)
         if got:
             music_path = got

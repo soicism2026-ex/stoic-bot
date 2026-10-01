@@ -1110,7 +1110,8 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         except Exception as e:  # noqa: BLE001
             print(f"  word click track failed ({e}); skipping")
 
-    dur = _audio_duration(audio_for_render) + 1.0  # small tail
+    # Tail after the last word. Edits hold longer so the music lands the end.
+    dur = _audio_duration(audio_for_render) + float(os.environ.get("REEL_TAIL", "1.0"))
 
     # Fetch multiple background clips for dynamic B-roll variety.
     # Default: 3 clips (one cut every ~10s). Override via REEL_BG_CLIPS.
@@ -1516,7 +1517,10 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         music_in = audio_in + 1
         filter_complex = (
             f"{vgraph};"
-            f"[{audio_in}:a]volume=1.0[voice];"
+            # apad: amix ends with its FIRST input, so without padding the
+            # music cut out with the last word and every Short's tail was a
+            # second of dead silence. -t caps the padded stream.
+            f"[{audio_in}:a]volume=1.0,apad[voice];"
             f"[{music_in}:a]volume={vol}[music];"
             # amix averages its inputs (voice lands at ~half level), so restore
             # loudness and hard-cap, then normalise the whole track to YouTube's

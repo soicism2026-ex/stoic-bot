@@ -100,3 +100,19 @@ def test_karaoke_hook_honours_caps(tmp_path, monkeypatch):
                             tmp_path / "h.ass", hook="stop now",
                             hook_starts=[0.1, 0.4], hook_hold=1.0, captions_from=1.0)
     assert "STOP" in ass.read_text() and "stop" not in ass.read_text().split("[Events]")[1]
+
+
+def test_stock_prefers_hits_tagged_with_the_whole_query():
+    import backgrounds
+    hits = [{"tags": "ship, sailing, training ship"},
+            {"tags": "horses, running, snow"},
+            {"tags": "boxing, gym, training"},
+            {"tags": "man, running, rain, city"}]
+    assert backgrounds._relevant_hits(hits, "boxer training") == [hits[2]]
+    assert backgrounds._relevant_hits(hits, "man running rain") == [hits[3]]
+    assert backgrounds._relevant_hits(hits, "lion walking") == []
+
+
+def test_music_is_not_cut_with_the_last_word():
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "volume=1.0,apad[voice]" in src
