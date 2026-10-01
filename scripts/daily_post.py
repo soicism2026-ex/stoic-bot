@@ -611,6 +611,15 @@ def main():
             "REEL_MONO": "1",
             "MUSIC_VOLUME": "0.38",
             "REEL_IMAGE_TAGGED_ONLY": "1",
+            # Big text: the first preview's hook (62px, lower-case) and quote
+            # (70px) read as captions, not as an edit.
+            "REEL_HOOK_ASS_FONTSIZE": "96",
+            "REEL_QUOTE_ASS_FS": "84",
+            # Off-tone stock: "boxer training" returned a fitness-model clip.
+            "REEL_BG_AVOID_TAGS": "woman,women,girl,fitness model,yoga,dance,wedding,party,beach",
+            # Higgsfield is cancelled (owner, 2026-09-29). The repo variable
+            # still said 1, so every slot spent ~7s on a refused request.
+            "REEL_KLING_BG": "0",
             "_no_guide": True,
             "_epic": True,
         },
@@ -672,7 +681,10 @@ def main():
     ]
     guide = STATUE_GUIDE[(day if isinstance(day, int) else 0) % len(STATUE_GUIDE)]
     broll = [q.strip() for q in (content.get("broll_queries") or []) if q and q.strip()]
-    scene = broll[:4] or ([FORMAT_BG_FLAVOR[fmt]] if FORMAT_BG_FLAVOR.get(fmt) else [])
+    # An edit carries 8 visuals and cuts on every one; other formats write 4
+    # narration beats. Slicing edits to 4 left the first preview with 4
+    # shots held ~3s each instead of a cut every ~1.5s.
+    scene = (broll if fmt == "edit" else broll[:4]) or ([FORMAT_BG_FLAVOR[fmt]] if FORMAT_BG_FLAVOR.get(fmt) else [])
     # Formats that opt out of the statue bookends run on their own scenes only.
     no_guide = bool(pack.pop("_no_guide", False))
     # The voiceover already exists, so the shot list can be sized to its real

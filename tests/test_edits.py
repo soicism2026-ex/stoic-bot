@@ -69,3 +69,34 @@ def test_dry_run_returns_before_any_upload():
     i = src.index("if upload_this and DRY_RUN:")
     j = src.index("upload_result = publish_short(")
     assert i < j and "return" in src[i:j]
+
+
+def test_an_edit_cuts_on_all_eight_visuals():
+    """First preview: broll[:4] kept half the visuals — 4 shots in 11.6s."""
+    import daily_post
+    scene = edits.load()[0]["visuals"]
+    flavors = daily_post.background_flavors(scene, "guide", True, 11.6)
+    assert len(flavors) == len(scene) == 8
+    assert "broll if fmt == \"edit\" else broll[:4]" in \
+        (ROOT / "scripts" / "daily_post.py").read_text()
+
+
+def test_off_tone_stock_is_filtered(monkeypatch):
+    import backgrounds
+    monkeypatch.setenv("REEL_BG_AVOID_TAGS", "woman,girl")
+    assert backgrounds._off_tone("boxing, woman, gym")
+    assert backgrounds._off_tone("fitness model, sport")
+    assert not backgrounds._off_tone("boxing, man, punching bag")
+    monkeypatch.delenv("REEL_BG_AVOID_TAGS")
+    assert not backgrounds._off_tone("woman, walking")
+
+
+def test_karaoke_hook_honours_caps(tmp_path, monkeypatch):
+    import importlib
+    import render
+    monkeypatch.setenv("REEL_HOOK_CAPS", "1")
+    importlib.reload(render)
+    ass = render._build_ass([("stop", 0.1, 0.4), ("now", 0.4, 0.8)],
+                            tmp_path / "h.ass", hook="stop now",
+                            hook_starts=[0.1, 0.4], hook_hold=1.0, captions_from=1.0)
+    assert "STOP" in ass.read_text() and "stop" not in ass.read_text().split("[Events]")[1]

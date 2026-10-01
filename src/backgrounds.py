@@ -326,6 +326,20 @@ def _fetch_from_pexels(theme: str, out_path: Path, query: str = "") -> Path:
     return out_path
 
 
+# Tags that mark glamour / fashion / fitness-model footage. Always avoided;
+# REEL_BG_AVOID_TAGS adds more per format (comma-separated).
+OFF_TONE_TAGS = ("model", "fashion", "sexy", "bikini", "lingerie", "selfie",
+                 "makeup", "glamour", "posing", "pose")
+
+
+def _off_tone(tags: str) -> bool:
+    words = {t.strip().lower() for t in (tags or "").split(",") if t.strip()}
+    extra = [t.strip().lower() for t in
+             os.environ.get("REEL_BG_AVOID_TAGS", "").split(",") if t.strip()]
+    bad = set(OFF_TONE_TAGS) | set(extra)
+    return any(w in bad or any(b in w.split() for b in bad) for w in words)
+
+
 def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "") -> Path:
     """Download a portrait video from Pixabay (requires PIXABAY_API_KEY)."""
     api_key = os.environ.get("PIXABAY_API_KEY")
@@ -356,6 +370,11 @@ def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "") -> Path:
             h.get("videos", {}).get("large", {}).get("width", 1))
     ]
     pool = portrait or hits
+    # TONE GUARD. "boxer training" came back as a woman posing in workout
+    # clothes — a fitness-model clip, wrong for a stoic edit. Pixabay tags
+    # every hit, so drop the off-tone ones before picking; if that empties
+    # the pool, keep the unfiltered one rather than lose the slot.
+    pool = [h for h in pool if not _off_tone(h.get("tags", ""))] or pool
     if not pool:
         raise RuntimeError(f"Pixabay returned no videos for '{query}'")
 

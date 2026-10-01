@@ -879,7 +879,10 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         )
 
     if hook and hook_starts:
-        ev = _hook_karaoke_events(hook, hook_starts, hook_hold)
+        # REEL_HOOK_CAPS applied only to the old drawtext hook; the karaoke
+        # hook ignored it, so the edit's "big caps hook" rendered lower-case.
+        ev = _hook_karaoke_events(hook.upper() if HOOK_CAPS else hook,
+                                  hook_starts, hook_hold)
         if ev:
             events.insert(0, ev)
     if quote and quote_times:
