@@ -129,3 +129,8 @@ def test_strict_stock_never_falls_back_to_an_unrelated_portrait_clip():
 def test_hook_is_gone_before_the_quote_fades_in():
     src = (ROOT / "src" / "render.py").read_text()
     assert "min(hook_hold, quote_times[0][0] - 0.3)" in src
+
+
+def test_stock_clips_skip_their_fade_in():
+    src = (ROOT / "src" / "render.py").read_text()
+    assert '["-stream_loop", "-1", *skip, "-i", str(_clip)]' in src

@@ -772,6 +772,7 @@ def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
 HOOK_MARGIN = int(os.environ.get("REEL_HOOK_MARGIN", "160"))
 # Spoken-quote line: the quote card's serif, top-anchored about a third of the
 # way down where the static card used to sit.
+CLIP_LEAD_SKIP = float(os.environ.get("REEL_CLIP_LEAD_SKIP", "1.0"))
 QUOTE_ASS_FONT = os.environ.get("REEL_QUOTE_ASS_FONT", "Liberation Serif")
 QUOTE_ASS_FS = int(os.environ.get("REEL_QUOTE_ASS_FS", "70"))
 QUOTE_ASS_MARGINV = int(os.environ.get("REEL_QUOTE_ASS_MARGINV", "470"))
@@ -1512,7 +1513,16 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # then audio, then optional music. Audio index = number of bg clips.
     clip_inputs: list = []
     for _clip in bg_clips:
-        clip_inputs += ["-stream_loop", "-1", "-i", str(_clip)]
+        # Stock clips often open on a fade from black: edit preview 4 showed
+        # 0.6s of near-black (luma 20/255) where a segment started on one.
+        # Skip the opening of any clip long enough to spare it.
+        skip = []
+        try:
+            if CLIP_LEAD_SKIP > 0 and _audio_duration(Path(_clip)) > CLIP_LEAD_SKIP + 3.0:
+                skip = ["-ss", f"{CLIP_LEAD_SKIP:.2f}"]
+        except Exception:  # noqa: BLE001
+            pass
+        clip_inputs += ["-stream_loop", "-1", *skip, "-i", str(_clip)]
     audio_in = len(bg_clips)
     inputs = [*clip_inputs, "-i", str(audio_for_render)]
 
