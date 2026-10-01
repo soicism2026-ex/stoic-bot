@@ -1,0 +1,58 @@
+# Renders the next stoic EDIT through the full real pipeline (voice, stock
+# video, free AI stills, epic music, QA) and saves it as an artifact.
+# DRY_RUN: nothing is uploaded and nothing is logged. Manual only.
+name: edit-preview
+on:
+  workflow_dispatch: null
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install ffmpeg + fonts
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu fonts-liberation
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install deps
+      run: pip install -r requirements.txt
+    - name: 'Render the next edit (DRY_RUN: no upload, no log)'
+      env:
+        MAX_POSTS_PER_DAY: '99'
+        CHATTERBOX_LOCAL: ${{ vars.CHATTERBOX_LOCAL || '0' }}
+        CHATTERBOX_EXAGGERATION: '0.45'
+        CHATTERBOX_CFG_WEIGHT: '0.35'
+        CHATTERBOX_SENTENCE_GAP: '0.25'
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        ELEVENLABS_POSTS_PER_DAY: '0'
+        YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+        YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+        YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}
+        REEL_KLING_BG: ${{ vars.REEL_KLING_BG }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PROMO_ENABLED: '1'
+        PROMO_PRODUCT_NAME: The Stoic Reset
+        PROMO_URL: https://soicism.gumroad.com/l/cslosv
+        PROMO_COMMENT: '0'
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        REEL_IMAGE_BG: '1'
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
+        DRY_RUN: '1'
+        REEL_FORMAT: edit
+      run: python scripts/daily_post.py
+    - name: Review sheet
+      if: always()
+      run: python scripts/review_shots.py data/preview data/preview/review.png || true
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: edit-preview
+        path: data/preview/
+        if-no-files-found: ignore

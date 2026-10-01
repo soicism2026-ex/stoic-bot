@@ -1,0 +1,416 @@
+[
+ {
+  "id": "be_such",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 10.16, trans. George Long",
+  "quote": "No longer talk at all about the kind of man that a good man ought to be, but be such.",
+  "hook": "Stop talking about who you'll be.",
+  "theme": "discipline",
+  "visuals": [
+   "still:ancient marble statue of a stoic philosopher, dramatic side light, black background",
+   "boxer training",
+   "man running rain",
+   "mountain climber",
+   "still:roman soldier standing alone in the rain, cinematic",
+   "weightlifting",
+   "sunrise mountain",
+   "man walking alone"
+  ]
+ },
+ {
+  "id": "avenging",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.6, trans. George Long",
+  "quote": "The best way of avenging thyself is not to become like the wrong doer.",
+  "hook": "Want revenge? Here's the real kind.",
+  "theme": "anger",
+  "visuals": [
+   "still:marble bust of Marcus Aurelius, dramatic chiaroscuro light",
+   "storm clouds",
+   "lion walking",
+   "man walking away",
+   "lightning",
+   "calm lake",
+   "still:ancient roman emperor in armour, calm face, torchlight",
+   "ocean waves rocks"
+  ]
+ },
+ {
+  "id": "ten_thousand_years",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 4.17, trans. George Long",
+  "quote": "Do not act as if thou wert going to live ten thousand years. Death hangs over thee.",
+  "hook": "You're acting like you have forever.",
+  "theme": "mortality",
+  "visuals": [
+   "still:ancient hourglass on stone, candle light, dark background",
+   "clock",
+   "sunset timelapse",
+   "old man walking",
+   "candle flame",
+   "man running",
+   "still:roman ruins at dusk, dramatic sky",
+   "fireworks"
+  ]
+ },
+ {
+  "id": "look_within",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.59, trans. George Long",
+  "quote": "Look within. Within is the fountain of good, and it will ever bubble up, if thou wilt ever dig.",
+  "hook": "What you're looking for isn't out there.",
+  "theme": "resilience",
+  "visuals": [
+   "still:ancient marble statue of a stoic philosopher, dramatic side light, black background",
+   "water fountain",
+   "man meditating",
+   "forest light",
+   "spring water",
+   "eyes close up",
+   "still:lone philosopher sitting on a cliff above the sea at dawn",
+   "mountain lake"
+  ]
+ },
+ {
+  "id": "take_away_opinion",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 4.7, trans. George Long",
+  "quote": "Take away thy opinion, and then there is taken away the complaint, I have been harmed.",
+  "hook": "Most of the hurt is in your head.",
+  "theme": "control",
+  "visuals": [
+   "still:marble statue head cracked, dramatic light, black background",
+   "storm sea",
+   "man boxing",
+   "rain window",
+   "lightning storm",
+   "calm ocean",
+   "lion",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "promontory",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 4.49, trans. George Long",
+  "quote": "Be like the promontory against which the waves continually break, but it stands firm and tames the fury of the water around it.",
+  "hook": "Let them crash. Stand still.",
+  "theme": "resilience",
+  "visuals": [
+   "waves crashing rocks",
+   "lighthouse storm",
+   "cliff ocean",
+   "still:ancient stone cliff fortress in a storm at sea, cinematic",
+   "storm waves",
+   "boxer guard",
+   "rock in sea",
+   "calm sea"
+  ]
+ },
+ {
+  "id": "confine_present",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.29, trans. George Long",
+  "quote": "Confine thyself to the present.",
+  "hook": "Tomorrow isn't your job right now.",
+  "theme": "time",
+  "visuals": [
+   "candle flame",
+   "breathing close up",
+   "rain drops",
+   "still:ancient marble statue of a stoic philosopher, dramatic side light, black background",
+   "sunrise",
+   "clock",
+   "man walking forest",
+   "calm water"
+  ]
+ },
+ {
+  "id": "life_is_opinion",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 4.3, trans. George Long",
+  "quote": "The universe is transformation: life is opinion.",
+  "hook": "Your life is what you decide it means.",
+  "theme": "control",
+  "visuals": [
+   "galaxy",
+   "time lapse city",
+   "clouds timelapse",
+   "still:marble statue of a philosopher looking at the stars",
+   "ocean waves",
+   "mountain timelapse",
+   "fire",
+   "night sky"
+  ]
+ },
+ {
+  "id": "external_thing",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.47, trans. George Long",
+  "quote": "If thou art pained by any external thing, it is not this thing that disturbs thee, but thy own judgment about it.",
+  "hook": "It's not the thing. It's your take on it.",
+  "theme": "control",
+  "visuals": [
+   "storm",
+   "man rain",
+   "still:ancient marble statue of a stoic philosopher, dramatic side light, black background",
+   "lightning",
+   "calm lake",
+   "boxer",
+   "chess",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "dyed_by_thoughts",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 5.16, trans. George Long",
+  "quote": "Such as are thy habitual thoughts, such also will be the character of thy mind; for the soul is dyed by the thoughts.",
+  "hook": "You become what you replay.",
+  "theme": "discipline",
+  "visuals": [
+   "ink in water",
+   "man writing",
+   "still:ancient marble statue of a stoic philosopher, dramatic side light, black background",
+   "running dawn",
+   "fabric dye",
+   "weight training",
+   "sunrise",
+   "mountain"
+  ]
+ },
+ {
+  "id": "imagination",
+  "author": "Seneca",
+  "citation": "Moral Letters 13, trans. Richard M. Gummere",
+  "quote": "We suffer more often in imagination than in reality.",
+  "hook": "It's probably not as bad as you think.",
+  "theme": "fear",
+  "visuals": [
+   "dark forest",
+   "storm clouds",
+   "still:marble bust of Seneca, dramatic candlelight",
+   "shadow wall",
+   "fog",
+   "sunrise",
+   "man walking",
+   "clear sky"
+  ]
+ },
+ {
+  "id": "ours_except_time",
+  "author": "Seneca",
+  "citation": "Moral Letters 1, trans. Richard M. Gummere",
+  "quote": "Nothing, Lucilius, is ours, except time.",
+  "hook": "You own one thing.",
+  "theme": "time",
+  "visuals": [
+   "hourglass",
+   "clock",
+   "still:marble bust of Seneca, dramatic candlelight",
+   "sand hands",
+   "sunset",
+   "old man",
+   "candle",
+   "timelapse"
+  ]
+ },
+ {
+  "id": "craves_more",
+  "author": "Seneca",
+  "citation": "Moral Letters 2, trans. Richard M. Gummere",
+  "quote": "It is not the man who has too little, but the man who craves more, that is poor.",
+  "hook": "Rich isn't a number.",
+  "theme": "desire",
+  "visuals": [
+   "money",
+   "luxury car",
+   "man alone mansion",
+   "still:ancient philosopher in a plain tunic sitting peacefully, warm light",
+   "simple meal",
+   "nature walk",
+   "sunrise",
+   "mountain"
+  ]
+ },
+ {
+  "id": "better_man",
+  "author": "Seneca",
+  "citation": "Moral Letters 7, trans. Richard M. Gummere",
+  "quote": "Associate with those who will make a better man of you.",
+  "hook": "Look at the five people around you.",
+  "theme": "friendship",
+  "visuals": [
+   "friends training",
+   "team running",
+   "handshake",
+   "still:group of ancient philosophers talking in a stone courtyard",
+   "mentor",
+   "boxing coach",
+   "climbing team",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "everywhere_nowhere",
+  "author": "Seneca",
+  "citation": "Moral Letters 2, trans. Richard M. Gummere",
+  "quote": "Everywhere means nowhere.",
+  "hook": "Pick one thing.",
+  "theme": "discipline",
+  "visuals": [
+   "city crowd",
+   "phone scrolling",
+   "focus",
+   "archer",
+   "still:marble bust of Seneca, dramatic candlelight",
+   "chess",
+   "target",
+   "man walking"
+  ]
+ },
+ {
+  "id": "begin_at_once",
+  "author": "Seneca",
+  "citation": "Moral Letters 101, trans. Richard M. Gummere",
+  "quote": "Begin at once to live, and count each separate day as a separate life.",
+  "hook": "Stop waiting to start.",
+  "theme": "time",
+  "visuals": [
+   "sunrise",
+   "man running",
+   "alarm clock",
+   "door opening",
+   "still:ancient roman road at dawn, cinematic",
+   "jump",
+   "ocean",
+   "mountain top"
+  ]
+ },
+ {
+  "id": "change_of_soul",
+  "author": "Seneca",
+  "citation": "Moral Letters 28, trans. Richard M. Gummere",
+  "quote": "You need a change of soul rather than a change of climate.",
+  "hook": "Moving won't fix it.",
+  "theme": "resilience",
+  "visuals": [
+   "airplane",
+   "suitcase",
+   "beach",
+   "man alone",
+   "still:marble bust of Seneca, dramatic candlelight",
+   "mirror",
+   "storm",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "burdens_of_the_mind",
+  "author": "Seneca",
+  "citation": "Moral Letters 104, trans. Richard M. Gummere",
+  "quote": "You must lay aside the burdens of the mind; until you do this, no place will satisfy you.",
+  "hook": "You took it with you.",
+  "theme": "resilience",
+  "visuals": [
+   "backpack hiking",
+   "heavy load",
+   "man carrying",
+   "train window",
+   "still:weary roman traveller on an ancient road at dusk",
+   "rain",
+   "sunrise",
+   "open field"
+  ]
+ },
+ {
+  "id": "disturbed_by_opinions",
+  "author": "Epictetus",
+  "citation": "Enchiridion 5, trans. George Long",
+  "quote": "Men are disturbed not by the things which happen, but by the opinions about the things.",
+  "hook": "It's not what happened.",
+  "theme": "control",
+  "visuals": [
+   "still:ancient greek philosopher with a walking stick, stone room, side light",
+   "storm",
+   "man rain",
+   "lightning",
+   "calm lake",
+   "boxer",
+   "chess",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "thinks_he_knows",
+  "author": "Epictetus",
+  "citation": "Discourses II.17, trans. George Long",
+  "quote": "It is impossible for a man to begin to learn that which he thinks that he knows.",
+  "hook": "Think you know it? You've stopped.",
+  "theme": "ego",
+  "visuals": [
+   "empty cup",
+   "student",
+   "chess",
+   "still:ancient greek philosopher teaching in a stone room, warm light",
+   "library",
+   "beginner gym",
+   "mountain climber",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "price_of_your_will",
+  "author": "Epictetus",
+  "citation": "Discourses I.2, trans. George Long",
+  "quote": "Consider at what price you sell your own will: if for no other reason, at least for this, that you sell it not for a small sum.",
+  "hook": "What's your price?",
+  "theme": "ego",
+  "visuals": [
+   "coins",
+   "handshake deal",
+   "chess",
+   "still:ancient greek philosopher, stern face, torchlight",
+   "man walking away",
+   "storm",
+   "lion",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "habit_and_faculty",
+  "author": "Epictetus",
+  "citation": "Discourses II.18, trans. George Long",
+  "quote": "Every habit and faculty is maintained and increased by the corresponding actions.",
+  "hook": "You are what you repeat.",
+  "theme": "discipline",
+  "visuals": [
+   "running",
+   "weight training",
+   "boxing bag",
+   "writing",
+   "still:ancient greek wrestlers training in a stone gymnasium",
+   "push ups",
+   "climbing",
+   "sunrise run"
+  ]
+ },
+ {
+  "id": "circumstances_show",
+  "author": "Epictetus",
+  "citation": "Discourses I.24, trans. George Long",
+  "quote": "It is circumstances (difficulties) which show what men are.",
+  "hook": "Hard times show you who you are.",
+  "theme": "adversity",
+  "visuals": [
+   "boxing",
+   "storm",
+   "still:ancient greek wrestlers grappling, dust and sunlight",
+   "mountain climbing",
+   "running rain",
+   "lightning",
+   "lion",
+   "sunrise"
+  ]
+ }
+]

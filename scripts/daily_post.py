@@ -38,6 +38,8 @@ import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
 import backgrounds                        # noqa: E402
 import stories                            # noqa: E402
+import edits                              # noqa: E402
+import epic_music                         # noqa: E402
 from preflight import review as preflight_review   # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
@@ -57,6 +59,10 @@ MAX_ATTEMPTS = int(os.environ.get("REEL_MAX_ATTEMPTS", "5"))
 # Pause before the voice reads the quote: a breath, not the old 2.4s silent
 # read beat, because the viewer now hears the quote instead of reading it cold.
 QUOTE_BREATH = float(os.environ.get("REEL_QUOTE_BREATH", "0.7"))
+# Seconds of music + picture before the voice in an edit.
+# Render and check everything, upload nothing (edit-preview workflow).
+DRY_RUN = os.environ.get("DRY_RUN", "0") not in ("0", "", "false", "False")
+EDIT_LEAD_IN = float(os.environ.get("REEL_EDIT_LEAD_IN", "1.2"))
 POST_BUDGET_SECONDS = float(os.environ.get("POST_BUDGET_SECONDS", "2100"))  # 35 min
 BACKUP_MIN = 3
 # Per-DAY upload total (not per-run). The single 17:00 UTC cron slot posts once;
@@ -404,8 +410,16 @@ def main():
     # When the bank is exhausted, fall through to the generated pipeline
     # rather than repeating one: a viewer who sees the same story twice
     # learns it was never personal.
-    story = stories.pick(post_rows)
-    if story is not None:
+    # STOIC EDITS are the main format from 2026-10-01 (owner: pivot to edits —
+    # grand music, cool visuals, no story to explain). REEL_FORMAT=story
+    # switches back to the story bank. When the edit bank runs out, the story
+    # bank is the fallback, then the generator.
+    edit = edits.pick(post_rows) if os.environ.get("REEL_FORMAT", "edit") == "edit" else None
+    story = None if edit else stories.pick(post_rows)
+    if edit is not None:
+        content = edits.as_content(edit)
+        print(f"  EDIT: {edit['id']}  ({edits.remaining(post_rows) - 1} left in the bank)")
+    elif story is not None:
         content = stories.as_content(story)
         print(f"  STORY: {story['id']}  "
               f"(power {story['power']}, leaves-him-better {story['s5']}; "
@@ -454,6 +468,9 @@ def main():
     # built on.
     is_question = content.get("format") == "question"
     lead = QUESTION_LEAD_SILENCE if is_question else 0.0
+    if content.get("format") == "edit":
+        # The music and the first picture land before anyone speaks.
+        lead = EDIT_LEAD_IN
     if is_question:
         act1 = content["voiceover_story"]
     else:
@@ -540,6 +557,8 @@ def main():
     # Without this the bank would re-serve the same script every single day.
     if content.get("_story_id"):
         exp_name = f"story:{content['_story_id']}"
+    if content.get("_edit_id"):
+        exp_name = f"edit:{content['_edit_id']}"
     print(f"  experiment: {exp_name}")
 
     # ---- Style packs: each format gets its own full presentation ----------
@@ -578,6 +597,23 @@ def main():
         # corner brackets plus gold Impact-style caps over an AI statue is
         # also, frame for frame, the house style of the category YouTube is
         # demoting. Both go for stories.
+        # STOIC EDIT: real epic music up front and loud, monochrome high-
+        # contrast picture, fast cuts, big caps hook, quote followed word by
+        # word. No braam, no frame, no cinematic drone.
+        "edit": {
+            "REEL_HOOK_CAPS": "1",
+            "REEL_HOOK_WRAP": "16",
+            "REEL_HOOK_SOUND": "0",
+            "REEL_FRAME": "0",
+            "REEL_CINEMATIC": "0",
+            "REEL_EXTRA_DARKEN": "0",
+            "REEL_BRIGHTNESS": "-0.02",
+            "REEL_MONO": "1",
+            "MUSIC_VOLUME": "0.38",
+            "REEL_IMAGE_TAGGED_ONLY": "1",
+            "_no_guide": True,
+            "_epic": True,
+        },
         "truestory": {
             "REEL_HOOK_CAPS": "0",
             "REEL_HOOK_WRAP": "30",
@@ -691,7 +727,21 @@ def main():
     # Diegetic ambience replaces the music bed for this style (falls back to
     # the normal generative music if synthesis ever fails).
     ambience = pack.pop("_ambience", "")
-    if ambience:
+    epic = pack.pop("_epic", False)
+    if epic:
+        # Real orchestral music, starting just before its loudest section,
+        # cut to the length of the video (CC BY 4.0 — credited below).
+        track = epic_music.pick(post_rows)
+        dur = render_mod._audio_duration(audio_path) + 1.5
+        got = epic_music.fetch(track, ROOT / "data" / f"{today}_epic.mp3", dur)
+        if got:
+            music_path = got
+            music_track = {"name": f"epic:{track}"}
+            description += "\n\n" + epic_music.credit(track)
+            print(f"  music: {track} (epic, CC BY) from {epic_music.TRACKS[track]}s")
+        else:
+            print("  music: epic track unavailable — keeping the default bed")
+    elif ambience:
         amb_path = music_mod.fetch_ambience(ambience)
         if amb_path:
             music_path = amb_path
@@ -831,6 +881,19 @@ def main():
             # Block upload only when explicitly enabled and we still have retries left
             if vqa.verdict == "fail" and _VQA_BLOCK_ON_FAIL and not last_attempt:
                 upload_this = False
+
+        if upload_this and DRY_RUN:
+            # PREVIEW: the full real pipeline, stopped before anything public.
+            # Nothing is uploaded and nothing is logged, so the content is not
+            # consumed and airs normally later.
+            import shutil
+            out = ROOT / "data" / "preview"
+            out.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(video_path, out / f"{exp_name.replace(':', '_')}.mp4")
+            print(f"  [preview] DRY_RUN — saved {out.name}/{exp_name.replace(':', '_')}.mp4, "
+                  f"NOT uploaded, NOT logged")
+            print(f"  [preview] description:\n{description}")
+            return
 
         if upload_this:
             upload_result = publish_short(

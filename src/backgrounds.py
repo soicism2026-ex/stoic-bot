@@ -434,6 +434,14 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
         return out_path
 
     query = _search_term(theme, clip_idx=clip_idx)
+    # EDITS tag the shots meant for a free AI still with "still:" (statues,
+    # the ancient world — things stock video can't show). With
+    # REEL_IMAGE_TAGGED_ONLY=1, ONLY those go to the image model; every other
+    # slot is real stock VIDEO, because motion is what an edit lives on.
+    wants_still = query.lower().startswith("still:")
+    if wants_still:
+        query = query[len("still:"):].strip()
+    tagged_only = os.environ.get("REEL_IMAGE_TAGGED_ONLY", "0") not in ("0", "", "false", "False")
 
     # GUIDE LIBRARY (highest priority, zero cost, zero network). If this clip is
     # a guide bookend AND the owner has committed a curated library, use it — a
@@ -471,6 +479,8 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     # if anything fails, so it can never break a render.
     try:
         import imagegen
+        if tagged_only and not wants_still:
+            raise RuntimeError("stock video slot (edit) — no still")
         # The guide bookends get a FIXED seed, so FLUX returns the same statue
         # every single day — a genuine recurring character, for free. B-roll
         # slots pass no seed so they stay varied.

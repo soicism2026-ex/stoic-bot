@@ -1169,3 +1169,27 @@ that story must always be captioned "recorded in the Historia Augusta", never
   `quote_unverified` flag (sources not yet downloaded: Diogenes Laertius,
   Tacitus, Gellius, Seneca's dialogues). The aired videos remain live — owner's
   call whether to unlist them.
+- **2026-10-01 — PIVOT TO STOIC EDITS (built; awaiting preview approval).**
+  Owner: *"The posts are still a little bit boring ... pivot this channel to a
+  more stoic-edits style with a larger focus on cool stoic visuals rather than
+  explaining a boring story. I want grand music that is trending on top of
+  motivational videos of people who preach stoicism in the background."*
+  Built the same look with what we are allowed to use: **not** other
+  creators' motivational clips or commercial/trending songs — YouTube's
+  reused-content policy refuses monetisation for compilations of others'
+  footage, and Content ID claims/strikes commercial songs; the upload API also
+  cannot attach the app's trending sounds.
+  * `data/edit_quotes.json` — 23 short quotes, every one VERBATIM against the
+    downloaded source text (5 of my 28 candidates failed and were dropped).
+  * `src/epic_music.py` — 13 Kevin MacLeod orchestral tracks (CC BY 4.0,
+    credited in the description), each starting 2s before its measured
+    loudest 22s. Found: the old music bed had been a SYNTHETIC DRONE for weeks
+    (Pixabay music API 404) — a big part of "boring".
+  * `src/edits.py` + `"edit"` style pack — ~12-15s: 1.2s music + first shot,
+    big caps hook, the quote spoken and followed word by word; monochrome
+    high-contrast grade; 8 visuals at ~1.6s each — real stock VIDEO from short
+    keyword searches, free AI stills only for `still:` shots (statues,
+    antiquity); music at 38%.
+  * `edit-preview.yml` + `DRY_RUN` — renders the next edit with the full real
+    pipeline and uploads nothing. Live bot pinned to `REEL_FORMAT: "story"`
+    until the owner approves the preview.

@@ -1232,6 +1232,12 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             curve,
             tone,
         ]
+    # MONOCHROME for stoic edits: black and white with a contrast lift, the
+    # look of the genre. Applied after every colour step so nothing reintroduces
+    # a tint. (Text is drawn later, so the gold credit keeps its colour.)
+    if os.environ.get("REEL_MONO", "0") not in ("0", "", "false", "False"):
+        pre_parts.append("hue=s=0,eq=contrast=1.15")
+
     # Experimental colour-world variants (set by src/experiments.py per post,
     # logged to posts.csv, compared in channel_report). Env: REEL_GRADE_VARIANT.
     _grade_variant = os.environ.get("REEL_GRADE_VARIANT", "").strip()
