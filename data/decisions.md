@@ -1153,3 +1153,19 @@ that story must always be captioned "recorded in the Historia Augusta", never
   step, then render.py's per-segment move). Both removed for generated stills;
   stock video keeps its per-segment move. Measured on a real still clip:
   frame-to-frame change 0.001 (steady).
+- **2026-10-01 — QUOTE AUDIT AGAINST THE REAL TEXTS: SOME AIRED QUOTES WERE
+  NOT VERBATIM.** Built `scripts/fetch_sources.py` (Long's Marcus Aurelius,
+  Long's Epictetus, Gummere's Seneca, from Wikisource, saved to
+  `data/sources/`) and `scripts/validate_quotes.py` (word-for-word check,
+  ignoring only case, punctuation, spacing and footnote numbers). Aired and
+  wrong: `wrote_off_the_man` — "Be content then in the rest of thy life" is
+  NOT in Meditations 8.1 (half-invented); `ran_out_of_room` dropped "of this";
+  `failure_column` cut "Annaeus Serenus… in spite of my wishes" unmarked;
+  `same_hospital` changed "and" to "I am"; `the_fifth_hour` cut "he said"
+  unmarked. Unaired and fixed: `earthenware` was a paraphrase, now Long I.18
+  verbatim ("To-morrow, I said, you will find an earthen lamp; for a man only
+  loses that which he has."). All came from memory. **Now enforced by a test:**
+  no unaired quote can air unless found verbatim, or carries an explicit
+  `quote_unverified` flag (sources not yet downloaded: Diogenes Laertius,
+  Tacitus, Gellius, Seneca's dialogues). The aired videos remain live — owner's
+  call whether to unlist them.

@@ -644,7 +644,8 @@
    "a warm lit doorway of a bookshop from the street",
    "a hand opening a book for the first time"
   ],
-  "score": 63
+  "score": 63,
+  "quote_unverified": "source text not downloaded yet (Diogenes Laertius, Lives VII.4, trans. R. D. Hicks) - checked by hand only; verify before airing"
  },
  {
   "id": "there_is_a_door",
@@ -675,10 +676,10 @@
   "hook": "Someone stole his lamp in the night.",
   "story": "Epictetus's reaction has irritated people for two thousand years. He kept an iron lamp beside his household gods. One night he heard a noise at the window, ran down, and it was gone. He didn't rage. He said the reason he lost the lamp was that the thief was better than him at staying awake, and that the thief paid for it by becoming a thief. Tomorrow, he said, buy an earthenware one.",
   "lesson": "That's it. No lesson about the universe. He was better at staying up, I'll get a cheaper lamp. Most of what's eating you tonight is lamp-sized. Pick one thing you're still angry about that cost under fifty bucks. Say earthenware, and drop it.",
-  "quote": "The reason why I lost my lamp was that the thief was superior to me in vigilance.",
+  "quote": "To-morrow, I said, you will find an earthen lamp; for a man only loses that which he has.",
   "author": "Epictetus",
   "theme": "anger",
-  "citation": "Discourses I.29.21, trans. George Long",
+  "citation": "Discourses I.18, trans. George Long",
   "source": "https://en.wikisource.org/wiki/Epictetus,_the_Discourses_as_reported_by_Arrian,_the_Manual,_and_Fragments/Book_1/Chapter_18",
   "tonight": "Pick one grudge that cost under fifty bucks. Say \"earthenware.\"",
   "broll": [
@@ -688,6 +689,7 @@
    "a hand letting go of something small"
   ],
   "caveat": "",
-  "score": 48
+  "score": 48,
+  "original_quote": "The reason why I lost my lamp was that the thief was superior to me in vigilance."
  }
 ]
