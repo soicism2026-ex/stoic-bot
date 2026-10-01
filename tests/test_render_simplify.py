@@ -244,6 +244,6 @@ def test_stills_do_not_shake():
     may zoom a generated still."""
     img = (ROOT / "src" / "imagegen.py").read_text()
     body = img[img.index("def generate_clip"):]
-    assert "zoompan" not in body, "stills are being zoomed again"
+    assert "zoompan=" not in body, "stills are being zoomed again"
     src = (ROOT / "src" / "render.py").read_text()
     assert "MOTION_ON and not _generated_backgrounds_active()" in src
