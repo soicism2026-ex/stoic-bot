@@ -1349,6 +1349,11 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         nxt = [w[1] for w in word_timings if w[1] > hook_starts[-1] + 0.05]
         if nxt:
             hook_hold = max(hook_starts[-1] + 0.4, min(hook_hold, nxt[0]))
+        if quote_times:
+            # The spoken quote fades in 0.3s before its first word; the hook
+            # must be gone by then or both lines share the screen (edit preview 3).
+            hook_hold = max(hook_starts[-1] + 0.4,
+                            min(hook_hold, quote_times[0][0] - 0.3))
         caption_from = hook_hold
 
     # Hook card: big, bold, scroll-stopping text flashed over the opening, then

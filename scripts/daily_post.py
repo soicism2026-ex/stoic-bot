@@ -622,6 +622,7 @@ def main():
             "REEL_KLING_BG": "0",
             # Let the music carry 2s past the quote instead of cutting dead.
             "REEL_TAIL": "2.0",
+            "REEL_BG_STRICT": "1",
             "_no_guide": True,
             "_epic": True,
         },

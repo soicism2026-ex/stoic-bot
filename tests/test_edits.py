@@ -116,3 +116,16 @@ def test_stock_prefers_hits_tagged_with_the_whole_query():
 def test_music_is_not_cut_with_the_last_word():
     src = (ROOT / "src" / "render.py").read_text()
     assert "volume=1.0,apad[voice]" in src
+
+
+def test_strict_stock_never_falls_back_to_an_unrelated_portrait_clip():
+    import backgrounds
+    hits = [{"tags": "ship, sailing, training ship"}]
+    assert backgrounds._relevant_hits(hits, "boxer training", require_all=True) == []
+    src = (ROOT / "src" / "backgrounds.py").read_text()
+    assert src.index("every = _relevant_hits(") < src.index("portrait = [\n")
+
+
+def test_hook_is_gone_before_the_quote_fades_in():
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "min(hook_hold, quote_times[0][0] - 0.3)" in src

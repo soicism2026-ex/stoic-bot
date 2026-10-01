@@ -30,3 +30,4 @@ backups/*.loud.m4a
 # logs. Not committed: they are JPEGs on every render and would bloat the repo.
 data/frames/
 preview2/
+preview3/

@@ -344,7 +344,7 @@ _GENERIC_WORDS = {"man", "men", "person", "people", "alone", "the", "a", "of",
                   "in", "on", "and", "close", "up", "dark", "cinematic"}
 
 
-def _relevant_hits(hits: list, query: str) -> list:
+def _relevant_hits(hits: list, query: str, require_all: bool = False) -> list:
     words = [w for w in query.lower().split() if w not in _GENERIC_WORDS]
     if not words:
         return hits
@@ -356,10 +356,13 @@ def _relevant_hits(hits: list, query: str) -> list:
                    for t in (h.get("tags") or "").lower().split(","))
 
     every = [h for h in hits if all(has(h, w) for w in words)]
+    if require_all:
+        return every
     return every or [h for h in hits if has(h, words[0])]
 
 
-def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "") -> Path:
+def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "",
+                        strict: bool = False) -> Path:
     """Download a portrait video from Pixabay (requires PIXABAY_API_KEY)."""
     api_key = os.environ.get("PIXABAY_API_KEY")
     if not api_key:
@@ -372,7 +375,7 @@ def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "") -> Path:
         params={
             "key": api_key,
             "q": query,
-            "per_page": 20,
+            "per_page": 50,  # more candidates for the relevance filter
             "order": "popular",
             "safesearch": "true",   # block adult/inappropriate content
             "video_type": "film",   # actual footage, not animation
@@ -382,23 +385,27 @@ def _fetch_from_pixabay(theme: str, out_path: Path, query: str = "") -> Path:
     resp.raise_for_status()
     hits = resp.json().get("hits", [])
 
-    # Prefer portrait (height >= width); fall back to any if none found
+    # TONE GUARD. "boxer training" came back as a woman posing in workout
+    # clothes — a fitness-model clip, wrong for a stoic edit. Pixabay tags
+    # every hit, so drop the off-tone ones before picking.
+    hits = [h for h in hits if not _off_tone(h.get("tags", ""))] or hits
+    # RELEVANCE, checked BEFORE the portrait preference. order=popular ranks
+    # anything matching ONE word, and the portrait filter used to run first:
+    # when no vertical clip matched, the "relevant" pick fell back to any
+    # vertical clip — "boxer training" gave a sailing ship, "man running
+    # rain" a herd of horses. In strict mode (edits) an unmatched query
+    # raises so Pexels gets a turn before an off-topic clip airs.
+    every = _relevant_hits(hits, query, require_all=True)
+    if strict and not every:
+        raise RuntimeError(f"Pixabay has nothing tagged for every word of '{query}'")
+    relevant = every or _relevant_hits(hits, query) or hits
+    # Prefer portrait (height >= width) among the relevant ones.
     portrait = [
-        h for h in hits
+        h for h in relevant
         if (h.get("videos", {}).get("large", {}).get("height", 0) >=
             h.get("videos", {}).get("large", {}).get("width", 1))
     ]
-    pool = portrait or hits
-    # TONE GUARD. "boxer training" came back as a woman posing in workout
-    # clothes — a fitness-model clip, wrong for a stoic edit. Pixabay tags
-    # every hit, so drop the off-tone ones before picking; if that empties
-    # the pool, keep the unfiltered one rather than lose the slot.
-    pool = [h for h in pool if not _off_tone(h.get("tags", ""))] or pool
-    # RELEVANCE. order=popular ranks by popularity among anything that
-    # matches ONE word, so "boxer training" returned a training ship and
-    # "man running rain" a herd of horses. Prefer hits tagged with every
-    # meaningful query word, then with the first one; else keep the pool.
-    pool = _relevant_hits(pool, query) or pool
+    pool = portrait or relevant
     if not pool:
         raise RuntimeError(f"Pixabay returned no videos for '{query}'")
 
@@ -544,11 +551,17 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     except Exception as e:  # noqa: BLE001
         print(f"[background] imagegen skipped: {e}", file=sys.stderr, flush=True)
 
-    for label, fn in [
-        ("PIXABAY",   lambda: _fetch_from_pixabay(theme, out_path, query=query)),
+    strict = os.environ.get("REEL_BG_STRICT", "0") not in ("0", "", "false", "False")
+    chain = [
+        ("PIXABAY",   lambda: _fetch_from_pixabay(theme, out_path, query=query, strict=strict)),
         ("PEXELS",    lambda: _fetch_from_pexels(theme, out_path, query=query)),
-        ("SYNTHETIC", lambda: _fetch_synthetic(theme, out_path)),
-    ]:
+    ]
+    if strict:
+        # Nothing matched exactly anywhere: a loosely matching clip still
+        # beats the synthetic fallback.
+        chain.append(("PIXABAY", lambda: _fetch_from_pixabay(theme, out_path, query=query)))
+    chain.append(("SYNTHETIC", lambda: _fetch_synthetic(theme, out_path)))
+    for label, fn in chain:
         try:
             path = fn()
             print(f"[background] SOURCE={_note_source(label)} query='{query}' file={path.name}", flush=True)
