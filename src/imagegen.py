@@ -244,9 +244,10 @@ def generate_clip(prompt: str, out_path: Path, dur: float = 6.5,
             ["ffmpeg", "-y", "-loop", "1", "-i", str(png), "-t", f"{dur:.1f}",
              "-vf",
              f"scale={width}:{height}:force_original_aspect_ratio=increase,"
-             f"crop={width}:{height},"
-             f"zoompan=z='min(1.0+0.0006*on,1.12)':d=1:"
-             f"x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)':s={width}x{height}:fps=30",
+             # NO ZOOM. Owner, 2026-10-01: "I dont like the shaking images
+             # remove that." zoompan moves in whole-pixel steps, so a slow push
+             # on a still visibly judders, and render.py stacked a second one.
+             f"crop={width}:{height},fps=30",
              "-c:v", "libx264", "-pix_fmt", "yuv420p", "-r", "30",
              str(out_path)],
             check=True, capture_output=True,

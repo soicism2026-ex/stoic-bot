@@ -1147,3 +1147,9 @@ that story must always be captioned "recorded in the Historia Augusta", never
   vertical/centred (FLUX schnell is square, centre-cropped). The Aug-25 "AI
   stills caused a 3.8x drop" comment is corrected in the workflow — that
   attribution failed re-checking. `bg_source` per post makes it measurable.
+- **2026-10-01 — NO SHAKING STILLS.** Owner: *"I dont like the shaking images
+  remove that."* Cause: ffmpeg zoompan moves in whole-pixel steps, so a slow
+  push on a still judders — and stills were zoomed TWICE (imagegen's still→clip
+  step, then render.py's per-segment move). Both removed for generated stills;
+  stock video keeps its per-segment move. Measured on a real still clip:
+  frame-to-frame change 0.001 (steady).

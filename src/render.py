@@ -1461,7 +1461,8 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         seg_frames = max(1, int(seg_dur * 30))
         bg_segs = [
             f"[{_i}:v]{geo},trim=0:end={seg_durs[_i]:.3f},setpts=PTS-STARTPTS"
-            + (f",{_motion(_i, max(1, int(seg_durs[_i] * 30)))}" if MOTION_ON else "")
+            + (f",{_motion(_i, max(1, int(seg_durs[_i] * 30)))}"
+               if MOTION_ON and not _generated_backgrounds_active() else "")
             + f"[bgseg{_i}]"
             for _i in range(n_bg)
         ]

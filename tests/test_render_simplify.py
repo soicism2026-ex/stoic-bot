@@ -235,3 +235,15 @@ def test_screen_blends_do_not_tint_the_picture():
     r, g, b = out[0], out[1], out[2]
     assert r > g > b, f"orange must stay orange, got {(r, g, b)}"
     assert r >= 192, "and screen must brighten, not darken"
+
+
+def test_stills_do_not_shake():
+    """Owner, 2026-10-01: "I dont like the shaking images remove that."
+    zoompan steps in whole pixels, so a slow push on a still judders, and it
+    was applied twice. Neither the still->clip step nor the per-segment move
+    may zoom a generated still."""
+    img = (ROOT / "src" / "imagegen.py").read_text()
+    body = img[img.index("def generate_clip"):]
+    assert "zoompan" not in body, "stills are being zoomed again"
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "MOTION_ON and not _generated_backgrounds_active()" in src
