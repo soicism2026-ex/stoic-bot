@@ -1,2 +1,3 @@
 date,story_id,reason
 2026-10-02,there_is_a_door,"too dark: mean luminance 26.0/255 (10.2%), floor is 45 (18%). This reads as a black rectangle on a phone."
+2026-10-02,there_is_a_door,"too dark: mean luminance 33.3/255 (13.1%), floor is 45 (18%). This reads as a black rectangle on a phone."
