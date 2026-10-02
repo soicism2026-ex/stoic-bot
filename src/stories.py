@@ -103,8 +103,9 @@ def pick(post_rows: list[dict]) -> dict | None:
     seen = set(used)
     bank = load()
     jammed = jammed_ids()
+    spaced = None
     for s in sorted(bank, key=lambda x: -x.get("score", 0)):
-        if s["id"] in seen or _blocked(s, used, len(bank)):
+        if s["id"] in seen:
             continue
         # HELD: pulled by a person (e.g. a quote problem) — never airs until
         # the hold is lifted in data/stories.json.
@@ -114,8 +115,18 @@ def pick(post_rows: list[dict]) -> dict | None:
         # it so one un-renderable story cannot stop the channel.
         if s["id"] in jammed:
             continue
+        if _blocked(s, used, len(bank)):
+            # Only a too-short GAP may be overridden, never a missing setup.
+            rule = APART.get(s["id"])
+            if spaced is None and rule and rule[0] in used:
+                spaced = s
+            continue
         return s
-    return None
+    # Spacing is a preference, not a reason to starve the bank. The gap is
+    # clamped to the bank size, but held and jammed stories shrink what can
+    # actually air, so on 2026-10-02 (two stories jammed) no_wisdom_removes_it
+    # became the last airable story and could never meet its gap.
+    return spaced
 
 
 BLOCKS = ROOT / "data" / "story_blocks.csv"

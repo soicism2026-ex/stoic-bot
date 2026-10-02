@@ -218,10 +218,10 @@ jobs:
           # it is measured. OpenAI stays unset: Cloudflare is free.
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           REEL_IMAGE_BG: "1"
-          # STOIC EDITS (owner pivot 2026-10-01) render via edit-preview.yml
-          # first. Flip this to "edit" once the owner approves the preview —
-          # standing rule: nothing ships until approved.
-          REEL_FORMAT: "story"
+          # STOIC EDITS — the live format. Owner approved preview 5 on
+          # 2026-10-02 ("switch the format"). "story" switches back. When the
+          # 23-quote edit bank runs out, daily_post falls back to stories.
+          REEL_FORMAT: "edit"
           # PRIMARY image provider — Cloudflare Workers AI (FLUX.1 schnell).
           # Free allowance is 10,000 neurons/day and a schnell image costs
           # ~43, so ~230/day are free; this channel needs 18. No watermark.

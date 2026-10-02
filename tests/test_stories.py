@@ -84,7 +84,8 @@ def test_never_repeats_a_story():
         seen.add(s["id"])
         rows.append({"experiment": f"story:{s['id']}"})
     # every story airs exactly once — except those a person has put on hold
-    assert len(seen) == len([s for s in stories.load() if not s.get("hold")])
+    # and those the pipeline has benched after repeated preflight blocks
+    assert len(seen) == stories.remaining([])
 
 
 def test_exhausted_bank_returns_none_rather_than_looping():

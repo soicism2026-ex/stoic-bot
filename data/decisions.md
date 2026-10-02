@@ -1193,3 +1193,14 @@ that story must always be captioned "recorded in the Historia Augusta", never
   * `edit-preview.yml` + `DRY_RUN` — renders the next edit with the full real
     pipeline and uploads nothing. Live bot pinned to `REEL_FORMAT: "story"`
     until the owner approves the preview.
+- **2026-10-02 — STOIC EDITS ARE LIVE.** Owner approved the edit preview:
+  *"switch the format"*. `daily-short.yml` now sets `REEL_FORMAT: "edit"`.
+  Preview 5 (Marcus Aurelius 10.16 over "Heroic Age", 12.6s) after four
+  fix rounds: all 8 visuals cut (was 4), caps hook 96px / quote 84px, hook
+  clears before the quote, stock must be tagged with every query word (else
+  Pexels, then a loose match), off-tone tags filtered, first second of long
+  stock clips skipped (fade-from-black), music no longer cut with the last
+  word (that silent tail was on EVERY format — fixed for all), 2s music tail
+  on edits, Kling forced off for edits. Bank: 23 verified quotes at 1/day ≈
+  3 weeks; stories are the automatic fallback. Revert = set REEL_FORMAT back
+  to "story" (a data change the bot reads, not a doc note).
