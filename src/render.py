@@ -772,6 +772,11 @@ def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
 HOOK_MARGIN = int(os.environ.get("REEL_HOOK_MARGIN", "160"))
 # Spoken-quote line: the quote card's serif, top-anchored about a third of the
 # way down where the static card used to sit.
+# Music ducking under the voice (see the music mix). ratio 1 disables it.
+# Measured with a -17 dB voice: ratio 1.6 lowers the music ~8 dB under words
+# (2 -> 10 dB, 3 -> 13 dB, 8 -> 17 dB, which buries it).
+DUCK_THRESHOLD = float(os.environ.get("REEL_DUCK_THRESHOLD", "0.02"))
+DUCK_RATIO = float(os.environ.get("REEL_DUCK_RATIO", "1.6"))
 CLIP_LEAD_SKIP = float(os.environ.get("REEL_CLIP_LEAD_SKIP", "1.0"))
 QUOTE_ASS_FONT = os.environ.get("REEL_QUOTE_ASS_FONT", "Liberation Serif")
 QUOTE_ASS_FS = int(os.environ.get("REEL_QUOTE_ASS_FS", "70"))
@@ -1535,8 +1540,15 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             # apad: amix ends with its FIRST input, so without padding the
             # music cut out with the last word and every Short's tail was a
             # second of dead silence. -t caps the padded stream.
-            f"[{audio_in}:a]volume=1.0,apad[voice];"
-            f"[{music_in}:a]volume={vol}[music];"
+            f"[{audio_in}:a]volume=1.0,apad,asplit=2[voice][vkey];"
+            # DUCKING. Owner, 2026-10-05: "the music is a bit too loud compared
+            # to the voice ... make the voice a bit louder than the music".
+            # The music stays full in the lead-in and the tail, and drops
+            # under the voice whenever a word is spoken (sidechain keyed on
+            # the voice), so the bed can stay big without burying the words.
+            f"[{music_in}:a]volume={vol}[mraw];"
+            f"[mraw][vkey]sidechaincompress=threshold={DUCK_THRESHOLD}:ratio={DUCK_RATIO}"
+            f":attack=15:release=350:makeup=1[music];"
             # amix averages its inputs (voice lands at ~half level), so restore
             # loudness and hard-cap, then normalise the whole track to YouTube's
             # -14 LUFS reference so every Short lands consistently LOUD (viewer

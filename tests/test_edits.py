@@ -115,7 +115,7 @@ def test_stock_prefers_hits_tagged_with_the_whole_query():
 
 def test_music_is_not_cut_with_the_last_word():
     src = (ROOT / "src" / "render.py").read_text()
-    assert "volume=1.0,apad[voice]" in src
+    assert "volume=1.0,apad,asplit=2[voice][vkey]" in src
 
 
 def test_strict_stock_never_falls_back_to_an_unrelated_portrait_clip():
@@ -134,3 +134,10 @@ def test_hook_is_gone_before_the_quote_fades_in():
 def test_stock_clips_skip_their_fade_in():
     src = (ROOT / "src" / "render.py").read_text()
     assert '["-stream_loop", "-1", *skip, "-i", str(_clip)]' in src
+
+
+def test_music_ducks_under_the_voice():
+    """Owner 2026-10-05: the voice must sit above the music."""
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "[mraw][vkey]sidechaincompress=" in src
+    assert 'os.environ.get("REEL_DUCK_RATIO", "1.6")' in src

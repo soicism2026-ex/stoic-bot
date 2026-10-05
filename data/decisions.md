@@ -1204,3 +1204,16 @@ that story must always be captioned "recorded in the Historia Augusta", never
   on edits, Kling forced off for edits. Bank: 23 verified quotes at 1/day ≈
   3 weeks; stories are the automatic fallback. Revert = set REEL_FORMAT back
   to "story" (a data change the bot reads, not a doc note).
+- **2026-10-05 — MUSIC: owner rejects the Kevin MacLeod tracks; voice must sit
+  above the music.** Owner: *"the music you chose sucks"* and asked for: Me and
+  the Devil (slowed), You Aren't Trying, Freedom (instrumental), Hans Zimmer
+  Stay / No Time for Caution / Where We're Going, God's Promise (sped up),
+  L'Amour Toujours (instrumental), on condition they "can't be copyrighted".
+  They can't be made safe: all are under copyright and Content ID matches the
+  slowed/sped/instrumental versions too. Bot-uploaded = claim (owner gets the
+  revenue or blocks). The ONLY legal route to those exact songs is the in-app
+  Shorts sound picker (rights holder takes ~50% of that Short's revenue), which
+  the upload API cannot do. Asked the owner which path to take (pending).
+  * Voice: music now DUCKS under the voice (sidechain, ratio 1.6 ≈ 8 dB under
+    words, full in the lead-in and tail). All formats.
+
