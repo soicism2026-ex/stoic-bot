@@ -3,7 +3,12 @@
 # DRY_RUN: nothing is uploaded and nothing is logged. Manual only.
 name: edit-preview
 on:
-  workflow_dispatch: null
+  workflow_dispatch:
+    inputs:
+      music:
+        description: Audition an original track by id (data/edit_music.json), approved or not. Preview only.
+        required: false
+        default: ''
 jobs:
   preview:
     runs-on: ubuntu-latest
@@ -46,6 +51,7 @@ jobs:
         REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
         DRY_RUN: '1'
         REEL_FORMAT: edit
+        REEL_EDIT_MUSIC: ${{ inputs.music }}
       run: python scripts/daily_post.py
     - name: Review sheet
       if: always()

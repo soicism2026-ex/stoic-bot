@@ -40,6 +40,7 @@ import backgrounds                        # noqa: E402
 import stories                            # noqa: E402
 import edits                              # noqa: E402
 import epic_music                         # noqa: E402
+import edit_music                         # noqa: E402
 from preflight import review as preflight_review   # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
@@ -744,19 +745,31 @@ def main():
     ambience = pack.pop("_ambience", "")
     epic = pack.pop("_epic", False)
     if epic:
-        # Real orchestral music, starting just before its loudest section,
-        # cut to the length of the video (CC BY 4.0 — credited below).
-        track = epic_music.pick(post_rows)
         dur = (render_mod._audio_duration(audio_path)
                + float(pack.get("REEL_TAIL", "1.0")) + 0.5)
-        got = epic_music.fetch(track, ROOT / "data" / f"{today}_epic.mp3", dur)
-        if got:
-            music_path = got
-            music_track = {"name": f"epic:{track}"}
-            description += "\n\n" + epic_music.credit(track)
-            print(f"  music: {track} (epic, CC BY) from {epic_music.TRACKS[track]}s")
-        else:
-            print("  music: epic track unavailable — keeping the default bed")
+        # OWNED ORIGINALS FIRST (src/edit_music.py): tracks generated in the
+        # style the owner asked for, shuffled, only once he has approved them.
+        got = None
+        em = edit_music.pick(post_rows, seed=str(today))
+        if em:
+            got = edit_music.fetch(em, ROOT / "data" / f"{today}_editmusic.mp3", dur)
+            if got:
+                music_path = got
+                music_track = {"name": f"{edit_music.PREFIX}{em['id']}"}
+                print(f"  music: {em['id']} (original, owned) from {em.get('start', 0)}s"
+                      f"{'' if em.get('approved') else '  [PREVIEW ONLY: not approved]'}")
+        if not got:
+            # Fallback until a track is approved: Kevin MacLeod, CC BY 4.0,
+            # starting just before its loudest section (credited below).
+            track = epic_music.pick(post_rows)
+            got = epic_music.fetch(track, ROOT / "data" / f"{today}_epic.mp3", dur)
+            if got:
+                music_path = got
+                music_track = {"name": f"epic:{track}"}
+                description += "\n\n" + epic_music.credit(track)
+                print(f"  music: {track} (epic, CC BY) from {epic_music.TRACKS[track]}s")
+            else:
+                print("  music: epic track unavailable — keeping the default bed")
     elif ambience:
         amb_path = music_mod.fetch_ambience(ambience)
         if amb_path:
