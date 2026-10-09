@@ -1245,4 +1245,13 @@ that story must always be captioned "recorded in the Historia Augusta", never
   prepares the next one. The bot no longer uploads on its own, and the backup
   bank is not used in this mode (baked-in music is what he ruled out). If he
   wants auto-posting on days he does not post, that needs his say-so.
+- **2026-10-09 — FIX: half the live edits aired GREEN.** Found while checking
+  the first assisted video: the grade experiment (src/experiments.py,
+  round-robin warm_gold / obsidian on EVERY post) ran after the edit's
+  black-and-white step, and warm_gold on a black-and-white frame is olive
+  green. Measured on YouTube's own frames: 2026-10-02, 04, 06 and 08 are
+  tinted (U~122, V~125; neutral is 128), the other four are fine. Mono is now
+  the last colour step (test renders a coloured frame through each grade +
+  mono and requires grey). The two queued videos had the bug and were
+  withdrawn and re-rendered. The 4 tinted posts are still live (owner's call).
 

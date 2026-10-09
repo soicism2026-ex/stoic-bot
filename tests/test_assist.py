@@ -136,3 +136,31 @@ def test_workflows_are_wired():
 def test_shuffle_is_shared():
     assert shuffle.pick([], []) is None
     assert shuffle.pick(["x"], ["x", "x"]) == "x"
+
+
+def test_release_page_is_exactly_the_queue(tmp_path, monkeypatch):
+    """Posted or withdrawn videos lose their release; queued ones and
+    non-video releases (the Instagram media bucket) are left alone."""
+    import assist_release as ar
+    (tmp_path / "keep.json").write_text("{}")
+    monkeypatch.setattr(ar, "PENDING", tmp_path)
+    calls = []
+
+    class R:
+        returncode = 0
+        stderr = ""
+
+        def __init__(self, out=""):
+            self.stdout = out
+
+    def fake_gh(*args, check=True):
+        calls.append(args)
+        if args[:2] == ("release", "list"):
+            return R(json.dumps([{"tagName": "edit-keep"}, {"tagName": "edit-gone"},
+                                 {"tagName": "media-bucket"}]))
+        return R()
+
+    monkeypatch.setattr(ar, "_gh", fake_gh)
+    ar.sync()
+    deleted = [a[2] for a in calls if a[:2] == ("release", "delete")]
+    assert deleted == ["edit-gone"]

@@ -1242,12 +1242,6 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             curve,
             tone,
         ]
-    # MONOCHROME for stoic edits: black and white with a contrast lift, the
-    # look of the genre. Applied after every colour step so nothing reintroduces
-    # a tint. (Text is drawn later, so the gold credit keeps its colour.)
-    if os.environ.get("REEL_MONO", "0") not in ("0", "", "false", "False"):
-        pre_parts.append("hue=s=0,eq=contrast=1.15")
-
     # Experimental colour-world variants (set by src/experiments.py per post,
     # logged to posts.csv, compared in channel_report). Env: REEL_GRADE_VARIANT.
     _grade_variant = os.environ.get("REEL_GRADE_VARIANT", "").strip()
@@ -1257,6 +1251,16 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     elif _grade_variant == "obsidian":
         # cold marble: steel-blue shadows, desaturated — statue/museum register
         pre_parts.append("colorbalance=rs=-0.05:bs=0.07:bm=0.03,eq=saturation=0.82")
+
+    # MONOCHROME for stoic edits: black and white with a contrast lift, the
+    # look of the genre. It MUST be the last colour step. It used to sit
+    # before the grade experiment above, which tints every post (round-robin
+    # warm_gold / obsidian): warm_gold on a black-and-white frame is olive
+    # green, and 4 of the first 8 live edits (2026-10-02..08, every other
+    # post) aired green. (Text is drawn later, so the gold credit keeps its
+    # colour; the bloom takes its chroma from this graded base.)
+    if os.environ.get("REEL_MONO", "0") not in ("0", "", "false", "False"):
+        pre_parts.append("hue=s=0,eq=contrast=1.15")
 
     # Overlay filters (quote, hook, captions, frame) drawn on top, after the
     # enhancement chain has finished grading the footage.
@@ -1562,10 +1566,12 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         audio_map = ["-map", "[aout]"]
     else:
         # No music: still normalise to -14 LUFS so loudness never depends on
-        # whether the music bed happened to be available.
+        # whether the music bed happened to be available. apad: with no music
+        # the audio stream used to stop at the last word while the picture ran
+        # on (13.0s of audio in a 15.1s assisted-posting video); -t caps it.
         filter_complex = (
             f"{vgraph};"
-            f"[{audio_in}:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100[aout]"
+            f"[{audio_in}:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,apad[aout]"
         )
         audio_map = ["-map", "[aout]"]
 

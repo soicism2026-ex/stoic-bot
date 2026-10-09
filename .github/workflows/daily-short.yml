@@ -249,7 +249,7 @@ jobs:
         run: python scripts/daily_post.py
 
       - name: Release the queued video for the owner (assisted posting)
-        if: hashFiles('data/assist/release.json') != ''
+        if: always()
         env:
           GH_TOKEN: ${{ github.token }}
         run: python scripts/assist_release.py

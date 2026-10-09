@@ -247,3 +247,30 @@ def test_stills_do_not_shake():
     assert "zoompan=" not in body, "stills are being zoomed again"
     src = (ROOT / "src" / "render.py").read_text()
     assert "MOTION_ON and not _generated_backgrounds_active()" in src
+
+
+def test_monochrome_edits_stay_neutral_whatever_the_grade_experiment():
+    """4 of the first 8 live edits aired olive green: the grade experiment's
+    warm_gold colorbalance ran AFTER the black-and-white step. Mono must be
+    the last colour step, and on a coloured frame the result must be grey."""
+    import subprocess
+    src = (ROOT / "src" / "render.py").read_text()
+    mono = src.index('pre_parts.append("hue=s=0,eq=contrast=1.15")')
+    for grade in ('"colorbalance=rm=0.06:gm=0.02:bm=-0.06:rh=0.04:bh=-0.04"',
+                  '"colorbalance=rs=-0.05:bs=0.07:bm=0.03,eq=saturation=0.82"'):
+        assert src.index(grade) < mono, "a grade step runs after black-and-white"
+    for grade in ("colorbalance=rm=0.06:gm=0.02:bm=-0.06:rh=0.04:bh=-0.04",
+                  "colorbalance=rs=-0.05:bs=0.07:bm=0.03,eq=saturation=0.82"):
+        out = subprocess.run(
+            ["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=c=0x406030:s=16x16:d=1",
+             "-vf", f"format=yuv420p,{grade},hue=s=0,eq=contrast=1.15,format=rgb24",
+             "-frames:v", "1", "-f", "rawvideo", "-"], capture_output=True, timeout=60).stdout
+        r, g, b = out[0], out[1], out[2]
+        assert max(r, g, b) - min(r, g, b) <= 2, f"tinted after mono: {(r, g, b)}"
+
+
+def test_voice_only_audio_runs_the_full_length():
+    """Assisted posting renders with no music; the audio must still cover the
+    whole video (it stopped 2s early), or the tail is a stream with no audio."""
+    src = (ROOT / "src" / "render.py").read_text()
+    assert 'loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,apad[aout]' in src
