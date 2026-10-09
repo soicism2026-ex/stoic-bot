@@ -29,11 +29,11 @@ from __future__ import annotations
 
 import json
 import os
-import random
 import sys
 from pathlib import Path
 
 import proc
+import shuffle
 
 ROOT = Path(__file__).resolve().parent.parent
 BANK = ROOT / "data" / "edit_music.json"
@@ -78,22 +78,11 @@ def pick(post_rows: list[dict], seed: str = "") -> dict | None:
         if t:
             return t
         print(f"[edit_music] REEL_EDIT_MUSIC={forced} not found", file=sys.stderr)
-    pool = sorted(approved(), key=lambda t: t["id"])
-    if not pool:
-        return None
-    ids = {t["id"] for t in pool}
+    by_id = {t["id"]: t for t in approved()}
     played = [(r.get("music_track") or "").removeprefix(PREFIX) for r in post_rows
               if (r.get("music_track") or "").startswith(PREFIX)]
-    played = [p for p in played if p in ids]
-    cycle: list[str] = []
-    for p in played:
-        if len(cycle) >= len(pool) or p in cycle:
-            cycle = []
-        cycle.append(p)
-    left = [t for t in pool if t["id"] not in cycle] if len(cycle) < len(pool) else []
-    if not left:   # cycle complete: start a new one, but not with the last track
-        left = [t for t in pool if not played or t["id"] != played[-1]] or pool
-    return random.Random(f"{seed}|{len(played)}").choice(left)
+    tid = shuffle.pick(by_id, played, seed)
+    return by_id[tid] if tid else None
 
 
 def fetch(track: dict, out_path: Path, seconds: float) -> Path | None:

@@ -14,6 +14,7 @@ import importlib
 import math
 import json
 import os
+import re
 import time
 import sys
 import datetime
@@ -41,6 +42,7 @@ import stories                            # noqa: E402
 import edits                              # noqa: E402
 import epic_music                         # noqa: E402
 import edit_music                         # noqa: E402
+import assist                             # noqa: E402
 from preflight import review as preflight_review   # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
@@ -400,9 +402,21 @@ def main():
     # guard (check if today already has an entry in posts.csv).
     post_rows = _load_post_rows()
     posts_today = sum(1 for r in post_rows if r.get("date") == today)
-    if posts_today >= MAX_POSTS_PER_DAY:
+    # ASSISTED POSTING (src/assist.py): the owner posts each video from the
+    # YouTube app so he can add the trending song; the bot prepares them. The
+    # limit is then the queue of videos waiting for him, not posts per day.
+    ASSIST = assist.enabled()
+    pending = assist.load() if ASSIST else []
+    if ASSIST:
+        if len(pending) >= assist.QUEUE:
+            print(f"[{today}] assist: {len(pending)} video(s) already waiting for the "
+                  f"owner to post — nothing new to prepare")
+            return
+    elif posts_today >= MAX_POSTS_PER_DAY:
         print(f"[{today}] already posted {posts_today}/{MAX_POSTS_PER_DAY} times today — skipping")
         return
+    # Content rotation must also skip what is queued but not yet posted.
+    pick_rows = post_rows + assist.as_rows(pending)
 
     # The curated true-story bank comes FIRST. These are hand-written and
     # human-approved, and the spoken words are never model-generated — a model
@@ -415,16 +429,16 @@ def main():
     # grand music, cool visuals, no story to explain). REEL_FORMAT=story
     # switches back to the story bank. When the edit bank runs out, the story
     # bank is the fallback, then the generator.
-    edit = edits.pick(post_rows) if os.environ.get("REEL_FORMAT", "edit") == "edit" else None
-    story = None if edit else stories.pick(post_rows)
+    edit = edits.pick(pick_rows) if os.environ.get("REEL_FORMAT", "edit") == "edit" else None
+    story = None if edit else stories.pick(pick_rows)
     if edit is not None:
         content = edits.as_content(edit)
-        print(f"  EDIT: {edit['id']}  ({edits.remaining(post_rows) - 1} left in the bank)")
+        print(f"  EDIT: {edit['id']}  ({edits.remaining(pick_rows) - 1} left in the bank)")
     elif story is not None:
         content = stories.as_content(story)
         print(f"  STORY: {story['id']}  "
               f"(power {story['power']}, leaves-him-better {story['s5']}; "
-              f"{stories.remaining(post_rows) - 1} left in the bank)")
+              f"{stories.remaining(pick_rows) - 1} left in the bank)")
         if story.get("caveat"):
             print(f"  caveat: {story['caveat']}")
     else:
@@ -445,12 +459,21 @@ def main():
 
     voice = pick_voice(post_rows)
     print(f"  voice: {voice['name']} ({voice['id']})")
-    music_track = music_mod.pick_music(post_rows)
-    music_path = music_mod.fetch_music(music_track, ROOT / "data" / f"{today}_music.mp3")
-    if music_path:
-        print(f"  music: {music_track['name']} → {music_path.name}")
+    song = None
+    if ASSIST:
+        # No music is baked in: the owner adds the song in the YouTube app.
+        song = assist.pick_song(pick_rows, seed=today)
+        music_track = {"name": f"{assist.SONG_PREFIX}{song['id']}"}
+        music_path = None
+        print(f"  music: none baked in — the owner adds \"{song['title']}\" "
+              f"({song['artist']}) in the YouTube app")
     else:
-        print(f"  music: {music_track['name']} unavailable — no background music today")
+        music_track = music_mod.pick_music(post_rows)
+        music_path = music_mod.fetch_music(music_track, ROOT / "data" / f"{today}_music.mp3")
+        if music_path:
+            print(f"  music: {music_track['name']} → {music_path.name}")
+        else:
+            print(f"  music: {music_track['name']} unavailable — no background music today")
 
     hook = content["hook"].strip()
     cta = content.get("cta", "").strip()
@@ -744,7 +767,10 @@ def main():
     # the normal generative music if synthesis ever fails).
     ambience = pack.pop("_ambience", "")
     epic = pack.pop("_epic", False)
-    if epic:
+    if ASSIST:
+        # The owner's song is the only music; no hook sound under it either.
+        pack["REEL_HOOK_SOUND"] = "0"
+    elif epic:
         dur = (render_mod._audio_duration(audio_path)
                + float(pack.get("REEL_TAIL", "1.0")) + 0.5)
         # OWNED ORIGINALS FIRST (src/edit_music.py): tracks generated in the
@@ -924,6 +950,37 @@ def main():
             print(f"  [preview] description:\n{description}")
             return
 
+        if upload_this and ASSIST:
+            # ASSISTED: queue it for the owner instead of uploading. He adds
+            # the song in the YouTube app; scripts/adopt_uploads.py then finds
+            # his upload and adds description, tags, thumbnail and comments.
+            thumb = None
+            bg_for_thumb = video_path.with_suffix(".bg.mp4")
+            if bg_for_thumb.exists():
+                try:
+                    thumb = render_mod.generate_thumbnail(
+                        hook=hook, author=content["author"], bg_path=bg_for_thumb,
+                        out_path=video_path.with_suffix(".thumb.jpg"))
+                except Exception as e:  # noqa: BLE001
+                    print(f"  [thumbnail] skipped: {e}", file=sys.stderr)
+            pid = re.sub(r"[^a-z0-9_-]+", "_", f"{today}-{exp_name.split(':', 1)[-1]}".lower())
+            rec = assist.queue({
+                "id": pid, "date": today, "title": title, "description": description,
+                "tags": all_tags, "hook": hook, "quote": content["quote"],
+                "author": content["author"], "citation": content.get("_citation", ""),
+                "theme": content["theme"], "pinned_comment": content.get("pinned_comment", ""),
+                "voice_name": tts_mod.LAST_VOICE_NAME or voice["name"],
+                "music_track": music_track["name"], "song": song,
+                "experiment": exp_name, "format": content.get("format", ""),
+                "bg_source": backgrounds.LAST_BG_SOURCE or "", "reviewed": preflight_verdict,
+                "duration": round(render_mod._audio_duration(video_path), 2),
+            }, video_path, thumb)
+            if qa["issues"]:
+                _append_qa_log(today, attempt, qa["issues"], qa["severity"], uploaded=False)
+            print(f"  [assist] queued {rec['id']} ({rec['duration']}s) for the owner: add "
+                  f"\"{song['title']}\" in the YouTube app. Video: {assist.latest_link()}")
+            return
+
         if upload_this:
             upload_result = publish_short(
                 video_path=video_path, title=title,
@@ -1032,12 +1089,17 @@ def main():
 
         if last_attempt:
             # All 3 failed with high severity — use backup
-            print("  [all high-severity] uploading from backup bank...")
+            print("  [all high-severity] " + ("nothing to queue" if ASSIST
+                                                else "uploading from backup bank..."))
             for i, qa_r in enumerate(all_qa, 1):
                 _append_qa_log(today, i, qa_r["issues"], qa_r["severity"], uploaded=False)
 
-            backup = _load_backup()
-            if backup:
+            # Assisted posting never uploads on its own: backups carry baked-in
+            # music, which is exactly what the owner ruled out.
+            backup = None if ASSIST else _load_backup()
+            if ASSIST:
+                print("  [assist] nothing queued this run; the next run tries again")
+            elif backup:
                 bk_video, bk_meta, bk_meta_file = backup
                 upload_result = publish_short(
                     video_path=bk_video, title=bk_meta["title"],

@@ -1231,4 +1231,18 @@ that story must always be captioned "recorded in the Historia Augusta", never
   starts `"approved": false`; Kevin MacLeod stays on air until the owner
   picks numbers from the sampler. Rotation = playlist shuffle (owner: "shuffle
   them").
+- **2026-10-09 — ONLY THE REAL TRENDING SONGS; ASSISTED POSTING IS LIVE.**
+  Owner: *"If not then we have to find a way to use the YouTube Audio Library.
+  I want the trending audios i mentioned anything else is not good enough."*
+  The sound-alike originals were stopped before any were committed (generation
+  cancelled). Do NOT offer generated/royalty-free substitutes again unless he
+  asks. The only legal route to those songs is the Shorts sound library in the
+  YouTube app (rights holder shares that Short's revenue; no claim), which the
+  API cannot reach, so: `POST_MODE=assist`. The bot renders each video with the
+  voice only and queues it as a GitHub release (song to add, volume 100/25,
+  title to paste); he posts from the app; `adopt.yml` (every 30 min) adds the
+  description + journal link, tags, thumbnail, comments, logs posts.csv and
+  prepares the next one. The bot no longer uploads on its own, and the backup
+  bank is not used in this mode (baked-in music is what he ruled out). If he
+  wants auto-posting on days he does not post, that needs his say-so.
 

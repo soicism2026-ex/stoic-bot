@@ -30,3 +30,6 @@ backups/*.loud.m4a
 # logs. Not committed: they are JPEGs on every render and would bloat the repo.
 data/frames/
 preview*/
+# Assisted posting: videos go out as GitHub releases, never into git.
+data/assist/*.mp4
+data/assist/release.json

@@ -1,0 +1,63 @@
+# ASSISTED POSTING, step 3 (src/assist.py). The owner posts each queued video
+# from the YouTube app so he can add the trending song; every 30 minutes this
+# finds his upload and does everything else: description with the journal
+# link, tags, thumbnail, comments and the posts.csv row. Then it prepares the
+# next video straight away instead of waiting for the next daily-short slot.
+name: adopt-uploads
+on:
+  schedule:
+    - cron: "7,37 * * * *"
+  workflow_dispatch: null
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: adopt-uploads
+  cancel-in-progress: false
+jobs:
+  adopt:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v4
+    - name: Anything waiting to be posted?
+      id: q
+      run: echo "n=$(ls data/assist/pending/*.json 2>/dev/null | wc -l)" >> "$GITHUB_OUTPUT"
+    - uses: actions/setup-python@v5
+      if: steps.q.outputs.n != '0'
+      with:
+        python-version: '3.12'
+    - name: Install deps
+      if: steps.q.outputs.n != '0'
+      run: pip install -r requirements.txt
+    - name: Adopt the owner's uploads
+      id: adopt
+      if: steps.q.outputs.n != '0'
+      env:
+        YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+        YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+        YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        GH_TOKEN: ${{ github.token }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PROMO_ENABLED: '1'
+        PROMO_PRODUCT_NAME: The Stoic Reset
+        PROMO_URL: https://soicism.gumroad.com/l/cslosv
+        PROMO_COMMENT: '0'
+      run: python scripts/adopt_uploads.py
+    - name: Commit
+      if: steps.adopt.outputs.adopted != '' && steps.adopt.outputs.adopted != '0'
+      run: |
+        git config user.name "stoic-bot"
+        git config user.email "bot@users.noreply.github.com"
+        git add -A data/posts.csv data/assist
+        git diff --staged --quiet && exit 0
+        git commit -m "adopt: owner posted $(date -u +%F)"
+        for i in 1 2 3 4; do
+          git push && break
+          git pull --rebase origin main && continue
+        done
+    - name: Prepare the next video now
+      if: steps.adopt.outputs.adopted != '' && steps.adopt.outputs.adopted != '0'
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: gh workflow run daily-short.yml --ref main

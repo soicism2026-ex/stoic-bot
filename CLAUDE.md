@@ -62,6 +62,7 @@ After the main post loop, the workflow runs:
 | `src/backgrounds.py` | Guide library (bookend slots only) → generated (imagegen) → Pixabay → Pexels → synthetic lavfi fallback. Stock picks from top-`REEL_BG_TOP` (=3) most-relevant results, not a deep index. `clip_idx` drives diversity: idx 0 = theme-specific query, idx 1 = `DIVERSITY_QUERIES[0]` (nature), idx 2 = `DIVERSITY_QUERIES[1]` (stone). |
 | `src/music.py` | 3-track pool: `dark_ambient`, `ancient_minimal`, `focus_underscore`. Analytics-weighted after 5 posts per track, LRU before that. Pixabay music API. |
 | `src/publish.py` | YouTube Data API v3 upload. `set_thumbnail()` requires `youtube.force-ssl` scope. |
+| `src/assist.py` | **ASSISTED POSTING (live since 2026-10-09, `POST_MODE=assist`).** The owner's trending songs (`data/trending_songs.json`) can only be added legally in the YouTube app's Shorts sound library, so the bot renders each video with the VOICE ONLY and queues it (`data/assist/pending/<id>.json` + a GitHub release: `releases/latest/download/edit.mp4`, notes = which song to add, volume, title to paste). The owner posts it from the app; `scripts/adopt_uploads.py` matches his upload (pasted title, else length + timing) and adds description, tags, thumbnail, comments and the posts.csv row. Queue depth `ASSIST_QUEUE` (2). Songs rotate on the shared playlist shuffle (`src/shuffle.py`). `POST_MODE=auto` = direct upload as before. |
 | `src/edit_music.py` | Music for the edit format: ORIGINAL tracks generated in the style of the owner's chosen songs (ACE-Step 1.5, MIT, commercial use allowed; text prompts only, no song names, no reference audio), owned outright so Content ID has nothing to match. `data/edit_music.json` holds each track's drop start, provenance and `approved` flag. Only approved tracks air, playlist-style shuffle rebuilt from posts.csv; Kevin MacLeod (`src/epic_music.py`) is the fallback while nothing is approved. `REEL_EDIT_MUSIC=<id>` auditions a track, honoured only in `DRY_RUN`. |
 | `scripts/make_edit_music.py` | `setup` builds acestep.cpp (pinned commit) + downloads the GGUF models; `generate` makes one style from `data/edit_music_styles.json`; `add` imports a wav (constant-gain to -16 LUFS: single-pass loudnorm flattened the drop); `merge` adds tracks to the bank UNAPPROVED. |
 | `scripts/music_sampler.py` | One phone video, 14s of each candidate track from its drop behind a numbered title card, for the owner to pick by number. |
@@ -91,6 +92,7 @@ After the main post loop, the workflow runs:
 | `backfill.yml` | manual | Re-process old posts |
 | `repost.yml` | manual | Re-upload a specific video |
 | `ci.yml` | push/PR | Run tests |
+| `adopt.yml` | cron every 30 min | Assisted posting step 3: adopts the owner's app uploads (`scripts/adopt_uploads.py`), commits, deletes that release, then triggers `daily-short.yml` so the next video is ready immediately |
 | `edit-preview.yml` | manual | Renders the next edit with the full pipeline, `DRY_RUN` (nothing uploaded or logged); `music` input auditions a track |
 | `make-music.yml` | manual | One parallel job per style: generates original edit tracks on free runners, commits them UNAPPROVED, attaches a sampler video |
 | `auto-improve.yaml` | cron daily 06:00 UTC | Continuous improvement loop: runs `improve_loop.py` to pick a data-driven focus, feeds the output prompt to Claude Code Action, Claude implements the change and commits directly to main |
@@ -160,6 +162,8 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 | `data/analytics.csv` | Per-video view/like/comment snapshots |
 | `data/replied_comments.csv` | Comment IDs the bot has already replied to |
 | `data/improve_state.json` | Improvement loop memory: iteration count, current focus, focus history with before/after metrics and verdicts, metrics snapshot at each focus start |
+| `data/assist/pending/*.json` | Videos rendered and waiting for the owner to post (one file each, so the daily run and the adopter never conflict). `.mp4` files are gitignored; they ship as GitHub releases. |
+| `data/trending_songs.json` | The owner's songs, as named in the YouTube sound library, with the search text the release notes give him. |
 | `data/edit_music.json` | Edit music bank: file, drop start, label, the song whose style it follows, provenance (model, prompt, seeds, date) and the owner's `approved` flag. Approving a track = setting it `true`. |
 | `data/edit_music_styles.json` | The 9 style descriptions (one per song the owner named). Sound only: tests fail if a prompt names a song or artist. |
 | `data/costs.json` | Editable money registry: subscriptions (Claude, ElevenLabs, API estimates), one-time purchases, free services. ASSUMED/ESTIMATE notes flag guessed numbers. Feeds `scripts/cost_report.py`. |
