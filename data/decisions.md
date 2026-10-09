@@ -1216,4 +1216,19 @@ that story must always be captioned "recorded in the Historia Augusta", never
   the upload API cannot do. Asked the owner which path to take (pending).
   * Voice: music now DUCKS under the voice (sidechain, ratio 1.6 ≈ 8 dB under
     words, full in the lead-in and tail). All formats.
+- **2026-10-08 — MUSIC: owned originals in the style of the owner's songs.**
+  Owner: *"i cant find any good music besides the ones i listed we have to
+  find a way to use them royalty free versions"* (also added Chubina (slowed)
+  by East Duo; asked whether the songs could be downloaded into the repo or
+  posted through his account: no — downloading changes nothing about who owns
+  them, the repo is public, and the API cannot use the in-app sound library).
+  No royalty-free version of a copyrighted song exists, so: ORIGINAL tracks in
+  each song's style, generated free with ACE-Step 1.5 (MIT; its makers allow
+  commercial use; trained on licensed + royalty-free music). Text prompts
+  describe sound only (no titles, no artists, no reference audio; enforced by
+  tests), provenance kept per track. `data/edit_music_styles.json` = 9 styles;
+  `make-music.yml` generates them in parallel on free runners. Every track
+  starts `"approved": false`; Kevin MacLeod stays on air until the owner
+  picks numbers from the sampler. Rotation = playlist shuffle (owner: "shuffle
+  them").
 

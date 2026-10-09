@@ -62,6 +62,9 @@ After the main post loop, the workflow runs:
 | `src/backgrounds.py` | Guide library (bookend slots only) → generated (imagegen) → Pixabay → Pexels → synthetic lavfi fallback. Stock picks from top-`REEL_BG_TOP` (=3) most-relevant results, not a deep index. `clip_idx` drives diversity: idx 0 = theme-specific query, idx 1 = `DIVERSITY_QUERIES[0]` (nature), idx 2 = `DIVERSITY_QUERIES[1]` (stone). |
 | `src/music.py` | 3-track pool: `dark_ambient`, `ancient_minimal`, `focus_underscore`. Analytics-weighted after 5 posts per track, LRU before that. Pixabay music API. |
 | `src/publish.py` | YouTube Data API v3 upload. `set_thumbnail()` requires `youtube.force-ssl` scope. |
+| `src/edit_music.py` | Music for the edit format: ORIGINAL tracks generated in the style of the owner's chosen songs (ACE-Step 1.5, MIT, commercial use allowed; text prompts only, no song names, no reference audio), owned outright so Content ID has nothing to match. `data/edit_music.json` holds each track's drop start, provenance and `approved` flag. Only approved tracks air, playlist-style shuffle rebuilt from posts.csv; Kevin MacLeod (`src/epic_music.py`) is the fallback while nothing is approved. `REEL_EDIT_MUSIC=<id>` auditions a track, honoured only in `DRY_RUN`. |
+| `scripts/make_edit_music.py` | `setup` builds acestep.cpp (pinned commit) + downloads the GGUF models; `generate` makes one style from `data/edit_music_styles.json`; `add` imports a wav (constant-gain to -16 LUFS: single-pass loudnorm flattened the drop); `merge` adds tracks to the bank UNAPPROVED. |
+| `scripts/music_sampler.py` | One phone video, 14s of each candidate track from its drop behind a numbered title card, for the owner to pick by number. |
 | `src/promo.py` | Configurable CTA injection into description + comment. All copy in env vars. Toggle with `PROMO_ENABLED`. |
 | `src/analytics.py` | Pulls YouTube stats to `data/analytics.csv`. |
 | `src/logbook.py` | Appends each post to `data/posts.csv`. |
@@ -88,6 +91,8 @@ After the main post loop, the workflow runs:
 | `backfill.yml` | manual | Re-process old posts |
 | `repost.yml` | manual | Re-upload a specific video |
 | `ci.yml` | push/PR | Run tests |
+| `edit-preview.yml` | manual | Renders the next edit with the full pipeline, `DRY_RUN` (nothing uploaded or logged); `music` input auditions a track |
+| `make-music.yml` | manual | One parallel job per style: generates original edit tracks on free runners, commits them UNAPPROVED, attaches a sampler video |
 | `auto-improve.yaml` | cron daily 06:00 UTC | Continuous improvement loop: runs `improve_loop.py` to pick a data-driven focus, feeds the output prompt to Claude Code Action, Claude implements the change and commits directly to main |
 
 ---
@@ -155,6 +160,8 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 | `data/analytics.csv` | Per-video view/like/comment snapshots |
 | `data/replied_comments.csv` | Comment IDs the bot has already replied to |
 | `data/improve_state.json` | Improvement loop memory: iteration count, current focus, focus history with before/after metrics and verdicts, metrics snapshot at each focus start |
+| `data/edit_music.json` | Edit music bank: file, drop start, label, the song whose style it follows, provenance (model, prompt, seeds, date) and the owner's `approved` flag. Approving a track = setting it `true`. |
+| `data/edit_music_styles.json` | The 9 style descriptions (one per song the owner named). Sound only: tests fail if a prompt names a song or artist. |
 | `data/costs.json` | Editable money registry: subscriptions (Claude, ElevenLabs, API estimates), one-time purchases, free services. ASSUMED/ESTIMATE notes flag guessed numbers. Feeds `scripts/cost_report.py`. |
 | `backups/*.json` + `backups/*.mp4` | Evergreen backup bank (3 videos) used when QA fails |
 | `QA_LOG.md` | Per-run QA issue log |
