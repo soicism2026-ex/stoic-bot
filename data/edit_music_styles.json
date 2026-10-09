@@ -1,0 +1,74 @@
+[
+ {
+  "id": "devil_slowed",
+  "label": "Dark slowed piano",
+  "style_of": "Me and the Devil (slowed)",
+  "bpm": 68,
+  "key": "D minor",
+  "caption": "dark slowed and reverbed cinematic instrumental, haunting minor-key piano chords, ominous pulsing low strings, deep sub bass swells, heavy hall reverb, slow and hypnotic, melancholic yet powerful, late night, brooding tension that builds"
+ },
+ {
+  "id": "bass_motivation",
+  "label": "Motivational piano + bass drops",
+  "style_of": "You Aren't Trying (Bass Media)",
+  "bpm": 88,
+  "key": "C minor",
+  "caption": "epic motivational cinematic hybrid instrumental, emotional repeating piano ostinato, rising string swells, massive sub bass drops and deep trailer hits, determined and inspirational, builds to a huge powerful climax, modern film trailer production"
+ },
+ {
+  "id": "freedom_gospel",
+  "label": "Gospel stomp and clap",
+  "style_of": "Freedom (instrumental)",
+  "bpm": 124,
+  "key": "G major",
+  "caption": "uplifting gospel-inspired anthem instrumental, stomping kick drum and loud hand claps, soulful Hammond organ, choir pads, triumphant brass stabs, tambourine, energetic, liberating, celebratory, big festival energy"
+ },
+ {
+  "id": "organ_stay",
+  "label": "Slow cosmic organ",
+  "style_of": "Hans Zimmer - S.T.A.Y.",
+  "bpm": 70,
+  "key": "A minor",
+  "caption": "cinematic cathedral pipe organ instrumental, slow sustained chords that grow in intensity, soft ticking clock pulse, ethereal piano, swelling strings, vast cosmic atmosphere, emotional, awe-inspiring, film score"
+ },
+ {
+  "id": "organ_caution",
+  "label": "Driving organ, ticking clock",
+  "style_of": "Hans Zimmer - No Time for Caution",
+  "bpm": 96,
+  "key": "E minor",
+  "caption": "urgent driving pipe organ ostinato instrumental, rapid repeating organ arpeggios, relentless ticking pulse, rising tension, pounding timpani, massive organ crescendo, epic cinematic space film score climax"
+ },
+ {
+  "id": "organ_heroic",
+  "label": "Heroic organ + orchestra",
+  "style_of": "Hans Zimmer - Where We're Going",
+  "bpm": 80,
+  "key": "F major",
+  "caption": "heroic cinematic orchestral finale instrumental, majestic pipe organ, soaring strings, warm French horns, hopeful and triumphant, grand emotional swell, epic space film score"
+ },
+ {
+  "id": "promise_spedup",
+  "label": "Bright ethereal sped-up",
+  "style_of": "God's Promise (sped up)",
+  "bpm": 140,
+  "key": "E major",
+  "caption": "ethereal uplifting ambient electronic instrumental, shimmering bright synth arpeggios, airy heavenly pads, soft pulsing kick, hopeful, dreamy, emotional, sped-up energy, high bright tone"
+ },
+ {
+  "id": "eurodance_90s",
+  "label": "90s Italo-dance anthem",
+  "style_of": "L'Amour Toujours (instrumental)",
+  "bpm": 138,
+  "key": "B minor",
+  "caption": "euphoric late 1990s Italo dance instrumental, bright catchy plucked synth lead melody, driving four-on-the-floor kick, offbeat rolling bass, uplifting trance pads, nostalgic, energetic, festival anthem"
+ },
+ {
+  "id": "caucasus_slowed",
+  "label": "Dark slowed folk beat",
+  "style_of": "Chubina (slowed)",
+  "bpm": 110,
+  "key": "D minor",
+  "caption": "dark slowed and reverbed Caucasian folk-inspired beat instrumental, haunting Eastern plucked string melody, deep male choir drone, heavy 808 bass, slow hypnotic drums, mysterious, powerful warrior mood, heavy reverb"
+ }
+]

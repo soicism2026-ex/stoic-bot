@@ -1,0 +1,116 @@
+# Makes ORIGINAL music for stoic edits with ACE-Step 1.5 (MIT, commercial use
+# allowed) on GitHub's free runners: one parallel job per style in
+# data/edit_music_styles.json (scripts/make_edit_music.py). Text prompts only,
+# no song names, no reference audio. New tracks are committed UNAPPROVED and a
+# sampler video is attached to the run; nothing airs until the owner approves.
+name: make-music
+on:
+  workflow_dispatch:
+    inputs:
+      styles:
+        description: Style ids from data/edit_music_styles.json, comma-separated, or all
+        required: false
+        default: all
+      seconds:
+        description: Track length in seconds
+        required: false
+        default: '48'
+      size:
+        description: Model size, xl (better) or standard (faster)
+        required: false
+        default: xl
+      tag:
+        description: Suffix for each track id, e.g. __v2 for a second take
+        required: false
+        default: __xl
+permissions:
+  contents: write
+concurrency:
+  group: make-music
+  cancel-in-progress: false
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      styles: ${{ steps.p.outputs.styles }}
+    steps:
+    - uses: actions/checkout@v4
+    - id: p
+      env:
+        WANT: ${{ inputs.styles }}
+      run: |
+        python3 - <<'EOF' >> "$GITHUB_OUTPUT"
+        import json, os
+        ids = [s["id"] for s in json.load(open("data/edit_music_styles.json"))]
+        want = (os.environ.get("WANT") or "all").strip()
+        pick = ids if want in ("", "all") else [w.strip() for w in want.split(",") if w.strip() in ids]
+        print("styles=" + json.dumps(pick))
+        EOF
+  generate:
+    needs: plan
+    if: needs.plan.outputs.styles != '[]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    strategy:
+      fail-fast: false
+      matrix:
+        style: ${{ fromJson(needs.plan.outputs.styles) }}
+    env:
+      SIZE: ${{ inputs.size || 'xl' }}
+      SECONDS_: ${{ inputs.seconds || '48' }}
+      TAG: ${{ inputs.tag }}
+      STYLE: ${{ matrix.style }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install ffmpeg
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+    - name: Build the model runner (pinned) and download the models
+      run: python3 scripts/make_edit_music.py setup --work "$RUNNER_TEMP/ace" --size "$SIZE"
+    - name: Generate
+      env:
+        ACE_THREADS: '4'
+      run: >-
+        python3 scripts/make_edit_music.py generate --work "$RUNNER_TEMP/ace"
+        --style "$STYLE" --seconds "$SECONDS_" --size "$SIZE" --tag "$TAG" --out out
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: music-${{ matrix.style }}
+        path: |
+          out/*.mp3
+          out/*.json
+        if-no-files-found: ignore
+  collect:
+    needs: generate
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install ffmpeg + fonts
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu
+    - uses: actions/download-artifact@v4
+      with:
+        pattern: music-*
+        path: new
+    - name: Add the new tracks to the bank (unapproved)
+      run: python3 scripts/make_edit_music.py merge --src new
+    - name: Sampler video
+      run: |
+        ids=$(find new -name '*.json' -exec python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['id'])" {} \; | sort | paste -sd, -)
+        if [ -n "$ids" ]; then python3 scripts/music_sampler.py data/preview/music_sampler.mp4 --ids "$ids"; fi
+    - uses: actions/upload-artifact@v4
+      with:
+        name: music-sampler
+        path: data/preview/music_sampler.mp4
+        if-no-files-found: ignore
+    - name: Commit the new tracks
+      run: |
+        git config user.name "stoic-bot"
+        git config user.email "bot@users.noreply.github.com"
+        git add assets/music/edit data/edit_music.json
+        git diff --staged --quiet && exit 0
+        git commit -m "music: new original edit tracks (unapproved)"
+        for i in 1 2 3; do
+          git push && break
+          git pull --rebase origin main && continue
+        done

@@ -103,3 +103,49 @@ def test_daily_post_prefers_owned_music_and_keeps_a_fallback():
     i = src.index("em = edit_music.pick(post_rows")
     j = src.index("track = epic_music.pick(post_rows)")
     assert i < j and "if not got:" in src[i:j]
+
+
+def test_drop_finder_starts_just_before_the_drop():
+    import make_edit_music as m
+    db = [-40.0] * 20 + [-18.0] * 60          # 10s quiet build, then the drop
+    start, how, contrast = m.find_start(db)
+    assert how == "drop" and contrast > 15
+    assert start == 10.0 - m.LEAD
+
+
+def test_drop_finder_without_a_drop_uses_the_loudest_section():
+    import make_edit_music as m
+    db = [-20.0 + 0.1 * i for i in range(100)]   # a slow swell: no step >= 3 dB
+    start, how, _ = m.find_start(db)
+    assert how == "loudest"
+    assert 0 <= start <= len(db) * m.HOP - m.SECTION
+
+
+def test_merge_keeps_approval_and_new_tracks_start_unapproved(tmp_path, monkeypatch):
+    import make_edit_music as m
+    bank = tmp_path / "edit_music.json"
+    bank.write_text(json.dumps([{"id": "old", "file": "assets/music/edit/old.mp3",
+                                 "approved": True, "provenance": {}}]))
+    monkeypatch.setattr(m, "BANK", bank)
+    monkeypatch.setattr(m, "OUT_DIR", tmp_path / "edit")
+    src = tmp_path / "new"
+    src.mkdir()
+    for tid in ("old", "fresh"):
+        (src / f"{tid}.mp3").write_bytes(b"x" * 100)
+        (src / f"{tid}.json").write_text(json.dumps(
+            {"id": tid, "file": f"assets/music/edit/{tid}.mp3", "approved": True,
+             "provenance": {"prompt": "p"}}))
+    assert m.merge(src) == 2
+    got = {t["id"]: t["approved"] for t in json.loads(bank.read_text())}
+    assert got == {"old": True, "fresh": False}   # approval only ever comes from the owner
+
+
+def test_generator_is_pinned_and_text_only():
+    src = (ROOT / "scripts" / "make_edit_music.py").read_text()
+    assert 'ACE_COMMIT = "d881ad2c080bac65cc73cb3bbcc831f79462b98b"' in src
+    assert '"lyrics": "[Instrumental]"' in src
+    assert "--ref-audio" not in src and "--src-audio" not in src
+    for s in json.loads((ROOT / "data" / "edit_music_styles.json").read_text()):
+        cap = s["caption"].lower()
+        for name in FORBIDDEN_IN_PROMPTS:
+            assert name not in cap, f"style {s['id']} names '{name}'"
