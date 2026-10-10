@@ -141,3 +141,17 @@ def test_music_ducks_under_the_voice():
     src = (ROOT / "src" / "render.py").read_text()
     assert "[mraw][vkey]sidechaincompress=" in src
     assert 'os.environ.get("REEL_DUCK_RATIO", "1.6")' in src
+
+
+def test_people_shots_ask_for_a_man():
+    """The ICP is one man, 18-34 (doctrine §1). Unqualified people queries
+    returned fitness-model footage of women ("boxer training", then "weight
+    training": a woman's back in a sports bra), which tag filters cannot
+    catch when the clip is not tagged that way. Ask for the subject outright."""
+    people = {"boxer", "boxing", "training", "weight", "weightlifting", "lifting",
+              "running", "runner", "eyes", "breathing", "punching"}
+    for q in edits.load():
+        for vis in q["visuals"]:
+            if vis.startswith("still:") or not people & set(vis.split()):
+                continue
+            assert vis.split()[0] in ("man", "men", "old"), (q["id"], vis)

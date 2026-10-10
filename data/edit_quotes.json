@@ -8,11 +8,11 @@
   "theme": "discipline",
   "visuals": [
    "still:ancient marble statue of a stoic philosopher, dramatic side light, black background",
-   "boxer training",
+   "man boxer training",
    "man running rain",
    "mountain climber",
    "still:roman soldier standing alone in the rain, cinematic",
-   "weightlifting",
+   "man weightlifting",
    "sunrise mountain",
    "man walking alone"
   ]
@@ -66,7 +66,7 @@
    "man meditating",
    "forest light",
    "spring water",
-   "eyes close up",
+   "man eyes closeup",
    "still:lone philosopher sitting on a cliff above the sea at dawn",
    "mountain lake"
   ]
@@ -102,7 +102,7 @@
    "cliff ocean",
    "still:ancient stone cliff fortress in a storm at sea, cinematic",
    "storm waves",
-   "boxer guard",
+   "man boxer guard",
    "rock in sea",
    "calm sea"
   ]
@@ -116,7 +116,7 @@
   "theme": "time",
   "visuals": [
    "candle flame",
-   "breathing close up",
+   "man breathing closeup",
    "rain drops",
    "still:ancient marble statue of a stoic philosopher, dramatic side light, black background",
    "sunrise",
@@ -156,7 +156,7 @@
    "still:ancient marble statue of a stoic philosopher, dramatic side light, black background",
    "lightning",
    "calm lake",
-   "boxer",
+   "man boxer",
    "chess",
    "sunrise"
   ]
@@ -172,9 +172,9 @@
    "ink in water",
    "man writing",
    "still:ancient marble statue of a stoic philosopher, dramatic side light, black background",
-   "running dawn",
-   "fabric dye",
-   "weight training",
+   "man running dawn",
+   "ink drop water",
+   "man weight training",
    "sunrise",
    "mountain"
   ]
@@ -241,12 +241,12 @@
   "hook": "Look at the five people around you.",
   "theme": "friendship",
   "visuals": [
-   "friends training",
-   "team running",
+   "men training together",
+   "men running together",
    "handshake",
    "still:group of ancient philosophers talking in a stone courtyard",
    "mentor",
-   "boxing coach",
+   "man boxing coach",
    "climbing team",
    "sunrise"
   ]
@@ -336,7 +336,7 @@
    "man rain",
    "lightning",
    "calm lake",
-   "boxer",
+   "man boxer",
    "chess",
    "sunrise"
   ]
@@ -385,9 +385,9 @@
   "hook": "You are what you repeat.",
   "theme": "discipline",
   "visuals": [
-   "running",
-   "weight training",
-   "boxing bag",
+   "man running",
+   "man weight training",
+   "man punching bag",
    "writing",
    "still:ancient greek wrestlers training in a stone gymnasium",
    "push ups",
@@ -403,11 +403,11 @@
   "hook": "Hard times show you who you are.",
   "theme": "adversity",
   "visuals": [
-   "boxing",
+   "man boxing",
    "storm",
    "still:ancient greek wrestlers grappling, dust and sunlight",
    "mountain climbing",
-   "running rain",
+   "man running rain",
    "lightning",
    "lion",
    "sunrise"
