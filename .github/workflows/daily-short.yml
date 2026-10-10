@@ -250,6 +250,9 @@ jobs:
 
       - name: Release the queued video for the owner (assisted posting)
         if: always()
+        # Never let a release hiccup skip the commit below: the queue state
+        # (including a withdrawal) must reach main either way.
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
         run: python scripts/assist_release.py

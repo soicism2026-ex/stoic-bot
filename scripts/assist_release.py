@@ -45,38 +45,77 @@ def prune(keep_days: int = KEEP_DAYS) -> None:
             print(f"[release] pruned {tag}")
 
 
-def sync() -> None:
-    """The Releases page lists exactly the videos still waiting to be posted.
-    Any edit-* release whose video is no longer queued (posted, or withdrawn
-    by deleting its data/assist/pending/<id>.json) is deleted."""
+def _withdraw(pid: str) -> None:
+    """Take a video out of the queue (its file is gone, so it can never be
+    posted); the content goes back into rotation and is rendered again."""
+    for f in (PENDING / f"{pid}.json", PENDING.parent / f"{pid}.jpg",
+              PENDING.parent / f"{pid}.md", PENDING.parent / f"{pid}.mp4"):
+        if f.exists():
+            f.unlink()
+    print(f"[release] withdrew {pid}: it has no release, so it would never be posted")
+
+
+def sync(just_published: str = "") -> None:
+    """The Releases page lists exactly the videos still waiting to be posted,
+    and every queued video has a release.
+      * an edit-* release whose video is no longer queued (posted, or
+        withdrawn) is deleted;
+      * a queued video with no release is withdrawn: its .mp4 only ever
+        existed on the runner that rendered it, so it can never be released
+        later and would hold a queue slot forever.
+    Nothing is changed when the release list cannot be read."""
     queued = {p.stem for p in PENDING.glob("*.json")} if PENDING.exists() else set()
     r = _gh("release", "list", "--limit", "200", "--json", "tagName", check=False)
     if r.returncode != 0:
         print(f"[release] could not list releases: {r.stderr.strip()[:200]}", file=sys.stderr)
         return
+    released = set()
     for rel in json.loads(r.stdout or "[]"):
         tag = rel.get("tagName", "")
-        if tag.startswith("edit-") and tag[len("edit-"):] not in queued:
+        if not tag.startswith("edit-"):
+            continue
+        pid = tag[len("edit-"):]
+        if pid in queued:
+            released.add(pid)
+        else:
             _gh("release", "delete", tag, "--yes", "--cleanup-tag", check=False)
             print(f"[release] removed {tag} (no longer waiting to be posted)")
+    for pid in sorted(queued - released - {just_published}):
+        _withdraw(pid)
+
+
+def publish(r: dict) -> bool:
+    """Create the release for a newly queued video. A leftover release with
+    the same tag is replaced, never collided with."""
+    video, notes = ROOT / r["video"], ROOT / r["notes"]
+    _gh("release", "delete", r["tag"], "--yes", "--cleanup-tag", check=False)
+    with tempfile.TemporaryDirectory() as td:
+        asset = Path(td) / "edit.mp4"
+        shutil.copyfile(video, asset)
+        res = _gh("release", "create", r["tag"], str(asset), "--title", r["name"],
+                  "--notes-file", str(notes), "--latest", check=False)
+    if res.returncode != 0:
+        print(f"[release] could not publish {r['tag']}: {res.stderr.strip()[:300]}",
+              file=sys.stderr)
+        return False
+    print(f"[release] {r['tag']} published: {r['name']}")
+    return True
 
 
 def main() -> int:
+    ok, published = True, ""
     if REL.exists():
         r = json.loads(REL.read_text(encoding="utf-8"))
-        video, notes = ROOT / r["video"], ROOT / r["notes"]
-        with tempfile.TemporaryDirectory() as td:
-            asset = Path(td) / "edit.mp4"
-            shutil.copyfile(video, asset)
-            _gh("release", "create", r["tag"], str(asset), "--title", r["name"],
-                "--notes-file", str(notes), "--latest")
         REL.unlink()
-        print(f"[release] {r['tag']} published: {r['name']}")
+        if publish(r):
+            published = r["tag"][len("edit-"):]
+        else:
+            ok = False      # sync() below withdraws it, so it is re-rendered
     else:
         print("[release] no new video queued this run")
-    sync()
+    sync(just_published=published)
     prune()
-    return 0
+    return 0 if ok else 1
 
 
 if __name__ == "__main__":

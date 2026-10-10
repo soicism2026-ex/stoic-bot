@@ -138,29 +138,88 @@ def test_shuffle_is_shared():
     assert shuffle.pick(["x"], ["x", "x"]) == "x"
 
 
-def test_release_page_is_exactly_the_queue(tmp_path, monkeypatch):
-    """Posted or withdrawn videos lose their release; queued ones and
-    non-video releases (the Instagram media bucket) are left alone."""
-    import assist_release as ar
-    (tmp_path / "keep.json").write_text("{}")
-    monkeypatch.setattr(ar, "PENDING", tmp_path)
-    calls = []
-
+def _fake_gh(releases, calls, list_ok=True, create_ok=True):
     class R:
-        returncode = 0
-        stderr = ""
+        def __init__(self, out="", code=0, err=""):
+            self.stdout, self.returncode, self.stderr = out, code, err
 
-        def __init__(self, out=""):
-            self.stdout = out
-
-    def fake_gh(*args, check=True):
+    def gh(*args, check=True):
         calls.append(args)
         if args[:2] == ("release", "list"):
-            return R(json.dumps([{"tagName": "edit-keep"}, {"tagName": "edit-gone"},
-                                 {"tagName": "media-bucket"}]))
+            return R(json.dumps([{"tagName": t, "createdAt": "2026-10-09T00:00:00Z"}
+                                 for t in releases]), 0 if list_ok else 1, "boom")
+        if args[:2] == ("release", "create"):
+            return R(code=0 if create_ok else 1, err="already exists")
         return R()
+    return gh
 
-    monkeypatch.setattr(ar, "_gh", fake_gh)
+
+def test_release_page_is_exactly_the_queue(tmp_path, monkeypatch):
+    """Posted or withdrawn videos lose their release; a queued video with no
+    release is withdrawn (its file only existed on the runner that rendered
+    it); the Instagram media bucket is left alone."""
+    import assist_release as ar
+    pend = tmp_path / "pending"
+    pend.mkdir()
+    (pend / "keep.json").write_text("{}")
+    (pend / "orphan.json").write_text("{}")
+    monkeypatch.setattr(ar, "PENDING", pend)
+    calls = []
+    monkeypatch.setattr(ar, "_gh", _fake_gh(["edit-keep", "edit-gone", "media-bucket"], calls))
     ar.sync()
-    deleted = [a[2] for a in calls if a[:2] == ("release", "delete")]
-    assert deleted == ["edit-gone"]
+    assert [a[2] for a in calls if a[:2] == ("release", "delete")] == ["edit-gone"]
+    assert (pend / "keep.json").exists() and not (pend / "orphan.json").exists()
+
+
+def test_sync_changes_nothing_when_releases_cannot_be_listed(tmp_path, monkeypatch):
+    import assist_release as ar
+    pend = tmp_path / "pending"
+    pend.mkdir()
+    (pend / "a.json").write_text("{}")
+    monkeypatch.setattr(ar, "PENDING", pend)
+    calls = []
+    monkeypatch.setattr(ar, "_gh", _fake_gh([], calls, list_ok=False))
+    ar.sync()
+    assert (pend / "a.json").exists()
+    assert not [a for a in calls if a[:2] == ("release", "delete")]
+
+
+def test_publish_replaces_a_leftover_release_with_the_same_tag(tmp_path, monkeypatch):
+    """2026-10-09: a re-render reused a withdrawn video's tag, `gh release
+    create` failed, and the failure skipped the rest of the run."""
+    import assist_release as ar
+    monkeypatch.setattr(ar, "ROOT", tmp_path)
+    (tmp_path / "v.mp4").write_bytes(b"0")
+    (tmp_path / "n.md").write_text("notes")
+    calls = []
+    monkeypatch.setattr(ar, "_gh", _fake_gh([], calls))
+    assert ar.publish({"tag": "edit-x", "name": "x", "video": "v.mp4", "notes": "n.md"})
+    kinds = [a[:2] for a in calls]
+    assert kinds.index(("release", "delete")) < kinds.index(("release", "create"))
+
+
+def test_a_failed_publish_withdraws_the_video_and_reports_failure(tmp_path, monkeypatch):
+    import assist_release as ar
+    pend = tmp_path / "data" / "assist" / "pending"
+    pend.mkdir(parents=True)
+    (pend / "x.json").write_text("{}")
+    (tmp_path / "data" / "assist" / "x.mp4").write_bytes(b"0")
+    (tmp_path / "data" / "assist" / "x.md").write_text("n")
+    rel = tmp_path / "data" / "assist" / "release.json"
+    rel.write_text(json.dumps({"tag": "edit-x", "name": "x", "video": "data/assist/x.mp4",
+                               "notes": "data/assist/x.md"}))
+    monkeypatch.setattr(ar, "ROOT", tmp_path)
+    monkeypatch.setattr(ar, "PENDING", pend)
+    monkeypatch.setattr(ar, "REL", rel)
+    calls = []
+    monkeypatch.setattr(ar, "_gh", _fake_gh([], calls, create_ok=False))
+    assert ar.main() == 1
+    assert not (pend / "x.json").exists() and not rel.exists()
+
+
+def test_each_render_gets_its_own_release_tag():
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    assert 'f"{today}-{stamp}-{exp_name.split' in src
+    daily = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
+    step = daily[daily.index("Release the queued video"):]
+    assert "continue-on-error: true" in step[:400]

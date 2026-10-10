@@ -963,7 +963,11 @@ def main():
                         out_path=video_path.with_suffix(".thumb.jpg"))
                 except Exception as e:  # noqa: BLE001
                     print(f"  [thumbnail] skipped: {e}", file=sys.stderr)
-            pid = re.sub(r"[^a-z0-9_-]+", "_", f"{today}-{exp_name.split(':', 1)[-1]}".lower())
+            # Unique per render (date + time + content): a video withdrawn and
+            # rendered again the same day must not reuse the old release tag.
+            stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%H%M")
+            pid = re.sub(r"[^a-z0-9_-]+", "_",
+                         f"{today}-{stamp}-{exp_name.split(':', 1)[-1]}".lower())
             rec = assist.queue({
                 "id": pid, "date": today, "title": title, "description": description,
                 "tags": all_tags, "hook": hook, "quote": content["quote"],
