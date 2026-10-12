@@ -28,18 +28,27 @@ def _txt(s: str) -> str:
     return s.replace("\\", "").replace(":", "\\:").replace("'", "’").replace("%", "")
 
 
+def _fit(text: str, size: int, width: int = 640) -> int:
+    """Largest font size (up to `size`) at which `text` fits `width` px of the
+    720 px card. DejaVu Sans Bold averages ~0.62 em per character; the first
+    sampler cut "Motivational piano + bass drops" off at both edges."""
+    return max(16, min(size, int(width / (0.62 * max(1, len(text))))))
+
+
 def build(tracks: list[dict], out: Path) -> Path:
     with tempfile.TemporaryDirectory() as td:
         parts = []
         for n, t in enumerate(tracks, 1):
             p = Path(td) / f"part{n:02d}.mp4"
+            label = t.get("label", t["id"])
+            style = "in the style of " + t.get("style_of", "")
             vf = ",".join([
                 f"drawtext=fontfile={FONT}:text='{n} / {len(tracks)}':fontcolor=white:"
                 f"fontsize=110:x=(w-tw)/2:y=h*0.36",
-                f"drawtext=fontfile={FONT}:text='{_txt(t.get('label', t['id']))}':"
-                f"fontcolor=0xFFB830:fontsize=44:x=(w-tw)/2:y=h*0.50",
-                f"drawtext=fontfile={FONT}:text='{_txt('in the style of ' + t.get('style_of', ''))}':"
-                f"fontcolor=0xBBBBBB:fontsize=28:x=(w-tw)/2:y=h*0.57",
+                f"drawtext=fontfile={FONT}:text='{_txt(label)}':"
+                f"fontcolor=0xFFB830:fontsize={_fit(label, 44)}:x=(w-tw)/2:y=h*0.50",
+                f"drawtext=fontfile={FONT}:text='{_txt(style)}':"
+                f"fontcolor=0xBBBBBB:fontsize={_fit(style, 28)}:x=(w-tw)/2:y=h*0.57",
             ])
             subprocess.run(
                 ["ffmpeg", "-y", "-v", "error",
