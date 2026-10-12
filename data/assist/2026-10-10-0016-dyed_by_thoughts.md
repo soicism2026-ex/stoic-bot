@@ -11,7 +11,7 @@ Title to paste:
 "You become what you replay" — Marcus Aurelius | Stoicism
 ```
 
-Within about 30 minutes the bot adds the description with the journal link, the tags, the thumbnail and the comments.
+Then comment **done** on [this issue](https://github.com/soicism2026-ex/stoic-bot/issues/50): within a couple of minutes the bot adds the description with the journal link, the tags, the thumbnail and the comment, replies with the link, and gets the next video ready. (Without the comment it still happens, just later: GitHub only runs its regular check every few hours.)
 
 > Such as are thy habitual thoughts, such also will be the character of thy mind; for the soul is dyed by the thoughts.
 > — Marcus Aurelius, Meditations 5.16, trans. George Long

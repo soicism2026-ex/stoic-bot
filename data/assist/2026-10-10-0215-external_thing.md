@@ -11,7 +11,7 @@ Title to paste:
 "It's not the thing. It's your take on it" — Marcus Aurelius | Stoicism
 ```
 
-Within about 30 minutes the bot adds the description with the journal link, the tags, the thumbnail and the comments.
+Then comment **done** on [this issue](https://github.com/soicism2026-ex/stoic-bot/issues/50): within a couple of minutes the bot adds the description with the journal link, the tags, the thumbnail and the comment, replies with the link, and gets the next video ready. (Without the comment it still happens, just later: GitHub only runs its regular check every few hours.)
 
 > If thou art pained by any external thing, it is not this thing that disturbs thee, but thy own judgment about it.
 > — Marcus Aurelius, Meditations 8.47, trans. George Long
