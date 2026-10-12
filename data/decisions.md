@@ -1264,4 +1264,20 @@ that story must always be captioned "recorded in the Historia Augusta", never
   release step re-renders instructions for already-queued videos. The cron
   stays as the backstop. The owner had not posted since 10-09 as of 10-12;
   the bot keeps 2 videos ready and does not post on its own.
+- **2026-10-12 — ASSISTED POSTING RETIRED; AUTOMATIC POSTING IS BACK.**
+  Owner: *"the YouTube app's sound library is too much of a hassle lets pivot
+  and remove this way of doing things"*. Removed completely: src/assist.py,
+  assist_release.py, adopt_uploads.py, adopt.yml, the release queue, the
+  trending-song list; issue #50 closed. daily_post.py is byte-identical to its
+  pre-assist version; the bot uploads directly again (1/day). He never posted
+  one of the queued videos (10-10..12: nothing aired).
+  Asked which music automatic posting should use. His answers:
+  * *"AI tracks in your songs' style"* — one ORIGINAL track per song he named
+    (data/edit_music_styles.json), made free with make-music.yml (ACE-Step
+    1.5); he picks from a sampler and ONLY his picks air (edit_music.json
+    `approved`). This supersedes the 10-09 "only the real trending songs / do
+    not offer substitutes" entry: he chose it when asked. Newest wins.
+  * *"Post with the old music now"* — posting resumes immediately with the
+    Kevin MacLeod tracks (the fallback in edit_music), switching to his picks
+    once approved.
 

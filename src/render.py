@@ -1568,7 +1568,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         # No music: still normalise to -14 LUFS so loudness never depends on
         # whether the music bed happened to be available. apad: with no music
         # the audio stream used to stop at the last word while the picture ran
-        # on (13.0s of audio in a 15.1s assisted-posting video); -t caps it.
+        # on (13.0s of audio in a 15.1s voice-only video); -t caps it.
         filter_complex = (
             f"{vgraph};"
             f"[{audio_in}:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,apad[aout]"

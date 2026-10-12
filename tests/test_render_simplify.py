@@ -270,7 +270,7 @@ def test_monochrome_edits_stay_neutral_whatever_the_grade_experiment():
 
 
 def test_voice_only_audio_runs_the_full_length():
-    """Assisted posting renders with no music; the audio must still cover the
-    whole video (it stopped 2s early), or the tail is a stream with no audio."""
+    """A render with no music (none available) must still have audio covering
+    the whole video (it stopped 2s early), or the tail has no audio stream."""
     src = (ROOT / "src" / "render.py").read_text()
     assert 'loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,apad[aout]' in src
