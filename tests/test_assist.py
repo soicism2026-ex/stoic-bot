@@ -223,3 +223,65 @@ def test_each_render_gets_its_own_release_tag():
     daily = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
     step = daily[daily.index("Release the queued video"):]
     assert "continue-on-error: true" in step[:400]
+
+
+def test_notes_point_to_the_done_issue_not_a_false_promise():
+    rec = {"song": assist.songs()[0], "title": "T", "quote": "Q", "author": "A"}
+    text = assist.notes(rec)
+    assert assist.done_url() in text and "comment **done**" in text
+    assert "30 minutes" not in text   # GitHub runs the cron every 3-10 hours
+
+
+def test_adopt_listens_to_the_owner_only_on_the_posting_issue():
+    import yaml
+    wf = yaml.safe_load((ROOT / ".github" / "workflows" / "adopt.yml").read_text())
+    on = wf[True]
+    assert "issue_comment" in on and "schedule" in on
+    cond = wf["jobs"]["adopt"]["if"]
+    assert "author_association == 'OWNER'" in cond
+    assert "startsWith(github.event.issue.title, 'Posted a video')" in cond
+    steps = {s.get("name"): s for s in wf["jobs"]["adopt"]["steps"]}
+    assert "gh issue comment" in steps["Reply to the owner"]["run"]
+    assert "--report adopt_report.md" in steps["Adopt the owner's uploads"]["run"]
+
+
+def test_refresh_notes_rewrites_only_changed_instructions(tmp_path, monkeypatch):
+    import assist_release as ar
+    pend = tmp_path / "pending"
+    pend.mkdir()
+    rec = {"song": assist.songs()[1], "title": "T", "quote": "Q", "author": "A"}
+    (pend / "p.json").write_text(json.dumps(rec))
+    (tmp_path / "p.md").write_text("old instructions")
+    monkeypatch.setattr(ar, "PENDING", pend)
+    calls = []
+    monkeypatch.setattr(ar, "_gh", _fake_gh([], calls))
+    ar.refresh_notes("p")
+    assert ("release", "edit", "edit-p") == calls[-1][:3]
+    assert (tmp_path / "p.md").read_text() == assist.notes(rec)
+    calls.clear()
+    ar.refresh_notes("p")          # unchanged now: no edit
+    assert calls == []
+
+
+def test_adopt_report_when_nothing_matches_yet(tmp_path, monkeypatch):
+    import adopt_uploads as au
+    monkeypatch.setattr(au.assist, "load", lambda: [P1])
+    monkeypatch.setattr(au, "_service", lambda **k: object())
+    monkeypatch.setattr(au, "recent_uploads", lambda yt: [])
+    monkeypatch.setattr(au, "logged_ids", lambda: set())
+    monkeypatch.setattr(au.time, "sleep", lambda s: None)
+    report = tmp_path / "r.md"
+    monkeypatch.setattr(sys, "argv", ["x", "--retries", "2", "--wait", "0", "--report", str(report)])
+    monkeypatch.delenv("GITHUB_OUTPUT", raising=False)
+    assert au.main() == 0
+    assert "couldn't find a new upload" in report.read_text()
+
+
+def test_adopt_report_when_nothing_is_waiting(tmp_path, monkeypatch):
+    import adopt_uploads as au
+    monkeypatch.setattr(au.assist, "load", lambda: [])
+    report = tmp_path / "r.md"
+    monkeypatch.setattr(sys, "argv", ["x", "--report", str(report)])
+    monkeypatch.delenv("GITHUB_OUTPUT", raising=False)
+    assert au.main() == 0
+    assert "Nothing is waiting" in report.read_text()

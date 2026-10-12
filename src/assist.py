@@ -45,6 +45,10 @@ QUEUE = int(os.environ.get("ASSIST_QUEUE", "2"))
 REPO = os.environ.get("GITHUB_REPOSITORY", "soicism2026-ex/stoic-bot")
 # Owner: "the music is a bit too loud compared to the voice talking".
 MUSIC_PERCENT = int(os.environ.get("ASSIST_MUSIC_PERCENT", "25"))
+# The issue the owner comments "done" on after posting (adopt.yml listens).
+# GitHub runs the half-hourly adopt cron only every 3-10 hours in practice
+# (measured 2026-10-10..12), so the comment is what makes it immediate.
+DONE_ISSUE = os.environ.get("ASSIST_DONE_ISSUE", "50")
 
 
 def enabled() -> bool:
@@ -120,7 +124,7 @@ Title to paste:
 {p['title']}
 ```
 
-Within about 30 minutes the bot adds the description with the journal link, the tags, the thumbnail and the comments.
+Then comment **done** on [this issue]({done_url()}): within a couple of minutes the bot adds the description with the journal link, the tags, the thumbnail and the comment, replies with the link, and gets the next video ready. (Without the comment it still happens, just later: GitHub only runs its regular check every few hours.)
 
 > {p['quote']}
 > — {p['author']}{(', ' + p['citation']) if p.get('citation') else ''}
@@ -147,6 +151,10 @@ def queue(record: dict, video: Path, thumb: Path | None = None) -> dict:
         "notes": str((DIR / f"{pid}.md").relative_to(ROOT)),
     }, indent=1), encoding="utf-8")
     return record
+
+
+def done_url() -> str:
+    return f"https://github.com/{REPO}/issues/{DONE_ISSUE}"
 
 
 def latest_link() -> str:

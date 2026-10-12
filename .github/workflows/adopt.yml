@@ -1,21 +1,37 @@
 # ASSISTED POSTING, step 3 (src/assist.py). The owner posts each queued video
-# from the YouTube app so he can add the trending song; every 30 minutes this
-# finds his upload and does everything else: description with the journal
-# link, tags, thumbnail, comments and the posts.csv row. Then it prepares the
-# next video straight away instead of waiting for the next daily-short slot.
+# from the YouTube app so he can add the trending song; this finds his upload
+# and does everything else: description with the journal link, tags,
+# thumbnail, comments and the posts.csv row. Then it prepares the next video
+# straight away instead of waiting for the next daily-short slot.
+#
+# Two triggers:
+#   * the owner comments on the "Posted a video?" issue (#50): runs at once,
+#     retries for ~3 minutes while YouTube lists the new upload, and replies
+#     on the issue with the result;
+#   * a half-hourly schedule as the backstop. GitHub only actually runs it
+#     every 3-10 hours (measured 2026-10-10..12), which is why the comment
+#     trigger exists.
 name: adopt-uploads
 on:
   schedule:
     - cron: "7,37 * * * *"
   workflow_dispatch: null
+  issue_comment:
+    types: [created]
 permissions:
   contents: write
   actions: write
+  issues: write
 concurrency:
   group: adopt-uploads
   cancel-in-progress: false
 jobs:
   adopt:
+    # A comment counts only from the repository owner, on the posting issue.
+    if: >-
+      github.event_name != 'issue_comment' ||
+      (github.event.comment.author_association == 'OWNER' &&
+       startsWith(github.event.issue.title, 'Posted a video'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -43,7 +59,8 @@ jobs:
         PROMO_PRODUCT_NAME: The Stoic Reset
         PROMO_URL: https://soicism.gumroad.com/l/cslosv
         PROMO_COMMENT: '0'
-      run: python scripts/adopt_uploads.py
+        RETRY: ${{ github.event_name == 'issue_comment' && '6' || '0' }}
+      run: python scripts/adopt_uploads.py --retries "$RETRY" --wait 30 --report adopt_report.md
     - name: Commit
       if: steps.adopt.outputs.adopted != '' && steps.adopt.outputs.adopted != '0'
       run: |
@@ -61,3 +78,15 @@ jobs:
       env:
         GH_TOKEN: ${{ github.token }}
       run: gh workflow run daily-short.yml --ref main
+    - name: Reply to the owner
+      if: always() && github.event_name == 'issue_comment'
+      env:
+        GH_TOKEN: ${{ github.token }}
+        ISSUE: ${{ github.event.issue.number }}
+        OUTCOME: ${{ steps.adopt.outcome }}
+      run: |
+        if [ "$OUTCOME" = "failure" ]; then
+          echo "Something went wrong while finishing your video (details in the Actions log). The regular check will try again; you don't need to repost." > adopt_report.md
+        fi
+        [ -f adopt_report.md ] || echo "Nothing is waiting to be posted right now, so there was nothing to finish." > adopt_report.md
+        gh issue comment "$ISSUE" --body-file adopt_report.md

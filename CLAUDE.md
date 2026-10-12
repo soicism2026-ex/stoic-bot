@@ -11,7 +11,7 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 > decisions.md (operational) or doctrine.md (creative) in the same turn.
 
 **Channel:** forged.in.stoicism  
-**Posting (since 2026-10-09): ASSISTED.** The owner posts every video himself from the YouTube app so he can add the trending song he chose (only possible in the app). The bot keeps up to `ASSIST_QUEUE`=2 voice-only videos ready as GitHub releases (`releases/latest/download/edit.mp4`, notes say which song + title), and `adopt.yml` finishes each one he posts (description, tags, thumbnail, comments, posts.csv) and renders the next. It does NOT upload on its own; `POST_MODE: "auto"` in daily-short.yml restores direct posting. See `src/assist.py`.
+**Posting (since 2026-10-09): ASSISTED.** The owner posts every video himself from the YouTube app so he can add the trending song he chose (only possible in the app). The bot keeps up to `ASSIST_QUEUE`=2 voice-only videos ready as GitHub releases (`releases/latest/download/edit.mp4`, notes say which song + title), and `adopt.yml` finishes each one he posts (description, tags, thumbnail, comments, posts.csv) and renders the next. He comments "done" on issue #50 after posting to make that immediate (`ASSIST_DONE_ISSUE`); without it the scheduled check catches it within hours. It does NOT upload on its own; `POST_MODE: "auto"` in daily-short.yml restores direct posting. See `src/assist.py`.
 **Posting cadence (auto mode):** 3 videos/day; crons fire 03:00, 07:00, 11:00 UTC (six slots are over-provisioned at 03/07/11/15/19/23 and MAX_POSTS_PER_DAY=3 means the first three always win) (restored 2026-07-24 after 1/day starved views; safe volume because every video is now distinct — 5 formats, statue guide, scene-matched b-roll, cinematic look; goal: 500 subs + 3M Shorts views/90d)  
 **Product:** The Stoic Reset journal — https://soicism.gumroad.com/l/cslosv
 
@@ -93,7 +93,7 @@ After the main post loop, the workflow runs:
 | `backfill.yml` | manual | Re-process old posts |
 | `repost.yml` | manual | Re-upload a specific video |
 | `ci.yml` | push/PR | Run tests |
-| `adopt.yml` | cron every 30 min | Assisted posting step 3: adopts the owner's app uploads (`scripts/adopt_uploads.py`), commits, deletes that release, then triggers `daily-short.yml` so the next video is ready immediately |
+| `adopt.yml` | owner's comment on issue #50 (instant) + cron every 30 min (GitHub really runs it every 3-10 h) | Assisted posting step 3: adopts the owner's app uploads (`scripts/adopt_uploads.py`; retries ~3 min after a comment while YouTube lists the upload), commits, deletes that release, triggers `daily-short.yml` so the next video is ready, and replies on the issue with the link |
 | `edit-preview.yml` | manual | Renders the next edit with the full pipeline, `DRY_RUN` (nothing uploaded or logged); `music` input auditions a track |
 | `make-music.yml` | manual | One parallel job per style: generates original edit tracks on free runners, commits them UNAPPROVED, attaches a sampler video |
 | `auto-improve.yaml` | cron daily 06:00 UTC | Continuous improvement loop: runs `improve_loop.py` to pick a data-driven focus, feeds the output prompt to Claude Code Action, Claude implements the change and commits directly to main |

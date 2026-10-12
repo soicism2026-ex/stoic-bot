@@ -24,6 +24,7 @@ import csv
 import os
 import subprocess
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -108,26 +109,52 @@ def adopt(yt, p: dict, u: dict) -> None:
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--retries", type=int, default=0,
+                    help="look again this many times if nothing matched yet "
+                         "(the owner said 'done' seconds after uploading)")
+    ap.add_argument("--wait", type=float, default=30.0)
+    ap.add_argument("--report", default="",
+                    help="write a short result for the owner to this file")
     a = ap.parse_args()
     pending = assist.load()
-    adopted = 0
+    done: list[str] = []
     if not pending:
         print("[adopt] nothing waiting to be posted")
     else:
         yt = _service(extra_scopes=[FORCE_SSL])
-        uploads = recent_uploads(yt)
-        pairs = assist.match(pending, uploads, logged_ids())
-        print(f"[adopt] {len(pending)} waiting, {len(uploads)} recent uploads, "
-              f"{len(pairs)} matched")
+        for attempt in range(a.retries + 1):
+            uploads = recent_uploads(yt)
+            pairs = assist.match(pending, uploads, logged_ids())
+            print(f"[adopt] {len(pending)} waiting, {len(uploads)} recent uploads, "
+                  f"{len(pairs)} matched")
+            if pairs or attempt == a.retries:
+                break
+            print(f"[adopt] nothing new yet; looking again in {a.wait:.0f}s", flush=True)
+            time.sleep(a.wait)
         for p, u in pairs:
             print(f"  {p['id']}  <-  {u['video_id']}  \"{u['title'][:60]}\"  {u['duration']:.0f}s")
             if not a.dry_run:
                 adopt(yt, p, u)
-                adopted += 1
+                done.append(f"- **{u['title']}**: description, journal link, tags, thumbnail "
+                            f"and comment added. https://youtube.com/shorts/{u['video_id']}")
+    if a.report:
+        left = len(assist.load())
+        if done:
+            body = ("Done:\n" + "\n".join(done) + "\n\nThe next video is being prepared "
+                    f"now; it shows up at https://github.com/{assist.REPO}/releases in about "
+                    "5 minutes.")
+        elif pending:
+            body = ("I couldn't find a new upload yet. If you just posted, YouTube may still "
+                    "be processing it: comment again in a few minutes (or the regular check "
+                    "picks it up later). Use the title from the release notes so I can match it.")
+        else:
+            body = "Nothing is waiting to be posted right now."
+        body += f"\n\n_{left} video(s) waiting to be posted._"
+        Path(a.report).write_text(body, encoding="utf-8")
     out = os.environ.get("GITHUB_OUTPUT")
     if out:
         with open(out, "a") as f:
-            f.write(f"adopted={adopted}\n")
+            f.write(f"adopted={len(done)}\n")
     return 0
 
 

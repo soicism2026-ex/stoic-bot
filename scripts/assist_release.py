@@ -22,6 +22,9 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "src"))
+import assist  # noqa: E402
+
 REL = ROOT / "data" / "assist" / "release.json"
 PENDING = ROOT / "data" / "assist" / "pending"
 KEEP_DAYS = 14
@@ -82,6 +85,26 @@ def sync(just_published: str = "") -> None:
             print(f"[release] removed {tag} (no longer waiting to be posted)")
     for pid in sorted(queued - released - {just_published}):
         _withdraw(pid)
+    for pid in sorted(released):
+        refresh_notes(pid)
+
+
+def refresh_notes(pid: str) -> None:
+    """Re-render a waiting video's instructions from the current template, so
+    a change to them (e.g. the "comment done" step) reaches videos queued
+    before it. Only edits the release when the text actually changed."""
+    try:
+        rec = json.loads((PENDING / f"{pid}.json").read_text(encoding="utf-8"))
+        text = assist.notes(rec)
+    except Exception:  # noqa: BLE001
+        return
+    md = PENDING.parent / f"{pid}.md"
+    if md.exists() and md.read_text(encoding="utf-8") == text:
+        return
+    md.write_text(text, encoding="utf-8")
+    r = _gh("release", "edit", f"edit-{pid}", "--notes-file", str(md), check=False)
+    print(f"[release] edit-{pid}: instructions "
+          f"{'updated' if r.returncode == 0 else 'NOT updated: ' + r.stderr.strip()[:120]}")
 
 
 def publish(r: dict) -> bool:

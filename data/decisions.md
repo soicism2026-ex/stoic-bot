@@ -1254,4 +1254,14 @@ that story must always be captioned "recorded in the Historia Augusta", never
   the last colour step (test renders a coloured frame through each grade +
   mono and requires grey). The two queued videos had the bug and were
   withdrawn and re-rendered. The 4 tinted posts are still live (owner's call).
+- **2026-10-12 — "Comment done" makes adoption instant.** Measured: GitHub
+  ran the half-hourly `adopt.yml` cron only every 3-10 hours (13 runs in 2.5
+  days), so a video's description, journal link and comment could lag the
+  owner's post by hours, against the "30 minutes" the release notes promised.
+  Issue #50 ("Posted a video? Comment done here") now triggers adoption at
+  once (owner's comments only), retries ~3 min while YouTube lists the
+  upload, and replies with the link. Release notes link to it, and the
+  release step re-renders instructions for already-queued videos. The cron
+  stays as the backstop. The owner had not posted since 10-09 as of 10-12;
+  the bot keeps 2 videos ready and does not post on its own.
 
