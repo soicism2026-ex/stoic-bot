@@ -412,5 +412,293 @@
    "lion",
    "sunrise"
   ]
+ },
+ {
+  "id": "rising_to_work",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 5.1, trans. George Long",
+  "quote": "In the morning when thou risest unwillingly, let this thought be present: I am rising to the work of a human being.",
+  "hook": "Don't want to get up? Read this.",
+  "theme": "discipline",
+  "visuals": [
+   "alarm clock",
+   "still:marble statue of a roman emperor at dawn, warm window light",
+   "man waking up",
+   "sunrise city",
+   "man running dawn",
+   "coffee steam",
+   "man training gym",
+   "mountain sunrise"
+  ]
+ },
+ {
+  "id": "obstacle_on_the_road",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 5.20, trans. George Long",
+  "quote": "That which is a hindrance is made a furtherance to an act; and that which is an obstacle on the road helps us on this road.",
+  "hook": "The thing blocking you is the path.",
+  "theme": "adversity",
+  "visuals": [
+   "still:ancient stone road through mountains, dramatic light",
+   "rock climbing",
+   "river rocks",
+   "man climbing",
+   "storm road",
+   "mountain trail",
+   "waves rocks",
+   "summit sunrise"
+  ]
+ },
+ {
+  "id": "depart_this_moment",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 2.11, trans. George Long",
+  "quote": "Since it is possible that thou mayest depart from life this very moment, regulate every act and thought accordingly.",
+  "hook": "Live like today might be the last one.",
+  "theme": "mortality",
+  "visuals": [
+   "hourglass",
+   "still:roman ruins at dusk, dramatic sky",
+   "candle flame",
+   "old man walking",
+   "sunset timelapse",
+   "clock",
+   "man walking alone",
+   "night sky"
+  ]
+ },
+ {
+  "id": "loves_himself",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 12.4, trans. George Long",
+  "quote": "I have often wondered how it is that every man loves himself more than all the rest of men, but yet sets less value on his own opinion of himself than on the opinion of others.",
+  "hook": "Why do their opinions matter more than yours?",
+  "theme": "ego",
+  "visuals": [
+   "crowd street",
+   "still:marble statue of a roman emperor looking down, dramatic shadow",
+   "man walking crowd",
+   "social media",
+   "man alone rooftop",
+   "city night",
+   "lion walking",
+   "mountain summit"
+  ]
+ },
+ {
+  "id": "one_another",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.59, trans. George Long",
+  "quote": "Men exist for the sake of one another. Teach them then, or bear with them.",
+  "hook": "People annoying you? You have two options.",
+  "theme": "anger",
+  "visuals": [
+   "crowd timelapse",
+   "still:ancient greek teacher with students on stone steps, warm light",
+   "men talking",
+   "chess",
+   "handshake",
+   "city street",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "every_day_last",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.69, trans. George Long",
+  "quote": "The perfection of moral character consists in this, in passing every day as the last, and in being neither violently excited nor torpid nor playing the hypocrite.",
+  "hook": "Treat today like it's your last. Calmly.",
+  "theme": "mortality",
+  "visuals": [
+   "sunset",
+   "still:marble statue of Marcus Aurelius at dusk, dramatic sky",
+   "clock",
+   "man walking beach",
+   "candle flame",
+   "ocean waves",
+   "night city",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "future_things",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.8, trans. George Long",
+  "quote": "Let not future things disturb thee, for thou wilt come to them, if it shall be necessary, having with thee the same reason which now thou usest for present things.",
+  "hook": "Stop worrying about problems you don't have yet.",
+  "theme": "fear",
+  "visuals": [
+   "fog road",
+   "storm clouds",
+   "still:marble bust of a stoic philosopher in fog, cinematic",
+   "man walking fog",
+   "clock",
+   "calm lake",
+   "mountain path",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "anger_costs_more",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 11.18, trans. George Long",
+  "quote": "How much more pain is brought on us by the anger and vexation caused by such acts than by the acts themselves.",
+  "hook": "Your anger hurts you more than they did.",
+  "theme": "anger",
+  "visuals": [
+   "lightning",
+   "fire",
+   "still:marble statue of a roman general, dramatic side light",
+   "man punching bag",
+   "storm sea",
+   "calm water",
+   "man breathing closeup",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "no_right_wind",
+  "author": "Seneca",
+  "citation": "Moral Letters 71, trans. Richard M. Gummere",
+  "quote": "When a man does not know what harbour he is making for, no wind is the right wind.",
+  "hook": "No goal? Then nothing will feel right.",
+  "theme": "discipline",
+  "visuals": [
+   "sailboat storm",
+   "still:ancient roman ship at sea, dramatic sky",
+   "compass",
+   "lighthouse",
+   "ocean waves",
+   "man sailing",
+   "harbor sunrise",
+   "calm sea"
+  ]
+ },
+ {
+  "id": "condition_i_feared",
+  "author": "Seneca",
+  "citation": "Moral Letters 18, trans. Richard M. Gummere",
+  "quote": "Set aside a certain number of days, during which you shall be content with the scantiest and cheapest fare, with coarse and rough dress, saying to yourself the while: Is this the condition that I feared?",
+  "hook": "Afraid of losing it all? Practise it.",
+  "theme": "fear",
+  "visuals": [
+   "bread water",
+   "still:roman stoic in a simple cloak eating bread, candlelight",
+   "man cold shower",
+   "simple room",
+   "man walking rain",
+   "empty wallet",
+   "old boots",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "postponing",
+  "author": "Seneca",
+  "citation": "Moral Letters 1, trans. Richard M. Gummere",
+  "quote": "While we are postponing, life speeds by.",
+  "hook": "You keep saying tomorrow.",
+  "theme": "time",
+  "visuals": [
+   "clock",
+   "time lapse city",
+   "still:hourglass on stone, candle light",
+   "man running",
+   "calendar pages",
+   "sunset timelapse",
+   "train window",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "suffers_before",
+  "author": "Seneca",
+  "citation": "Moral Letters 98, trans. Richard M. Gummere",
+  "quote": "He suffers more than is necessary, who suffers before it is necessary.",
+  "hook": "You're suffering for something that hasn't happened.",
+  "theme": "fear",
+  "visuals": [
+   "storm clouds",
+   "still:marble bust of Seneca, dramatic candlelight",
+   "man rain window",
+   "fog",
+   "clock",
+   "calm lake",
+   "man walking",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "nothing_great_suddenly",
+  "author": "Epictetus",
+  "citation": "Discourses I.15, trans. George Long",
+  "quote": "Nothing great, said Epictetus, is produced suddenly, since not even the grape or the fig is.",
+  "hook": "Want it fast? Nothing great is.",
+  "theme": "discipline",
+  "visuals": [
+   "vineyard",
+   "still:ancient greek philosopher in a vineyard, warm light",
+   "plant growing timelapse",
+   "man training gym",
+   "brick wall building",
+   "fig tree",
+   "man running dawn",
+   "sunrise mountain"
+  ]
+ },
+ {
+  "id": "fear_of_pain",
+  "author": "Epictetus",
+  "citation": "Discourses II.1, trans. George Long",
+  "quote": "Death or pain is not formidable, but the fear of pain or death.",
+  "hook": "It's not the pain. It's the fear.",
+  "theme": "fear",
+  "visuals": [
+   "dark forest",
+   "still:marble statue of a stoic facing a storm, dramatic light",
+   "man boxer",
+   "lightning",
+   "man cold water",
+   "storm sea",
+   "man walking fog",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "wish_as_they_are",
+  "author": "Epictetus",
+  "citation": "Enchiridion 8, trans. George Long",
+  "quote": "Seek not that the things which happen should happen as you wish; but wish the things which happen to be as they are, and you will have a tranquil flow of life.",
+  "hook": "Stop wishing things went differently.",
+  "theme": "control",
+  "visuals": [
+   "river flowing",
+   "still:ancient greek philosopher by a calm river, soft light",
+   "leaves falling",
+   "calm lake",
+   "man walking forest",
+   "clouds timelapse",
+   "waves",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "eat_as_you_ought",
+  "author": "Epictetus",
+  "citation": "Enchiridion 46, trans. George Long",
+  "quote": "At a banquet do not say how a man ought to eat, but eat as you ought to eat.",
+  "hook": "Stop explaining. Show them.",
+  "theme": "ego",
+  "visuals": [
+   "dinner table",
+   "still:ancient roman banquet hall, candlelight",
+   "man eating alone",
+   "chess",
+   "man training gym",
+   "man walking alone",
+   "mountain climber",
+   "sunrise"
+  ]
  }
 ]
