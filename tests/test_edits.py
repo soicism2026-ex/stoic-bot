@@ -202,3 +202,45 @@ def test_hook_shows_from_the_first_frame_without_lighting_up_early(monkeypatch):
                                        2.6).startswith("Dialogue: 0,0:00:01.00,")
     src = (ROOT / "scripts" / "daily_post.py").read_text()
     assert '"REEL_HOOK_FROM_START": "1"' in src
+
+
+def test_too_dark_retries_brighten_the_video_itself():
+    """2026-10-19: all five attempts rendered an identical 28.1/255 frame and
+    the day posted nothing, because the retry raised REEL_BRIGHTNESS, which
+    only the thumbnail reads. The video grade now takes BRIGHTNESS_LIFT."""
+    import daily_post
+    env = {}
+    for step in (1, 2, 3, 4, 5):
+        env = daily_post._apply_corrections(env, ["preflight: too dark: mean luminance 28.1/255"], step)
+    assert env["REEL_BRIGHTNESS_LIFT"] == "0.30"          # +0.08 a step, capped
+    first = daily_post._apply_corrections({}, ["preflight: too dark"], 1)
+    assert first["REEL_BRIGHTNESS_LIFT"] == "0.08"
+    src = (ROOT / "src" / "render.py").read_text()
+    assert "_br - EXTRA_DARKEN + BRIGHTNESS_LIFT" in src
+
+
+def test_a_blocked_edit_is_set_aside_after_two_runs(tmp_path, monkeypatch):
+    monkeypatch.setattr(edits, "BLOCKS", tmp_path / "edit_blocks.csv")
+    first = edits.pick([])
+    edits.record_block(first["id"], "2026-10-19", "too dark")
+    assert edits.pick([])["id"] == first["id"]           # one bad run: retried
+    edits.record_block(first["id"], "2026-10-19", "too dark")
+    assert edits.pick([])["id"] != first["id"]           # two: set aside
+    assert edits.remaining([]) == len(edits.load()) - 1
+    wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
+    assert "data/edit_blocks.csv" in wf and (ROOT / "data" / "edit_blocks.csv").exists()
+
+
+def test_posts_keep_a_minimum_gap(tmp_path, monkeypatch):
+    import datetime
+    import daily_post
+    a = tmp_path / "data"
+    a.mkdir()
+    (a / "analytics.csv").write_text(
+        "pulled_on,published_at,video_id\n2026-10-19,2026-10-19T22:30:00Z,x\n"
+        "2026-10-19,2026-10-18T01:07:00Z,y\n")
+    monkeypatch.setattr(daily_post, "ROOT", tmp_path)
+    now = datetime.datetime(2026, 10, 19, 23, 0, tzinfo=datetime.timezone.utc)
+    assert abs(daily_post.hours_since_last_post(now) - 0.5) < 1e-6
+    wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
+    assert 'MIN_GAP_HOURS: "6"' in wf

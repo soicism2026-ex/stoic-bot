@@ -27,6 +27,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BANK = ROOT / "data" / "edit_quotes.json"
+# Runs on which an edit was blocked by the preflight gate on every attempt.
+BLOCKS = ROOT / "data" / "edit_blocks.csv"
+MAX_BLOCKS = int(__import__("os").environ.get("EDIT_MAX_BLOCKS", "2"))
 
 
 def load() -> list[dict]:
@@ -36,6 +39,31 @@ def load() -> list[dict]:
 def _used(post_rows: list[dict]) -> set:
     return {(r.get("experiment") or "").removeprefix("edit:")
             for r in post_rows if (r.get("experiment") or "").startswith("edit:")}
+
+
+def record_block(edit_id: str, date: str, reason: str) -> None:
+    """Append one fully-blocked run for this edit."""
+    import csv
+    new = not BLOCKS.exists()
+    with open(BLOCKS, "a", newline="", encoding="utf-8") as fh:
+        w = csv.writer(fh)
+        if new:
+            w.writerow(["date", "edit_id", "reason"])
+        w.writerow([date, edit_id, reason])
+
+
+def jammed_ids() -> set:
+    """Edits blocked on at least MAX_BLOCKS separate runs: set aside so one
+    un-renderable quote cannot stop the channel (it happened 2026-10-19)."""
+    import csv
+    from collections import Counter
+    if not BLOCKS.exists():
+        return set()
+    try:
+        c = Counter(r["edit_id"] for r in csv.DictReader(open(BLOCKS, encoding="utf-8")))
+    except Exception:  # noqa: BLE001
+        return set()
+    return {eid for eid, n in c.items() if n >= MAX_BLOCKS}
 
 
 def pick(post_rows: list[dict]) -> dict | None:
@@ -51,7 +79,8 @@ def pick(post_rows: list[dict]) -> dict | None:
     used = _used(post_rows)
     edit_rows = [r for r in post_rows if (r.get("experiment") or "").startswith("edit:")]
     last_theme = edit_rows[-1].get("theme") if edit_rows else None
-    fresh = [q for q in load() if q["id"] not in used]
+    jammed = jammed_ids()
+    fresh = [q for q in load() if q["id"] not in used and q["id"] not in jammed]
     if not fresh:
         return None
     seen = {}
@@ -66,8 +95,8 @@ def pick(post_rows: list[dict]) -> dict | None:
 
 
 def remaining(post_rows: list[dict]) -> int:
-    used = _used(post_rows)
-    return sum(1 for q in load() if q["id"] not in used)
+    used, jammed = _used(post_rows), jammed_ids()
+    return sum(1 for q in load() if q["id"] not in used and q["id"] not in jammed)
 
 
 def as_content(q: dict) -> dict:

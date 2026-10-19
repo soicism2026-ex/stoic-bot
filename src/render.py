@@ -136,6 +136,9 @@ EXTRA_DARKEN = float(os.environ.get("REEL_EXTRA_DARKEN", "0"))
 # real published videos, which reads as a black rectangle on a phone. Kept as
 # the default so nothing else changes silently; the truestory pack lifts it.
 BRIGHTNESS = float(os.environ.get("REEL_BRIGHTNESS", "-0.25"))
+# Added to the VIDEO grade's brightness (render_reel). 0 on a first render;
+# the "too dark" preflight retry raises it a step per attempt.
+BRIGHTNESS_LIFT = float(os.environ.get("REEL_BRIGHTNESS_LIFT", "0"))
 
 # Brightness added back when backgrounds are AI-GENERATED rather than stock.
 # The _GRADES table darkens by 0.15-0.25 because stock footage is bright and
@@ -1229,8 +1232,13 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         # the lightest preset by +0.07.
         _br = br + min(GEN_BRIGHT_LIFT, -br)
         _con = 1.0 + (con - 1.0) * 0.5
+    # BRIGHTNESS_LIFT is what the preflight "too dark" retry raises. Until
+    # 2026-10-19 the retry raised REEL_BRIGHTNESS, which only the THUMBNAIL
+    # reads: the video grade takes its brightness from the date-rotated
+    # _GRADES preset, so all five attempts rendered the identical too-dark
+    # frame (28.1/255 every time) and the whole day posted nothing.
     pre_parts.append(
-        f"eq=brightness={_br - EXTRA_DARKEN}:saturation={sat}:contrast={_con}"
+        f"eq=brightness={_br - EXTRA_DARKEN + BRIGHTNESS_LIFT:.3f}:saturation={sat}:contrast={_con}"
     )
     # ---- CINEMATIC grade (Nolan/Hoytema register): teal-cooled shadows, warm
     # amber highlights (the Hollywood teal-orange), a filmic S-curve that crushes

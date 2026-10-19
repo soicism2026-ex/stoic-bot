@@ -1288,4 +1288,15 @@ that story must always be captioned "recorded in the Historia Augusta", never
   the edit format. The second post waits for the afternoon slot (>= 15:00 UTC)
   so the two are spread, authors rotate so back-to-back posts differ, and the
   verified quote bank is refilled to cover the higher burn.
+- **2026-10-19 — SILENT FAILURE FIXED: a whole day posted nothing.** All five
+  runs re-picked the same edit (begin_at_once), the preflight gate blocked
+  every attempt as too dark (28.1/255, identical each time) and every run
+  still reported "success". Root cause, long-standing: the "too dark" retry
+  raised REEL_BRIGHTNESS, which only the thumbnail reads; the video grade
+  takes its brightness from the date-rotated _GRADES preset, so retries
+  changed nothing (likely also behind the September "too dark" story blocks).
+  Fixes: the retry raises REEL_BRIGHTNESS_LIFT, which the video grade uses
+  (+0.08 a step, cap 0.30; first renders unchanged); edits get the stories'
+  jam protection (data/edit_blocks.csv, set aside after 2 blocked runs);
+  MIN_GAP_HOURS=6 keeps posts apart even when a manual run lands near a cron.
 

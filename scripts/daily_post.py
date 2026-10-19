@@ -84,6 +84,31 @@ POST_SLOT_HOURS = [int(h) for h in os.environ.get("POST_SLOT_HOURS", "").split("
                    if h.strip().isdigit()]
 
 
+# ...and never two posts closer than this, whatever the slots say (a manual
+# run at 22:30 followed by the 23:00 cron would otherwise post twice in 30
+# minutes). Read from the publish times analytics.csv records after each run.
+MIN_GAP_HOURS = float(os.environ.get("MIN_GAP_HOURS", "0"))
+
+
+def hours_since_last_post(now=None) -> float | None:
+    """Hours since the channel's newest video went live (analytics.csv
+    published_at), or None when unknown."""
+    import csv as _csv
+    now = now or datetime.datetime.now(datetime.timezone.utc)
+    newest = None
+    try:
+        for r in _csv.DictReader(open(ROOT / "data" / "analytics.csv", encoding="utf-8")):
+            p = (r.get("published_at") or "").strip()
+            if p and (newest is None or p > newest):
+                newest = p
+    except Exception:  # noqa: BLE001
+        return None
+    if not newest:
+        return None
+    t = datetime.datetime.fromisoformat(newest.replace("Z", "+00:00"))
+    return (now - t).total_seconds() / 3600
+
+
 def slot_open(posts_today: int, hour_utc: int, slots: list = None) -> bool:
     """May post number posts_today+1 go out at this UTC hour?"""
     slots = POST_SLOT_HOURS if slots is None else slots
@@ -183,7 +208,11 @@ def _apply_corrections(env: dict, issues: list, attempt: int) -> dict:
         # re-rendered the same 12% frame. Lift the exposure a step per attempt,
         # drop any extra darkening, and try different clips.
         br = float(env.get("REEL_BRIGHTNESS", "-0.06"))
-        env["REEL_BRIGHTNESS"] = f"{min(br + 0.07, 0.20):.2f}"
+        env["REEL_BRIGHTNESS"] = f"{min(br + 0.07, 0.20):.2f}"      # thumbnail
+        # The VIDEO grade: +0.08 a step (one step lifts ~20/255 after the mono
+        # contrast), capped so a retry can never wash a frame out.
+        lift = float(env.get("REEL_BRIGHTNESS_LIFT", "0"))
+        env["REEL_BRIGHTNESS_LIFT"] = f"{min(lift + 0.08, 0.30):.2f}"
         env["REEL_EXTRA_DARKEN"] = "0"
         env["REEL_BG_OFFSET"] = str(attempt)
 
@@ -419,6 +448,11 @@ def main():
     posts_today = sum(1 for r in post_rows if r.get("date") == today)
     if posts_today >= MAX_POSTS_PER_DAY:
         print(f"[{today}] already posted {posts_today}/{MAX_POSTS_PER_DAY} times today — skipping")
+        return
+    since = hours_since_last_post()
+    if MIN_GAP_HOURS and since is not None and since < MIN_GAP_HOURS:
+        print(f"[{today}] last video went live {since:.1f}h ago (minimum gap "
+              f"{MIN_GAP_HOURS:g}h) — skipping")
         return
     hour_utc = datetime.datetime.now(datetime.timezone.utc).hour
     if not slot_open(posts_today, hour_utc):
@@ -1052,6 +1086,11 @@ def main():
             if content.get("_story_id"):
                 stories.record_block(content["_story_id"], today,
                                      "; ".join(pf["fails"])[:200])
+            # Edits too: on 2026-10-19 one too-dark edit was re-picked and
+            # blocked by all five runs of the day. Two blocked runs set it aside.
+            if content.get("_edit_id"):
+                edits.record_block(content["_edit_id"], today,
+                                   "; ".join(pf["fails"])[:200])
             return
 
         if last_attempt:

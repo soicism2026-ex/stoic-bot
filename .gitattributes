@@ -8,4 +8,5 @@
 QA_LOG.md merge=union
 data/posts.csv merge=union
 data/story_blocks.csv merge=union
+data/edit_blocks.csv merge=union
 data/replied_comments.csv merge=union
