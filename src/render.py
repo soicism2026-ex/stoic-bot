@@ -771,8 +771,11 @@ def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
         parts.insert(0, f"{{\\k{lead}}}")
     # Ends AT `hold`, not 0.4s after: hold is now the moment the captions take
     # over, and any linger would put both texts on screen together again.
+    # From frame 0 there is nothing to fade in from: a 180ms fade left the
+    # very first frame blank (measured on the 2026-10-19 preview).
+    fade_in = 0 if HOOK_FROM_START else 180
     return (f"Dialogue: 0,{_ass_time(start)},{_ass_time(hold)},"
-            f"Hook,,0,0,0,,{{\\fad(180,320)}}" + "".join(parts).rstrip())
+            f"Hook,,0,0,0,,{{\\fad({fade_in},320)}}" + "".join(parts).rstrip())
 
 
 # Side margin for the hook line. iPhones crop ~120px off EACH side of a 9:16

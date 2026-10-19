@@ -194,6 +194,7 @@ def test_hook_shows_from_the_first_frame_without_lighting_up_early(monkeypatch):
     importlib.reload(render)
     ev = render._hook_karaoke_events("Pick one thing.", [1.25, 1.55, 1.80], 2.6)
     assert ev.startswith("Dialogue: 0,0:00:00.00,")
+    assert "\\fad(0,320)" in ev           # on screen in frame 0, not faded in
     assert "{\\k100}{\\k30}Pick" in ev     # silent 1.00s lead, then on cue
     monkeypatch.setenv("REEL_HOOK_FROM_START", "0")
     importlib.reload(render)
