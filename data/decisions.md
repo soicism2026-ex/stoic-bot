@@ -1280,4 +1280,12 @@ that story must always be captioned "recorded in the Historia Augusta", never
   * *"Post with the old music now"* — posting resumes immediately with the
     Kevin MacLeod tracks (the fallback in edit_music), switching to his picks
     once approved.
+- **2026-10-18 — CADENCE 1/day -> 2/day.** Owner: *"Bots looking alive again
+  lets try to see if we can push it more"*; asked, he chose **2 a day** over 3
+  (repetitive-content risk) or 1. Why now: the last three edits (10-16/17/18:
+  495 / 633 / 496 views) beat every earlier edit (5-142) after six straight
+  days of daily posting. Supersedes the August "cut 3/day -> 1/day" entry for
+  the edit format. The second post waits for the afternoon slot (>= 15:00 UTC)
+  so the two are spread, authors rotate so back-to-back posts differ, and the
+  verified quote bank is refilled to cover the higher burn.
 

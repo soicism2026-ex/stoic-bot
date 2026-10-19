@@ -757,7 +757,18 @@ def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
         nxt = word_starts[i + 1] if i + 1 < len(word_starts) else hold
         cs = max(1, int(round((nxt - word_starts[i]) * 100)))   # centiseconds
         parts.append(f"{{\\k{cs}}}{_ass_escape(w)} ")
-    start = max(0.0, word_starts[0] - 0.25)
+    # Edits show the hook from the very first frame (REEL_HOOK_FROM_START):
+    # the swipe decision is made in under a second, and the edit's lead-in
+    # used to leave ~1s of picture with nothing to read (preflight warned
+    # "opening frame has almost no text" on every edit). The words still
+    # light up as they are spoken.
+    fill_from = max(0.0, word_starts[0] - 0.25)
+    start = 0.0 if HOOK_FROM_START else fill_from
+    # \k fills count from the start of the line, so a line shown early needs a
+    # silent lead syllable or every word would light up before it is spoken.
+    lead = int(round((fill_from - start) * 100))
+    if lead > 0:
+        parts.insert(0, f"{{\\k{lead}}}")
     # Ends AT `hold`, not 0.4s after: hold is now the moment the captions take
     # over, and any linger would put both texts on screen together again.
     return (f"Dialogue: 0,{_ass_time(start)},{_ass_time(hold)},"
@@ -770,6 +781,7 @@ def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
 # 160 = the 120px crop + a 40px breathing edge, so libass wraps inside what
 # the viewer actually sees.
 HOOK_MARGIN = int(os.environ.get("REEL_HOOK_MARGIN", "160"))
+HOOK_FROM_START = os.environ.get("REEL_HOOK_FROM_START", "0") not in ("0", "", "false", "False")
 # Spoken-quote line: the quote card's serif, top-anchored about a third of the
 # way down where the static card used to sit.
 # Music ducking under the voice (see the music mix). ratio 1 disables it.

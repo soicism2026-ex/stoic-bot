@@ -155,3 +155,49 @@ def test_people_shots_ask_for_a_man():
             if vis.startswith("still:") or not people & set(vis.split()):
                 continue
             assert vis.split()[0] in ("man", "men", "old"), (q["id"], vis)
+
+
+def test_second_daily_post_waits_for_its_slot():
+    """2/day (owner, 2026-10-18): the second post waits for 15:00 UTC so the
+    two videos do not go out 4 hours apart and split the same audience."""
+    import daily_post
+    slots = [0, 15]
+    assert daily_post.slot_open(0, 3, slots)          # first post: any time
+    assert not daily_post.slot_open(1, 7, slots)      # second: not at 07:00
+    assert daily_post.slot_open(1, 15, slots)         # ...but from 15:00
+    assert daily_post.slot_open(1, 23, slots)         # ...or a later slot
+    assert daily_post.slot_open(2, 3, slots)          # beyond: cap decides
+    assert daily_post.slot_open(1, 3, [])             # no slots = no gating
+    wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
+    assert "MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '2' }}" in wf
+    assert 'POST_SLOT_HOURS: "0,15"' in wf
+
+
+def test_edits_rotate_authors():
+    """The bank is stored by author; plain order aired ten Marcus edits in a
+    row. Consecutive picks must come from different authors while more than
+    one author has quotes left."""
+    rows = []
+    for _ in range(12):
+        q = edits.pick(rows)
+        rows.append({"experiment": f"edit:{q['id']}", "theme": q["theme"],
+                     "author": q["author"]})
+    authors = [r["author"] for r in rows]
+    assert all(a != b for a, b in zip(authors, authors[1:])), authors
+    assert len(set(authors[:3])) == 3
+
+
+def test_hook_shows_from_the_first_frame_without_lighting_up_early(monkeypatch):
+    import importlib
+    import render
+    monkeypatch.setenv("REEL_HOOK_FROM_START", "1")
+    importlib.reload(render)
+    ev = render._hook_karaoke_events("Pick one thing.", [1.25, 1.55, 1.80], 2.6)
+    assert ev.startswith("Dialogue: 0,0:00:00.00,")
+    assert "{\\k100}{\\k30}Pick" in ev     # silent 1.00s lead, then on cue
+    monkeypatch.setenv("REEL_HOOK_FROM_START", "0")
+    importlib.reload(render)
+    assert render._hook_karaoke_events("Pick one thing.", [1.25, 1.55, 1.80],
+                                       2.6).startswith("Dialogue: 0,0:00:01.00,")
+    src = (ROOT / "scripts" / "daily_post.py").read_text()
+    assert '"REEL_HOOK_FROM_START": "1"' in src

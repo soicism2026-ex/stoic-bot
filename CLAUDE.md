@@ -11,7 +11,7 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 > decisions.md (operational) or doctrine.md (creative) in the same turn.
 
 **Channel:** forged.in.stoicism  
-**Posting cadence:** 1 video/day (`MAX_POSTS_PER_DAY` defaults to 1 in daily-short.yml; cut from 3/day for quality, see decisions.md). Six cron slots (03/07/11/15/19/23 UTC) are over-provisioned because GitHub silently drops scheduled runs; the daily cap means the first one that runs posts and the rest skip. Goal: 500 subs + 3M Shorts views/90d.  
+**Posting cadence:** 2 videos/day since 2026-10-18 (owner: "push it more"; `MAX_POSTS_PER_DAY` defaults to 2 in daily-short.yml). `POST_SLOT_HOURS="0,15"` makes the second post wait for 15:00 UTC so the two are spread; edits rotate authors (`edits.pick`). Six cron slots (03/07/11/15/19/23 UTC) are over-provisioned because GitHub silently drops scheduled runs. Every edit quote AND its citation is checked against the source text (`scripts/validate_quotes.py`, tests). Goal: 500 subs + 3M Shorts views/90d.  
 **Product:** The Stoic Reset journal — https://soicism.gumroad.com/l/cslosv
 
 ---

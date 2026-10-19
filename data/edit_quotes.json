@@ -308,7 +308,7 @@
  {
   "id": "burdens_of_the_mind",
   "author": "Seneca",
-  "citation": "Moral Letters 104, trans. Richard M. Gummere",
+  "citation": "Moral Letters 28, trans. Richard M. Gummere",
   "quote": "You must lay aside the burdens of the mind; until you do this, no place will satisfy you.",
   "hook": "You took it with you.",
   "theme": "resilience",
@@ -698,6 +698,438 @@
    "man training gym",
    "man walking alone",
    "mountain climber",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "compact_with_poverty",
+  "author": "Seneca",
+  "citation": "Moral Letters 4, trans. Richard M. Gummere",
+  "quote": "He who has made a fair compact with poverty is rich.",
+  "hook": "Want less. That's rich.",
+  "theme": "desire",
+  "visuals": [
+   "simple room",
+   "still:roman stoic in a plain cloak by candlelight",
+   "bread water",
+   "man walking alone",
+   "empty wallet",
+   "old coins",
+   "mountain cabin",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "acquaintances_no_friends",
+  "author": "Seneca",
+  "citation": "Moral Letters 2, trans. Richard M. Gummere",
+  "quote": "When a person spends all his time in foreign travel, he ends by having many acquaintances, but no friends.",
+  "hook": "Lots of contacts. No friends.",
+  "theme": "friendship",
+  "visuals": [
+   "airport crowd",
+   "still:ancient roman road with travelers at dusk",
+   "phone contacts",
+   "men talking",
+   "city crowd timelapse",
+   "train window",
+   "campfire night",
+   "sunset"
+  ]
+ },
+ {
+  "id": "bustle_not_industry",
+  "author": "Seneca",
+  "citation": "Moral Letters 3, trans. Richard M. Gummere",
+  "quote": "For love of bustle is not industry,—it is only the restlessness of a hunted mind.",
+  "hook": "Busy isn't the same as productive.",
+  "theme": "discipline",
+  "visuals": [
+   "city rush hour",
+   "still:marble bust of Seneca, dramatic candlelight",
+   "phone notifications",
+   "traffic timelapse",
+   "man desk work",
+   "clock",
+   "calm lake",
+   "man walking forest"
+  ]
+ },
+ {
+  "id": "forgets_how_to_use",
+  "author": "Seneca",
+  "citation": "Moral Letters 14, trans. Richard M. Gummere",
+  "quote": "While he puzzles over increasing his wealth, he forgets how to use it.",
+  "hook": "Making money. Forgetting to live.",
+  "theme": "desire",
+  "visuals": [
+   "stock market screen",
+   "still:roman merchant counting coins by lamplight",
+   "money counting",
+   "office night",
+   "man working late",
+   "empty table",
+   "sunset beach",
+   "man walking beach"
+  ]
+ },
+ {
+  "id": "fault_in_the_mind",
+  "author": "Seneca",
+  "citation": "Moral Letters 17, trans. Richard M. Gummere",
+  "quote": "For the fault is not in the wealth, but in the mind itself.",
+  "hook": "Money isn't your problem.",
+  "theme": "desire",
+  "visuals": [
+   "luxury car",
+   "still:marble bust of a roman senator, dramatic side light",
+   "money",
+   "man thinking",
+   "city night",
+   "storm clouds",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "poor_and_sated",
+  "author": "Seneca",
+  "citation": "Moral Letters 19, trans. Richard M. Gummere",
+  "quote": "Would you rather be poor and sated, or rich and hungry?",
+  "hook": "Poor and full, or rich and starving?",
+  "theme": "desire",
+  "visuals": [
+   "gold coins",
+   "still:roman banquet table at night, candlelight",
+   "simple meal",
+   "luxury mansion",
+   "man eating alone",
+   "city skyline night",
+   "bread",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "begin_to_live_late",
+  "author": "Seneca",
+  "citation": "Moral Letters 23, trans. Richard M. Gummere",
+  "quote": "Some men, indeed, only begin to live when it is time for them to leave off living.",
+  "hook": "Don't start living at the end.",
+  "theme": "time",
+  "visuals": [
+   "old man walking",
+   "still:hourglass on stone, candle light",
+   "clock",
+   "man running dawn",
+   "sunset timelapse",
+   "calendar pages",
+   "mountain summit",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "little_every_day",
+  "author": "Seneca",
+  "citation": "Moral Letters 24, trans. Richard M. Gummere",
+  "quote": "For every day a little of our life is taken from us; even when we are growing, our life is on the wane.",
+  "hook": "You lose a little every day.",
+  "theme": "mortality",
+  "visuals": [
+   "candle burning",
+   "still:roman ruins at dusk, dramatic sky",
+   "clock",
+   "hourglass",
+   "sunset timelapse",
+   "old man walking",
+   "leaves falling",
+   "night sky"
+  ]
+ },
+ {
+  "id": "death_behind_you",
+  "author": "Seneca",
+  "citation": "Moral Letters 1, trans. Richard M. Gummere",
+  "quote": "For we are mistaken when we look forward to death; the major portion of death has already passed.",
+  "hook": "Death isn't ahead of you.",
+  "theme": "mortality",
+  "visuals": [
+   "empty road",
+   "still:ancient roman tomb at dusk, dramatic light",
+   "clock",
+   "old photographs",
+   "man walking alone",
+   "sunset",
+   "hourglass",
+   "night sky"
+  ]
+ },
+ {
+  "id": "beginning_in_our_power",
+  "author": "Seneca",
+  "citation": "Moral Letters 14, trans. Richard M. Gummere",
+  "quote": "The beginning is in our own power; fortune decides the issue, but I do not allow her to pass sentence upon myself.",
+  "hook": "You control the start. Not the end.",
+  "theme": "control",
+  "visuals": [
+   "starting line",
+   "still:marble statue of a stoic facing the sea, dramatic light",
+   "man running",
+   "chess",
+   "storm sea",
+   "lighthouse",
+   "waves rocks",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "single_norm",
+  "author": "Seneca",
+  "citation": "Moral Letters 20, trans. Richard M. Gummere",
+  "quote": "You should lay hold, once for all, upon a single norm to live by, and should regulate your whole life according to this norm.",
+  "hook": "Pick one rule. Live by it.",
+  "theme": "discipline",
+  "visuals": [
+   "compass",
+   "still:ancient stone tablet carved with laws, torchlight",
+   "man training gym",
+   "mountain path",
+   "man running dawn",
+   "chess",
+   "clock",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "body_obeys",
+  "author": "Seneca",
+  "citation": "Moral Letters 8, trans. Richard M. Gummere",
+  "quote": "The body should be treated more rigorously, that it may not be disobedient to the mind.",
+  "hook": "Train your body to obey you.",
+  "theme": "discipline",
+  "visuals": [
+   "man cold shower",
+   "still:marble statue of a roman athlete, dramatic side light",
+   "man training gym",
+   "man running rain",
+   "man boxer",
+   "man weightlifting",
+   "mountain climber",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "in_our_power",
+  "author": "Epictetus",
+  "citation": "Enchiridion 1, trans. George Long",
+  "quote": "Of things some are in our power, and others are not.",
+  "hook": "Some things aren't yours to fix.",
+  "theme": "control",
+  "visuals": [
+   "chess",
+   "still:ancient greek philosopher, dramatic side light",
+   "storm sea",
+   "man walking rain",
+   "calm lake",
+   "clouds timelapse",
+   "lighthouse",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "your_opinion_insults",
+  "author": "Epictetus",
+  "citation": "Enchiridion 20, trans. George Long",
+  "quote": "Remember that it is not he who reviles you or strikes you, who insults you, but it is your opinion about these things as being insulting.",
+  "hook": "They didn't insult you. You did.",
+  "theme": "anger",
+  "visuals": [
+   "lightning",
+   "still:marble statue of a calm stoic, dramatic side light",
+   "man punching bag",
+   "storm clouds",
+   "man breathing closeup",
+   "calm water",
+   "chess",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "how_long_defer",
+  "author": "Epictetus",
+  "citation": "Enchiridion 50, trans. George Long",
+  "quote": "How long will you then still defer thinking yourself worthy of the best things?",
+  "hook": "How long will you wait?",
+  "theme": "discipline",
+  "visuals": [
+   "clock",
+   "still:ancient greek philosopher at dawn, warm light",
+   "man waking up",
+   "sunrise city",
+   "man running dawn",
+   "calendar pages",
+   "mountain summit",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "choose_free",
+  "author": "Epictetus",
+  "citation": "Discourses I.17, trans. George Long",
+  "quote": "If you choose, you are free; if you choose, you will blame no one: you will charge no one.",
+  "hook": "Freedom is a choice.",
+  "theme": "control",
+  "visuals": [
+   "open road",
+   "still:ancient greek philosopher on a cliff above the sea",
+   "bird flying",
+   "man walking mountain",
+   "eagle",
+   "ocean waves",
+   "man running dawn",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "fetter_my_leg",
+  "author": "Epictetus",
+  "citation": "Discourses I.1, trans. George Long",
+  "quote": "You may fetter my leg, but my will not even Zeus himself can overpower.",
+  "hook": "They can't touch your mind.",
+  "theme": "resilience",
+  "visuals": [
+   "chains",
+   "still:roman prisoner in chains, defiant, torchlight",
+   "prison bars",
+   "man boxer",
+   "storm",
+   "man walking rain",
+   "lion walking",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "cease_whirled",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 2.7, trans. George Long",
+  "quote": "Give thyself time to learn something new and good, and cease to be whirled around.",
+  "hook": "Stop spinning. Learn one thing.",
+  "theme": "discipline",
+  "visuals": [
+   "open book",
+   "still:marble bust of Marcus Aurelius, soft window light",
+   "man reading",
+   "city traffic",
+   "calm lake",
+   "man writing",
+   "forest light",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "formed_to_bear",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 5.18, trans. George Long",
+  "quote": "Nothing happens to any man which he is not formed by nature to bear.",
+  "hook": "Whatever it is, you can carry it.",
+  "theme": "resilience",
+  "visuals": [
+   "mountain climber",
+   "still:marble statue of atlas carrying the world, dramatic light",
+   "man weightlifting",
+   "storm",
+   "man running rain",
+   "waves rocks",
+   "man walking alone",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "armpits",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 5.28, trans. George Long",
+  "quote": "Art thou angry with him whose armpits stink? art thou angry with him whose mouth smells foul? What good will this anger do thee?",
+  "hook": "Mad at someone? Read this.",
+  "theme": "anger",
+  "visuals": [
+   "crowded subway",
+   "still:marble statue of Marcus Aurelius, unimpressed expression",
+   "traffic jam",
+   "lightning",
+   "city crowd",
+   "calm lake",
+   "man breathing closeup",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "clapping_of_tongues",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.16, trans. George Long",
+  "quote": "Neither must we value the clapping of tongues; for the praise which comes from the many is a clapping of tongues.",
+  "hook": "Likes are just noise.",
+  "theme": "ego",
+  "visuals": [
+   "social media",
+   "still:roman crowd cheering in an arena, dramatic light",
+   "crowd applause",
+   "phone screen",
+   "stadium crowd",
+   "man alone rooftop",
+   "mountain summit",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "very_little_needed",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.67, trans. George Long",
+  "quote": "Very little indeed is necessary for living a happy life.",
+  "hook": "You need less than you think.",
+  "theme": "desire",
+  "visuals": [
+   "simple cabin",
+   "still:roman stoic at a plain wooden table, candlelight",
+   "bread water",
+   "man walking forest",
+   "campfire night",
+   "calm lake",
+   "mountain view",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "whole_of_thy_life",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.36, trans. George Long",
+  "quote": "Do not disturb thyself by thinking of the whole of thy life.",
+  "hook": "Don't carry your whole life today.",
+  "theme": "fear",
+  "visuals": [
+   "fog road",
+   "still:marble bust of a stoic philosopher in fog, cinematic",
+   "man walking",
+   "stairs",
+   "clock",
+   "calm lake",
+   "mountain path",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "unnecessary_things",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 4.24, trans. George Long",
+  "quote": "On every occasion a man should ask himself, Is this one of the unnecessary things?",
+  "hook": "Ask this before you scroll.",
+  "theme": "time",
+  "visuals": [
+   "phone scrolling",
+   "still:marble bust of Marcus Aurelius, dramatic candlelight",
+   "social media",
+   "clock",
+   "man reading",
+   "calm lake",
+   "man walking forest",
    "sunrise"
   ]
  }

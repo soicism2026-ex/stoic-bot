@@ -74,6 +74,23 @@ BACKUP_MIN = 3
 # cinematic look). Env-tunable.
 MAX_POSTS_PER_DAY = int(os.environ.get("MAX_POSTS_PER_DAY", "3"))
 
+# SPREAD THE DAY'S POSTS (owner, 2026-10-18: 2 a day). Post N of the day may
+# only go out from hour POST_SLOT_HOURS[N-1] (UTC). Without this the cap alone
+# lets the first two cron slots that fire post, 4 hours apart (03:00, 07:00),
+# so both videos compete for the same audience. "0,15" = first post any time,
+# second from 15:00 UTC (and 19:00 / 23:00 catch it if GitHub drops 15:00).
+# Empty = no gating (the old behaviour).
+POST_SLOT_HOURS = [int(h) for h in os.environ.get("POST_SLOT_HOURS", "").split(",")
+                   if h.strip().isdigit()]
+
+
+def slot_open(posts_today: int, hour_utc: int, slots: list = None) -> bool:
+    """May post number posts_today+1 go out at this UTC hour?"""
+    slots = POST_SLOT_HOURS if slots is None else slots
+    if posts_today >= len(slots):
+        return True   # beyond the listed slots, only the daily cap applies
+    return hour_utc >= slots[posts_today]
+
 # F3 "the question": seconds of REAL silence before the voice arrives. Long
 # enough that the viewer registers there is nothing to hear and reads the
 # question; short enough that it is tension rather than a broken video.
@@ -403,6 +420,11 @@ def main():
     if posts_today >= MAX_POSTS_PER_DAY:
         print(f"[{today}] already posted {posts_today}/{MAX_POSTS_PER_DAY} times today — skipping")
         return
+    hour_utc = datetime.datetime.now(datetime.timezone.utc).hour
+    if not slot_open(posts_today, hour_utc):
+        print(f"[{today}] post {posts_today + 1} waits for its slot "
+              f"({POST_SLOT_HOURS[posts_today]:02d}:00 UTC; now {hour_utc:02d}:00) — skipping")
+        return
 
     # The curated true-story bank comes FIRST. These are hand-written and
     # human-approved, and the spoken words are never model-generated — a model
@@ -615,6 +637,8 @@ def main():
             # Big text: the first preview's hook (62px, lower-case) and quote
             # (70px) read as captions, not as an edit.
             "REEL_HOOK_ASS_FONTSIZE": "96",
+            # Hook text on screen from frame 0 (stop the scroll), not ~1s in.
+            "REEL_HOOK_FROM_START": "1",
             "REEL_QUOTE_ASS_FS": "84",
             # Off-tone stock: "boxer training" returned a fitness-model clip.
             "REEL_BG_AVOID_TAGS": "woman,women,girl,fitness model,yoga,dance,wedding,party,beach",

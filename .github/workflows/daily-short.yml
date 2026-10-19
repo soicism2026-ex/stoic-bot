@@ -140,7 +140,11 @@ jobs:
           # straight through — comparing an unset input against a
           # numeric-looking value is the null-casts-to-0 trap that silently
           # disabled the voice steps on 2026-08-07.
-          MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '1' }}
+          # 2/day since 2026-10-18 (owner: "push it more", chose 2 over 3).
+          MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '2' }}
+          # Second post waits for 15:00 UTC so the two are spread (see
+          # daily_post.POST_SLOT_HOURS).
+          POST_SLOT_HOURS: "0,15"
           # In-process Chatterbox is the primary voice. Defaults to on; set the
           # repo variable CHATTERBOX_LOCAL=0 to fall back to Replicate/edge-tts.
           CHATTERBOX_LOCAL: ${{ vars.CHATTERBOX_LOCAL || '0' }}

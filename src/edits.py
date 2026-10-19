@@ -39,16 +39,29 @@ def _used(post_rows: list[dict]) -> set:
 
 
 def pick(post_rows: list[dict]) -> dict | None:
-    """First quote not yet used, avoiding the theme of the last edit."""
+    """Next quote: never one already used, from the author used LEAST
+    recently, avoiding the theme of the last edit.
+
+    Author rotation since 2026-10-18 (2 posts a day): the bank is stored by
+    author, so plain bank order aired ten Marcus Aurelius edits in a row and
+    then a run of Seneca. Alternating keeps back-to-back posts distinct (the
+    repetitive-content risk grows with volume) and gives each author a fair
+    test. Deterministic: ties break by author name, then bank order.
+    """
     used = _used(post_rows)
-    last_theme = next((r.get("theme") for r in reversed(post_rows)
-                       if (r.get("experiment") or "").startswith("edit:")), None)
+    edit_rows = [r for r in post_rows if (r.get("experiment") or "").startswith("edit:")]
+    last_theme = edit_rows[-1].get("theme") if edit_rows else None
     fresh = [q for q in load() if q["id"] not in used]
     if not fresh:
         return None
-    for q in fresh:
-        if q["theme"] != last_theme:
-            return q
+    seen = {}
+    for i, r in enumerate(edit_rows):
+        seen[(r.get("author") or "").strip()] = i
+    authors = sorted({q["author"] for q in fresh}, key=lambda a: (seen.get(a, -1), a))
+    for a in authors:
+        for q in fresh:
+            if q["author"] == a and q["theme"] != last_theme:
+                return q
     return fresh[0]
 
 
