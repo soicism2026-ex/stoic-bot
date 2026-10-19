@@ -1,39 +1,39 @@
 # Stoic Shorts — Channel Report
 
 ## 🎯 Monetization goal (500 subs + 3M Shorts views / 90 days)
-- Subscribers: **228 / 500**  (46%)
-- Shorts views (rolling 90d): **72,946 / 3,000,000**  (2.4%)
-- Current run-rate: **~154 views/day** · needed for 3M/90d: **~33,300/day** — the gap closes with volume + a breakout video, not averages. Every post is a lottery ticket; the pipeline optimises the odds.
+- Subscribers: **231 / 500**  (46%)
+- Shorts views (rolling 90d): **74,896 / 3,000,000**  (2.5%)
+- Current run-rate: **~381 views/day** · needed for 3M/90d: **~33,300/day** — the gap closes with volume + a breakout video, not averages. Every post is a lottery ticket; the pipeline optimises the odds.
 
 ## 1. Health snapshot
-- Posts with data: **262** (of 262 total)
-- Total views: **72,946** · avg **278** · median **158** · best **1,255** · worst **4**
-- Engagement: **2.68%** like rate, **0.736%** comment rate
-- Trend: earlier 247 posts avg **293** → last 15 avg **44**  (DOWN 249)
+- Posts with data: **269** (of 269 total)
+- Total views: **74,896** · avg **278** · median **158** · best **1,255** · worst **4**
+- Engagement: **2.65%** like rate, **0.726%** comment rate
+- Trend: earlier 254 posts avg **285** → last 15 avg **165**  (DOWN 121)
   - _Caveat: newer videos are younger, so some of this gap is just age._
 
 ## Retention (the signal that actually drives reach)
-- Avg view %: **85.8%** across 195 videos
+- Avg view %: **87.2%** across 195 videos
 - Best retention: **2129%** — "The greater the difficulty, the more glo"
 - Worst retention: **28%** — "A great fortune is a great slavery."
 - _Optimise hooks/pacing for the high-retention patterns above._
 
 ## Avg views by theme
 - mortality/memento mori         **344v**  (n=24)
+- friendship                     **334v**  (n=21)
 - anger                          **332v**  (n=26)
-- friendship                     **318v**  (n=20)  ⚠️ weak
-- desire                         **305v**  (n=18)  ⚠️ weak
+- desire                         **315v**  (n=19)  ⚠️ weak
 - resilience                     **297v**  (n=27)  ⚠️ weak
-- fear                           **293v**  (n=25)  ⚠️ weak
-- discipline                     **291v**  (n=26)  ⚠️ weak
+- discipline                     **292v**  (n=28)  ⚠️ weak
+- fear                           **285v**  (n=26)  ⚠️ weak
 - duty/justice                   **239v**  (n=23)  ⚠️ weak
 - ego                            **234v**  (n=26)  ⚠️ weak
 - control vs acceptance          **222v**  (n=24)  ⚠️ weak
-- time                           **221v**  (n=12)  ⚠️ weak
 - adversity as training          **217v**  (n=7)  ⚠️ weak
+- time                           **211v**  (n=13)  ⚠️ weak
 - mortality / memento mori       **58v**  (n=1)
 - mortality                      **48v**  (n=1)
-- control                        **45v**  (n=2)
+- control                        **42v**  (n=3)
 
 ## Avg views by author
 - Hierocles                      **639v**  (n=1)
@@ -41,8 +41,8 @@
 - Zeno of Citium                 **356v**  (n=42)
 - Musonius Rufus                 **275v**  (n=41)  ⚠️ weak
 - Epictetus                      **273v**  (n=46)  ⚠️ weak
-- Marcus Aurelius                **258v**  (n=57)  ⚠️ weak
-- Seneca                         **256v**  (n=55)  ⚠️ weak
+- Seneca                         **266v**  (n=60)  ⚠️ weak
+- Marcus Aurelius                **250v**  (n=59)  ⚠️ weak
 - Cleanthes                      **224v**  (n=1)
 - Cato the Younger               **158v**  (n=1)
 - Diogenes Laertius              **58v**  (n=2)
@@ -64,28 +64,34 @@
 - Andrew                         **126v**  (n=1)
 - ChatterboxLocal                **102v**  (n=6)  ⚠️ weak
 - BrianEdge                      **90v**  (n=5)  ⚠️ weak
-- Steffan                        **57v**  (n=56)  ⚠️ weak
+- Steffan                        **83v**  (n=61)  ⚠️ weak
+- gTTS                           **38v**  (n=2)
 
 ## Avg views by music
+- epic:Ancient Rite              **500v**  (n=1)
 - focus_underscore               **446v**  (n=30)
+- epic:Heroic Age                **401v**  (n=2)
 - ancient_minimal                **389v**  (n=29)
 - dark_ambient                   **379v**  (n=33)
+- epic:Five Armies               **278v**  (n=2)
 - cinematic_score                **270v**  (n=50)  ⚠️ weak
 - amb_embers                     **253v**  (n=13)  ⚠️ weak
 - cinematic_score_c              **144v**  (n=17)  ⚠️ weak
-- epic:Heroic Age                **142v**  (n=1)
-- epic:Volatile Reaction         **127v**  (n=1)
+- epic:Volatile Reaction         **128v**  (n=1)
+- epic:Impact Prelude            **92v**  (n=1)
 - epic:Clash Defiant             **86v**  (n=1)
 - amb_rain_night                 **84v**  (n=3)
 - cinematic_score_g              **77v**  (n=14)  ⚠️ weak
-- epic:Prelude and Action        **75v**  (n=1)
+- epic:Prelude and Action        **76v**  (n=1)
 - cinematic_score_d              **73v**  (n=17)  ⚠️ weak
 - cinematic_score_f              **72v**  (n=25)  ⚠️ weak
+- epic:Rising Game               **67v**  (n=1)
 - amb_wind_dawn                  **50v**  (n=2)
 - epic:Crusade                   **48v**  (n=1)
+- epic:Strength of the Titans    **42v**  (n=1)
+- epic:Exhilarate                **35v**  (n=1)
 - epic:Achilles                  **21v**  (n=1)
-- epic:Unholy Knight             **15v**  (n=1)
-- epic:Five Armies               **5v**  (n=1)
+- epic:Unholy Knight             **16v**  (n=1)
 
 ## Avg views by format (story is the viral bet)
 - minimal                        **257v**  (n=46)  ⚠️ weak
@@ -93,25 +99,28 @@
 - rule                           **216v**  (n=26)  ⚠️ weak
 - story                          **194v**  (n=25)  ⚠️ weak
 - letter                         **189v**  (n=13)  ⚠️ weak
+- edit                           **165v**  (n=15)  ⚠️ weak
 - pov                            **84v**  (n=3)
-- edit                           **65v**  (n=8)  ⚠️ weak
 - challenge                      **50v**  (n=2)
 - question                       **30v**  (n=5)  ⚠️ weak
 - truestory                      **26v**  (n=26)  ⚠️ weak
 
 ## ⚑ Voice gap
-- Best voice **Adam** (728v) is **12.9×** the current-style voice **Steffan** (57v). Voice may be the biggest lever (watch the age confound, but the gap is large).
+- Best voice **Adam** (728v) is **8.8×** the current-style voice **Steffan** (83v). Voice may be the biggest lever (watch the age confound, but the gap is large).
 
 ## ⚑ Duplicate quotes shipped
 - "It is not that we have a short time to live, but t…" posted 4× (views: 382, 4, 20, 568)
 
 ## Hook-lab
-- 2-3 words: **271v** avg (n=48)
-- 4-5 words: **233v** avg (n=55)
-- 6+ words: **138v** avg (n=90)
+- 2-3 words: **276v** avg (n=49)
+- 4-5 words: **231v** avg (n=58)
+- 6+ words: **142v** avg (n=93)
 - Best hook so far: "Stand unshaken." (1205v)
 
 ## Experiments (intro sound × colour grade)
+- edit:better_man        **660v** (n=1)
+- edit:everywhere_nowhere **551v** (n=1)
+- edit:craves_more       **500v** (n=1)
 - punch+warm_gold        **399v** (n=4)
 - cold_open+warm_gold    **263v** (n=36)
 - punch+obsidian         **260v** (n=4)
@@ -119,15 +128,19 @@
 - cold_open+obsidian     **229v** (n=35)
 - swell+obsidian         **178v** (n=36)
 - edit:be_such           **142v** (n=1)
-- edit:promontory        **127v** (n=1)
+- edit:promontory        **128v** (n=1)
 - story:felicio          **113v** (n=1)
 - story:the_ass          **105v** (n=1)
+- edit:ours_except_time  **92v** (n=1)
 - edit:look_within       **86v** (n=1)
-- edit:take_away_opinion **75v** (n=1)
+- edit:take_away_opinion **76v** (n=1)
+- edit:imagination       **67v** (n=1)
 - story:wrote_off_the_man **60v** (n=1)
 - story:before_breakfast **49v** (n=1)
 - story:two_handles      **48v** (n=1)
 - edit:ten_thousand_years **48v** (n=1)
+- edit:dyed_by_thoughts  **42v** (n=1)
+- edit:external_thing    **35v** (n=1)
 - ftest:the_question     **30v** (n=5)
 - story:first_hit        **27v** (n=1)
 - story:why_i_am_poor    **26v** (n=1)
@@ -137,7 +150,7 @@
 - edit:confine_present   **21v** (n=1)
 - story:sponge_and_egg   **20v** (n=1)
 - story:decide_in_your_own_favour **17v** (n=1)
-- edit:life_is_opinion   **15v** (n=1)
+- edit:life_is_opinion   **16v** (n=1)
 - story:ran_out_of_room  **14v** (n=1)
 - story:dyed_with_this_dye **14v** (n=1)
 - story:end_of_the_couch **12v** (n=1)
@@ -157,7 +170,7 @@
 - Grade signal: **warm_gold** leads (warm_gold 260v, obsidian 206v)
 
 ## Packaging (titles)
-- Shorter titles (≤45 chars): **288v** vs longer **275v**
+- Shorter titles (≤45 chars): **292v** vs longer **274v**
 
 ## Top 5
 -  1255v  Epictetus        duty/justice     Do your duty in the place where you are stat
@@ -173,18 +186,18 @@
 -     4v  Seneca           time             It is not that we have a short time to live,
 
 ## Data-driven candidates (you decide)
-- Drop / down-weight themes: **friendship, desire, resilience, fear, discipline, duty/justice, ego, control vs acceptance, time, adversity as training**
-- Over-weight themes: **mortality/memento mori, anger, friendship**
-- Down-weight authors: **Musonius Rufus, Epictetus, Marcus Aurelius, Seneca**
+- Drop / down-weight themes: **desire, resilience, discipline, fear, duty/justice, ego, control vs acceptance, adversity as training, time**
+- Over-weight themes: **mortality/memento mori, friendship, anger**
+- Down-weight authors: **Musonius Rufus, Epictetus, Seneca, Marcus Aurelius**
 - Test switching default voice away from **Steffan** toward **Adam**-style delivery.
 - Harden the duplicate-quote guard (same quote shipped twice above).
 
 ## 💰 Costs (edit data/costs.json to correct any number)
-- Claude subscription: **$20.00/mo** (since 2026-06-05, ~$85 total) ⚠️ _guess — edit me_
-- ElevenLabs Starter: **$5.00/mo** (since 2026-07-15, ~$15 total)
+- Claude subscription: **$20.00/mo** (since 2026-06-05, ~$89 total) ⚠️ _guess — edit me_
+- ElevenLabs Starter: **$5.00/mo** (since 2026-07-15, ~$16 total)
 - Anthropic API credit top-up: **$20.00** one-time (2026-07-30)
-- **Monthly burn: $25.00** · all-time spend: **~$119**
-- Unit economics: **$0.45 per Short** · **$1.60 per 1k views**
+- **Monthly burn: $25.00** · all-time spend: **~$125**
+- Unit economics: **$0.46 per Short** · **$1.64 per 1k views**
 - Running free: GitHub Actions (public repo — unlimited free minutes), edge-tts + gTTS voices (fallback pool), Pixabay + Pexels backgrounds, YouTube Data & Analytics APIs, Generative ambient music (ffmpeg), Claude subscription covers script writing in-session — the bot itself makes no paid model calls
 - _Revenue not tracked yet — add Gumroad numbers and this becomes a profit report._
 
