@@ -5460,3 +5460,59 @@ for any recurring defects.
 - severity: low
 - issues:
   - QA API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cg8n8kaQgqXHW7CbtKd9i'}
+
+## Visual QA — 2026-10-19 01:00 UTC
+**File:** `2026-10-19_reel.mp4` | **Verdict:** `UNREVIEWED`
+**Hook:** Stop waiting to start.
+**Scores:** NOT REVIEWED — no scores were produced
+**Reasoning:** Not reviewed — API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAh3v2xvxKJUw832Ufs6'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAh3v2xvxKJUw832Ufs6'}
+**Flagged dims:** not_reviewed, api_unreachable
+
+
+## Visual QA — 2026-10-19 01:01 UTC
+**File:** `2026-10-19_reel.mp4` | **Verdict:** `UNREVIEWED`
+**Hook:** Stop waiting to start.
+**Scores:** NOT REVIEWED — no scores were produced
+**Reasoning:** Not reviewed — API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAh8vSAe7yg4vnXv17ht'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAh8vSAe7yg4vnXv17ht'}
+**Flagged dims:** not_reviewed, api_unreachable
+
+
+## Visual QA — 2026-10-19 01:02 UTC
+**File:** `2026-10-19_reel.mp4` | **Verdict:** `UNREVIEWED`
+**Hook:** Stop waiting to start.
+**Scores:** NOT REVIEWED — no scores were produced
+**Reasoning:** Not reviewed — API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAhE7Gw14mi6ARnwvTCt'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAhE7Gw14mi6ARnwvTCt'}
+**Flagged dims:** not_reviewed, api_unreachable
+
+
+## Visual QA — 2026-10-19 01:03 UTC
+**File:** `2026-10-19_reel.mp4` | **Verdict:** `UNREVIEWED`
+**Hook:** Stop waiting to start.
+**Scores:** NOT REVIEWED — no scores were produced
+**Reasoning:** Not reviewed — API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAhKAiCHB5yT7zNXH8pC'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAhKAiCHB5yT7zNXH8pC'}
+**Flagged dims:** not_reviewed, api_unreachable
+
+
+## Visual QA — 2026-10-19 01:05 UTC
+**File:** `2026-10-19_reel.mp4` | **Verdict:** `UNREVIEWED`
+**Hook:** Stop waiting to start.
+**Scores:** NOT REVIEWED — no scores were produced
+**Reasoning:** Not reviewed — API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAhQ9oGExrKtPqB2iYU8'}
+**Issues:**
+- api_error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011CgAhQ9oGExrKtPqB2iYU8'}
+**Flagged dims:** not_reviewed, api_unreachable
+
+
+## 2026-10-19 — attempt 5
+- uploaded: False
+- severity: high
+- issues:
+  - preflight: too dark: mean luminance 28.1/255 (11.0%), floor is 45 (18%). This reads as a black rectangle on a phone.
