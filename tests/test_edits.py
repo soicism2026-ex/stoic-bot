@@ -241,6 +241,19 @@ def test_posts_keep_a_minimum_gap(tmp_path, monkeypatch):
         "2026-10-19,2026-10-18T01:07:00Z,y\n")
     monkeypatch.setattr(daily_post, "ROOT", tmp_path)
     now = datetime.datetime(2026, 10, 19, 23, 0, tzinfo=datetime.timezone.utc)
-    assert abs(daily_post.hours_since_last_post(now) - 0.5) < 1e-6
+    assert abs(daily_post.hours_since_last_post(now, live=False) - 0.5) < 1e-6
+    # YouTube's own newest upload wins over a stale stats file.
+    monkeypatch.setattr(daily_post, "_newest_upload_from_youtube",
+                        lambda: "2026-10-19T22:45:00Z")
+    assert abs(daily_post.hours_since_last_post(now) - 0.25) < 1e-6
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
     assert 'MIN_GAP_HOURS: "6"' in wf
+
+
+def test_edits_never_reair_a_quote_from_any_older_post():
+    """rising_to_work re-aired a 2026-09-03 quote on 2026-10-19: edit ids
+    were checked, quote text was not."""
+    q = edits.load()[0]
+    rows = [{"quote": q["quote"], "experiment": "story:something_else", "date": "2026-09-03"}]
+    assert edits.pick(rows)["id"] != q["id"]
+    assert edits.remaining(rows) == edits.remaining([]) - 1

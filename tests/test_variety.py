@@ -292,9 +292,21 @@ def test_the_healed_warnings_stay_healed(tmp_path, monkeypatch):
     out = r.stdout + r.stderr
     assert "Variety check" in out, "the checker did not run"
     live = [l for l in out.splitlines() if "WARN" in l]
-    for stale in ("rule number 7", "quote used", "verbatim"):
+    for stale in ("rule number 7", "verbatim"):
         assert not any(stale in l for l in live), (
             f"a HEALED repeat came back as a live warning: {stale!r}")
+    # A quote repeat is only "healed" if its last use is before the judged
+    # window. A NEW repeat inside the window is the watchdog doing its job
+    # (2026-10-19, an edit re-aired a September quote) and must not fail the
+    # build; the old June repeat coming back as live must.
+    import csv
+    import re
+    rows = list(csv.DictReader(open(ROOT / "data" / "posts.csv", encoding="utf-8")))
+    window_start = rows[-30]["date"] if len(rows) >= 30 else "0000"
+    for l in live:
+        if "quote used" in l:
+            m = re.search(r"most recently (\d{4}-\d{2}-\d{2})", l)
+            assert m and m.group(1) >= window_start, f"a HEALED quote repeat came back: {l}"
 
 
 # ------------------------------------------------ the background regression

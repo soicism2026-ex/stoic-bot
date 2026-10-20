@@ -90,19 +90,39 @@ POST_SLOT_HOURS = [int(h) for h in os.environ.get("POST_SLOT_HOURS", "").split("
 MIN_GAP_HOURS = float(os.environ.get("MIN_GAP_HOURS", "0"))
 
 
-def hours_since_last_post(now=None) -> float | None:
-    """Hours since the channel's newest video went live (analytics.csv
-    published_at), or None when unknown."""
+def _newest_upload_from_youtube() -> str | None:
+    """publishedAt of the channel's newest upload, straight from YouTube
+    (2 quota units). analytics.csv alone is not enough: on 2026-10-19 a run
+    40 minutes after a post found the stats file still without it, saw "last
+    post 45 h ago", and posted again in the same hour."""
+    try:
+        import analytics as _an
+        yt = _an._service()
+        ch = yt.channels().list(part="contentDetails", mine=True).execute()
+        pl = ch["items"][0]["contentDetails"]["relatedPlaylists"]["uploads"]
+        items = yt.playlistItems().list(part="contentDetails", playlistId=pl,
+                                        maxResults=5).execute().get("items", [])
+        times = [i["contentDetails"].get("videoPublishedAt") for i in items]
+        times = [t for t in times if t]
+        return max(times) if times else None
+    except Exception as e:  # noqa: BLE001
+        print(f"  [gap] YouTube lookup failed ({e}); using analytics.csv", file=sys.stderr)
+        return None
+
+
+def hours_since_last_post(now=None, live: bool = True) -> float | None:
+    """Hours since the channel's newest video went live: YouTube itself
+    first, analytics.csv as the fallback. None when unknown."""
     import csv as _csv
     now = now or datetime.datetime.now(datetime.timezone.utc)
-    newest = None
+    newest = _newest_upload_from_youtube() if live else None
     try:
         for r in _csv.DictReader(open(ROOT / "data" / "analytics.csv", encoding="utf-8")):
             p = (r.get("published_at") or "").strip()
             if p and (newest is None or p > newest):
                 newest = p
     except Exception:  # noqa: BLE001
-        return None
+        pass          # no stats file: YouTube's answer (if any) still stands
     if not newest:
         return None
     t = datetime.datetime.fromisoformat(newest.replace("Z", "+00:00"))
@@ -449,7 +469,7 @@ def main():
     if posts_today >= MAX_POSTS_PER_DAY:
         print(f"[{today}] already posted {posts_today}/{MAX_POSTS_PER_DAY} times today — skipping")
         return
-    since = hours_since_last_post()
+    since = hours_since_last_post() if MIN_GAP_HOURS else None
     if MIN_GAP_HOURS and since is not None and since < MIN_GAP_HOURS:
         print(f"[{today}] last video went live {since:.1f}h ago (minimum gap "
               f"{MIN_GAP_HOURS:g}h) — skipping")

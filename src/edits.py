@@ -36,6 +36,23 @@ def load() -> list[dict]:
     return json.loads(BANK.read_text(encoding="utf-8"))
 
 
+def _norm(t: str) -> str:
+    import re
+    return " ".join(re.sub(r"[^a-z0-9 ]+", " ", (t or "").lower()).split())
+
+
+def _aired_quotes(post_rows: list[dict]) -> list[str]:
+    """Every quote the channel has posted, in ANY format. Edit ids alone were
+    not enough: "In the morning when thou risest unwillingly" had aired as a
+    2026-09-03 post and aired again as an edit on 2026-10-19."""
+    return [_norm(r.get("quote", "")) for r in post_rows if r.get("quote")]
+
+
+def _already_aired(q: dict, aired: list[str]) -> bool:
+    key = _norm(q["quote"])[:50]
+    return bool(key) and any(key in a for a in aired)
+
+
 def _used(post_rows: list[dict]) -> set:
     return {(r.get("experiment") or "").removeprefix("edit:")
             for r in post_rows if (r.get("experiment") or "").startswith("edit:")}
@@ -80,7 +97,9 @@ def pick(post_rows: list[dict]) -> dict | None:
     edit_rows = [r for r in post_rows if (r.get("experiment") or "").startswith("edit:")]
     last_theme = edit_rows[-1].get("theme") if edit_rows else None
     jammed = jammed_ids()
-    fresh = [q for q in load() if q["id"] not in used and q["id"] not in jammed]
+    aired = _aired_quotes(post_rows)
+    fresh = [q for q in load() if q["id"] not in used and q["id"] not in jammed
+             and not _already_aired(q, aired)]
     if not fresh:
         return None
     seen = {}
@@ -95,8 +114,9 @@ def pick(post_rows: list[dict]) -> dict | None:
 
 
 def remaining(post_rows: list[dict]) -> int:
-    used, jammed = _used(post_rows), jammed_ids()
-    return sum(1 for q in load() if q["id"] not in used and q["id"] not in jammed)
+    used, jammed, aired = _used(post_rows), jammed_ids(), _aired_quotes(post_rows)
+    return sum(1 for q in load() if q["id"] not in used and q["id"] not in jammed
+               and not _already_aired(q, aired))
 
 
 def as_content(q: dict) -> dict:
