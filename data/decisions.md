@@ -80,8 +80,29 @@ This file is for OPERATIONAL decisions and taste vetoes.
   Chatterbox → Replicate → ElevenLabs (legacy) → edge-tts → gTTS. The dep
   install is `continue-on-error` — a broken torch wheel degrades the VOICE,
   never stops the post. Opt out with repo variable `CHATTERBOX_LOCAL=0`.
-  ElevenLabs ($5/mo, key currently 401ing) is now dead weight — cancel it once
-  a few posts have shipped on the local voice.
+  ~~ElevenLabs ($5/mo, key currently 401ing) is now dead weight — cancel it once
+  a few posts have shipped on the local voice.~~ Superseded 2026-10-20, below.
+- **2026-10-20 ELEVENLABS IS BACK.** Owner: *"Add ElevenLabs to my project"*,
+  after pricing the Starter plan yearly (~$87). Why: paid "Brian" has the
+  channel's best voice numbers, 2-8x the free voices within the same month.
+  Brian only ever voiced the first slot of the day, so part of that gap may be
+  the slot. Nothing changes on the channel until every gate below is passed, in order:
+  1. **Billing, unverified.** costs.json lists Starter at $5/mo since 07-15,
+     but the key has returned 401 since July, so either the plan lapsed or the
+     key was revoked. The owner checks elevenlabs.io/app/subscription BEFORE
+     buying anything. If Starter is still active, only a new key is needed.
+  2. **A new key goes in the GitHub secret `ELEVENLABS_API_KEY`**, never in
+     chat, code or a commit (local `.env` is gitignored). `check_secrets.py`
+     tests it on every daily run; look for "ELEVENLABS_API_KEY — subscription
+     tier" in the log.
+  3. **With the owner's yes: one DRY_RUN edit-preview voiced by Brian**, next
+     to the current Steffan voice. edit-preview.yml hard-codes
+     `ELEVENLABS_POSTS_PER_DAY: '0'`, so it first needs a voice input.
+  4. **The owner picks by ear** (the 08-30 rule). Only if Brian wins does
+     daily-short.yml's `ELEVENLABS_POSTS_PER_DAY` go "0" -> "2" (every post;
+     edits average ~135 spoken characters, ~8k of Starter's 30k a month at
+     2/day), and tests/test_voice_ab.py moves from Steffan to Brian. ONE
+     narrator still holds: this would change who it is, not bring back rotation.
 
 - **2026-07-30** Hugging Face free tier evaluated as a voice backend: NOT viable.
   Free accounts get only **$0.10/month** of Inference Provider credits and ~5
