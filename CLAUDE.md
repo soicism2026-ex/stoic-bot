@@ -27,6 +27,19 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 
 ---
 
+## HQ app — the owner's live view (https://claude.ai/artifact/8MtajequXptMk8RUQnSsmx)
+
+The owner watches every agent here from a phone (it is pinned in the Claude sidebar), like the head of a business, and gives feedback here. Source: `hq/forged-hq.html`. Republish with the Artifact tool (`file_path` + `url` from another session). **Every Claude session on this project reports into it.**
+
+- **Live by itself:** the owner's Claude sessions and scheduled tasks (Claude Code Remote connector, from the page, as the owner).
+- **`hq/studio`** (bots + channel numbers + next quote on air): built ONLY by `scripts/hq_snapshot.py` and written by the **HQ sync** scheduled task (`trig_01SkthKZdtqimpWg4VpNVUrV`, 6×/day at :47 after each poster cron, no notifications; the app's "Refresh now" fires it). Never hand-edit it.
+- **`hq/now`** `{state: working|waiting|idle, headline, detail, next, since, updated, session, helpers[{name,task,status,since}], alerts[{level: warn|bad, text, fix}]}`. Update it (ArtifactData, pinned `if_version`) when you start or finish real work, launch or finish a helper, or start waiting on the owner. Write in plain words: the owner reads it as a status report.
+- **`hq/log`** `{items: [{t, who, kind: work|done|post|decision|alert|you, text}]}`: newest first, ≤ 80 items. Add one line per milestone. Bot runs and posts are derived from `hq/studio` automatically: don't log them.
+- **`asks/<id>`** `{title, question, options[{id,label,hint}], status: open, order, created, video?}`: put every decision you need from the owner here, not just in chat. `video` is an artifact asset id (upload with Artifact `asset: true`). The owner answers in the app, which sets `status: answered, answer, answeredAt` and sends "[HQ decision] <title>: <option>" to Claude. When you act on it, set `outcome` (one line).
+- **Messages from the owner** arrive as artifact comments sent to Claude ("[HQ] …" / "[HQ, about X] …") and wake the session that published or watches the HQ. Reply in the thread (ArtifactComments) and set the matching `notes/<id>` to `status: done, reply`. If no session was connected, the note waits in `notes` with `sent: false`. **On session start, read `notes` (status new) and `asks` (answered, no `outcome`) before anything else.**
+
+---
+
 ## Pipeline
 
 Each run of `scripts/daily_post.py` does:
@@ -76,6 +89,8 @@ After the main post loop, the workflow runs:
 | `scripts/improve_loop.py` | The brain of the continuous improvement loop. Joins posts.csv + analytics.csv, evaluates last run's outcome, picks next focus area, writes a data-grounded prompt to `data/improve_prompt.txt`, and saves run memory to `data/improve_state.json`. |
 | `scripts/prune_videos.py` | Unlists underperforming videos. |
 | `scripts/prep_guide_clips.py` | Normalises hand-generated GUIDE clips into `assets/guide/` (1080×1920, trimmed, muted, compressed, sequentially named) so they can be committed. Prompts to generate them: `docs/guide_clip_prompts.md`. |
+| `scripts/hq_snapshot.py` | Builds the HQ app's `hq/studio` document: bots' last/next runs from GitHub's public Actions API, the Producer's next posting try (cap, slots, min gap read from daily-short.yml), channel numbers from channel_stats.csv (7/90-day views, goal progress), latest Shorts with views, and the next quote on air. Tests: `tests/test_hq_snapshot.py`. |
+| `hq/forged-hq.html` | The HQ app's page (see "HQ app" above). Capabilities: db, user, mcp (Claude Code Remote: list_sessions, list_triggers, fire_trigger), comments (sendToClaude), sample ("Explain what's happening"), assets. |
 | `scripts/cost_report.py` | Cost agent: reads `data/costs.json` (subscriptions incl. Claude + ElevenLabs, one-time buys), computes monthly burn, all-time spend, cost per Short / per 1k views. Standalone + embedded in the weekly channel report. |
 
 ---
@@ -90,7 +105,7 @@ After the main post loop, the workflow runs:
 | `rethumbnail.yml` | manual | Backfill thumbnails for old videos |
 | `backfill.yml` | manual | Re-process old posts |
 | `repost.yml` | manual | Re-upload a specific video |
-| `ci.yml` | push/PR | Run tests |
+| `ci.yml` | pull request only | Lint gate: compiles every Python file, validates workflow YAML (it does NOT run pytest, and has not run since June) |
 | `edit-preview.yml` | manual | Renders the next edit with the full pipeline, `DRY_RUN` (nothing uploaded or logged); `music` input auditions a track |
 | `make-music.yml` | manual | One parallel job per style: generates original edit tracks on free runners, commits them UNAPPROVED, attaches a sampler video |
 | `auto-improve.yaml` | cron daily 06:00 UTC | Continuous improvement loop: runs `improve_loop.py` to pick a data-driven focus, feeds the output prompt to Claude Code Action, Claude implements the change and commits directly to main |

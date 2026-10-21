@@ -1335,3 +1335,19 @@ that story must always be captioned "recorded in the Historia Augusta", never
   an agent never creates, reads or copies API keys or passwords through the
   owner's browser. It would see them, which breaks the never-in-chat rule
   (ElevenLabs CLI, HF key).
+- **2026-10-21 — HQ APP: the owner's live view of every agent.** Owner:
+  *"create an app that shows me all the agents working in real time on this
+  project in a nice UI I can observe the work being done like the leader of a
+  buisness ... make it avaiable as an app on my phone I can watch and give my
+  feedback on things."* Built https://claude.ai/artifact/8MtajequXptMk8RUQnSsmx,
+  pinned in the owner's Claude sidebar. Tabs: Now (what Claude is doing,
+  decisions waiting, who is working, alerts, next quote on air), Team (Claude
+  sessions live, helpers, studio bots, scheduled agents), Channel (subs, views,
+  monetization goals, latest Shorts), Log (the owner's messages and Claude's
+  answers, past decisions, activity). **Decisions for the owner go in the app's
+  `asks`, not only in chat; feedback from the app arrives as comments sent to
+  Claude.** Every session reports into it (CLAUDE.md "HQ app").
+  The **HQ sync** scheduled task (`trig_01SkthKZdtqimpWg4VpNVUrV`) was created
+  on Claude's own initiative so bot status stays fresh between chats: it runs
+  6×/day, sends no notifications, and costs a little plan usage per run.
+  Pause or delete it from claude.ai scheduled tasks if unwanted.
