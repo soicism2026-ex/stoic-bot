@@ -1321,3 +1321,17 @@ that story must always be captioned "recorded in the Historia Augusta", never
   jam protection (data/edit_blocks.csv, set aside after 2 blocked runs);
   MIN_GAP_HOURS=6 keeps posts apart even when a manual run lands near a cron.
 
+- **2026-10-21 — AGENTS: in the cloud, driving Chrome on the owner's PC.**
+  Asked where autonomous agents should run, the owner chose **the cloud** (they
+  run with the PC off and need no install). Asked what they should do, the
+  owner skipped the offered jobs (daily check-up, weekly report, quote refill),
+  so none were created. The answer was *"I want it to use my desktop pc to
+  acces chrome and do tasks on the internet"*. Not linked yet. It needs the
+  Claude desktop app on the PC, signed in, with Settings → This computer →
+  Computer use on; the Claude in Chrome extension (plain computer use can
+  only LOOK at a browser, not click in it); and this session linked to the PC
+  (claude.ai composer + → Devices). Tasks that use Chrome only work while the
+  PC is on, awake and has the app open. **Credentials stay with the owner:**
+  an agent never creates, reads or copies API keys or passwords through the
+  owner's browser. It would see them, which breaks the never-in-chat rule
+  (ElevenLabs CLI, HF key).
