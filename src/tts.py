@@ -594,8 +594,10 @@ def _synthesize_elevenlabs(text: str, out_path: Path, voice_id: str) -> tuple:
             return out_path, _estimate_timings(text, _audio_duration(out_path))
         raise ValueError("ElevenLabs plain endpoint returned empty audio")
     except Exception as e:
-        print(f"  tts: ElevenLabs plain endpoint also failed ({e}); falling back to edge-tts")
-        return _synthesize_edge(text, out_path, VOICE_POOL[0]["id"])
+        # Raise rather than fall back here: synthesize_voice() falls through to
+        # edge-tts itself and records the voice that really spoke. Falling back
+        # inside this function made a failed call (a 401 key) log as "Brian".
+        raise RuntimeError(f"ElevenLabs failed on both endpoints ({e})") from e
 
 
 # ---------------------------------------------------------------------------

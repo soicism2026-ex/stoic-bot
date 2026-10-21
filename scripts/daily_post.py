@@ -997,8 +997,12 @@ def main():
             out = ROOT / "data" / "preview"
             out.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(video_path, out / f"{exp_name.replace(':', '_')}.mp4")
+            # The voice that really spoke, so a voice test can prove it
+            # (edit-preview fails a brian run when this isn't "Brian").
+            spoke = tts_mod.LAST_VOICE_NAME or voice["name"]
+            (out / "voice.txt").write_text(spoke + "\n", encoding="utf-8")
             print(f"  [preview] DRY_RUN — saved {out.name}/{exp_name.replace(':', '_')}.mp4, "
-                  f"NOT uploaded, NOT logged")
+                  f"voice {spoke}, NOT uploaded, NOT logged")
             print(f"  [preview] description:\n{description}")
             return
 

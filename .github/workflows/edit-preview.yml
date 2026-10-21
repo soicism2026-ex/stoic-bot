@@ -9,6 +9,11 @@ on:
         description: Audition an original track by id (data/edit_music.json), approved or not. Preview only.
         required: false
         default: ''
+      voice:
+        description: steffan = the live narrator; brian = paid ElevenLabs Brian (checks the key first, fails if Brian did not speak)
+        type: choice
+        options: [steffan, brian]
+        default: steffan
 jobs:
   preview:
     runs-on: ubuntu-latest
@@ -22,6 +27,39 @@ jobs:
         python-version: '3.12'
     - name: Install deps
       run: pip install -r requirements.txt
+    - name: Check the ElevenLabs key (prints the plan, never the key)
+      if: inputs.voice == 'brian'
+      env:
+        ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      run: |
+        python - <<'EOF'
+        import json, os, sys, urllib.request
+        sys.path[:0] = ["scripts", "src"]
+        import check_secrets, tts
+        check_secrets.check_elevenlabs()
+        def get(path):
+            req = urllib.request.Request("https://api.elevenlabs.io" + path,
+                                         headers={"xi-api-key": os.environ["ELEVENLABS_API_KEY"]})
+            try:
+                with urllib.request.urlopen(req, timeout=15) as r:
+                    return json.loads(r.read())
+            except Exception as e:
+                print(f"  {path}: {e}")
+                return {}
+        s = get("/v1/user/subscription")
+        if s:
+            print(f"  plan {s.get('tier')} ({s.get('status')}): "
+                  f"{s.get('character_count')} of {s.get('character_limit')} characters used this month")
+        v = get(f"/v1/voices/{tts._EL_VOICE_ID}")
+        if v:
+            print(f"  voice {tts._EL_VOICE_ID}: {v.get('name')} ({v.get('category')})")
+        EOF
+        # ElevenLabs' own check, as its onboarding asks. The key goes in a
+        # temp file outside the checkout and is deleted straight after.
+        umask 077
+        printf 'ELEVENLABS_API_KEY=%s\n' "$ELEVENLABS_API_KEY" > "$RUNNER_TEMP/el.env"
+        npx -y @elevenlabs/cli@latest onboard check --env-path "$RUNNER_TEMP/el.env" || true
+        rm -f "$RUNNER_TEMP/el.env"
     - name: 'Render the next edit (DRY_RUN: no upload, no log)'
       env:
         MAX_POSTS_PER_DAY: '99'
@@ -52,13 +90,29 @@ jobs:
         DRY_RUN: '1'
         REEL_FORMAT: edit
         REEL_EDIT_MUSIC: ${{ inputs.music }}
-      run: python scripts/daily_post.py
+        VOICE: ${{ inputs.voice || 'steffan' }}
+      run: |
+        if [ "$VOICE" = brian ]; then
+          # Nothing ahead of ElevenLabs in the voice chain may speak, and the
+          # live once-a-day allocation must not block a preview.
+          export ELEVENLABS_POSTS_PER_DAY=99 CHATTERBOX_LOCAL=0 REPLICATE_API_TOKEN=
+        fi
+        python scripts/daily_post.py
+    - name: Confirm Brian actually spoke
+      if: inputs.voice == 'brian'
+      run: |
+        spoke=$(cat data/preview/voice.txt 2>/dev/null || echo none)
+        echo "voice that spoke: $spoke"
+        if [ "$spoke" != Brian ]; then
+          echo "::error::ElevenLabs did not speak (got $spoke). The render log above has the ElevenLabs error."
+          exit 1
+        fi
     - name: Review sheet
       if: always()
       run: python scripts/review_shots.py data/preview data/preview/review.png || true
     - uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: edit-preview
+        name: edit-preview-${{ inputs.voice || 'steffan' }}
         path: data/preview/
         if-no-files-found: ignore
