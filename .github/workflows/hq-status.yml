@@ -1,0 +1,60 @@
+# Publishes the bots' latest runs for the HQ app (scripts/hq_snapshot.py).
+# The HQ sync scheduled task runs in a Claude session with no GitHub API
+# access, so this workflow, which has it, writes the runs to the `hq-status`
+# branch (one file, one force-pushed commit) whenever a bot starts or
+# finishes. The sync reads it over git. Nothing here touches main or the
+# channel.
+name: hq-status
+on:
+  workflow_run:
+    workflows: [daily-short, pull-analytics, "Update content strategy", "Channel report (advisory)", edit-preview, make-music]
+    types: [requested, completed]
+  workflow_dispatch:
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: hq-status
+  cancel-in-progress: true
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Collect the latest runs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          python3 - <<'EOF'
+          import json, os, subprocess
+          repo = os.environ["REPO"]
+          def api(path):
+              out = subprocess.run(["gh", "api", f"repos/{repo}/{path}"], capture_output=True, text=True)
+              return json.loads(out.stdout) if out.returncode == 0 else {}
+          runs = api("actions/runs?per_page=100").get("workflow_runs", [])
+          seen = {r["id"] for r in runs}
+          # quiet bots fall off the recent page: add each one's newest run
+          for wf in ["daily-short.yml", "pull-analytics.yml", "strategy-update.yml",
+                     "auto-improve.yaml", "edit-preview.yml", "make-music.yml"]:
+              for r in api(f"actions/workflows/{wf}/runs?per_page=1").get("workflow_runs", []):
+                  if r["id"] not in seen:
+                      runs.append(r); seen.add(r["id"])
+          keep = ("id", "name", "path", "status", "conclusion", "event", "created_at",
+                  "updated_at", "run_started_at", "html_url", "head_branch")
+          json.dump({"workflow_runs": [{k: r.get(k) for k in keep} for r in runs]},
+                    open("hq_runs.json", "w"))
+          print(len(runs), "runs")
+          EOF
+      - name: Publish to the hq-status branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          mkdir pub && mv hq_runs.json pub/ && cd pub
+          git init -q
+          git config user.name "stoic-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add hq_runs.json
+          git commit -q -m "hq status $(date -u +%FT%TZ)"
+          git push -q -f "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.git" HEAD:hq-status

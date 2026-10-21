@@ -70,6 +70,32 @@ def test_latest_run_per_workflow_wins():
     assert set(newest) == {"daily-short.yml", "pull-analytics.yml"}
 
 
+def test_runs_fall_back_to_the_hq_status_branch(monkeypatch):
+    run = {"id": 1, "path": ".github/workflows/daily-short.yml", "created_at": "2026-10-21T03:00:00Z"}
+    monkeypatch.setattr(hq, "_get_json", lambda url: None)          # no API in this session
+    monkeypatch.setattr(hq, "runs_from_branch", lambda: [run])
+    assert hq.fetch_runs() == ([run], "hq-status branch")
+    monkeypatch.setattr(hq, "runs_from_branch", lambda: [])
+    assert hq.fetch_runs() == ([], None)                           # the page then says "Unknown"
+    monkeypatch.setattr(hq, "_get_json", lambda url: {"workflow_runs": [run]})
+    assert hq.fetch_runs() == ([run], "api")
+
+
+def test_hq_status_workflow_follows_every_bot_by_its_real_name():
+    """workflow_run matches workflows by their `name:`, so a renamed bot would
+    silently stop updating the HQ."""
+    import yaml
+    wf = yaml.safe_load((ROOT / ".github" / "workflows" / "hq-status.yml").read_text())
+    on = wf.get("on") or wf.get(True)
+    listened = set(on["workflow_run"]["workflows"])
+    names = {yaml.safe_load((ROOT / ".github" / "workflows" / b["workflow"]).read_text())["name"]
+             for b in hq.BOTS}
+    assert names <= listened, names - listened
+    src = (ROOT / ".github" / "workflows" / "hq-status.yml").read_text()
+    for b in hq.BOTS:
+        assert b["workflow"] in src, b["workflow"]   # quiet bots' newest run is fetched too
+
+
 def test_channel_numbers(tmp_path, monkeypatch):
     rows = ["pulled_on,subscribers,total_views,videos"]
     start = dt.date(2026, 7, 1)

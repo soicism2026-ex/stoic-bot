@@ -179,6 +179,32 @@ def _get_json(url: str) -> dict | None:
         return None
 
 
+def runs_from_branch() -> list[dict]:
+    """The bots' runs as .github/workflows/hq-status.yml last published them
+    on the `hq-status` branch, read over git. This works in sessions with no
+    GitHub API access (the HQ sync scheduled task), since cloning does."""
+    try:
+        subprocess.run(["git", "-C", str(ROOT), "fetch", "-q", "--depth", "1", "origin", "hq-status"],
+                       check=True, capture_output=True, timeout=60)
+        out = subprocess.run(["git", "-C", str(ROOT), "show", "FETCH_HEAD:hq_runs.json"],
+                             check=True, capture_output=True, text=True, timeout=30)
+        return json.loads(out.stdout).get("workflow_runs") or []
+    except Exception:  # noqa: BLE001
+        return []
+
+
+def fetch_runs() -> tuple[list[dict], str | None]:
+    """Recent Actions runs and where they came from: GitHub's API when this
+    machine can reach it, else the hq-status branch. ([], None) when neither
+    answers; the page then shows the bots' status as unknown."""
+    got = _get_json(f"https://api.github.com/repos/{REPO}/actions/runs?per_page=100")
+    runs = (got or {}).get("workflow_runs") or []
+    if runs:
+        return runs, "api"
+    runs = runs_from_branch()
+    return (runs, "hq-status branch") if runs else ([], None)
+
+
 def latest_runs(runs: list[dict]) -> dict[str, dict]:
     """Newest run per workflow file name, from the Actions runs list."""
     out: dict[str, dict] = {}
@@ -330,10 +356,10 @@ def next_on_air(posts: list[dict]) -> dict | None:
 def build(now: dt.datetime | None = None, runs: list[dict] | None = None) -> dict:
     now = now or dt.datetime.now(dt.timezone.utc)
     posts = _rows("posts.csv")
-    online = runs is None
-    if online:
-        got = _get_json(f"https://api.github.com/repos/{REPO}/actions/runs?per_page=100")
-        runs = (got or {}).get("workflow_runs") or []
+    source = "given"
+    if runs is None:
+        runs, source = fetch_runs()
+    online = source == "api"
     nxt = next_post(posts, now, _last_upload_at(posts))
     when = ""
     if nxt["at"]:
@@ -348,6 +374,7 @@ def build(now: dt.datetime | None = None, runs: list[dict] | None = None) -> dic
         "channel": channel(now),
         "posts": recent_posts(posts),
         "runsSeen": len(runs),
+        "runsSource": source,
     }
 
 
@@ -358,7 +385,8 @@ def main() -> int:
     doc = build()
     a.out.parent.mkdir(parents=True, exist_ok=True)
     a.out.write_text(json.dumps(doc, indent=1), encoding="utf-8")
-    print(f"hq/studio: {len(doc['bots'])} bots, {doc['runsSeen']} runs seen, "
+    print(f"hq/studio: {len(doc['bots'])} bots, {doc['runsSeen']} runs seen "
+          f"(from {doc['runsSource'] or 'nowhere: GitHub did not answer'}), "
           f"{len(doc['posts'])} posts -> {a.out} ({a.out.stat().st_size} bytes)")
     return 0
 

@@ -32,7 +32,7 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 The owner watches every agent here from a phone (it is pinned in the Claude sidebar), like the head of a business, and gives feedback here. Source: `hq/forged-hq.html`. Republish with the Artifact tool (`file_path` + `url` from another session). **Every Claude session on this project reports into it.**
 
 - **Live by itself:** the owner's Claude sessions and scheduled tasks (Claude Code Remote connector, from the page, as the owner).
-- **`hq/studio`** (bots + channel numbers + next quote on air): built ONLY by `scripts/hq_snapshot.py` and written by the **HQ sync** scheduled task (`trig_01SkthKZdtqimpWg4VpNVUrV`, 6×/day at :47 after each poster cron, no notifications; the app's "Refresh now" fires it). Never hand-edit it.
+- **`hq/studio`** (bots + channel numbers + next quote on air): built ONLY by `scripts/hq_snapshot.py` (bot runs from GitHub's API, or from the `hq-status` branch that `hq-status.yml` keeps current) and written by the **HQ sync** scheduled task (`trig_01SkthKZdtqimpWg4VpNVUrV`, 6×/day at :47 after each poster cron, no notifications; the app's "Refresh now" fires it). Never hand-edit it.
 - **`hq/now`** `{state: working|waiting|idle, headline, detail, next, since, updated, session, helpers[{name,task,status,since}], alerts[{level: warn|bad, text, fix}]}`. Update it (ArtifactData, pinned `if_version`) when you start or finish real work, launch or finish a helper, or start waiting on the owner. Write in plain words: the owner reads it as a status report.
 - **`hq/log`** `{items: [{t, who, kind: work|done|post|decision|alert|you, text}]}`: newest first, ≤ 80 items. Add one line per milestone. Bot runs and posts are derived from `hq/studio` automatically: don't log them.
 - **`asks/<id>`** `{title, question, options[{id,label,hint}], status: open, order, created, video?}`: put every decision you need from the owner here, not just in chat. `video` is an artifact asset id (upload with Artifact `asset: true`). The owner answers in the app, which sets `status: answered, answer, answeredAt` and sends "[HQ decision] <title>: <option>" to Claude. When you act on it, set `outcome` (one line).
@@ -108,6 +108,7 @@ After the main post loop, the workflow runs:
 | `ci.yml` | pull request only | Lint gate: compiles every Python file, validates workflow YAML (it does NOT run pytest, and has not run since June) |
 | `edit-preview.yml` | manual | Renders the next edit with the full pipeline, `DRY_RUN` (nothing uploaded or logged); `music` input auditions a track |
 | `make-music.yml` | manual | One parallel job per style: generates original edit tracks on free runners, commits them UNAPPROVED, attaches a sampler video |
+| `hq-status.yml` | whenever a bot starts or finishes | Publishes the bots' latest runs to the `hq-status` branch (one force-pushed file) for the HQ app: the HQ sync session has no GitHub API access but can read it over git |
 | `auto-improve.yaml` | cron daily 06:00 UTC | Continuous improvement loop: runs `improve_loop.py` to pick a data-driven focus, feeds the output prompt to Claude Code Action, Claude implements the change and commits directly to main |
 
 ---

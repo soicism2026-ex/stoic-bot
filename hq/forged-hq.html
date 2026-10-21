@@ -444,6 +444,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     working: ["Working", "s-work"], queued: ["Starting", "s-work"], waiting: ["Needs you", "s-wait"],
     review: ["Ready for you", "s-wait"], failed: ["Failed", "s-fail"], idle: ["Idle", "s-idle"],
     done: ["Done", "s-done"], scheduled: ["Scheduled", "s-idle"], paused: ["Paused", "s-idle"],
+    unknown: ["Unknown", "s-idle"],
   };
   const pill = (k) => { const [label, cls] = STATUS[k] || STATUS.idle; return `<span class="pill ${cls}">${esc(label)}</span>`; };
   const stCls = (k) => (STATUS[k] || STATUS.idle)[1];
@@ -485,9 +486,15 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     }));
   }
   function botAgents() {
+    const blind = S.studio && S.studio.runsSeen === 0;
     return ((S.studio && S.studio.bots) || []).map((b) => {
       const last = b.last || {};
       let doing = "";
+      if (blind) return {
+        key: "b:" + b.id, kind: "bot", status: "unknown", name: b.name, role: b.role,
+        doing: [b.note, "GitHub didn't answer at the last sync"].filter(Boolean).join(" · "),
+        next: b.next, link: safeUrl(b.url), linkLabel: "See it on GitHub",
+      };
       if (b.status === "working") doing = "Running now, started " + ago(last.at);
       else if (b.status === "queued") doing = "Waiting for a GitHub runner";
       else if (last.conclusion === "success") doing = "Last run finished fine";
