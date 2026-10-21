@@ -361,10 +361,8 @@ def build(now: dt.datetime | None = None, runs: list[dict] | None = None) -> dic
         runs, source = fetch_runs()
     online = source == "api"
     nxt = next_post(posts, now, _last_upload_at(posts))
-    when = ""
-    if nxt["at"]:
-        when = dt.datetime.fromisoformat(nxt["at"].replace("Z", "+00:00")).strftime("%H:%M UTC")
-    note = f"{nxt['postsToday']} of {nxt['cap']} posted today" + (f" · next try {when}" if when else "")
+    # the page shows the next try in the viewer's own time zone from nextPost
+    note = f"{nxt['postsToday']} of {nxt['cap']} posted today"
     return {
         "updated": _iso(now),
         "source": "scripts/hq_snapshot.py",

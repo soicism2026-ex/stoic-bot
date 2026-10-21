@@ -144,15 +144,37 @@ button { font: inherit; color: inherit; }
 /* Agents */
 .glance-counts { display: flex; flex-wrap: wrap; gap: 6px; }
 .list { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); overflow: hidden; }
-.agent { display: grid; grid-template-columns: 40px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 13px 14px; border-top: 1px solid var(--line); background: none; border-left: 0; border-right: 0; border-bottom: 0; width: 100%; text-align: left; cursor: pointer; }
+.agent { display: grid; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; align-items: start; padding: 13px 14px; border-top: 1px solid var(--line); background: none; border-left: 0; border-right: 0; border-bottom: 0; width: 100%; text-align: left; cursor: pointer; }
 .agent:first-child { border-top: 0; }
-.avatar { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; background: var(--raised); font-family: var(--display); font-weight: 700; font-size: 13px; letter-spacing: .04em; color: var(--fg); box-shadow: inset 0 0 0 2px var(--c, var(--line)); }
-.avatar.s-work { --c: var(--work); background: var(--raised); }
-.avatar.s-wait { --c: var(--wait); background: var(--raised); }
-.avatar.s-fail { --c: var(--fail); background: var(--raised); }
-.avatar.s-idle { --c: var(--line); background: var(--raised); color: var(--muted); }
-.avatar.s-done { --c: var(--done); background: var(--raised); }
-.avatar::before { display: none; }
+/* Pixel crew */
+.spr { position: relative; display: inline-grid; place-items: center; width: 48px; height: 48px; flex: none; border-radius: 12px; background: var(--raised); box-shadow: inset 0 0 0 2px var(--line); }
+.spr.s-work { box-shadow: inset 0 0 0 2px var(--work); }
+.spr.s-wait { box-shadow: inset 0 0 0 2px var(--wait); }
+.spr.s-fail { box-shadow: inset 0 0 0 2px var(--fail); }
+.spr.s-done { box-shadow: inset 0 0 0 2px var(--done); }
+.spr img { width: 40px; height: 40px; image-rendering: pixelated; image-rendering: crisp-edges; }
+.spr.lg { width: 60px; height: 60px; border-radius: 14px; }
+.spr.lg img { width: 48px; height: 48px; }
+.spr.s-idle img { filter: saturate(.7); opacity: .88; }
+.spr.st-working img, .spr.st-queued img { animation: hop .32s steps(1, end) infinite alternate; }
+.bub { position: absolute; top: -7px; right: -7px; min-width: 19px; height: 19px; padding: 0 5px; border-radius: 10px; font: 700 11px/17px var(--mono); text-align: center; border: 1px solid var(--bg); }
+.bub.z { background: var(--raised); color: var(--muted); border-color: var(--line); font-style: italic; }
+.bub.q { background: var(--wait); color: var(--on-gold); }
+.bub.x { background: var(--fail); color: #fff; }
+.bub.u { background: var(--raised); color: var(--muted); border-color: var(--line); }
+.bub.d { background: var(--done); color: #10180a; }
+@keyframes hop { from { transform: translateY(1px); } to { transform: translateY(-2px); } }
+.crew { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 14px 6px; padding: 16px 10px 12px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); }
+.mate { display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; padding: 2px; border: 0; background: none; border-radius: 10px; cursor: pointer; }
+.mate-name { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 700; font-size: 12.5px; }
+.mate-state { font-size: 11px; color: var(--faint); }
+.a-title { margin-left: 7px; font-weight: 600; font-size: 12px; color: var(--muted); }
+.a-say { margin-top: 3px; font-style: italic; font-size: 14.5px; color: var(--fg); overflow-wrap: anywhere; }
+.a-say::before { content: "\201C"; }
+.a-say::after { content: "\201D"; }
+.a-facts { margin-top: 3px; font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.hero-say { margin: 0; font-style: italic; color: var(--muted); }
+.explain { margin: 0; font-size: 14px; color: var(--muted); max-width: 62ch; }
 .a-name { font-weight: 700; font-size: 15px; line-height: 1.25; }
 .a-role { font-size: 13px; color: var(--muted); }
 .a-doing { margin-top: 4px; font-size: 14px; color: var(--fg); overflow-wrap: anywhere; }
@@ -255,7 +277,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
 .toast { position: fixed; z-index: 50; left: 50%; transform: translateX(-50%); top: calc(64px + env(safe-area-inset-top, 0px)); max-width: min(92vw, 460px); padding: 10px 14px; border-radius: 12px; background: var(--fg); color: var(--bg); font-weight: 600; font-size: 14px; box-shadow: var(--shadow); }
 
 @keyframes breathe { 0%, 100% { opacity: 1; } 50% { opacity: .35; } }
-@media (prefers-reduced-motion: reduce) { .live[data-s="live"] .dot, .s-work::before { animation: none; } }
+@media (prefers-reduced-motion: reduce) { .live[data-s="live"] .dot, .s-work::before, .spr img { animation: none !important; } }
 @media (min-width: 560px) { .kpis { grid-template-columns: repeat(4, minmax(0, 1fr)); } .headline { font-size: 25px; } }
 </style>
 
@@ -273,7 +295,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     <section class="view" id="view-now" aria-labelledby="h-now">
       <h1 class="sr" id="h-now">Right now</h1>
       <article class="hero" id="hero">
-        <div class="hero-top"><div class="who"><div class="avatar s-idle">C</div><div><div class="who-name">Claude</div><div class="who-role">Chief of Staff, the chat you talk to</div></div></div><span class="pill s-idle">Connecting</span></div>
+        <div class="hero-top"><div class="who"><span class="spr lg s-idle" aria-hidden="true"></span><div><div class="who-name">Claude</div><div class="who-role">Chief of Staff, the chat you talk to</div></div></div><span class="pill s-idle">Connecting</span></div>
         <p class="headline">Connecting to the studio</p>
         <p class="detail">What Claude is doing appears here the moment it checks in.</p>
       </article>
@@ -444,33 +466,149 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     working: ["Working", "s-work"], queued: ["Starting", "s-work"], waiting: ["Needs you", "s-wait"],
     review: ["Ready for you", "s-wait"], failed: ["Failed", "s-fail"], idle: ["Idle", "s-idle"],
     done: ["Done", "s-done"], scheduled: ["Scheduled", "s-idle"], paused: ["Paused", "s-idle"],
-    unknown: ["Unknown", "s-idle"],
+    unknown: ["Unknown", "s-idle"], offduty: ["Off duty", "s-idle"], oncall: ["On call", "s-idle"],
+    standby: ["Standing by", "s-idle"],
   };
   const pill = (k) => { const [label, cls] = STATUS[k] || STATUS.idle; return `<span class="pill ${cls}">${esc(label)}</span>`; };
   const stCls = (k) => (STATUS[k] || STATUS.idle)[1];
-  const RANK = { waiting: 0, review: 0, failed: 1, working: 2, queued: 2, done: 4, idle: 5, scheduled: 5, paused: 6 };
-  function initials(name) {
-    const w = String(name || "?").replace(/[^A-Za-z0-9 ]/g, " ").trim().split(/\s+/);
-    return (w.length > 1 ? w[0][0] + w[1][0] : (w[0] || "?").slice(0, 2)).toUpperCase();
+  const stLabel = (k) => (STATUS[k] || STATUS.idle)[0];
+  const RANK = { waiting: 0, review: 0, failed: 1, working: 2, queued: 2, done: 4, standby: 5, offduty: 5, scheduled: 5, oncall: 6, idle: 6, paused: 7, unknown: 7 };
+  const BUSY = ["working", "queued"];
+  const NEEDS = ["waiting", "review"];
+
+  // ---------- the pixel crew ----------
+  // Every agent is a character: a 16x16 sprite, a name from the ancient world
+  // the channel lives in, and a voice. The line each one says is written for
+  // its state, so "idle" reads as what it is: off duty until the next shift.
+  const PAL = {"k":"#1b150d","s":"#f2c9a2","S":"#c9916a","e":"#1b150d","w":"#f3eee2","W":"#c9c0ad","g":"#f2b33d","G":"#b8801f","r":"#cf4a33","R":"#8f2c1e","b":"#4677c2","B":"#2c4f86","n":"#7a5333","N":"#4a3220","l":"#6fae52","L":"#3f7a2e","m":"#a3acb6","M":"#5f6770","p":"#8a5bb5","P":"#5c3a80","o":"#e9893f","y":"#f4dc86","c":"#5fc4c8"};
+  const SPRITES = {
+    chief: ["......kkkk......",".....klgglk.....","....klWWWWlk....","...klWWWWWWlk...","....kWssssWk....","....ksessesk....","....kssssssk....","....ksWWWWsk....","...kwpwWWwwwk...","...kwwpwwwWwk...","...kwwwpwwWwk...","...kswwwpwwsk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
+    smith: ["................",".....kkkkkk.....","....kNNNNNNk....","....kNNNNNNkkk..","....kNssssNmmmk.","....ksessesmmmk.","....kssssssknk..","....ksNNNNsknk..","...ksrrrrrrsnk..","...ksrnnnnrsnk..","...ksrnnnnrsnk..","...ksrnnnnrsnk..","....ksskksskk...","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
+    owl: ["................","....k......k....","...kNk....kNk...","...kNkkkkkkNk...","...knnnnnnnnk...","...knyyyyyynk...","...knyeyyeynk...","...knyyyyyynk...","..kNnnnoonnnNk..","..kNnnyyyynnNk..","..kNnnynynnnNk..","..kNnnnynynnNk..","..kNnnyyyynnNk..","...knnnnnnnnk...","....kkokkokk....","......k..k......"],
+    general: ["....krrrrrrk....","...kRrrrrrrRk...","....kmmmmmmk....","....kmmmmmmk....","....kmssssmk....","....kmessemk....","....kssssssk....","...kkssSSsskk...","..kRrggggggrRk..","..kRrmmmmmmrRk..","..kRrmmmmmmrRk..","..kRsrrrrrrsRk..","..kRksskksskRk..","...kksskksskk...","....knnkknnk....",".....kk..kk....."],
+    scribe: ["............kwk.",".....kkkkkkkwk..","....knnnnnnwk...","....knnnnnnk....","....knssssnk....","....ksessesk....",".k.kkssssssk....","knknkssSSssk....","kwwwbbbbbbbbk...","kwWwbbbbbbbbk...","kwWwbbbbbbbbk...","kwwwsbbbbbbsk...","knknksskkssk....",".k.kksskkssk....","....knnkknnk....",".....kk..kk....."],
+    painter: [".....kkrkk......","....krrrrrk.....","...krrrrrrrk....","....knnnnnnrk...","....knssssnk....","....ksesseskk...","....ksssssskbk..","....kssSSssknk..","...kwwwwwwwwnk..","...kwwbwrwwwnk..","...kwbwwwbwwnk..","...kswwbwwgsnk..","....ksskksskk...","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
+    bard: ["................",".....kkkkkk.....","....kggggggk....","...kggggggggk...","....kgssssgk....","...kgsessesgk...",".k.kkssssssk....","kgkgkssSSssk....","kgWgllllllllk...","kgWgllllllllk...","kgWgllllllllk...",".kgksllllllsk...","..k.ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
+    messenger: ["................","..kk.kkkkkk.kk..",".kwwkggggggkwwk.","..kwwggggggwwk..","...kkgssssgkk...","....ksessesk....","....kssssssk....","....kssSSssk....","...kcncccccck...","...kccnccccck...","...kcccncnnck...","...kscccnnnsk...","....ksskkssk....","....ksskkssk....","...kwnnkknnwk...","....kkk..kkk...."],
+    scholar: ["................",".....kkkkkk.....","....knnnnnnk....","....knnnnnnk....","....knssssnk....","....kscmmcsk....","....kssssssk....","....kssSSssk....","...kppppppppk...","...kppppppppk...","...kppRrrRppk...","...ksprrrrpsk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
+    envoy: ["................",".....kkkkkk.....","....knnnnnnk....","....knnnnnnk....","....knssssnk....","....ksessesk....","....kssssssk....","....kssSSssk....","...kwbwwwwwwk...","...kwwbwwwwwk...","...kwwwbwwwwk...","...kswwwbwwsk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
+    herald: ["................",".....kkkkkk.....","....kllllllk....","....kllllllk....","....klsssslk..kk","....ksessesk.kgg","....kssssssk.kgg","....kssSSssk.kgk","...kooooooookgk.","...koooooooogk..","...kooooooook...","...ksoooooosk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
+  };
+  const CREW = {
+    chief: { name: "Claude", title: "Chief of Staff", sprite: "chief", lines: {
+      working: "On it. The top of Now shows exactly what I'm doing.",
+      waiting: "Your call, boss. It's under Needs your call.",
+      standby: "Standing by. Message me anytime." } },
+    producer: { name: "Vulcan", title: "Producer", sprite: "smith", lines: {
+      working: "Hammering out a fresh Short.",
+      offduty: "Forge is banked. Next firing {next}.",
+      failed: "Cracked the mold on the last run. I try again {next}.",
+      unknown: "Can't see the forge from here right now." } },
+    analyst: { name: "Glaux", title: "Analyst", sprite: "owl", lines: {
+      working: "Hoo! Counting today's views.",
+      offduty: "Roosting. Next count {next}.",
+      failed: "Hoo... my numbers came back wrong. Retrying {next}." } },
+    strategist: { name: "Agrippa", title: "Strategist", sprite: "general", lines: {
+      working: "Drawing up battle plans from the numbers.",
+      offduty: "Camp is quiet. March orders {next}.",
+      failed: "Out of supplies! I need Anthropic API credit to plan." } },
+    reporter: { name: "Tiro", title: "Reporter", sprite: "scribe", lines: {
+      working: "Writing this week's report.",
+      offduty: "Quill down. Next report {next}.",
+      failed: "Ink spilled on the last report." } },
+    preview: { name: "Apelles", title: "Preview painter", sprite: "painter", lines: {
+      working: "Painting a test video. It never gets posted.",
+      oncall: "Easel's ready. I paint test videos when Claude asks.",
+      failed: "Smudged the last test video." } },
+    composer: { name: "Orpheus", title: "Composer", sprite: "bard", lines: {
+      working: "Composing new music for the edits.",
+      oncall: "Lyre's tuned. I write music when Claude asks.",
+      failed: "Snapped a string on the last song." } },
+    sync: { name: "Hermes", title: "Messenger", sprite: "messenger", lines: {
+      working: "Running the bots' news over to HQ.",
+      scheduled: "I carry the bots' news to HQ. Next run {next}.",
+      failed: "Tripped on my last run. Back {next}.",
+      paused: "Grounded. Someone paused me." } },
+    researcher: { name: "Pliny", title: "Researcher", sprite: "scholar", lines: {
+      working: "Reading everything so you don't have to.",
+      done: "Done reading. Claude has my findings." } },
+    envoy: { title: "Claude agent", sprite: "envoy", lines: {
+      working: "Busy on this one.",
+      waiting: "I need you: {needs}",
+      review: "Done. Ready for you to look.",
+      standby: "Standing by.",
+      failed: "My last turn failed." } },
+    herald: { title: "Scheduled agent", sprite: "herald", lines: {
+      scheduled: "Next run {next}.",
+      failed: "My last run failed.",
+      paused: "Paused." } },
+  };
+  const FALLBACK = { queued: "working", review: "waiting", idle: "standby", offduty: "standby", oncall: "offduty", scheduled: "offduty", standby: "offduty", paused: "offduty", unknown: "offduty", done: "standby" };
+  function say(crew, state, vars = {}) {
+    const lines = (CREW[crew] || CREW.envoy).lines;
+    let k = state, t = "";
+    for (let i = 0; i < 4 && !t; i++) { t = lines[k] || ""; k = FALLBACK[k]; if (!k) break; }
+    return t.replace(/\{(\w+)\}/g, (_, v) => vars[v] || "");
   }
+  const spriteCache = new Map();
+  function spriteUrl(kind) {
+    if (spriteCache.has(kind)) return spriteCache.get(kind);
+    let url = "";
+    try {
+      const rows = SPRITES[kind] || SPRITES.envoy;
+      const c = document.createElement("canvas");
+      c.width = 16; c.height = 16;
+      const g = c.getContext("2d");
+      rows.forEach((row, y) => { for (let x = 0; x < 16; x++) { const ch = row[x]; if (ch !== ".") { g.fillStyle = PAL[ch] || "#000"; g.fillRect(x, y, 1, 1); } } });
+      url = c.toDataURL("image/png");
+    } catch { url = ""; }
+    spriteCache.set(kind, url);
+    return url;
+  }
+  const BUBBLE = { waiting: ["?", "q"], review: ["?", "q"], failed: ["!", "x"], unknown: ["?", "u"], done: ["✓", "d"],
+    offduty: ["z", "z"], oncall: ["z", "z"], standby: ["z", "z"], idle: ["z", "z"], scheduled: ["z", "z"], paused: ["z", "z"] };
+  function sprite(crew, status, big) {
+    const url = spriteUrl((CREW[crew] || CREW.envoy).sprite);
+    const b = BUBBLE[status];
+    return `<span class="spr ${stCls(status)} st-${esc(status)}${big ? " lg" : ""}" aria-hidden="true">${url ? `<img src="${url}" alt="">` : ""}${b ? `<span class="bub ${b[1]}">${esc(b[0])}</span>` : ""}</span>`;
+  }
+  const cssId = (k) => "row-" + String(k).replace(/[^A-Za-z0-9_-]/g, "_");
+  const nextText = (iso) => (iso ? when(iso) : "at its next scheduled time");
 
   // ---------- agents ----------
   function sourcesOf(s) {
     return ((s.session_context && s.session_context.sources) || []).map((x) => (x.git_repository && x.git_repository.url) || "");
   }
+  function chiefStatus() {
+    const n = S.now;
+    const sess = Array.isArray(S.sessions) && S.config ? S.sessions.find((s) => s.id === S.config.chief) : null;
+    const liveWorking = sess && /WORKING/.test(sess.status_bucket || "");
+    if (n && n.state === "waiting") return "waiting";
+    if (liveWorking) return "working";
+    if (n && n.state === "working" && Date.now() - Date.parse(n.updated || 0) < 30 * 60000) return "working";
+    return "standby";
+  }
+  function chiefAgent(s) {
+    const st = chiefStatus();
+    return {
+      key: s ? "s:" + s.id : "chief", crew: "chief", status: st, name: "Claude", title: "Chief of Staff",
+      role: "The chat you talk to. Runs the project and hands work to everyone else.",
+      say: say("chief", st), facts: (S.now && S.now.headline) || "",
+      updated: (S.now && S.now.updated) || (s && s.updated_at),
+      link: s ? "https://claude.ai/code/" + encodeURIComponent(s.id) : null, linkLabel: "Open the chat",
+    };
+  }
   function sessionAgent(s) {
+    if (S.config && S.config.chief === s.id) return chiefAgent(s);
     const pts = s.post_turn_summary || (s.external_metadata && s.external_metadata.post_turn_summary) || {};
     const bucket = String(s.status_bucket || "").replace("SESSION_STATUS_BUCKET_", "").toLowerCase();
-    let status = { working: "working", blocked: "waiting", review_ready: "review", failed: "failed" }[bucket] || "idle";
-    if (status === "idle" && pts.status_category === "need_input") status = "waiting";
-    const chief = S.config && S.config.chief === s.id;
+    let status = { working: "working", blocked: "waiting", review_ready: "review", failed: "failed" }[bucket] || "standby";
+    if (status === "standby" && pts.status_category === "need_input") status = "waiting";
     return {
-      key: "s:" + s.id, kind: "claude", status,
-      name: chief ? "Claude, Chief of Staff" : (s.title || "Claude session"),
-      role: chief ? (s.title || "This project's main chat") : "Claude agent",
-      doing: chief && S.now && S.now.headline ? S.now.headline
-        : status === "working" ? (pts.recent_action || "Working on: " + (s.title || "a task")) : (pts.status_detail || pts.recent_action || ""),
-      needs: pts.needs_action || "",
+      key: "s:" + s.id, crew: "envoy", status, name: s.title || "Claude agent", title: "Claude agent",
+      role: "Another Claude chat working on this project.",
+      say: say("envoy", status, { needs: pts.needs_action || "a decision" }),
+      facts: status === "working" ? (pts.recent_action || "") : (pts.status_detail || pts.recent_action || ""),
       updated: s.updated_at, link: "https://claude.ai/code/" + encodeURIComponent(s.id), linkLabel: "Open in Claude",
     };
   }
@@ -480,29 +618,35 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     return S.sessions.filter((s) => s.session_status !== "SESSION_STATUS_ARCHIVED" && !hidden.has(s.id) && sourcesOf(s).some((u) => u.includes(PROJECT)));
   }
   function helperAgents() {
-    return ((S.now && S.now.helpers) || []).map((h, i) => ({
-      key: "h:" + i, kind: "helper", status: h.status || "working", name: h.name || "Helper",
-      role: "Helper of the Chief of Staff", doing: h.task || "", updated: h.since || (S.now && S.now.updated),
-    }));
+    return ((S.now && S.now.helpers) || []).map((h, i) => {
+      const status = h.status === "done" ? "done" : h.status === "failed" ? "failed" : "working";
+      const pliny = /research/i.test(h.name || "");
+      return {
+        key: "h:" + i, crew: "researcher", status, name: pliny ? CREW.researcher.name : (h.name || "Helper"),
+        title: pliny ? "Researcher" : "Helper", role: "Helps Claude with one task, then clocks out.",
+        say: say("researcher", status), facts: h.task || "", updated: h.since || (S.now && S.now.updated),
+      };
+    });
   }
   function botAgents() {
     const blind = S.studio && S.studio.runsSeen === 0;
     return ((S.studio && S.studio.bots) || []).map((b) => {
+      const crew = CREW[b.id] ? b.id : "herald";
       const last = b.last || {};
-      let doing = "";
-      if (blind) return {
-        key: "b:" + b.id, kind: "bot", status: "unknown", name: b.name, role: b.role,
-        doing: [b.note, "GitHub didn't answer at the last sync"].filter(Boolean).join(" · "),
-        next: b.next, link: safeUrl(b.url), linkLabel: "See it on GitHub",
-      };
-      if (b.status === "working") doing = "Running now, started " + ago(last.at);
-      else if (b.status === "queued") doing = "Waiting for a GitHub runner";
-      else if (last.conclusion === "success") doing = "Last run finished fine";
-      else if (b.status === "failed") doing = "Last run failed";
-      else if (last.conclusion) doing = "Last run: " + last.conclusion.replace(/_/g, " ");
+      let status = blind ? "unknown" : (b.status || "idle");
+      if (status === "idle") status = b.next ? "offduty" : "oncall";
+      let facts = b.note || "";
+      if (!blind) {
+        const lastTxt = status === "working" ? "running now, started " + ago(last.at)
+          : status === "queued" ? "waiting for a GitHub runner"
+          : last.conclusion === "success" ? "last run finished fine"
+          : last.conclusion ? "last run: " + last.conclusion.replace(/_/g, " ") : "";
+        facts = [facts, lastTxt].filter(Boolean).join(" · ");
+      } else facts = [facts, "GitHub didn't answer at the last sync"].filter(Boolean).join(" · ");
       return {
-        key: "b:" + b.id, kind: "bot", status: b.status || "idle", name: b.name, role: b.role,
-        doing: [b.note, doing].filter(Boolean).join(" · "),
+        key: "b:" + b.id, crew, status, name: (CREW[crew] && CREW[crew].name) || b.name,
+        title: (CREW[crew] && CREW[crew].title) || b.name, role: b.role,
+        say: say(crew, status, { next: nextText(b.next) }), facts: facts.charAt(0).toUpperCase() + facts.slice(1),
         updated: last.finished || last.at, next: b.next,
         link: safeUrl(last.url) || safeUrl(b.url), linkLabel: "See it on GitHub",
       };
@@ -512,38 +656,34 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     return (S.triggers || []).map((t) => {
       const lr = t.last_run || {};
       const failed = /FAILED/.test(lr.status || "");
+      const status = !t.enabled ? "paused" : failed ? "failed" : "scheduled";
+      const hermes = S.config && S.config.syncTrigger === t.id;
+      const crew = hermes ? "sync" : "herald";
       return {
-        key: "t:" + t.id, kind: "trigger", status: !t.enabled ? "paused" : failed ? "failed" : "scheduled",
-        name: t.name || "Scheduled task", role: "Runs on its own schedule",
-        doing: lr.fired_at ? (failed ? "Last run failed " : "Last ran ") + ago(lr.finished_at || lr.fired_at) : "Has not run yet",
+        key: "t:" + t.id, crew, status, name: hermes ? CREW.sync.name : (t.name || "Scheduled task"),
+        title: hermes ? CREW.sync.title : "Scheduled agent",
+        role: hermes ? "Brings the bots' status and the channel numbers to this app, 6 times a day." : (t.name || "") + ": runs on its own schedule.",
+        say: say(crew, status, { next: nextText(t.next_run_at) }),
+        facts: lr.fired_at ? (failed ? "Last run failed " : "Last ran ") + ago(lr.finished_at || lr.fired_at) : "Has not run yet",
         next: t.enabled ? t.next_run_at : null, updated: null,
       };
     });
-  }
-  function chiefStatus() {
-    const n = S.now;
-    const sess = Array.isArray(S.sessions) && S.config ? S.sessions.find((s) => s.id === S.config.chief) : null;
-    const liveWorking = sess && /WORKING/.test(sess.status_bucket || "");
-    if (n && n.state === "waiting") return "waiting";
-    if (liveWorking) return "working";
-    if (n && n.state === "working" && Date.now() - Date.parse(n.updated || 0) < 30 * 60000) return "working";
-    return "idle";
   }
 
   function agentRow(a, opts = {}) {
     const open = S.open.has(a.key);
     const meta = [];
-    if (a.updated) meta.push(tAgo(a.updated));
-    if (a.next) meta.push("next " + esc(when(a.next)));
-    const more = open ? `<div class="a-more">${a.link ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.linkLabel || "Open")}</a>` : ""}<button class="link-btn" data-msg="${esc(a.key)}">Message Claude about this</button></div>` : "";
-    return `<div class="agent" role="button" tabindex="0" aria-expanded="${open}" data-key="${esc(a.key)}">
-      <div class="avatar ${stCls(a.status)}" aria-hidden="true">${esc(initials(a.name))}</div>
+    if (a.updated) meta.push(`<span>${tAgo(a.updated)}</span>`);
+    if (a.next) meta.push(`<span>next ${esc(when(a.next))}</span>`);
+    const more = open ? `<div class="a-more">${a.role ? `<p class="a-role">${esc(a.role)}</p>` : ""}${a.link ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.linkLabel || "Open")}</a>` : ""}<button class="link-btn" data-msg="${esc(a.key)}">Message Claude about this</button></div>` : "";
+    return `<div class="agent" role="button" tabindex="0" aria-expanded="${open}" data-key="${esc(a.key)}" id="${cssId(a.key)}">
+      ${sprite(a.crew, a.status)}
       <div style="min-width:0">
-        <div class="a-name">${esc(a.name)}</div>
-        ${opts.compact ? "" : `<div class="a-role">${esc(a.role || "")}</div>`}
-        ${a.doing ? `<div class="a-doing ${opts.compact && !open ? "clip" : ""}">${esc(a.doing)}</div>` : ""}
+        <div class="a-name">${esc(a.name)}<span class="a-title">${esc(a.title || "")}</span></div>
+        ${a.say ? `<div class="a-say">${esc(a.say)}</div>` : ""}
+        ${a.facts ? `<div class="a-facts ${opts.compact && !open ? "clip" : ""}">${esc(a.facts)}</div>` : ""}
         ${a.needs ? `<div class="a-needs">${esc(a.needs)}</div>` : ""}
-        ${meta.length ? `<div class="a-meta">${meta.join("<span aria-hidden='true'>·</span>")}</div>` : ""}
+        ${meta.length ? `<div class="a-meta">${meta.join("")}</div>` : ""}
         ${more}
       </div>
       ${pill(a.status)}
@@ -564,7 +704,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const hero = $("#hero");
     if (S.db === "connecting") return;
     if (!n) {
-      hero.innerHTML = `<div class="hero-top"><div class="who"><div class="avatar s-idle">C</div><div><div class="who-name">Claude</div><div class="who-role">Chief of Staff, the chat you talk to</div></div></div>${pill(st)}</div>
+      hero.innerHTML = `<div class="hero-top"><div class="who">${sprite("chief", st, true)}<div><div class="who-name">Claude</div><div class="who-role">Chief of Staff, the chat you talk to</div></div></div>${pill(st)}</div>
         <p class="headline">Claude hasn't checked in yet</p>
         <p class="detail">Claude reports here while it works: what it is doing, what comes next, and anything it needs from you.</p>`;
       return;
@@ -573,7 +713,8 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const meta = [];
     if (n.since) meta.push("<span>on this since " + esc(when(n.since)) + "</span>");
     if (n.updated) meta.push("<span>checked in " + tAgo(n.updated) + "</span>");
-    hero.innerHTML = `<div class="hero-top"><div class="who"><div class="avatar ${stCls(st)}">C</div><div><div class="who-name">Claude</div><div class="who-role">Chief of Staff, the chat you talk to</div></div></div>${pill(st)}</div>
+    hero.innerHTML = `<div class="hero-top"><div class="who">${sprite("chief", st, true)}<div><div class="who-name">Claude</div><div class="who-role">Chief of Staff, the chat you talk to</div></div></div>${pill(st)}</div>
+      <p class="hero-say">${esc(say("chief", st))}</p>
       <p class="headline">${esc(n.headline || "Working")}</p>
       ${n.detail ? `<p class="detail">${esc(n.detail)}</p>` : ""}
       ${n.next ? `<div class="nextline"><b>Next</b><span>${esc(n.next)}</span></div>` : ""}
@@ -609,18 +750,37 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     }).join("");
   }
 
+  function crewNow() {
+    const sess = projectSessions();
+    const chiefSess = sess && S.config ? sess.find((x) => x.id === S.config.chief) : null;
+    const others = (sess || []).filter((x) => !(S.config && S.config.chief === x.id)).map(sessionAgent);
+    const hermes = triggerAgents().filter((a) => a.crew === "sync");
+    return [chiefAgent(chiefSess), ...others, ...helperAgents(), ...botAgents(), ...hermes];
+  }
   function drawGlance() {
     const box = $("#glance");
-    const chief = { key: "chief", status: chiefStatus(), name: "Claude, Chief of Staff", doing: (S.now && S.now.headline) || "", updated: S.now && S.now.updated };
-    const sess = projectSessions();
-    const others = (sess || []).filter((s) => !(S.config && S.config.chief === s.id)).map(sessionAgent);
-    const all = [chief, ...others, ...helperAgents(), ...botAgents()];
-    const counts = {};
-    for (const a of all) { const k = a.status === "queued" ? "working" : a.status === "review" ? "waiting" : a.status; counts[k] = (counts[k] || 0) + 1; }
-    const chips = ["working", "waiting", "failed", "idle"].filter((k) => counts[k]).map((k) => `<span class="pill ${stCls(k)}">${counts[k]} ${esc({ working: "working", waiting: "need you", failed: "failed", idle: "idle" }[k])}</span>`).join("");
-    const active = sortAgents(all.filter((a) => a.key !== "chief" && !["idle", "scheduled", "paused", "done"].includes(a.status)));
-    const live = S.live === "on" ? "" : S.live === "ask" ? `<div class="cta-card"><p>See your other Claude agents here live, with what each one is doing.</p><button class="btn primary" id="live-on" type="button">Show live agents</button></div>` : "";
-    box.innerHTML = `<div class="glance-counts">${chips}</div>${active.length ? `<div class="list">${active.map((a) => agentRow(a, { compact: true })).join("")}</div>` : `<p class="empty">Everyone else is idle. The next bot run is ${esc(nextBotRun())}.</p>`}${live}`;
+    const all = crewNow();
+    const busy = all.filter((a) => BUSY.includes(a.status));
+    const needs = all.filter((a) => NEEDS.includes(a.status));
+    const failed = all.filter((a) => a.status === "failed");
+    const resting = all.length - busy.length - needs.length - failed.length;
+    const chips = [
+      busy.length && `<span class="pill s-work">${busy.length} working</span>`,
+      needs.length && `<span class="pill s-wait">${needs.length} need${needs.length === 1 ? "s" : ""} you</span>`,
+      failed.length && `<span class="pill s-fail">${failed.length} down</span>`,
+      resting && `<span class="pill s-idle">${resting} off duty</span>`,
+    ].filter(Boolean).join("");
+    const lineup = all.map((a) => `<button class="mate" type="button" data-mate="${esc(a.key)}" aria-label="${esc(a.name + ", " + a.title + ": " + stLabel(a.status))}">${sprite(a.crew, a.status, true)}<span class="mate-name">${esc(a.name)}</span><span class="mate-state">${esc(stLabel(a.status))}</span></button>`).join("");
+    let explain = "";
+    if (!busy.length) {
+      const vulcan = all.find((a) => a.crew === "producer");
+      explain = "Nobody's stuck. The bots work in shifts and clock in on their own"
+        + (vulcan && vulcan.next ? `: ${vulcan.name} fires up the forge ${when(vulcan.next)}.` : ".");
+    }
+    for (const f of failed) explain += ` ${f.name} is down: ${f.say}`;
+    const active = sortAgents(all.filter((a) => a.crew !== "chief" && (BUSY.includes(a.status) || NEEDS.includes(a.status) || a.status === "failed")));
+    const live = S.live === "ask" ? `<div class="cta-card"><p>See your other Claude agents here live, with what each one is doing.</p><button class="btn primary" id="live-on" type="button">Show live agents</button></div>` : "";
+    box.innerHTML = `<div class="crew">${lineup}</div><div class="glance-counts">${chips}</div>${explain ? `<p class="explain">${esc(explain.trim())}</p>` : ""}${active.length ? `<div class="list">${active.map((a) => agentRow(a, { compact: true })).join("")}</div>` : ""}${live}`;
   }
   function nextBotRun() {
     const n = ((S.studio && S.studio.bots) || []).map((b) => b.next).filter(Boolean).sort()[0];
@@ -891,9 +1051,9 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const data = {
       chief: S.now ? { state: chiefStatus(), headline: S.now.headline, detail: S.now.detail, next: S.now.next, updated: S.now.updated } : null,
       decisionsWaiting: S.asks.filter((a) => a.status === "open").map((a) => ({ title: a.title, options: (a.options || []).map((o) => o.label) })),
-      otherClaudeAgents: sess.filter((s) => !(S.config && S.config.chief === s.id)).map(sessionAgent).map((a) => ({ name: a.name, status: a.status, doing: a.doing, needs: a.needs })),
-      helpers: helperAgents().map((a) => ({ name: a.name, task: a.doing, status: a.status })),
-      bots: botAgents().map((a) => ({ name: a.name, status: a.status, note: a.doing, next: a.next })),
+      otherClaudeAgents: sess.filter((s) => !(S.config && S.config.chief === s.id)).map(sessionAgent).map((a) => ({ name: a.name, status: stLabel(a.status), doing: a.facts })),
+      helpers: helperAgents().map((a) => ({ name: a.name + " (" + a.title + ")", task: a.facts, status: stLabel(a.status) })),
+      bots: botAgents().map((a) => ({ name: a.name + " the " + a.title, status: stLabel(a.status), note: a.facts, next: a.next })),
       alerts: (S.now && S.now.alerts) || [],
       channel: S.studio && S.studio.channel ? { subs: S.studio.channel.subs, subsWeekAgo: S.studio.channel.subsWeekAgo, views7d: S.studio.channel.views7d } : null,
       nextPost: S.studio && S.studio.nextPost,
@@ -983,7 +1143,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
 
   // ---------- events ----------
   document.addEventListener("click", (ev) => {
-    const t = ev.target.closest("button, .agent, [data-go]");
+    const t = ev.target.closest("button, .agent, [data-go], [data-mate]");
     if (!t) return;
     if (t.matches(".tab")) { setTab(t.dataset.tab); return; }
     if (t.dataset.go) { setTab(t.dataset.go); return; }
@@ -1004,6 +1164,11 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       return;
     }
     if (t.dataset.decide) { decide(t.dataset.decide, t); return; }
+    if (t.dataset.mate) {
+      S.open.add(t.dataset.mate); setTab("team"); render();
+      requestAnimationFrame(() => requestAnimationFrame(() => { const row = document.getElementById(cssId(t.dataset.mate)); if (row) row.scrollIntoView({ block: "center" }); }));
+      return;
+    }
     if (t.dataset.discuss) { const a = S.asks.find((x) => x.id === t.dataset.discuss); openComposer(a ? a.title : null, $("#ask-" + CSS.escape(t.dataset.discuss))); return; }
     if (t.dataset.msg) { ev.stopPropagation(); const row = t.closest(".agent"); const name = row ? row.querySelector(".a-name").textContent : null; openComposer(name, row); return; }
     if (t.matches(".agent")) { const k = t.dataset.key; if (S.open.has(k)) S.open.delete(k); else S.open.add(k); render(); }
