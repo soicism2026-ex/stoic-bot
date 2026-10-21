@@ -160,13 +160,13 @@ jobs:
           CHATTERBOX_SENTENCE_GAP: "0.25"
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          # 0 = ElevenLabs never speaks. Two reasons: the key has been 401ing
-          # for weeks, and more importantly a third voice appearing on the
-          # first post of each day would CONTAMINATE the Steffan/Christopher
-          # A/B the owner just asked for — those posts would carry a different
-          # voice while being attributed to the rotation. Raise it only after
-          # the A/B has a verdict, and only if the key is fixed.
-          ELEVENLABS_POSTS_PER_DAY: "0"
+          # Brian (ElevenLabs) narrates EVERY post since 2026-10-21: the owner
+          # picked him by ear in the HQ, from the same quote read by Brian and
+          # by Steffan. 4 covers both daily posts and any backup rendered the
+          # same day, so one narrator holds. Steffan speaks only if ElevenLabs
+          # fails or the month's characters run out (tts.py's credit guard;
+          # about 8k of 40k a month at 2 posts a day).
+          ELEVENLABS_POSTS_PER_DAY: "4"
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}

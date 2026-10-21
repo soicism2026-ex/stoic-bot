@@ -10,10 +10,10 @@ on:
         required: false
         default: ''
       voice:
-        description: steffan = the live narrator; brian = paid ElevenLabs Brian (checks the key first, fails if Brian did not speak)
+        description: brian = the live narrator since 2026-10-21 (checks the key first, fails if Brian did not speak); steffan = the free fallback voice
         type: choice
-        options: [steffan, brian]
-        default: steffan
+        options: [brian, steffan]
+        default: brian
 jobs:
   preview:
     runs-on: ubuntu-latest
@@ -90,7 +90,7 @@ jobs:
         DRY_RUN: '1'
         REEL_FORMAT: edit
         REEL_EDIT_MUSIC: ${{ inputs.music }}
-        VOICE: ${{ inputs.voice || 'steffan' }}
+        VOICE: ${{ inputs.voice || 'brian' }}
       run: |
         if [ "$VOICE" = brian ]; then
           # Nothing ahead of ElevenLabs in the voice chain may speak, and the
@@ -113,6 +113,6 @@ jobs:
     - uses: actions/upload-artifact@v4
       if: always()
       with:
-        name: edit-preview-${{ inputs.voice || 'steffan' }}
+        name: edit-preview-${{ inputs.voice || 'brian' }}
         path: data/preview/
         if-no-files-found: ignore

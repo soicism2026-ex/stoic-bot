@@ -83,14 +83,18 @@ def test_the_real_history_does_not_resurrect_the_dropped_voice():
     assert set(picks) == {"Steffan"}, picks
 
 
-def test_elevenlabs_is_silenced_so_the_ab_stays_clean():
-    """A paid third voice on the first post each day would be logged inside the
-    rotation while sounding like neither arm."""
+def test_one_narrator_brian_on_every_post():
+    """Until 2026-10-21 this pinned ElevenLabs to 0 so a paid third voice could
+    not contaminate the Steffan/Christopher A/B. That A/B ended in August, and
+    on 2026-10-21 the owner picked Brian by ear in the HQ (same quote, both
+    voices). ONE narrator still holds, now Brian: the allocation must cover
+    every post of the day plus a same-day backup, or a second voice airs."""
     yaml = pytest.importorskip("yaml")
     wf = yaml.safe_load((ROOT / ".github/workflows/daily-short.yml").read_text())
     env = next(s["env"] for s in wf["jobs"]["post"]["steps"]
                if "ELEVENLABS_POSTS_PER_DAY" in (s.get("env") or {}))
-    assert str(env["ELEVENLABS_POSTS_PER_DAY"]) == "0"
+    cap = int(str(env["MAX_POSTS_PER_DAY"]).split("'")[-2])
+    assert int(env["ELEVENLABS_POSTS_PER_DAY"]) >= cap + 1
 
 
 def test_chatterbox_stays_off_so_it_cannot_rejoin():

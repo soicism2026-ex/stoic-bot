@@ -639,7 +639,7 @@ that story must always be captioned "recorded in the Historia Augusta", never
   flagged Seneca Letter 78 for a decision; that was wrong to surface at all.
   Enforced in `validate_stories.BANNED`, which blocks the post. Never
   re-propose, including "carefully handled" versions.
-- **2026-08-30 — VOICE: Steffan, on the owner's ear.** He sent
+- **2026-08-30 — VOICE: Steffan, on the owner's ear.** *(Superseded 2026-10-21: Brian, below.)* He sent
   `youtube.com/shorts/kIjqfJvj3Ps` — *"the voice on this short was better use
   this one"*. That post is Steffan. Two days earlier he had said "remove the
   less popular voice", which by views was Steffan (median day-3 70 vs 44). But
@@ -1351,3 +1351,18 @@ that story must always be captioned "recorded in the Historia Augusta", never
   on Claude's own initiative so bot status stays fresh between chats: it runs
   6×/day, sends no notifications, and costs a little plan usage per run.
   Pause or delete it from claude.ai scheduled tasks if unwanted.
+- **2026-10-21 — VOICE: Brian narrates every post.** The owner picked
+  "Switch to Brian" in the HQ after watching the same quote read by Steffan
+  and by Brian (ElevenLabs), back to back. This was gate 4 of the 2026-10-20
+  ElevenLabs entry, so all four gates are now passed. `ELEVENLABS_POSTS_PER_DAY`
+  is "4" (every post plus a same-day backup) and ONE narrator still holds:
+  Steffan is only the fallback if ElevenLabs fails or the month's characters
+  run out. Live from the 2026-10-22 posts on. The owner's message took about
+  22 h to reach the session, so both 10-21 posts were Steffan.
+- **2026-10-21 — ELEVENLABS: "All of that, plus sound effects."** In the HQ
+  the owner chose everything on the shortlist: (1) a listen-check on every
+  video (ElevenLabs transcribes the narration before upload and blocks a
+  garbled read), (2) the owner's own cloned voice as a backup in case Brian's
+  creator withdraws that library voice, and (3) royalty-free ElevenLabs sound
+  effects for the edits. Their music (17 min/month on Starter, no Content ID
+  clause) and dubbing (no automatic route to Shorts) stay out.

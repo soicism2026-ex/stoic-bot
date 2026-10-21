@@ -6,6 +6,7 @@ to fall back to edge-tts INSIDE _synthesize_elevenlabs, so the free voice's
 read was logged as "Brian". The edit-preview voice test relies on this too.
 """
 import base64
+import re
 import sys
 from pathlib import Path
 
@@ -77,8 +78,13 @@ def test_a_working_key_is_credited_to_brian(monkeypatch, tmp_path):
     assert [w for w, *_ in timings] == ["Hi", "you"]   # real word timings
 
 
-def test_live_posts_still_never_use_the_paid_voice():
-    """ElevenLabs stays off on the channel until the owner approves Brian by
-    ear (decisions.md, 2026-10-20). Raising this is that approval's change."""
+def test_brian_narrates_every_live_post():
+    """Owner's pick by ear in the HQ, 2026-10-21: Brian (ElevenLabs) reads
+    every post. The daily allocation must cover the daily cap plus a same-day
+    backup render, or the second post (or a backup) airs in a second voice."""
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
-    assert 'ELEVENLABS_POSTS_PER_DAY: "0"' in wf
+    el = int(re.search(r'ELEVENLABS_POSTS_PER_DAY:\s*"(\d+)"', wf).group(1))
+    cap = int(re.search(r"MAX_POSTS_PER_DAY:\s*\$\{\{[^}]*'(\d+)'", wf).group(1))
+    assert el >= cap + 1, (el, cap)
+    # nothing ahead of ElevenLabs in the voice chain is switched on live
+    assert "CHATTERBOX_LOCAL: ${{ vars.CHATTERBOX_LOCAL || '0' }}" in wf
