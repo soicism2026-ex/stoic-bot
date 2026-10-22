@@ -15,10 +15,10 @@ on:
         options: [brian, steffan]
         default: brian
       sfx:
-        description: 'on = mix the ElevenLabs sound effects (approved or not: preview only)'
+        description: 'on = mix the ElevenLabs sound effects, as live posts do since 2026-10-22 (a preview may use unapproved ones)'
         type: choice
-        options: ['off', 'on']
-        default: 'off'
+        options: ['on', 'off']
+        default: 'on'
 jobs:
   preview:
     runs-on: ubuntu-latest
@@ -96,7 +96,7 @@ jobs:
         REEL_FORMAT: edit
         REEL_EDIT_MUSIC: ${{ inputs.music }}
         VOICE: ${{ inputs.voice || 'brian' }}
-        REEL_SFX: ${{ inputs.sfx == 'on' && '1' || '0' }}
+        REEL_EDIT_SFX: ${{ inputs.sfx == 'on' && '1' || '0' }}
       run: |
         if [ "$VOICE" = brian ]; then
           # Nothing ahead of ElevenLabs in the voice chain may speak, and the

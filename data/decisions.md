@@ -1366,3 +1366,11 @@ that story must always be captioned "recorded in the Historia Augusta", never
   creator withdraws that library voice, and (3) royalty-free ElevenLabs sound
   effects for the edits. Their music (17 min/month on Starter, no Content ID
   clause) and dubbing (no automatic route to Shorts) stay out.
+- **2026-10-22 — SOUND EFFECTS: all four, rotating.** In the HQ the owner
+  watched a test edit (stone slam on the first frame, blade whoosh into the
+  quote) and a sampler of all four ElevenLabs sounds, and picked "Use all
+  four, rotating". All four are approved in data/sfx.json and every edit gets
+  one impact and one whoosh, a different pair each day (REEL_EDIT_SFX=1).
+  Same day: the 15:00 UTC post was lost because `apt-get` hung on a stalled
+  mirror for the whole 60-minute job; the install step is now time-boxed and
+  retried (15-minute ceiling), and the missed post was re-run by hand.

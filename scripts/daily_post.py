@@ -732,6 +732,10 @@ def main():
             # Let the music carry 2s past the quote instead of cutting dead.
             "REEL_TAIL": "2.0",
             "REEL_BG_STRICT": "1",
+            # ElevenLabs sound effects (owner, 2026-10-22: "Use all four,
+            # rotating"): an impact on the first frame, a whoosh into the quote.
+            # Edits only: classic posts already open on their own hook sound.
+            "REEL_SFX": os.environ.get("REEL_EDIT_SFX", "0"),
             "_no_guide": True,
             "_epic": True,
         },

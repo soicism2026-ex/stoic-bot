@@ -43,8 +43,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # 2026-10-22: this step hung on a stalled package mirror for the whole
+      # 60-minute job limit and the afternoon post never happened. Each try is
+      # now time-boxed and retried, and the step can never eat the run.
       - name: Install ffmpeg + fonts
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu fonts-liberation
+        timeout-minutes: 15
+        run: |
+          for i in 1 2 3; do
+            timeout 240 sudo apt-get update -o Acquire::Retries=3 \
+              && timeout 300 sudo apt-get install -y ffmpeg fonts-dejavu fonts-liberation \
+              && break
+            echo "apt attempt $i failed or stalled; retrying"
+            sleep 15
+          done
+          command -v ffmpeg
 
       - uses: actions/setup-python@v5
         with:
@@ -171,6 +183,10 @@ jobs:
           # Voice Library voice its creator can withdraw). Empty until the owner
           # records the clone in ElevenLabs; then set its voice id here.
           ELEVENLABS_BACKUP_VOICE_ID: ""
+          # Sound effects on every edit: the owner picked "Use all four, rotating"
+          # in the HQ (2026-10-22). Each post gets one impact and one whoosh, a
+          # different pair each day (src/sfx.py; only approved sounds air).
+          REEL_EDIT_SFX: "1"
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
