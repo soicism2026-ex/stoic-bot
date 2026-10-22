@@ -1,1 +1,62 @@
-[]
+[
+  {
+    "id": "impact_boom",
+    "role": "impact",
+    "label": "Cinematic boom",
+    "file": "assets/sfx/impact_boom.mp3",
+    "approved": false,
+    "provenance": {
+      "model": "eleven_text_to_sound_v2",
+      "prompt": "One deep cinematic impact hit: a huge low boom with a short metallic ring tail, movie trailer style. A single hit, no music, no voice.",
+      "duration": 2.2,
+      "prompt_influence": 0.55,
+      "generated": "2026-10-22",
+      "license": "ElevenLabs sound effects: royalty-free, commercial use on paid plans"
+    }
+  },
+  {
+    "id": "impact_stone",
+    "role": "impact",
+    "label": "Stone slam",
+    "file": "assets/sfx/impact_stone.mp3",
+    "approved": false,
+    "provenance": {
+      "model": "eleven_text_to_sound_v2",
+      "prompt": "A heavy stone slab slamming shut in a temple: one deep thud, falling dust, short hall reverb. A single hit, no music, no voice.",
+      "duration": 2.0,
+      "prompt_influence": 0.55,
+      "generated": "2026-10-22",
+      "license": "ElevenLabs sound effects: royalty-free, commercial use on paid plans"
+    }
+  },
+  {
+    "id": "whoosh_air",
+    "role": "whoosh",
+    "label": "Air whoosh",
+    "file": "assets/sfx/whoosh_air.mp3",
+    "approved": false,
+    "provenance": {
+      "model": "eleven_text_to_sound_v2",
+      "prompt": "One fast, clean air whoosh passing from left to right, a cinematic transition. No music, no voice.",
+      "duration": 1.0,
+      "prompt_influence": 0.6,
+      "generated": "2026-10-22",
+      "license": "ElevenLabs sound effects: royalty-free, commercial use on paid plans"
+    }
+  },
+  {
+    "id": "whoosh_blade",
+    "role": "whoosh",
+    "label": "Blade swing",
+    "file": "assets/sfx/whoosh_blade.mp3",
+    "approved": false,
+    "provenance": {
+      "model": "eleven_text_to_sound_v2",
+      "prompt": "A sword swung fast through the air: a whoosh ending in a soft metallic shing. No music, no voice.",
+      "duration": 1.2,
+      "prompt_influence": 0.6,
+      "generated": "2026-10-22",
+      "license": "ElevenLabs sound effects: royalty-free, commercial use on paid plans"
+    }
+  }
+]
