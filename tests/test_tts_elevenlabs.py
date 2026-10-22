@@ -88,3 +88,28 @@ def test_brian_narrates_every_live_post():
     assert el >= cap + 1, (el, cap)
     # nothing ahead of ElevenLabs in the voice chain is switched on live
     assert "CHATTERBOX_LOCAL: ${{ vars.CHATTERBOX_LOCAL || '0' }}" in wf
+
+
+def test_the_owners_clone_reads_when_brian_fails(monkeypatch, tmp_path):
+    """Owner, 2026-10-21: a cloned voice of their own as Brian's backup."""
+    edge_calls = _paid_voice_on(monkeypatch)
+    monkeypatch.setattr(tts, "_EL_BACKUP_VOICE_ID", "clone123")
+    monkeypatch.setattr(tts, "_EL_BACKUP_VOICE_NAME", "Owner clone")
+    monkeypatch.setattr(tts, "_audio_ok", lambda p: True)
+    asked = []
+
+    def post(url, *a, **k):
+        asked.append(url.split("/text-to-speech/")[1].split("/")[0])
+        return _Rejected() if tts._EL_BRIAN_VOICE in url else _Spoke()
+    monkeypatch.setattr(tts.requests, "post", post)
+    tts.synthesize_voice("Hi you", tmp_path / "v.mp3")
+    assert tts.LAST_VOICE_NAME == "Owner clone" and edge_calls == []
+    assert asked[0] == tts._EL_BRIAN_VOICE and asked[-1] == "clone123"
+
+
+def test_without_a_clone_brian_failing_goes_straight_to_the_free_voice(monkeypatch, tmp_path):
+    edge_calls = _paid_voice_on(monkeypatch)
+    monkeypatch.setattr(tts, "_EL_BACKUP_VOICE_ID", "")
+    monkeypatch.setattr(tts.requests, "post", lambda *a, **k: _Rejected())
+    tts.synthesize_voice("Hi you", tmp_path / "v.mp3")
+    assert tts.LAST_VOICE_NAME == tts.VOICE_POOL[0]["name"] and len(edge_calls) == 1

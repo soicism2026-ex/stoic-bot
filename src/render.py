@@ -106,6 +106,10 @@ HOOK_HOLD = float(os.environ.get("REEL_HOOK_HOLD", "2.2"))      # seconds fully 
 # daily_post sets this to the end of the story narration so the quote appears
 # exactly when the voice stops — see the three-act note at the fade site.
 QUOTE_APPEAR = float(os.environ.get("REEL_QUOTE_APPEAR", "0"))
+# ElevenLabs sound effects (src/sfx.py): an impact on the first frame and a
+# whoosh into the quote. Off unless REEL_SFX=1; only owner-approved sounds air.
+SFX_ON = os.environ.get("REEL_SFX", "0") not in ("0", "false", "False")
+SFX_VOLUME = float(os.environ.get("REEL_SFX_VOLUME", "0.35"))
 # The voice reads the quote (daily_post, owner 2026-09-24). The card then shows
 # ONLY while it is spoken, word by word, instead of sitting on screen while
 # the lesson is talked over it.
@@ -544,6 +548,26 @@ def _mix_intro_sound(voice_path: Path, hook_path: Path, out_path: Path) -> Path:
          "-c:a", "aac", "-b:a", "192k", str(out_path)],
         check=True, capture_output=True,
     )
+    return out_path
+
+
+def _make_sfx_track(cues: list, dur: float, out_path: Path) -> Path | None:
+    """One stereo track, `dur` seconds long, with each (sound, start second)
+    cue in place. None when there is nothing to place."""
+    if not cues:
+        return None
+    inputs, parts = [], []
+    for i, (path, start) in enumerate(cues):
+        inputs += ["-i", str(path)]
+        ms = max(0, int(round(start * 1000)))
+        parts.append(f"[{i}:a]aresample=44100,aformat=channel_layouts=stereo,adelay={ms}|{ms}[s{i}]")
+    joined = "".join(f"[s{i}]" for i in range(len(cues)))
+    mix = (f"{joined}amix=inputs={len(cues)}:duration=longest:normalize=0," if len(cues) > 1
+           else f"{joined}anull,")
+    fc = ";".join(parts) + f";{mix}apad,atrim=0:{dur:.2f}[a]"
+    proc.run(["ffmpeg", "-y", *inputs, "-filter_complex", fc, "-map", "[a]",
+              "-ar", "44100", "-ac", "2", str(out_path)],
+             check=True, capture_output=True)
     return out_path
 
 
@@ -1558,10 +1582,30 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     audio_in = len(bg_clips)
     inputs = [*clip_inputs, "-i", str(audio_for_render)]
 
+    sfx_track = None
+    if SFX_ON:
+        try:
+            import sfx as sfx_mod
+            seed = os.environ.get("REEL_SFX_SEED") or date.today().isoformat()
+            cue_list = sfx_mod.cues(QUOTE_APPEAR, seed)
+            sfx_track = _make_sfx_track(cue_list, dur, Path(out_path).with_suffix(".sfx.wav"))
+            if sfx_track:
+                print("  sfx: " + ", ".join(f"{Path(p).stem} at {t:.2f}s" for p, t in cue_list))
+        except Exception as e:  # noqa: BLE001
+            print(f"  sfx unavailable ({e}); rendering without")
+            sfx_track = None
+
     if music_path and Path(music_path).exists():
         # Mix background music at low volume under the voiceover.
         vol = _music_volume()
         music_in = audio_in + 1
+        # Sound effects join AFTER the voice+music mix, so the music does not
+        # duck under them (the ducking is keyed on the voice alone).
+        voice_music = "[voice][music]amix=inputs=2:duration=first:dropout_transition=2"
+        if sfx_track:
+            sfx_in = music_in + 1
+            voice_music += (f"[vm];[{sfx_in}:a]volume={SFX_VOLUME}[sfx];"
+                            f"[vm][sfx]amix=inputs=2:duration=first:normalize=0")
         filter_complex = (
             f"{vgraph};"
             # apad: amix ends with its FIRST input, so without padding the
@@ -1581,20 +1625,28 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             # -14 LUFS reference so every Short lands consistently LOUD (viewer
             # feedback: intros felt quiet). aresample restores 44.1k — loudnorm
             # internally upsamples to 192 kHz.
-            f"[voice][music]amix=inputs=2:duration=first:dropout_transition=2,"
+            f"{voice_music},"
             f"volume=1.9,alimiter=limit=0.95,"
             f"loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100[aout]"
         )
         inputs += ["-stream_loop", "-1", "-i", str(music_path)]
+        if sfx_track:
+            inputs += ["-i", str(sfx_track)]
         audio_map = ["-map", "[aout]"]
     else:
         # No music: still normalise to -14 LUFS so loudness never depends on
         # whether the music bed happened to be available. apad: with no music
         # the audio stream used to stop at the last word while the picture ran
         # on (13.0s of audio in a 15.1s voice-only video); -t caps it.
+        head = f"[{audio_in}:a]"
+        if sfx_track:
+            sfx_in = audio_in + 1
+            inputs += ["-i", str(sfx_track)]
+            head = (f"[{sfx_in}:a]volume={SFX_VOLUME}[sfx];"
+                    f"[{audio_in}:a][sfx]amix=inputs=2:duration=first:normalize=0,")
         filter_complex = (
             f"{vgraph};"
-            f"[{audio_in}:a]loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,apad[aout]"
+            f"{head}loudnorm=I=-14:TP=-1.5:LRA=11,aresample=44100,apad[aout]"
         )
         audio_map = ["-map", "[aout]"]
 

@@ -46,7 +46,8 @@ Each run of `scripts/daily_post.py` does:
 
 1. **Guard** — reads `data/posts.csv`; skips if `posts_today >= MAX_POSTS_PER_DAY` (env, default 3)
 2. **Content** — `src/content.py` calls Claude Opus 4.8 for quote, hook, voiceover script, CTA, caption, hashtags, callout words, pinned comment
-3. **Voice** — `src/tts.py` calls ElevenLabs with-timestamps endpoint; falls back to edge-tts if no key
+3. **Voice** — `src/tts.py` calls ElevenLabs with-timestamps endpoint (Brian; the owner's own clone next if `ELEVENLABS_BACKUP_VOICE_ID` is set); falls back to edge-tts (Steffan)
+3b. **Listen-check** — `src/listen_check.py`: ElevenLabs Scribe transcribes the narration and it must match the script (fails on 2+ consecutive missing words, recall < 0.90, or 3+ extra words). A bad read is voiced again once; two DIFFERENT bad reads publish nothing that run and set the content aside after 2 blocked runs. The same words missed twice = the listener's blind spot, so it airs. Any failure to listen fails open. `LISTEN_CHECK=0` switches it off
 4. **Music** — `src/music.py` downloads a royalty-free Pixabay track to `assets/music/`
 5. **Render** — `src/render.py` builds 1080×1920 MP4 via ffmpeg. The shot list is SIZED TO THE NARRATION by `daily_post.background_flavors()`: each written b-roll beat is requested as many times as needed to keep every frame under `MAX_SECONDS_PER_CLIP` (4.5s), capped at `MAX_SHOTS_PER_BEAT` (3, the size of the stock relevance window). Story format = 4 beats × 3 = 12 clips over ~52s ≈ a cut every 4.4s; guide formats keep `[statue, b0..b3, statue]`. Render time is FLAT in clip count (measured 151s/145s/144s at 4/8/12) because each clip is trimmed to `dur / n_bg`. Hook text, quote text, cinematic score mixed
 6. **QA** — `scripts/qa_check.py` checks for frozen frames, audio desync, unreadable text; up to 5 render attempts with auto-corrections
@@ -78,6 +79,9 @@ After the main post loop, the workflow runs:
 | `src/edit_music.py` | Music for the edit format (owner's choice, 2026-10-12): ORIGINAL tracks generated in the style of the songs he named (ACE-Step 1.5, MIT, commercial use allowed; text prompts only, no song names, no reference audio), owned outright so Content ID has nothing to match. `data/edit_music.json` holds each track's drop start, provenance and `approved` flag. Only approved tracks air, playlist-style shuffle rebuilt from posts.csv; Kevin MacLeod (`src/epic_music.py`) is the fallback while nothing is approved. `REEL_EDIT_MUSIC=<id>` auditions a track, honoured only in `DRY_RUN`. |
 | `scripts/make_edit_music.py` | `setup` builds acestep.cpp (pinned commit) + downloads the GGUF models; `generate` makes one style from `data/edit_music_styles.json`; `add` imports a wav (constant-gain to -16 LUFS: single-pass loudnorm flattened the drop); `merge` adds tracks to the bank UNAPPROVED. |
 | `scripts/music_sampler.py` | One phone video, 14s of each candidate track from its drop behind a numbered title card, for the owner to pick by number. |
+| `src/listen_check.py` | The listen-check (pipeline step 3b, owner 2026-10-21): Scribe transcript vs script, word-aligned with forgiveness for split/misspelt names. `check()` never raises: `ok=None` means it could not listen and the caller fails open. Tests: `tests/test_listen_check.py`. |
+| `src/sfx.py` | ElevenLabs sound effects for edits (owner 2026-10-21): an `impact` on the first frame, a `whoosh` into the quote. Only `approved` sounds in `data/sfx.json` air; DRY_RUN previews may audition any (`REEL_SFX_IMPACT=<id>`). render.py mixes them after the voice+music mix (so the music doesn't duck under them) when `REEL_SFX=1`. |
+| `scripts/make_sfx.py` | Generates the sound bank from written descriptions (`/v1/sound-generation`), trimmed to the first transient, faded, peak-normalised, saved to `assets/sfx/` and recorded UNAPPROVED with provenance. |
 | `src/promo.py` | Configurable CTA injection into description + comment. All copy in env vars. Toggle with `PROMO_ENABLED`. |
 | `src/analytics.py` | Pulls YouTube stats to `data/analytics.csv`. |
 | `src/logbook.py` | Appends each post to `data/posts.csv`. |
@@ -106,7 +110,8 @@ After the main post loop, the workflow runs:
 | `backfill.yml` | manual | Re-process old posts |
 | `repost.yml` | manual | Re-upload a specific video |
 | `ci.yml` | pull request only | Lint gate: compiles every Python file, validates workflow YAML (it does NOT run pytest, and has not run since June) |
-| `edit-preview.yml` | manual | Renders the next edit with the full pipeline, `DRY_RUN` (nothing uploaded or logged); `music` input auditions a track |
+| `edit-preview.yml` | manual | Renders the next edit with the full pipeline, `DRY_RUN` (nothing uploaded or logged); `music` auditions a track, `voice` (brian/steffan; brian checks the key and fails if Brian didn't speak), `sfx` on/off |
+| `make-sfx.yml` | manual | Generates the ElevenLabs sound effects and commits them UNAPPROVED |
 | `make-music.yml` | manual | One parallel job per style: generates original edit tracks on free runners, commits them UNAPPROVED, attaches a sampler video |
 | `hq-status.yml` | whenever a bot starts or finishes | Publishes the bots' latest runs to the `hq-status` branch (one force-pushed file) for the HQ app: the HQ sync session has no GitHub API access but can read it over git |
 | `auto-improve.yaml` | cron daily 06:00 UTC | Continuous improvement loop: runs `improve_loop.py` to pick a data-driven focus, feeds the output prompt to Claude Code Action, Claude implements the change and commits directly to main |
@@ -177,6 +182,7 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 | `data/replied_comments.csv` | Comment IDs the bot has already replied to |
 | `data/improve_state.json` | Improvement loop memory: iteration count, current focus, focus history with before/after metrics and verdicts, metrics snapshot at each focus start |
 | `data/edit_music.json` | Edit music bank: file, drop start, label, the song whose style it follows, provenance (model, prompt, seeds, date) and the owner's `approved` flag. Approving a track = setting it `true`. |
+| `data/sfx.json` | Sound-effect bank: id, role (impact/whoosh), file, label, provenance (model, prompt, settings, date, licence) and the owner's `approved` flag. |
 | `data/edit_music_styles.json` | The 9 style descriptions (one per song the owner named). Sound only: tests fail if a prompt names a song or artist. |
 | `data/costs.json` | Editable money registry: subscriptions (Claude, ElevenLabs, API estimates), one-time purchases, free services. ASSUMED/ESTIMATE notes flag guessed numbers. Feeds `scripts/cost_report.py`. |
 | `backups/*.json` + `backups/*.mp4` | Evergreen backup bank (3 videos) used when QA fails |

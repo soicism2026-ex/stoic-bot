@@ -1,0 +1,45 @@
+# Makes the edits' sound effects with ElevenLabs (scripts/make_sfx.py):
+# written descriptions only, royalty-free on a paid plan. New sounds are
+# committed UNAPPROVED (data/sfx.json); none airs until the owner approves it.
+name: make-sfx
+on:
+  workflow_dispatch:
+    inputs:
+      only:
+        description: Sound ids from scripts/make_sfx.py, comma-separated (remakes them), or all (only sounds not yet in the bank)
+        required: false
+        default: all
+permissions:
+  contents: write
+concurrency:
+  group: make-sfx
+  cancel-in-progress: false
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install ffmpeg
+      run: sudo apt-get update && sudo apt-get install -y ffmpeg
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install deps
+      run: pip install requests
+    - name: Generate
+      env:
+        ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        ONLY: ${{ inputs.only }}
+      run: python scripts/make_sfx.py generate --only "$ONLY"
+    - name: Commit the new sounds (unapproved)
+      run: |
+        git config user.name "stoic-bot"
+        git config user.email "bot@users.noreply.github.com"
+        git add assets/sfx data/sfx.json
+        git diff --staged --quiet && exit 0
+        git commit -m "sfx: new ElevenLabs sound effects (unapproved)"
+        for i in 1 2 3; do
+          git push && break
+          git pull --rebase origin main && continue
+        done

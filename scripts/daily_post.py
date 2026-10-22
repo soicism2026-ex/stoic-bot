@@ -41,6 +41,7 @@ import stories                            # noqa: E402
 import edits                              # noqa: E402
 import epic_music                         # noqa: E402
 import edit_music                         # noqa: E402
+import listen_check                       # noqa: E402
 from preflight import review as preflight_review   # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
@@ -570,11 +571,40 @@ def main():
 
     # Voiceover once; reused across render attempts
     audio_path = ROOT / "data" / f"{today}_voice.mp3"
-    audio_path, word_timings, quote_appear = synthesize_two_part(
-        act1, act3, audio_path, voice_id=voice["id"], lead_silence=lead,
-        read_beat=QUOTE_BREATH if spoken_quote else None)
+    def _voice_it():
+        return synthesize_two_part(
+            act1, act3, audio_path, voice_id=voice["id"], lead_silence=lead,
+            read_beat=QUOTE_BREATH if spoken_quote else None)
+    audio_path, word_timings, quote_appear = _voice_it()
     print(f"  voiceover -> {audio_path.name} ({len(word_timings)} word timings, "
           f"quote appears at {quote_appear:.1f}s)")
+
+    # LISTEN-CHECK (owner, 2026-10-21, in the HQ). Nothing ever listened to the
+    # narration: a dropped or garbled word aired as-is. ElevenLabs Scribe now
+    # transcribes it and the transcript must match the script. A bad read is
+    # voiced again once (text-to-speech varies run to run); a second bad read
+    # that misses DIFFERENT words means the voice is unstable on this text, so
+    # nothing airs this run and the content is set aside after two blocked
+    # runs. The same words missed twice is the listener's blind spot (an odd
+    # name), not the voice's, so it airs. Any failure to listen fails open.
+    script = f"{act1} {act3}"
+    heard = listen_check.check(audio_path, script)
+    print(f"  [listen-check] {heard.summary()}")
+    if heard.ok is False:
+        print("  [listen-check] voicing it again")
+        audio_path, word_timings, quote_appear = _voice_it()
+        again = listen_check.check(audio_path, script)
+        print(f"  [listen-check] second read: {again.summary()}")
+        if again.ok is False and again.missing != heard.missing:
+            print("  [listen-check] two different bad reads: publishing NOTHING this run")
+            _append_qa_log(today, 0, [f"listen-check: {again.reason}"], "high", uploaded=False)
+            if content.get("_story_id"):
+                stories.record_block(content["_story_id"], today, f"listen-check: {again.reason}"[:200])
+            if content.get("_edit_id"):
+                edits.record_block(content["_edit_id"], today, f"listen-check: {again.reason}"[:200])
+            return
+        if again.ok is False:
+            print("  [listen-check] the same words were missed twice: the listener's blind spot, airing")
 
     video_path = ROOT / "data" / f"{today}_reel.mp4"
 

@@ -78,6 +78,19 @@ _EL_BRIAN_VOICE  = "Gubgw9l4dtIoQA9YZHgx"  # "Brian" from the owner's ElevenLabs
 _EL_VOICE_ID     = os.environ.get("ELEVENLABS_VOICE_ID", "").strip() or (
     _EL_BRIAN_VOICE if _EL_KEY else ""
 )
+# The owner's own cloned voice (owner, 2026-10-21: "your own cloned voice as a
+# backup"). Brian is a Voice Library voice, and its creator can withdraw it;
+# if Brian fails, this voice reads the post before the free fallback does.
+_EL_BACKUP_VOICE_ID   = os.environ.get("ELEVENLABS_BACKUP_VOICE_ID", "").strip()
+_EL_BACKUP_VOICE_NAME = os.environ.get("ELEVENLABS_BACKUP_VOICE_NAME", "").strip() or "Owner clone"
+
+
+def _el_voices() -> list[tuple[str, str]]:
+    """ElevenLabs voices to try, in order: (voice_id, name logged in posts.csv)."""
+    out = [(_EL_VOICE_ID, "Brian" if _EL_VOICE_ID == _EL_BRIAN_VOICE else "ElevenLabs")]
+    if _EL_BACKUP_VOICE_ID and _EL_BACKUP_VOICE_ID != _EL_VOICE_ID:
+        out.append((_EL_BACKUP_VOICE_ID, _EL_BACKUP_VOICE_NAME))
+    return out
 
 # Pitch/formant depth. <1.0 deepens; 1.0 disables it entirely.
 # DEFAULT 1.0 — OFF. Two rounds of pitch manipulation produced a chipmunk (a
@@ -705,15 +718,20 @@ def synthesize_voice(text: str, out_path: Path, voice_id: str = None) -> tuple:
                   file=sys.stderr)
 
     if _EL_KEY and _EL_VOICE_ID and _el_budget_allows(text):
-        print(f"  tts: ElevenLabs active (voice {_EL_VOICE_ID})")
-        try:
-            result = _synthesize_elevenlabs(text, out_path, _EL_VOICE_ID)
-            LAST_VOICE_NAME = "Brian"
-            return result
-        except Exception as e:  # noqa: BLE001
-            # Bad key, exhausted credits, or API outage — degrade the voice,
-            # never the channel. Fall through to the free edge-tts pool.
-            print(f"  tts: ElevenLabs failed ({e}); falling back to edge-tts")
+        voices = _el_voices()
+        for n, (vid, vname) in enumerate(voices):
+            print(f"  tts: ElevenLabs active (voice {vname}, {vid})")
+            try:
+                result = _synthesize_elevenlabs(text, out_path, vid)
+                LAST_VOICE_NAME = vname
+                return result
+            except Exception as e:  # noqa: BLE001
+                # Bad key, exhausted credits, or API outage — degrade the voice,
+                # never the channel. A withdrawn library voice (Brian's creator
+                # can remove it) is what the owner's own clone is for.
+                more = n + 1 < len(voices)
+                print(f"  tts: ElevenLabs voice {vname} failed ({e}); "
+                      + ("trying the backup voice" if more else "falling back to edge-tts"))
 
     vid = voice_id or VOICE_POOL[0]["id"]
     name = next((v["name"] for v in VOICE_POOL if v["id"] == vid), vid)

@@ -167,6 +167,10 @@ jobs:
           # fails or the month's characters run out (tts.py's credit guard;
           # about 8k of 40k a month at 2 posts a day).
           ELEVENLABS_POSTS_PER_DAY: "4"
+          # The owner's own cloned voice reads a post if Brian fails (Brian is a
+          # Voice Library voice its creator can withdraw). Empty until the owner
+          # records the clone in ElevenLabs; then set its voice id here.
+          ELEVENLABS_BACKUP_VOICE_ID: ""
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
