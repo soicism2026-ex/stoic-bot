@@ -1374,3 +1374,8 @@ that story must always be captioned "recorded in the Historia Augusta", never
   Same day: the 15:00 UTC post was lost because `apt-get` hung on a stalled
   mirror for the whole 60-minute job; the install step is now time-boxed and
   retried (15-minute ceiling), and the missed post was re-run by hand.
+- **2026-10-22 — BACKUP VOICE: not now.** Asked in the HQ to record a cloned
+  voice of their own as Brian's backup, the owner chose "Not now".
+  `ELEVENLABS_BACKUP_VOICE_ID` stays empty and Steffan stays the fallback. The
+  code path is built and tested, so turning it on later is one id in
+  daily-short.yml.
