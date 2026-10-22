@@ -460,6 +460,8 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
   function when(iso) { const d = new Date(iso); return isNaN(d) ? "" : dayName(d) + " " + clock(iso); }
   function tick() { document.querySelectorAll("time[data-ago]").forEach((el) => { el.textContent = ago(el.dataset.ago); }); }
   setInterval(tick, 30000);
+  // time-based states (a message not picked up yet) need a redraw, not just new times
+  setInterval(() => { if (typeof render === "function") render(); }, 60000);
 
   // ---------- statuses ----------
   const STATUS = {
@@ -735,7 +737,9 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const box = $("#asks");
     if (!open.length) { box.innerHTML = `<p class="empty">Nothing needs you right now.</p>`; return; }
     box.innerHTML = open.map((a) => {
-      const vid = typeof a.video === "string" && /^[0-9a-f]{32}$/.test(a.video) ? `<video controls playsinline preload="metadata" src="/_blob/${a.video}"></video>` : "";
+      const clips = (Array.isArray(a.videos) ? a.videos : a.video ? [{ id: a.video }] : [])
+        .filter((v) => v && typeof v.id === "string" && /^[0-9a-f]{32}$/.test(v.id));
+      const vid = clips.map((v) => `${v.label ? `<p class="sub">${esc(v.label)}</p>` : ""}<video controls playsinline preload="metadata" src="/_blob/${v.id}"></video>`).join("");
       const link = safeUrl(a.link) ? `<a href="${esc(a.link)}" target="_blank" rel="noopener">${esc(a.linkLabel || "More")}</a>` : "";
       const opts = (a.options || []).map((o) => `<button class="opt" type="button" aria-pressed="${S.picks[a.id] === o.id}" data-ask="${esc(a.id)}" data-opt="${esc(o.id)}"><span class="tick" aria-hidden="true"></span><span><span class="opt-label">${esc(o.label)}</span>${o.hint ? `<span class="opt-hint">${esc(o.hint)}</span>` : ""}</span></button>`).join("");
       return `<article class="ask" id="ask-${esc(a.id)}">
@@ -787,10 +791,22 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     return n ? when(n) : "not scheduled";
   }
 
+  // A message reaches Claude only while its chat is awake. On 2026-10-21 three
+  // of them waited 22 hours. Anything unanswered after 15 minutes says so and
+  // links to the chat, where any message wakes Claude.
+  const WAKE_AFTER = 15 * 60000;
+  function chatUrl() { return S.config && S.config.chief ? "https://claude.ai/code/" + encodeURIComponent(S.config.chief) : null; }
+  function waitingNotes() { return S.notes.filter((n) => n.status !== "done" && Date.now() - Date.parse(n.created || 0) > WAKE_AFTER); }
   function drawAlerts() {
-    const list = (S.now && S.now.alerts) || [];
-    $("#alerts-block").hidden = !list.length;
-    $("#alerts").innerHTML = list.map((a) => `<div class="alert ${a.level === "bad" ? "bad" : ""}"><div>${esc(a.text)}</div>${a.fix ? `<div class="fix">${esc(a.fix)}</div>` : ""}</div>`).join("");
+    const list = ((S.now && S.now.alerts) || []).slice();
+    const late = waitingNotes();
+    const chat = chatUrl();
+    let html = list.map((a) => `<div class="alert ${a.level === "bad" ? "bad" : ""}"><div>${esc(a.text)}</div>${a.fix ? `<div class="fix">${esc(a.fix)}</div>` : ""}</div>`).join("");
+    if (late.length) {
+      html = `<div class="alert"><div>${late.length === 1 ? "Your message hasn't" : late.length + " of your messages haven't"} reached Claude yet. Claude may be asleep.</div><div class="fix">${chat ? `<a href="${esc(chat)}" target="_blank" rel="noopener">Open the chat</a> and send anything to wake it. It then reads your messages from here.` : "Open the project's chat in Claude and send anything to wake it."}</div></div>` + html;
+    }
+    $("#alerts-block").hidden = !html;
+    $("#alerts").innerHTML = html;
   }
 
   function drawOnAir() {
@@ -898,7 +914,10 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
   function drawLog() {
     const notes = S.notes.slice().sort((a, b) => String(b.created || "").localeCompare(String(a.created || ""))).slice(0, 20);
     $("#notes").innerHTML = notes.length ? `<div class="list">${notes.map((n) => {
-      const state = n.status === "done" ? pill("done").replace("Done", "Handled") : n.sent ? `<span class="pill s-work">Sent to Claude</span>` : `<span class="pill s-wait">Waiting for Claude</span>`;
+      const late = n.status !== "done" && Date.now() - Date.parse(n.created || 0) > WAKE_AFTER;
+      const state = n.status === "done" ? pill("done").replace("Done", "Handled")
+        : late ? `<span class="pill s-wait">Not picked up yet</span>`
+        : n.sent ? `<span class="pill s-work">Sent to Claude</span>` : `<span class="pill s-wait">Waiting for Claude</span>`;
       return `<div class="note"><div class="a-meta">${tAgo(n.created)}${n.about ? `<span>about ${esc(n.about)}</span>` : ""}</div><div class="txt">${esc(n.text)}</div>${n.reply ? `<div class="reply">${esc(n.reply)}</div>` : ""}<div>${state}</div></div>`;
     }).join("")}</div>` : `<p class="empty">Messages you send from here are kept here, with Claude's answer.</p>`;
     const decided = S.asks.filter((a) => a.status !== "open").sort((a, b) => String(b.answeredAt || "").localeCompare(String(a.answeredAt || ""))).slice(0, 10);
