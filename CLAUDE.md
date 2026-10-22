@@ -85,7 +85,7 @@ After the main post loop, the workflow runs:
 | `src/promo.py` | Configurable CTA injection into description + comment. All copy in env vars. Toggle with `PROMO_ENABLED`. |
 | `src/analytics.py` | Pulls YouTube stats to `data/analytics.csv`. |
 | `src/logbook.py` | Appends each post to `data/posts.csv`. |
-| `src/publish_instagram.py` | Cross-posts to Instagram Reels via Meta Graph API. Requires `IG_ACCESS_TOKEN` + `IG_USER_ID`. Currently skipped (Meta dev account pending). |
+| `src/publish_instagram.py` | Cross-posts to Instagram Reels via Meta Graph API. Requires `IG_ACCESS_TOKEN` + `IG_USER_ID`. Currently skipped: since 2026-10-21 the `IG_ACCESS_TOKEN` secret holds a malformed multi-line value (Graph API: "Cannot parse access token"). Its single-letter lines make GitHub mask every `e` and `d` in daily-short logs (logs of workflows that don't read the IG secrets are clean), so read those logs with that in mind. Fix = the owner re-pastes a valid long-lived token as one line, or deletes the secret. |
 | `scripts/daily_post.py` | Main orchestrator. Self-healing retry loop. Backup bank logic. |
 | `scripts/qa_check.py` | Video QA: frozen frames, audio desync, contrast, safe-zone clipping. Returns pass/fail + severity. |
 | `scripts/reply_to_comments.py` | Auto-replies to best viewer comments. Filters own channel by `videoOwnerChannelId == authorChannelId` (channel ID comparison, not display name). Max 5 replies/run. Receptivity screen (`_is_receptive`, Haiku + `_is_dismissive` keyword prefilter) engages ONLY viewers who genuinely connect with the message — skips trolls/mockery/bad-faith to build community and avoid amplifying detractors; fails closed. |
