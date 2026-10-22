@@ -130,4 +130,8 @@ def test_the_poster_cannot_hang_on_its_install_step():
     wf = yaml.safe_load((ROOT / ".github" / "workflows" / "daily-short.yml").read_text())
     step = next(s for s in wf["jobs"]["post"]["steps"] if s.get("name") == "Install ffmpeg + fonts")
     assert step.get("timeout-minutes", 999) <= 20
-    assert "timeout " in step["run"] and "command -v ffmpeg" in step["run"]
+    assert step["run"].strip() == "bash scripts/ci_install_ffmpeg.sh"
+    script = (ROOT / "scripts" / "ci_install_ffmpeg.sh").read_text()
+    assert "timeout 90 sudo apt-get update" in script            # apt is time-boxed
+    assert "BtbN/FFmpeg-Builds" in script and "johnvansickle" in script   # two non-Ubuntu fallbacks
+    assert script.index("try_apt || echo") < script.index("have_ffmpeg || try_static")   # apt first, then the fallback
