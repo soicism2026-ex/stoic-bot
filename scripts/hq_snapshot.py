@@ -46,7 +46,7 @@ BOTS = [
     {"id": "reporter", "name": "Reporter", "workflow": "auto-improve.yaml",
      "role": "Weekly channel report with one recommendation"},
     {"id": "preview", "name": "Preview studio", "workflow": "edit-preview.yml",
-     "role": "Renders test videos that are never posted"},
+     "role": "Rehearses the next Short twice a day so you can watch it before it airs. Never posts"},
     {"id": "composer", "name": "Composer", "workflow": "make-music.yml",
      "role": "Generates original music for the edits"},
 ]
@@ -346,9 +346,19 @@ def next_on_air(posts: list[dict]) -> dict | None:
         q = edits.pick(posts)
         if not q:
             return None
-        return {"quote": q.get("quote"), "author": q.get("author"),
+        return {"id": q.get("id"), "quote": q.get("quote"), "author": q.get("author"),
                 "citation": q.get("citation"), "hook": q.get("hook"),
                 "left": edits.remaining(posts)}
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def shelf_status(now: dt.datetime) -> dict | None:
+    """Days of verified quotes left (scripts/shelf.py); the HQ warns when low."""
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import shelf  # noqa: PLC0415
+        return shelf.status(today=now.date())
     except Exception:  # noqa: BLE001
         return None
 
@@ -369,6 +379,7 @@ def build(now: dt.datetime | None = None, runs: list[dict] | None = None) -> dic
         "bots": bots(runs, now, note, fetch_missing=online),
         "nextPost": nxt,
         "nextOnAir": next_on_air(posts),
+        "shelf": shelf_status(now),
         "channel": channel(now),
         "posts": recent_posts(posts),
         "runsSeen": len(runs),

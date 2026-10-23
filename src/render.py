@@ -24,9 +24,9 @@ import proc
 import re
 import textwrap
 from pathlib import Path
-from datetime import date
 
 from backgrounds import fetch_background
+from airday import today as _air_day
 
 ROOT = Path(__file__).resolve().parent.parent
 
@@ -1179,7 +1179,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # width=22 keeps the serif quote inside the phone-fullscreen safe band.
     quote_lines = textwrap.wrap(quote, width=22) or [quote]
 
-    day = date.today().toordinal()
+    day = _air_day().toordinal()
 
     # When captions occupy the lower-middle, lift the quote card up so they don't
     # collide; otherwise keep the original date-varied placement.
@@ -1586,7 +1586,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     if SFX_ON:
         try:
             import sfx as sfx_mod
-            seed = os.environ.get("REEL_SFX_SEED") or date.today().isoformat()
+            seed = os.environ.get("REEL_SFX_SEED") or _air_day().isoformat()
             cue_list = sfx_mod.cues(QUOTE_APPEAR, seed)
             sfx_track = _make_sfx_track(cue_list, dur, Path(out_path).with_suffix(".sfx.wav"))
             if sfx_track:

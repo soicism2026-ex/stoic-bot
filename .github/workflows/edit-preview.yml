@@ -1,8 +1,19 @@
 # Renders the next stoic EDIT through the full real pipeline (voice, stock
 # video, free AI stills, epic music, QA) and saves it as an artifact.
-# DRY_RUN: nothing is uploaded and nothing is logged. Manual only.
+# DRY_RUN: nothing is uploaded to YouTube and nothing is logged.
+#
+# Apelles' shifts (owner 2026-10-23: "Get them working"): twice a day it
+# rehearses the NEXT post, rendered for the day it airs (src/airday.py), and
+# puts it in the `up-next` release. The HQ sync carries it into the HQ's "Up
+# next", so the owner can watch each Short before it goes out, and a render
+# that breaks shows up hours before its slot instead of at it.
+#   08:40 UTC  -> the day's second post (airs from 15:00)
+#   19:40 UTC  -> tomorrow's first post (airs from 00:00)
 name: edit-preview
 on:
+  schedule:
+    - cron: "40 8 * * *"
+    - cron: "40 19 * * *"
   workflow_dispatch:
     inputs:
       music:
@@ -19,10 +30,24 @@ on:
         type: choice
         options: ['on', 'off']
         default: 'on'
+      up_next:
+        description: Also put this render in the HQ as the next Short (scheduled runs always do)
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: edit-preview
+  cancel-in-progress: false
 jobs:
   preview:
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    env:
+      VOICE: ${{ inputs.voice || 'brian' }}
+      # A rehearsal is a faithful copy of the live post: the same voice and
+      # sounds; an audition (music input) is not, so it never goes to the HQ.
+      UP_NEXT: ${{ (github.event_name == 'schedule' || inputs.up_next) && inputs.music == '' && '1' || '' }}
     steps:
     - uses: actions/checkout@v4
     - name: Install ffmpeg + fonts
@@ -34,7 +59,7 @@ jobs:
     - name: Install deps
       run: pip install -r requirements.txt
     - name: Check the ElevenLabs key (prints the plan, never the key)
-      if: inputs.voice == 'brian'
+      if: env.VOICE == 'brian'
       env:
         ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
       run: |
@@ -62,10 +87,18 @@ jobs:
         EOF
         # ElevenLabs' own check, as its onboarding asks. The key goes in a
         # temp file outside the checkout and is deleted straight after.
-        umask 077
-        printf 'ELEVENLABS_API_KEY=%s\n' "$ELEVENLABS_API_KEY" > "$RUNNER_TEMP/el.env"
-        npx -y @elevenlabs/cli@latest onboard check --env-path "$RUNNER_TEMP/el.env" || true
-        rm -f "$RUNNER_TEMP/el.env"
+        # Manual runs only: a scheduled rehearsal has nothing to learn from it.
+        if [ "${{ github.event_name }}" != schedule ]; then
+          umask 077
+          printf 'ELEVENLABS_API_KEY=%s\n' "$ELEVENLABS_API_KEY" > "$RUNNER_TEMP/el.env"
+          npx -y @elevenlabs/cli@latest onboard check --env-path "$RUNNER_TEMP/el.env" || true
+          rm -f "$RUNNER_TEMP/el.env"
+        fi
+    - name: The day the next post airs
+      run: |
+        day=$(python src/airday.py --next)
+        echo "REEL_TODAY=$day" >> "$GITHUB_ENV"
+        echo "rendering for $day"
     - name: 'Render the next edit (DRY_RUN: no upload, no log)'
       env:
         MAX_POSTS_PER_DAY: '99'
@@ -96,8 +129,7 @@ jobs:
         DRY_RUN: '1'
         REEL_FORMAT: edit
         REEL_EDIT_MUSIC: ${{ inputs.music }}
-        VOICE: ${{ inputs.voice || 'brian' }}
-        REEL_EDIT_SFX: ${{ inputs.sfx == 'on' && '1' || '0' }}
+        REEL_EDIT_SFX: ${{ (inputs.sfx || 'on') == 'on' && '1' || '0' }}
       run: |
         if [ "$VOICE" = brian ]; then
           # Nothing ahead of ElevenLabs in the voice chain may speak, and the
@@ -106,7 +138,7 @@ jobs:
         fi
         python scripts/daily_post.py
     - name: Confirm Brian actually spoke
-      if: inputs.voice == 'brian'
+      if: env.VOICE == 'brian'
       run: |
         spoke=$(cat data/preview/voice.txt 2>/dev/null || echo none)
         echo "voice that spoke: $spoke"
@@ -114,6 +146,12 @@ jobs:
           echo "::error::ElevenLabs did not speak (got $spoke). The render log above has the ElevenLabs error."
           exit 1
         fi
+    - name: Put it in the HQ as the next Short
+      if: env.UP_NEXT == '1'
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: python scripts/up_next.py publish data/preview
     - name: Review sheet
       if: always()
       run: python scripts/review_shots.py data/preview data/preview/review.png || true

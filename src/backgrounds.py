@@ -19,7 +19,8 @@ import subprocess
 import proc
 import sys
 from pathlib import Path
-from datetime import date
+
+from airday import today as _air_day
 
 import requests
 
@@ -72,7 +73,7 @@ BG_TOP_N = int(os.environ.get("REEL_BG_TOP", "3"))
 def _relevant_index(pool_len: int) -> int:
     """Deterministic pick from only the top-BG_TOP_N most-relevant results."""
     window = max(1, min(pool_len, BG_TOP_N))
-    return (date.today().toordinal() + _bg_offset()) % window
+    return (_air_day().toordinal() + _bg_offset()) % window
 
 PEXELS_SEARCH_URL = "https://api.pexels.com/videos/search"
 PIXABAY_VIDEO_URL = "https://pixabay.com/api/videos/"
@@ -183,7 +184,7 @@ def _search_term(theme: str, clip_idx: int = 0) -> str:
     clip_idx=0 uses the theme-specific query pool.
     clip_idx>0 uses a diversity pool so consecutive clips look visually distinct.
     """
-    day = date.today().toordinal() + _bg_offset()
+    day = _air_day().toordinal() + _bg_offset()
     # Scene-matched b-roll: daily_post sets REEL_BG_FLAVOR / REEL_BG_FLAVOR1 /
     # REEL_BG_FLAVOR2 (from the content engine's broll_queries — each literally
     # depicting what the voiceover says in that third — or from the per-format
@@ -232,7 +233,7 @@ def _guide_clip(clip_idx: int) -> Path | None:
     slots = sorted(_guide_slots())
     # Position of this slot among the guide slots: 0 = opener, 1 = closer, ...
     rank = slots.index(clip_idx) if clip_idx in slots else 0
-    day = date.today().toordinal() + _bg_offset()
+    day = _air_day().toordinal() + _bg_offset()
     # Stride by a number coprime-ish with the library size so the opener/closer
     # pair drifts apart instead of always sitting next to each other.
     stride = 1 + (len(clips) // 3)
@@ -247,7 +248,7 @@ def _rotate_local() -> Path:
             f"No background clips in {BG_DIR}. Drop a few royalty-free vertical "
             f"MP4s there (Pexels Videos)."
         )
-    return clips[(date.today().toordinal() + _bg_offset()) % len(clips)]
+    return clips[(_air_day().toordinal() + _bg_offset()) % len(clips)]
 
 
 def _pick_vertical_file(video: dict) -> str | None:

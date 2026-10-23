@@ -122,3 +122,15 @@ def test_build_offline_is_one_small_json_document():
     assert "posted today" in doc["bots"][0]["note"]
     assert doc["nextPost"]["cap"] == 2
     assert all(b["url"].startswith("https://github.com/") for b in doc["bots"])
+
+
+def test_the_snapshot_carries_the_shelf_and_the_next_edit_id():
+    """The HQ warns on a low quote shelf and plays Apelles' rehearsal only when
+    it is of the quote that airs next (2026-10-23)."""
+    doc = hq.build(now=t("2026-10-23T22:00:00"), runs=[])
+    sh = doc["shelf"]
+    assert {"left", "days", "runsOut", "low", "target", "warn", "toTarget"} <= set(sh)
+    assert sh["perDay"] == doc["nextPost"]["cap"]
+    assert doc["nextOnAir"]["id"] and doc["nextOnAir"]["left"] == sh["left"]
+    preview = next(b for b in doc["bots"] if b["id"] == "preview")
+    assert preview["next"]          # rehearses on a schedule now, not only when asked

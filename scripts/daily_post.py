@@ -42,6 +42,7 @@ import edits                              # noqa: E402
 import epic_music                         # noqa: E402
 import edit_music                         # noqa: E402
 import listen_check                       # noqa: E402
+import airday                             # noqa: E402
 from preflight import review as preflight_review   # noqa: E402
 
 from qa_check import run_qa               # noqa: E402  (scripts/ is on sys.path)
@@ -458,7 +459,8 @@ def _add_to_backup_bank(today: str, music_track: dict):
 # ---------------------------------------------------------------------------
 
 def main():
-    today = datetime.date.today().isoformat()
+    # A rehearsal (DRY_RUN) renders for the day its post airs: src/airday.py.
+    today = airday.today().isoformat()
     print(f"[{today}] daily_post starting")
 
     BACKUPS_DIR.mkdir(exist_ok=True)
@@ -1035,6 +1037,18 @@ def main():
             # (edit-preview fails a brian run when this isn't "Brian").
             spoke = tts_mod.LAST_VOICE_NAME or voice["name"]
             (out / "voice.txt").write_text(spoke + "\n", encoding="utf-8")
+            # What was rendered, for the HQ's "Up next" (edit-preview's
+            # rehearsal of the next post publishes it with the video).
+            (out / "meta.json").write_text(json.dumps({
+                "video": f"{exp_name.replace(':', '_')}.mp4",
+                "edit": content.get("_edit_id") or "",
+                "quote": content.get("quote", ""), "hook": hook,
+                "author": content.get("author", ""),
+                "citation": next((q.get("citation", "") for q in edits.load()
+                                  if q["id"] == content.get("_edit_id")), ""),
+                "airDay": today, "voice": spoke, "title": title,
+                "music": music_track.get("name", "") if isinstance(music_track, dict) else "",
+            }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
             print(f"  [preview] DRY_RUN — saved {out.name}/{exp_name.replace(':', '_')}.mp4, "
                   f"voice {spoke}, NOT uploaded, NOT logged")
             print(f"  [preview] description:\n{description}")

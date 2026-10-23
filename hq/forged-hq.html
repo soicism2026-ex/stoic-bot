@@ -196,6 +196,8 @@ button { font: inherit; color: inherit; }
 .onair .hook { margin: 0; font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: .03em; text-transform: uppercase; text-wrap: balance; }
 .onair blockquote { margin: 0; font-style: italic; font-size: 16px; line-height: 1.5; color: var(--fg); max-width: 60ch; }
 .onair .cite { font-size: 13px; color: var(--gold); font-weight: 600; }
+.onair video { width: 100%; max-height: 62vh; aspect-ratio: 9 / 16; object-fit: contain; background: #000; border-radius: 10px; }
+.onair .sub { margin: -4px 0 0; }
 
 /* Channel */
 .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -420,7 +422,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
   const PROJECT = "stoic-bot";
   const TABS = ["now", "team", "channel", "log"];
   const S = {
-    now: null, studio: null, log: null, config: null, asks: [], notes: [],
+    now: null, studio: null, log: null, config: null, upnext: null, asks: [], notes: [],
     sessions: null, sessErr: null, sessAt: 0, triggers: null, trigErr: null,
     db: "connecting", live: "pending", meId: null, tab: "now",
     open: new Set(), picks: {}, canSend: "off",
@@ -471,7 +473,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     unknown: ["Unknown", "s-idle"], offduty: ["Off duty", "s-idle"], oncall: ["On call", "s-idle"],
     standby: ["Standing by", "s-idle"],
   };
-  const pill = (k) => { const [label, cls] = STATUS[k] || STATUS.idle; return `<span class="pill ${cls}">${esc(label)}</span>`; };
+  const pill = (k, over) => { const [label, cls] = STATUS[k] || STATUS.idle; return `<span class="pill ${cls}">${esc(over || label)}</span>`; };
   const stCls = (k) => (STATUS[k] || STATUS.idle)[1];
   const stLabel = (k) => (STATUS[k] || STATUS.idle)[0];
   const RANK = { waiting: 0, review: 0, failed: 1, working: 2, queued: 2, done: 4, standby: 5, offduty: 5, scheduled: 5, oncall: 6, idle: 6, paused: 7, unknown: 7 };
@@ -495,6 +497,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     scholar: ["................",".....kkkkkk.....","....knnnnnnk....","....knnnnnnk....","....knssssnk....","....kscmmcsk....","....kssssssk....","....kssSSssk....","...kppppppppk...","...kppppppppk...","...kppRrrRppk...","...ksprrrrpsk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
     envoy: ["................",".....kkkkkk.....","....knnnnnnk....","....knnnnnnk....","....knssssnk....","....ksessesk....","....kssssssk....","....kssSSssk....","...kwbwwwwwwk...","...kwwbwwwwwk...","...kwwwbwwwwk...","...kswwwbwwsk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
     herald: ["................",".....kkkkkk.....","....kllllllk....","....kllllllk....","....klsssslk..kk","....ksessesk.kgg","....kssssssk.kgg","....kssSSssk.kgk","...kooooooookgk.","...koooooooogk..","...kooooooook...","...ksoooooosk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
+    librarian: ["................",".....kkkkkk.....","....knnnnnnk....","....knnnnnnk....","....knssssnk....","....ksessesk....","....kssssssk....","....kssSSssk....","...kLllllllLk...","..kwwwwwwwwwwk..","..kWwkkwkwkwWk..","..kwwwwwwwwwwk..","...kLllllllLk...","....kllkkllk....","....knnkknnk....",".....kk..kk....."],
   };
   const CREW = {
     chief: { name: "Claude", title: "Chief of Staff", sprite: "chief", lines: {
@@ -503,11 +506,13 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       standby: "Standing by. Message me anytime." } },
     producer: { name: "Vulcan", title: "Producer", sprite: "smith", lines: {
       working: "Hammering out a fresh Short.",
+      done: "Both of today's Shorts are out. Next firing {next}.",
       offduty: "Forge is banked. Next firing {next}.",
       failed: "Cracked the mold on the last run. I try again {next}.",
       unknown: "Can't see the forge from here right now." } },
     analyst: { name: "Glaux", title: "Analyst", sprite: "owl", lines: {
       working: "Hoo! Counting today's views.",
+      done: "Counted the latest numbers. Next count {next}.",
       offduty: "Roosting. Next count {next}.",
       failed: "Hoo... my numbers came back wrong. Retrying {next}." } },
     strategist: { name: "Agrippa", title: "Strategist", sprite: "general", lines: {
@@ -516,16 +521,25 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       failed: "Out of supplies! I need Anthropic API credit to plan." } },
     reporter: { name: "Tiro", title: "Reporter", sprite: "scribe", lines: {
       working: "Writing this week's report.",
+      done: "This week's report is filed. Next one {next}.",
       offduty: "Quill down. Next report {next}.",
       failed: "Ink spilled on the last report." } },
     preview: { name: "Apelles", title: "Preview painter", sprite: "painter", lines: {
-      working: "Painting a test video. It never gets posted.",
+      working: "Rehearsing the next Short. It never gets posted.",
+      done: "The next Short is painted. Watch it under Next on air.",
+      offduty: "Easel's drying. Next rehearsal {next}.",
       oncall: "Easel's ready. I paint test videos when Claude asks.",
-      failed: "Smudged the last test video." } },
+      failed: "Smudged the last rehearsal. Claude, look before it airs." } },
     composer: { name: "Orpheus", title: "Composer", sprite: "bard", lines: {
       working: "Composing new music for the edits.",
+      waiting: "My songs are waiting for your pick, under Needs your call.",
       oncall: "Lyre's tuned. I write music when Claude asks.",
       failed: "Snapped a string on the last song." } },
+    librarian: { name: "Varro", title: "Librarian", sprite: "librarian", lines: {
+      working: "Restocking the quote shelf from the classics.",
+      done: "{days} days of checked quotes on the shelf. Next restock {next}.",
+      failed: "Only {days} days of quotes left on the shelf. I need a restock.",
+      paused: "Paused. Nobody is restocking the quote shelf." } },
     sync: { name: "Hermes", title: "Messenger", sprite: "messenger", lines: {
       working: "Running the bots' news over to HQ.",
       scheduled: "I carry the bots' news to HQ. Next run {next}.",
@@ -619,8 +633,9 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const hidden = new Set((S.config && S.config.hidden) || []);
     return S.sessions.filter((s) => s.session_status !== "SESSION_STATUS_ARCHIVED" && !hidden.has(s.id) && sourcesOf(s).some((u) => u.includes(PROJECT)));
   }
+  const CREW_HELPERS = /^varro$/i;   // crew members who report through hq/now helpers
   function helperAgents() {
-    return ((S.now && S.now.helpers) || []).map((h, i) => {
+    return ((S.now && S.now.helpers) || []).filter((h) => !CREW_HELPERS.test(h.name || "")).map((h, i) => {
       const status = h.status === "done" ? "done" : h.status === "failed" ? "failed" : "working";
       const pliny = /research/i.test(h.name || "");
       return {
@@ -630,13 +645,35 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       };
     });
   }
+  // A bot whose job for this cycle is finished says so ("Done for today")
+  // instead of sleeping "Off duty": the owner reads the lineup as a team's
+  // output (2026-10-23: "Why is everybody on call? Get them working").
+  const SHIFT_PILL = { reporter: "Done this week", preview: "Next one ready" };
+  function upNextReady() {
+    const q = S.studio && S.studio.nextOnAir, u = S.upnext;
+    return !!(q && u && u.asset && u.edit && u.edit === q.id);
+  }
+  function shiftDone(b) {
+    const last = b.last || {};
+    const within = (h) => last.conclusion === "success" && !!last.finished && Date.now() - Date.parse(last.finished) < h * 3600000;
+    const np = S.studio && S.studio.nextPost;
+    if (b.id === "producer") return !!(np && np.cap && np.postsToday >= np.cap);
+    if (b.id === "reporter") return within(24 * 7);
+    if (b.id === "preview") return upNextReady();
+    return within(24);
+  }
+  const asksFor = (id) => S.asks.filter((a) => a.status === "open" && a.crew === id);
   function botAgents() {
     const blind = S.studio && S.studio.runsSeen === 0;
     return ((S.studio && S.studio.bots) || []).map((b) => {
       const crew = CREW[b.id] ? b.id : "herald";
       const last = b.last || {};
       let status = blind ? "unknown" : (b.status || "idle");
+      let shift = "";
+      if (status === "idle" && shiftDone(b)) { status = "done"; shift = SHIFT_PILL[b.id] || "Done for today"; }
       if (status === "idle") status = b.next ? "offduty" : "oncall";
+      const waitingOn = asksFor(b.id);
+      if (waitingOn.length && ["offduty", "oncall", "done"].includes(status)) { status = "waiting"; shift = ""; }
       let facts = b.note || "";
       if (!blind) {
         const lastTxt = status === "working" ? "running now, started " + ago(last.at)
@@ -646,16 +683,40 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
         facts = [facts, lastTxt].filter(Boolean).join(" · ");
       } else facts = [facts, "GitHub didn't answer at the last sync"].filter(Boolean).join(" · ");
       return {
-        key: "b:" + b.id, crew, status, name: (CREW[crew] && CREW[crew].name) || b.name,
+        key: "b:" + b.id, crew, status, pill: shift || undefined, name: (CREW[crew] && CREW[crew].name) || b.name,
         title: (CREW[crew] && CREW[crew].title) || b.name, role: b.role,
+        needs: waitingOn.length ? "Waiting on you: " + waitingOn.map((a) => a.title).join(" · ") : "",
         say: say(crew, status, { next: nextText(b.next) }), facts: facts.charAt(0).toUpperCase() + facts.slice(1),
         updated: last.finished || last.at, next: b.next,
         link: safeUrl(last.url) || safeUrl(b.url), linkLabel: "See it on GitHub",
       };
     });
   }
+  function librarianAgent() {
+    const sh = S.studio && S.studio.shelf;
+    if (!sh) return null;
+    const id = S.config && S.config.librarian;
+    const t = id && Array.isArray(S.triggers) ? S.triggers.find((x) => x.id === id) : null;
+    const lr = (t && t.last_run) || {};
+    const onShift = ((S.now && S.now.helpers) || []).some((h) => CREW_HELPERS.test(h.name || "") && h.status !== "done");
+    let status = sh.low ? "failed" : "done";
+    if (t && !t.enabled) status = "paused";
+    if (onShift) status = "working";
+    const next = t && t.enabled ? t.next_run_at : null;
+    const until = new Date(sh.runsOut + "T12:00:00Z").toLocaleDateString([], { month: "short", day: "numeric" });
+    return {
+      key: t ? "t:" + t.id : "lib", crew: "librarian", status,
+      pill: status === "done" ? "Shelf stocked" : status === "failed" ? "Shelf low" : undefined,
+      name: CREW.librarian.name, title: CREW.librarian.title,
+      role: "Keeps 30+ days of quotes on the shelf. Reads the classics, picks lines like the ones that are working, and checks every word against the original text. Restocks every week.",
+      say: say("librarian", status, { days: String(sh.days), next: nextText(next) }),
+      facts: `${sh.left} checked quotes left, enough until ${until}` + (lr.fired_at ? ` · last restock ${ago(lr.finished_at || lr.fired_at)}` : ""),
+      next, updated: S.studio.updated,
+    };
+  }
   function triggerAgents() {
     return (S.triggers || []).map((t) => {
+      if (S.config && S.config.librarian === t.id) { const lib = librarianAgent(); if (lib) return lib; }
       const lr = t.last_run || {};
       const failed = /FAILED/.test(lr.status || "");
       const status = !t.enabled ? "paused" : failed ? "failed" : "scheduled";
@@ -688,7 +749,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
         ${meta.length ? `<div class="a-meta">${meta.join("")}</div>` : ""}
         ${more}
       </div>
-      ${pill(a.status)}
+      ${pill(a.status, a.pill)}
     </div>`;
   }
   const sortAgents = (list) => list.slice().sort((x, y) => (RANK[x.status] ?? 9) - (RANK[y.status] ?? 9) || String(y.updated || "").localeCompare(String(x.updated || "")));
@@ -759,7 +820,8 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const chiefSess = sess && S.config ? sess.find((x) => x.id === S.config.chief) : null;
     const others = (sess || []).filter((x) => !(S.config && S.config.chief === x.id)).map(sessionAgent);
     const hermes = triggerAgents().filter((a) => a.crew === "sync");
-    return [chiefAgent(chiefSess), ...others, ...helperAgents(), ...botAgents(), ...hermes];
+    const lib = librarianAgent();
+    return [chiefAgent(chiefSess), ...others, ...helperAgents(), ...botAgents(), ...(lib ? [lib] : []), ...hermes];
   }
   function drawGlance() {
     const box = $("#glance");
@@ -767,19 +829,24 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const busy = all.filter((a) => BUSY.includes(a.status));
     const needs = all.filter((a) => NEEDS.includes(a.status));
     const failed = all.filter((a) => a.status === "failed");
-    const resting = all.length - busy.length - needs.length - failed.length;
+    const done = all.filter((a) => a.status === "done");
+    const resting = all.length - busy.length - needs.length - failed.length - done.length;
     const chips = [
       busy.length && `<span class="pill s-work">${busy.length} working</span>`,
       needs.length && `<span class="pill s-wait">${needs.length} need${needs.length === 1 ? "s" : ""} you</span>`,
       failed.length && `<span class="pill s-fail">${failed.length} down</span>`,
+      done.length && `<span class="pill s-done">${done.length} done</span>`,
       resting && `<span class="pill s-idle">${resting} off duty</span>`,
     ].filter(Boolean).join("");
-    const lineup = all.map((a) => `<button class="mate" type="button" data-mate="${esc(a.key)}" aria-label="${esc(a.name + ", " + a.title + ": " + stLabel(a.status))}">${sprite(a.crew, a.status, true)}<span class="mate-name">${esc(a.name)}</span><span class="mate-state">${esc(stLabel(a.status))}</span></button>`).join("");
+    const lineup = all.map((a) => `<button class="mate" type="button" data-mate="${esc(a.key)}" aria-label="${esc(a.name + ", " + a.title + ": " + (a.pill || stLabel(a.status)))}">${sprite(a.crew, a.status, true)}<span class="mate-name">${esc(a.name)}</span><span class="mate-state">${esc(a.pill || stLabel(a.status))}</span></button>`).join("");
     let explain = "";
     if (!busy.length) {
-      const vulcan = all.find((a) => a.crew === "producer");
-      explain = "Nobody's stuck. The bots work in shifts and clock in on their own"
-        + (vulcan && vulcan.next ? `: ${vulcan.name} fires up the forge ${when(vulcan.next)}.` : ".");
+      // What the team has done and what comes next, not "they're asleep".
+      const np = S.studio && S.studio.nextPost;
+      const parts = [];
+      if (np && np.cap) parts.push(np.postsToday >= np.cap ? `Today's ${np.cap} Shorts are out.` : `${np.postsToday} of ${np.cap} Shorts out today.`);
+      if (np && np.at) parts.push(`The next one goes out around ${when(np.at)}.`);
+      explain = parts.join(" ") || "The bots clock in on their own schedule.";
     }
     for (const f of failed) explain += ` ${f.name} is down: ${f.say}`;
     const active = sortAgents(all.filter((a) => a.crew !== "chief" && (BUSY.includes(a.status) || NEEDS.includes(a.status) || a.status === "failed")));
@@ -799,6 +866,10 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
   function waitingNotes() { return S.notes.filter((n) => n.status !== "done" && Date.now() - Date.parse(n.created || 0) > WAKE_AFTER); }
   function drawAlerts() {
     const list = ((S.now && S.now.alerts) || []).slice();
+    const sh = S.studio && S.studio.shelf;
+    if (sh && sh.low) list.unshift({ level: sh.days < 7 ? "bad" : "warn",
+      text: `Only ${sh.days} days of quotes left on the shelf (${sh.left} quotes). When it's empty, the channel stops posting.`,
+      fix: "Varro restocks every week. To restock now, tap Message Claude and say: restock the shelf." });
     const late = waitingNotes();
     const chat = chatUrl();
     let html = list.map((a) => `<div class="alert ${a.level === "bad" ? "bad" : ""}"><div>${esc(a.text)}</div>${a.fix ? `<div class="fix">${esc(a.fix)}</div>` : ""}</div>`).join("");
@@ -809,13 +880,23 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     $("#alerts").innerHTML = html;
   }
 
+  let onAirSig = "";
   function drawOnAir() {
     const q = S.studio && S.studio.nextOnAir;
     const np = S.studio && S.studio.nextPost;
     const box = $("#onair");
+    const u = upNextReady() && /^[0-9a-f]{32}$/.test(S.upnext.asset) ? S.upnext : null;
+    const apelles = ((S.studio && S.studio.bots) || []).find((b) => b.id === "preview");
+    // Redrawing would stop a video mid-play: draw only when something changed.
+    const sig = JSON.stringify([q, np, u && u.asset, u && u.renderedAt, apelles && apelles.next, !!S.studio]);
+    if (sig === onAirSig) return;
+    onAirSig = sig;
+    const vid = u ? `<video controls playsinline preload="metadata" src="/_blob/${esc(u.asset)}"></video><p class="sub">Rehearsed by Apelles ${tAgo(u.renderedAt)}${u.voice ? `, read by ${esc(u.voice)}` : ""}. A preview: it is never posted.</p>`
+      : apelles && apelles.next && q ? `<p class="sub">Apelles rehearses this one ${esc(when(apelles.next))}. Then you can watch it here before it airs.</p>` : "";
     if (!q) { if (S.studio) box.innerHTML = `<p class="empty">No quote is queued. The verified quote bank may be empty.</p>`; return; }
     const left = typeof q.left === "number" ? `${q.left} verified quotes left, about ${Math.max(0, Math.floor(q.left / ((np && np.cap) || 2)))} days at ${(np && np.cap) || 2} a day` : "";
     box.innerHTML = `<div class="onair">
+      ${vid}
       ${q.hook ? `<p class="hook">${esc(q.hook)}</p>` : ""}
       <blockquote>${esc(q.quote)}</blockquote>
       <div class="cite">${esc(q.author)}${q.citation ? ", " + esc(q.citation) : ""}</div>
@@ -1225,7 +1306,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     } else {
       const onErr = () => { S.db = "off"; render(); };
       const doc = (path, key) => db.doc(path).onSnapshot((s) => { S[key] = s.exists ? s.data() : null; S.db = "live"; render(); }, onErr);
-      doc("hq/now", "now"); doc("hq/studio", "studio"); doc("hq/log", "log"); doc("hq/config", "config");
+      doc("hq/now", "now"); doc("hq/studio", "studio"); doc("hq/log", "log"); doc("hq/config", "config"); doc("hq/upnext", "upnext");
       db.collection("asks").onSnapshot((q) => { S.asks = q.docs.map((d) => ({ id: d.id, ...d.data() })); S.db = "live"; render(); }, onErr);
       db.collection("notes").onSnapshot((q) => { S.notes = q.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, onErr);
     }
