@@ -863,7 +863,9 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
   // links to the chat, where any message wakes Claude.
   const WAKE_AFTER = 15 * 60000;
   function chatUrl() { return S.config && S.config.chief ? "https://claude.ai/code/" + encodeURIComponent(S.config.chief) : null; }
-  function waitingNotes() { return S.notes.filter((n) => n.status !== "done" && Date.now() - Date.parse(n.created || 0) > WAKE_AFTER); }
+  // "working": Claude picked the message up and is on it (CLAUDE.md, HQ app).
+  const pickedUp = (n) => n.status === "done" || n.status === "working";
+  function waitingNotes() { return S.notes.filter((n) => !pickedUp(n) && Date.now() - Date.parse(n.created || 0) > WAKE_AFTER); }
   function drawAlerts() {
     const list = ((S.now && S.now.alerts) || []).slice();
     const sh = S.studio && S.studio.shelf;
@@ -995,8 +997,9 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
   function drawLog() {
     const notes = S.notes.slice().sort((a, b) => String(b.created || "").localeCompare(String(a.created || ""))).slice(0, 20);
     $("#notes").innerHTML = notes.length ? `<div class="list">${notes.map((n) => {
-      const late = n.status !== "done" && Date.now() - Date.parse(n.created || 0) > WAKE_AFTER;
+      const late = !pickedUp(n) && Date.now() - Date.parse(n.created || 0) > WAKE_AFTER;
       const state = n.status === "done" ? pill("done").replace("Done", "Handled")
+        : n.status === "working" ? `<span class="pill s-work">Claude is on it</span>`
         : late ? `<span class="pill s-wait">Not picked up yet</span>`
         : n.sent ? `<span class="pill s-work">Sent to Claude</span>` : `<span class="pill s-wait">Waiting for Claude</span>`;
       return `<div class="note"><div class="a-meta">${tAgo(n.created)}${n.about ? `<span>about ${esc(n.about)}</span>` : ""}</div><div class="txt">${esc(n.text)}</div>${n.reply ? `<div class="reply">${esc(n.reply)}</div>` : ""}<div>${state}</div></div>`;
