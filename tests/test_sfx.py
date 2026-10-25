@@ -147,3 +147,20 @@ def test_the_poster_cannot_hang_on_its_install_step():
     assert "timeout 90 sudo apt-get update" in script            # apt is time-boxed
     assert "BtbN/FFmpeg-Builds" in script and "johnvansickle" in script   # two non-Ubuntu fallbacks
     assert script.index("try_apt || echo") < script.index("have_ffmpeg || try_static")   # apt first, then the fallback
+
+
+def test_a_rehearsal_plays_only_what_the_live_post_will(monkeypatch):
+    """2026-10-25: the first rehearsal after the owner removed the slash still
+    played it, because any DRY_RUN could audition unapproved sounds."""
+    bank = _bank(monkeypatch, approved=False)
+    bank[0]["approved"] = True                      # impact_a only
+    monkeypatch.setenv("DRY_RUN", "1")
+    monkeypatch.setenv("REEL_REHEARSAL", "1")
+    assert [t["id"] for t in sfx.usable()] == ["impact_a"]
+    monkeypatch.setenv("REEL_SFX_IMPACT", "impact_b")   # no auditions in a rehearsal
+    assert sfx.pick("impact", "2026-10-26")["id"] == "impact_a"
+    assert len(sfx.cues(4.0, "2026-10-26")) == 1
+    monkeypatch.delenv("REEL_REHEARSAL")                 # a plain preview still auditions
+    assert sfx.pick("impact", "2026-10-26")["id"] == "impact_b"
+    wf = (ROOT / ".github" / "workflows" / "edit-preview.yml").read_text()
+    assert "REEL_REHEARSAL: ${{ env.UP_NEXT }}" in wf

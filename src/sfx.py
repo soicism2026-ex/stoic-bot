@@ -8,7 +8,11 @@ descriptions, with provenance in data/sfx.json. Two roles:
   whoosh  leading into the quote
 Like the edit music, only sounds the owner approved ("approved": true) air on
 the channel; a DRY_RUN preview may use any of them so the owner can judge
-them in a real video first. render.py mixes them when REEL_SFX=1.
+them in a real video first. A REHEARSAL (REEL_REHEARSAL=1: Apelles' preview
+of the next post, shown in the HQ before it airs) is not an audition: it
+plays exactly what the live post will. On 2026-10-25 the first rehearsal
+after the owner removed the slash still played it. render.py mixes them when
+REEL_SFX=1.
 """
 from __future__ import annotations
 
@@ -36,13 +40,18 @@ def _exists(t: dict) -> bool:
     return p.exists() and p.stat().st_size > 2000
 
 
-def _dry_run() -> bool:
-    return os.environ.get("DRY_RUN", "0") not in ("0", "", "false", "False")
+def _on(name: str) -> bool:
+    return os.environ.get(name, "0") not in ("0", "", "false", "False")
+
+
+def _audition() -> bool:
+    """A DRY_RUN preview that may try unapproved sounds: not a rehearsal."""
+    return _on("DRY_RUN") and not _on("REEL_REHEARSAL")
 
 
 def usable() -> list[dict]:
-    """Approved sounds, or every sound in a DRY_RUN preview."""
-    return [t for t in load() if _exists(t) and (t.get("approved") is True or _dry_run())]
+    """Approved sounds, or every sound in an audition preview."""
+    return [t for t in load() if _exists(t) and (t.get("approved") is True or _audition())]
 
 
 def pick(role: str, seed: str) -> dict | None:
@@ -50,7 +59,7 @@ def pick(role: str, seed: str) -> dict | None:
     if not pool:
         return None
     forced = os.environ.get("REEL_SFX_" + role.upper(), "").strip()
-    if forced and _dry_run():
+    if forced and _audition():
         hit = next((t for t in pool if t["id"] == forced), None)
         if hit:
             return hit
