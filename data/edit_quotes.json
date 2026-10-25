@@ -1132,5 +1132,1445 @@
    "man walking forest",
    "sunrise"
   ]
+ },
+ {
+  "id": "be_helped",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.7, trans. George Long",
+  "quote": "Be not ashamed to be helped; for it is thy business to do thy duty like a soldier in the assault on a town.",
+  "hook": "Needing help isn't weakness.",
+  "theme": "friendship",
+  "visuals": [
+   "castle wall",
+   "still:roman soldiers lifting a wounded comrade onto a fortress wall, dust and sunlight",
+   "ladder",
+   "man climbing",
+   "rope",
+   "men hiking",
+   "mountain summit",
+   "flag waving"
+  ]
+ },
+ {
+  "id": "speakers_mind",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.53, trans. George Long",
+  "quote": "Accustom thyself to attend carefully to what is said by another, and as much as it is possible, be in the speaker's mind.",
+  "hook": "Stop waiting for your turn to talk.",
+  "theme": "friendship",
+  "visuals": [
+   "two chairs",
+   "coffee cups",
+   "still:roman philosopher listening closely to a young man in a marble courtyard, soft daylight",
+   "men talking",
+   "old telephone",
+   "park bench",
+   "men campfire",
+   "handshake"
+  ]
+ },
+ {
+  "id": "virtues_of_others",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.48, trans. George Long",
+  "quote": "When thou wishest to delight thyself, think of the virtues of those who live with thee.",
+  "hook": "Bad day? Think about your people.",
+  "theme": "friendship",
+  "visuals": [
+   "dinner table",
+   "still:roman friends sharing bread at a long wooden table, warm lamplight",
+   "men laughing",
+   "man cooking",
+   "man mechanic",
+   "men fishing",
+   "man reading",
+   "men campfire"
+  ]
+ },
+ {
+  "id": "wolfish_friendship",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 11.15, trans. George Long",
+  "quote": "Nothing is more disgraceful than a wolfish friendship (false friendship). Avoid this most of all.",
+  "hook": "Friends who only show up to take?",
+  "theme": "friendship",
+  "visuals": [
+   "wolf",
+   "sheep flock",
+   "still:roman banquet guest smiling while hiding a dagger behind his back, candlelight",
+   "handshake",
+   "wolf snow",
+   "man walking alone",
+   "open road",
+   "men hiking"
+  ]
+ },
+ {
+  "id": "not_right_not_true",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 12.17, trans. George Long",
+  "quote": "If it is not right, do not do it: if it is not true, do not say it.",
+  "hook": "Tempted to lie or cut corners?",
+  "theme": "duty",
+  "visuals": [
+   "traffic light",
+   "crossroads",
+   "still:marble statue of Marcus Aurelius raising one hand to stop, dramatic side light",
+   "man walking alone",
+   "microphone",
+   "zipper",
+   "compass",
+   "empty road"
+  ]
+ },
+ {
+  "id": "break_thy_promise",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 3.7, trans. George Long",
+  "quote": "Never value anything as profitable to thyself which shall compel thee to break thy promise, to lose thy self-respect.",
+  "hook": "No paycheck is worth your word.",
+  "theme": "duty",
+  "visuals": [
+   "broken chain",
+   "money counting",
+   "still:roman merchant offering a bag of gold coins to a stern soldier, torchlight",
+   "signing contract",
+   "broken mirror",
+   "man walking city",
+   "eagle",
+   "lion walking"
+  ]
+ },
+ {
+  "id": "cold_or_warm",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.2, trans. George Long",
+  "quote": "Let it make no difference to thee whether thou art cold or warm, if thou art doing thy duty; and whether thou art drowsy or satisfied with sleep.",
+  "hook": "Tired and cold? Do it anyway.",
+  "theme": "duty",
+  "visuals": [
+   "frost window",
+   "fireplace",
+   "still:roman sentry standing guard in falling snow at dawn, cinematic",
+   "man running snow",
+   "alarm clock",
+   "coffee steam",
+   "man walking rain",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "swarm_and_bee",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.54, trans. George Long",
+  "quote": "That which is not good for the swarm, neither is it good for the bee.",
+  "hook": "Good for you but bad for them?",
+  "theme": "duty",
+  "visuals": [
+   "bee hive",
+   "bees flowers",
+   "still:roman legionaries marching in tight formation, dust and sunlight",
+   "honeycomb",
+   "ants",
+   "men rowing",
+   "birds flock",
+   "flowers field"
+  ]
+ },
+ {
+  "id": "bear_it_nobly",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 4.49, trans. George Long",
+  "quote": "Remember too on every occasion which leads thee to vexation to apply this principle; not that this is a misfortune, but that to bear it nobly is good fortune.",
+  "hook": "Bad break? Here's how to flip it.",
+  "theme": "adversity",
+  "visuals": [
+   "flat tire",
+   "spilled coffee",
+   "still:roman soldier carrying a heavy shield up a hill in the rain, cinematic",
+   "storm",
+   "man carrying",
+   "man walking rain",
+   "waves rocks",
+   "rainbow"
+  ]
+ },
+ {
+  "id": "bitter_cucumber",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.50, trans. George Long",
+  "quote": "A cucumber is bitter. Throw it away. There are briers in the road. Turn aside from them. This is enough. Do not add, And why were such things made in the world?",
+  "hook": "Stuck asking why me?",
+  "theme": "adversity",
+  "visuals": [
+   "cucumber",
+   "trash can",
+   "thorns",
+   "forest path",
+   "still:roman traveller stepping around a thorn bush on an ancient road, morning light",
+   "galaxy",
+   "man walking forest",
+   "sun rays forest"
+  ]
+ },
+ {
+  "id": "hard_not_impossible",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.19, trans. George Long",
+  "quote": "If a thing is difficult to be accomplished by thyself, do not think that it is impossible for man.",
+  "hook": "Hard for you isn't impossible.",
+  "theme": "adversity",
+  "visuals": [
+   "rubik cube",
+   "still:roman builders raising a giant stone column with ropes, dust and sunlight",
+   "pyramids",
+   "bridge",
+   "skyscraper",
+   "man rock climbing",
+   "mountain summit",
+   "mountain flag"
+  ]
+ },
+ {
+  "id": "left_hand",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 12.6, trans. George Long",
+  "quote": "Practise thyself even in the things which thou despairest of accomplishing.",
+  "hook": "Think you'll never be good at it?",
+  "theme": "adversity",
+  "visuals": [
+   "horse reins",
+   "still:roman rider gripping the reins of a rearing horse, dust and sunlight",
+   "man writing",
+   "piano keys",
+   "man skateboard",
+   "basketball hoop",
+   "man training gym",
+   "horse galloping"
+  ]
+ },
+ {
+  "id": "give_myself_pain",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.42, trans. George Long",
+  "quote": "It is not fit that I should give myself pain, for I have never intentionally given pain even to another.",
+  "hook": "Stop being so hard on yourself.",
+  "theme": "resilience",
+  "visuals": [
+   "rope knot",
+   "man mirror",
+   "still:marble statue of Marcus Aurelius with a calm, gentle expression, soft window light",
+   "rain window",
+   "man breathing closeup",
+   "calm lake",
+   "man walking forest",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "recover_thy_life",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.2, trans. George Long",
+  "quote": "To recover thy life is in thy power. Look at things again as thou didst use to look at them.",
+  "hook": "Want your old self back?",
+  "theme": "resilience",
+  "visuals": [
+   "old photographs",
+   "vinyl record",
+   "still:roman man at an open window at dawn, looking out over the city, soft light",
+   "man riding bicycle",
+   "window light",
+   "spring flowers",
+   "man walking field",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "out_of_tune",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.11, trans. George Long",
+  "quote": "When thou hast been compelled by circumstances to be disturbed in a manner, quickly return to thyself, and do not continue out of tune longer than the compulsion lasts.",
+  "hook": "Knocked off balance? Get back faster.",
+  "theme": "resilience",
+  "visuals": [
+   "guitar strings",
+   "storm sea",
+   "still:ancient greek musician tuning a lyre in a stone courtyard, soft light",
+   "guitar tuning",
+   "metronome",
+   "compass",
+   "calm water",
+   "man guitar"
+  ]
+ },
+ {
+  "id": "smallest_thing",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 9.29, trans. George Long",
+  "quote": "Be content if the smallest thing goes on well, and consider such an event to be no small matter.",
+  "hook": "Small win today? It's not small.",
+  "theme": "resilience",
+  "visuals": [
+   "seedling",
+   "still:roman mason setting a single stone into a new wall, morning light",
+   "brick wall",
+   "man push ups",
+   "stairs",
+   "man running dawn",
+   "dominoes",
+   "plant growing"
+  ]
+ },
+ {
+  "id": "good_today",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.22, trans. George Long",
+  "quote": "Thou choosest rather to become good to-morrow than to be good to-day.",
+  "hook": "Waiting for Monday to start?",
+  "theme": "time",
+  "visuals": [
+   "calendar",
+   "still:roman sundial casting a sharp shadow across marble, dramatic light",
+   "clock",
+   "sneakers",
+   "man waking up",
+   "door opening",
+   "man running street",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "thoughts_about_others",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 3.4, trans. George Long",
+  "quote": "Do not waste the remainder of thy life in thoughts about others, when thou dost not refer thy thoughts to some object of common utility.",
+  "hook": "Still checking what they're up to?",
+  "theme": "time",
+  "visuals": [
+   "binoculars",
+   "window blinds",
+   "phone scrolling",
+   "still:roman man peering over a garden wall at his neighbours, dramatic shadow",
+   "social media",
+   "hourglass",
+   "man hiking",
+   "forest light"
+  ]
+ },
+ {
+  "id": "sands_cover",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.34, trans. George Long",
+  "quote": "As the heaps of sand piled on one another hide the former sands; so in life the events which go before are soon covered by those which come after.",
+  "hook": "Can't stop replaying that cringe moment?",
+  "theme": "time",
+  "visuals": [
+   "sand dunes",
+   "desert wind",
+   "still:ancient roman ruins half buried in desert sand, dramatic light",
+   "footprints sand",
+   "beach waves",
+   "snow falling",
+   "man walking beach",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "who_is_watching",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 9.29, trans. George Long",
+  "quote": "Set thyself in motion, if it is in thy power, and do not look about thee to see if any one will observe it.",
+  "hook": "Scared they'll watch you try?",
+  "theme": "fear",
+  "visuals": [
+   "security camera",
+   "empty stadium",
+   "still:lone roman athlete starting to run in an empty arena, dust and sunlight",
+   "man running track",
+   "empty gym",
+   "man training gym",
+   "man jumping",
+   "finish line"
+  ]
+ },
+ {
+  "id": "best_advisers",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 10.12, trans. George Long",
+  "quote": "If thou seest clear, go by this way content, without turning back; but if thou dost not see clear, stop and take the best advisers.",
+  "hook": "Stuck on a big decision?",
+  "theme": "fear",
+  "visuals": [
+   "windshield wipers",
+   "fog road",
+   "crossroads",
+   "still:young roman seeking counsel from two elder senators by lamplight",
+   "men talking",
+   "morning fog",
+   "man walking road",
+   "clear sky"
+  ]
+ },
+ {
+  "id": "old_fashion",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.17, trans. George Long",
+  "quote": "Thou art come according to thy old fashion. I am not angry with thee: only go away.",
+  "hook": "That old thought is back? Tell it this.",
+  "theme": "fear",
+  "visuals": [
+   "ceiling fan",
+   "smoke",
+   "still:marble statue of Marcus Aurelius seated calmly beside an oil lamp, soft light",
+   "open window",
+   "bird flying",
+   "clouds timelapse",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "gentleness_is_strength",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 11.18, trans. George Long",
+  "quote": "Mildness and gentleness, as they are more agreeable to human nature, so also are they more manly; and he who possesses these qualities possesses strength, nerves, and courage.",
+  "hook": "Think calm makes you soft?",
+  "theme": "anger",
+  "visuals": [
+   "lion resting",
+   "still:roman general calmly sheathing his sword, dramatic side light",
+   "calm sea",
+   "man boxer",
+   "man breathing closeup",
+   "mountain",
+   "elephant",
+   "oak tree"
+  ]
+ },
+ {
+  "id": "leave_it_there",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 9.20, trans. George Long",
+  "quote": "It is thy duty to leave another man's wrongful act there where it is.",
+  "hook": "Can't let go of what he did?",
+  "theme": "anger",
+  "visuals": [
+   "boulder",
+   "man carrying",
+   "still:roman traveller setting a heavy stone down by the roadside, morning light",
+   "rearview mirror",
+   "man walking alone",
+   "open road",
+   "river flowing",
+   "open field"
+  ]
+ },
+ {
+  "id": "let_him_look_to_it",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 11.13, trans. George Long",
+  "quote": "Suppose any man shall despise me. Let him look to that himself. But I will look to this, that I be not discovered doing or saying anything deserving of contempt.",
+  "hook": "Someone looks down on you? Let them.",
+  "theme": "ego",
+  "visuals": [
+   "pigeon",
+   "still:roman senator sneering down from marble steps at a calm young man, dramatic light",
+   "mirror",
+   "man walking crowd",
+   "man working",
+   "man reading",
+   "mountain path",
+   "lighthouse"
+  ]
+ },
+ {
+  "id": "gladly_change",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.21, trans. George Long",
+  "quote": "If any man is able to convince me and show me that I do not think or act right, I will gladly change.",
+  "hook": "Being wrong isn't losing.",
+  "theme": "ego",
+  "visuals": [
+   "chalkboard",
+   "chess",
+   "still:two roman philosophers debating on marble steps, one nodding in agreement, soft light",
+   "map compass",
+   "open book",
+   "river aerial",
+   "man walking",
+   "winding road"
+  ]
+ },
+ {
+  "id": "receive_without_arrogance",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.33, trans. George Long",
+  "quote": "Receive wealth or prosperity without arrogance; and be ready to let it go.",
+  "hook": "Winning right now? Hold it loosely.",
+  "theme": "desire",
+  "visuals": [
+   "trophy",
+   "gold coins",
+   "still:roman general riding in a triumph while a servant whispers in his ear, dramatic light",
+   "luxury car",
+   "sand falling",
+   "balloon",
+   "leaves falling",
+   "sunset"
+  ]
+ },
+ {
+  "id": "shall_i_repent",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.2, trans. George Long",
+  "quote": "On the occasion of every act ask thyself, How is this with respect to me? Shall I repent of it?",
+  "hook": "About to do something you'll regret?",
+  "theme": "desire",
+  "visuals": [
+   "credit card",
+   "whiskey glass",
+   "phone screen",
+   "still:roman man pausing at a crossroads at dusk, dramatic sky",
+   "man thinking",
+   "stop sign",
+   "man walking street",
+   "man sleeping"
+  ]
+ },
+ {
+  "id": "share_your_worries",
+  "author": "Seneca",
+  "citation": "Moral Letters 3, trans. Richard M. Gummere",
+  "quote": "You should share with a friend at least all your worries and reflections. Regard him as loyal, and you will make him loyal.",
+  "hook": "Carrying it all alone? Tell a friend.",
+  "theme": "friendship",
+  "visuals": [
+   "kettle boiling",
+   "still:two Roman legionaries talking quietly by a campfire at night, warm firelight",
+   "coffee steam",
+   "campfire night",
+   "dog waiting",
+   "rope bridge",
+   "steam rising",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "friend_because_it_pays",
+  "author": "Seneca",
+  "citation": "Moral Letters 9, trans. Richard M. Gummere",
+  "quote": "He who begins to be your friend because it pays will also cease because it pays.",
+  "hook": "Why some friends vanish when you're down.",
+  "theme": "friendship",
+  "visuals": [
+   "slot machine",
+   "coins falling",
+   "disco ball",
+   "still:empty Roman banquet hall at dawn, overturned wine cups, cold grey light",
+   "empty chairs",
+   "man walking rain",
+   "street lamp",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "friends_to_share_it",
+  "author": "Seneca",
+  "citation": "Moral Letters 6, trans. Richard M. Gummere",
+  "quote": "No good thing is pleasant to possess, without friends to share it.",
+  "hook": "Got the win and nobody to tell?",
+  "theme": "friendship",
+  "visuals": [
+   "trophy",
+   "empty stadium",
+   "still:Roman victor holding a laurel wreath alone in an empty arena at dusk",
+   "medal close up",
+   "empty table",
+   "campfire night",
+   "fireworks",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "enjoy_friends_now",
+  "author": "Seneca",
+  "citation": "Moral Letters 63, trans. Richard M. Gummere",
+  "quote": "Let us greedily enjoy our friends, because we do not know how long this privilege will be ours.",
+  "hook": "When did you last see your friends?",
+  "theme": "friendship",
+  "visuals": [
+   "empty bench",
+   "hourglass",
+   "train departing",
+   "still:two Roman men clasping forearms at a city gate at dusk, warm light",
+   "campfire night",
+   "car open road",
+   "sunset timelapse",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "courage_and_calm",
+  "author": "Seneca",
+  "citation": "Moral Letters 49, trans. Richard M. Gummere",
+  "quote": "Give me courage to meet hardships; make me calm in the face of the unavoidable.",
+  "hook": "Something hard coming? Say this first.",
+  "theme": "adversity",
+  "visuals": [
+   "tide coming in",
+   "storm clouds",
+   "still:Roman sentinel standing calmly on a city wall as a storm rolls in, cinematic",
+   "candle wind",
+   "man walking rain",
+   "waves rocks",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "overcome_necessities",
+  "author": "Seneca",
+  "citation": "Moral Letters 37, trans. Richard M. Gummere",
+  "quote": "You cannot escape necessities, but you can overcome them.",
+  "hook": "Can't avoid it? Go through it.",
+  "theme": "adversity",
+  "visuals": [
+   "ship ice",
+   "brick wall",
+   "man parkour",
+   "still:Roman legionaries wading across a fast river in armour, dramatic sky",
+   "man river crossing",
+   "man climbing",
+   "rain storm",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "call_helpers",
+  "author": "Seneca",
+  "citation": "Moral Letters 52, trans. Richard M. Gummere",
+  "quote": "There are obstacles in our path; so let us fight, and call to our assistance some helpers.",
+  "hook": "Fight it. Just don't fight alone.",
+  "theme": "adversity",
+  "visuals": [
+   "fallen tree",
+   "man boxing",
+   "still:Roman legionaries locking shields together in a testudo, dust and sunlight",
+   "ants carrying",
+   "wolf pack",
+   "geese flying",
+   "man climbing",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "surmount_that_hill",
+  "author": "Seneca",
+  "citation": "Moral Letters 31, trans. Richard M. Gummere",
+  "quote": "Rise, draw a fresh breath, and surmount that hill, if possible, at a single spurt!",
+  "hook": "Halfway up and out of breath?",
+  "theme": "adversity",
+  "visuals": [
+   "man breathing cold",
+   "steep hill",
+   "man running hill",
+   "still:ancient Greek runner cresting a hill at dawn, golden dust, cinematic",
+   "man sprinting",
+   "man running stairs",
+   "flag wind",
+   "summit sunrise"
+  ]
+ },
+ {
+  "id": "upper_hand",
+  "author": "Seneca",
+  "citation": "Moral Letters 13, trans. Richard M. Gummere",
+  "quote": "Fortune has often in the past got the upper hand of you, and yet you have not surrendered, but have leaped up and stood your ground still more eagerly.",
+  "hook": "Life has knocked you down before.",
+  "theme": "resilience",
+  "visuals": [
+   "dice rolling",
+   "man boxing",
+   "waves crashing",
+   "still:Roman gladiator rising from the arena sand, dust in a shaft of light",
+   "tree storm",
+   "man standing up",
+   "lion",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "sailors_try_again",
+  "author": "Seneca",
+  "citation": "Moral Letters 81, trans. Richard M. Gummere",
+  "quote": "After a shipwreck, sailors try the sea again.",
+  "hook": "Failed once? Scared to try again?",
+  "theme": "resilience",
+  "visuals": [
+   "shipwreck",
+   "storm sea",
+   "still:ancient Roman galley rowing out of harbour at dawn, calm sea, golden light",
+   "fishing boat",
+   "man sailing",
+   "harbor sunrise",
+   "sailboat",
+   "open ocean"
+  ]
+ },
+ {
+  "id": "pleasant_to_have_borne",
+  "author": "Seneca",
+  "citation": "Moral Letters 78, trans. Richard M. Gummere",
+  "quote": "That which was bitter to bear is pleasant to have borne.",
+  "hook": "You'll be glad you got through this.",
+  "theme": "resilience",
+  "visuals": [
+   "lemon slice",
+   "man carrying log",
+   "rain storm",
+   "still:Roman legionary setting down his heavy shield at sunset, tired and smiling",
+   "man finish line",
+   "man resting",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "todays_task",
+  "author": "Seneca",
+  "citation": "Moral Letters 1, trans. Richard M. Gummere",
+  "quote": "Lay hold of to-day’s task, and you will not need to depend so much upon to-morrow’s.",
+  "hook": "Worried about tomorrow? Win today first.",
+  "theme": "time",
+  "visuals": [
+   "sticky notes",
+   "man hammering nail",
+   "man writing",
+   "still:Roman stonemason carving a block of marble, morning light, dust",
+   "clock ticking",
+   "workbench tools",
+   "sunset timelapse",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "cost_nothing",
+  "author": "Seneca",
+  "citation": "Moral Letters 42, trans. Richard M. Gummere",
+  "quote": "Very often the things that cost nothing cost us the most heavily.",
+  "hook": "Free apps aren't free.",
+  "theme": "time",
+  "visuals": [
+   "mouse trap",
+   "price tag",
+   "man phone scrolling",
+   "still:the wooden Trojan horse before the gates of Troy at dusk, cinematic",
+   "notifications",
+   "hourglass",
+   "clock",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "little_bits",
+  "author": "Seneca",
+  "citation": "Moral Letters 32, trans. Richard M. Gummere",
+  "quote": "We break up life into little bits, and fritter it away.",
+  "hook": "Where did today actually go?",
+  "theme": "time",
+  "visuals": [
+   "glass shattering",
+   "puzzle pieces",
+   "man phone scrolling",
+   "still:a broken Roman mosaic, tiles scattered across a stone floor, low side light",
+   "calendar pages",
+   "sand falling",
+   "clock",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "wages_of_good_deed",
+  "author": "Seneca",
+  "citation": "Moral Letters 81, trans. Richard M. Gummere",
+  "quote": "The wages of a good deed is to have done it.",
+  "hook": "Did good and got nothing back?",
+  "theme": "duty",
+  "visuals": [
+   "man planting tree",
+   "seedling growing",
+   "still:old Roman farmer planting an olive sapling at dawn, warm light",
+   "watering can",
+   "tree timelapse",
+   "forest light",
+   "man walking forest",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "stone_arch",
+  "author": "Seneca",
+  "citation": "Moral Letters 95, trans. Richard M. Gummere",
+  "quote": "Our relations with one another are like a stone arch, which would collapse if the stones did not mutually support each other.",
+  "hook": "Lean on people. Let them lean on you.",
+  "theme": "duty",
+  "visuals": [
+   "cracked wall",
+   "stone arch",
+   "still:ancient Roman aqueduct arches at golden hour, cinematic",
+   "dominoes falling",
+   "stone bridge",
+   "brick wall",
+   "man walking bridge",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "live_for_neighbour",
+  "author": "Seneca",
+  "citation": "Moral Letters 48, trans. Richard M. Gummere",
+  "quote": "You must live for your neighbour, if you would live for yourself.",
+  "hook": "Stuck in your own head? Help someone.",
+  "theme": "duty",
+  "visuals": [
+   "man shoveling snow",
+   "front door",
+   "street lamps",
+   "still:two Roman men raising a timber beam on a half-built house, sunlight and dust",
+   "man fixing fence",
+   "fresh bread",
+   "candle window",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "flame_falls_upon",
+  "author": "Seneca",
+  "citation": "Moral Letters 18, trans. Richard M. Gummere",
+  "quote": "It does not matter how great is the flame, but what it falls upon.",
+  "hook": "Snapped over something small?",
+  "theme": "anger",
+  "visuals": [
+   "match strike",
+   "dry leaves",
+   "wildfire",
+   "still:a Roman bronze brazier glowing beside thick oak beams in a dark stone hall",
+   "fireplace log",
+   "embers",
+   "rain",
+   "calm lake"
+  ]
+ },
+ {
+  "id": "pile_of_troubles",
+  "author": "Seneca",
+  "citation": "Moral Letters 123, trans. Richard M. Gummere",
+  "quote": "Nothing need provoke one’s anger if one does not add to one’s pile of troubles by getting angry.",
+  "hook": "Angry about it? Now it's two problems.",
+  "theme": "anger",
+  "visuals": [
+   "burnt toast",
+   "spilled coffee",
+   "traffic jam",
+   "still:a weary Roman traveller at an empty table with one hard loaf of bread, lamplight, deadpan",
+   "rock cairn",
+   "dirty dishes",
+   "calm lake",
+   "bread"
+  ]
+ },
+ {
+  "id": "golden_bit",
+  "author": "Seneca",
+  "citation": "Moral Letters 41, trans. Richard M. Gummere",
+  "quote": "A golden bit does not make a better horse.",
+  "hook": "Upgrading your stuff isn't upgrading you.",
+  "theme": "ego",
+  "visuals": [
+   "gold watch",
+   "luxury car",
+   "still:a Roman parade horse in an ornate golden bridle, dramatic side light",
+   "wild horses",
+   "horse gallop",
+   "man training",
+   "lion walking",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "outstripped_yourself",
+  "author": "Seneca",
+  "citation": "Moral Letters 15, trans. Richard M. Gummere",
+  "quote": "What have you to do with the others? You have outstripped yourself.",
+  "hook": "Feel behind everyone your age?",
+  "theme": "ego",
+  "visuals": [
+   "stadium track",
+   "man running",
+   "footprints sand",
+   "still:ancient Greek runner alone on an empty stone track at dawn, golden light",
+   "man mirror",
+   "stairs",
+   "man climbing",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "night_terrors",
+  "author": "Seneca",
+  "citation": "Moral Letters 104, trans. Richard M. Gummere",
+  "quote": "Many a sight that is held a terror in the night-time, is turned to ridicule by day.",
+  "hook": "Everything feels worse at 2am.",
+  "theme": "fear",
+  "visuals": [
+   "digital clock",
+   "shadow wall",
+   "still:a small marble statue casting a huge monstrous shadow on a stone wall by torchlight",
+   "dark forest",
+   "fog",
+   "morning window",
+   "birds morning",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "lack_of_confidence",
+  "author": "Seneca",
+  "citation": "Moral Letters 104, trans. Richard M. Gummere",
+  "quote": "Our lack of confidence is not the result of difficulty; the difficulty comes from our lack of confidence.",
+  "hook": "Think it's too hard for you?",
+  "theme": "fear",
+  "visuals": [
+   "man diving board",
+   "high cliff",
+   "man jumping",
+   "still:ancient Greek athlete poised at the edge of a sea cliff at dawn",
+   "steep stairs",
+   "man climbing",
+   "eagle flying",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "train_minds",
+  "author": "Seneca",
+  "citation": "Moral Letters 80, trans. Richard M. Gummere",
+  "quote": "How many men, I say to myself, train their bodies, and how few train their minds!",
+  "hook": "Most men skip this workout.",
+  "theme": "discipline",
+  "visuals": [
+   "stadium lights",
+   "man weightlifting",
+   "man training gym",
+   "still:ancient Roman stadium at dusk, torches lit, cinematic",
+   "empty library",
+   "open book",
+   "chess",
+   "man reading"
+  ]
+ },
+ {
+  "id": "wrestle_again",
+  "author": "Epictetus",
+  "citation": "Discourses IV.9, trans. George Long",
+  "quote": "See what the trainers of boys do. Has the boy fallen? Rise, they say, wrestle again till you are made strong.",
+  "hook": "Fell again? Here's what a coach says.",
+  "theme": "resilience",
+  "visuals": [
+   "empty gym",
+   "still:ancient greek wrestling trainer pulling a fallen young wrestler up from the sand, dust in sunlight",
+   "man wrestling",
+   "dust sunlight",
+   "man boxing",
+   "man push ups",
+   "man running rain",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "renew_the_combat",
+  "author": "Epictetus",
+  "citation": "Discourses III.25, trans. George Long",
+  "quote": "If again you renounce it, you may again renew it; and if you once gain the victory, you are like him who has never renounced the combat.",
+  "hook": "Restarted ten times? It still counts.",
+  "theme": "resilience",
+  "visuals": [
+   "man starting blocks",
+   "still:ancient greek runner crouched at the stone starting line of an empty stadium at dawn",
+   "empty stadium",
+   "man sprinting",
+   "man boxing",
+   "man finish line",
+   "trophy",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "nobody_nowhere",
+  "author": "Epictetus",
+  "citation": "Enchiridion 24, trans. George Long",
+  "quote": "Let not these thoughts afflict you, I shall live unhonoured and be nobody nowhere.",
+  "hook": "Scared you'll never be anyone?",
+  "theme": "fear",
+  "visuals": [
+   "small town",
+   "desert road",
+   "still:ancient greek man walking alone on a quiet country road at dusk, calm face",
+   "city lights",
+   "man walking",
+   "starry sky",
+   "mountain summit",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "naturally_dull",
+  "author": "Epictetus",
+  "citation": "Discourses I.2, trans. George Long",
+  "quote": "What then, since I am naturally dull, shall I, for this reason, take no pains? I hope not.",
+  "hook": "Not naturally gifted? Read this.",
+  "theme": "discipline",
+  "visuals": [
+   "man sharpening knife",
+   "still:ancient greek man patiently sharpening a dull iron blade on a whetstone, warm workshop light",
+   "grinding sparks",
+   "man reading",
+   "man training",
+   "man running dawn",
+   "man climbing",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "lonely_in_a_crowd",
+  "author": "Epictetus",
+  "citation": "Discourses III.13, trans. George Long",
+  "quote": "It is not the sight of a human creature which removes us from solitude, but the sight of one who is faithful and modest and helpful.",
+  "hook": "Lonely even with people around?",
+  "theme": "friendship",
+  "visuals": [
+   "lighthouse night",
+   "crowd timelapse",
+   "man alone city",
+   "still:two ancient greek friends walking together on a lonely stone road at dusk",
+   "men hiking",
+   "men talking",
+   "campfire night",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "friend_or_money",
+  "author": "Epictetus",
+  "citation": "Enchiridion 24, trans. George Long",
+  "quote": "Which would you rather have, money or a faithful and modest friend?",
+  "hook": "What's worth more than money?",
+  "theme": "friendship",
+  "visuals": [
+   "empty chair",
+   "money counting",
+   "still:two ancient greek friends sharing bread at a rough wooden table, warm oil lamp light",
+   "gold coins",
+   "men eating together",
+   "men handshake",
+   "campfire night",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "sober_or_pleasant",
+  "author": "Epictetus",
+  "citation": "Discourses IV.2, trans. George Long",
+  "quote": "Choose then whether you will be a hard drinker and pleasant to your former associates or a sober man and disagreeable to them.",
+  "hook": "Quit drinking? Some friends won't like it.",
+  "theme": "friendship",
+  "visuals": [
+   "beer foam",
+   "empty bar",
+   "men toasting",
+   "still:lone ancient greek man walking away from a torchlit tavern at night",
+   "glass water",
+   "man running dawn",
+   "open road",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "quenched_charcoal",
+  "author": "Epictetus",
+  "citation": "Discourses III.16, trans. George Long",
+  "quote": "If a man places a piece of quenched charcoal close to a piece that is burning, either the quenched charcoal will quench the other, or the burning charcoal will light that which is quenched.",
+  "hook": "Your friends either light you or put you out.",
+  "theme": "friendship",
+  "visuals": [
+   "glowing embers",
+   "charcoal fire",
+   "smoke",
+   "still:ancient bronze brazier with one glowing coal beside a dead black coal, dark stone room",
+   "fire sparks",
+   "men campfire",
+   "torch fire",
+   "bonfire night"
+  ]
+ },
+ {
+  "id": "your_own_work",
+  "author": "Epictetus",
+  "citation": "Enchiridion 24, trans. George Long",
+  "quote": "It is enough if every man fully discharges the work that is his own.",
+  "hook": "You don't have to fix everything.",
+  "theme": "duty",
+  "visuals": [
+   "blacksmith forge",
+   "man carpenter",
+   "still:ancient greek sandal maker at his bench in a sunlit workshop",
+   "man shoemaker",
+   "man baking bread",
+   "man laying bricks",
+   "man welding",
+   "sunrise city"
+  ]
+ },
+ {
+  "id": "brother_wrongs_you",
+  "author": "Epictetus",
+  "citation": "Enchiridion 30, trans. George Long",
+  "quote": "Does a brother wrong you? Maintain then your own position towards him, and do not examine what he is doing, but what you must do.",
+  "hook": "Someone close hurt you? Here's your move.",
+  "theme": "duty",
+  "visuals": [
+   "door closing",
+   "men arguing",
+   "still:two ancient greek brothers standing apart in a stone courtyard at dawn",
+   "rock waves",
+   "man thinking",
+   "compass",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "guide_not_mock",
+  "author": "Epictetus",
+  "citation": "Discourses II.12, trans. George Long",
+  "quote": "A guide, when he has found a man out of the road leads him into the right way: he does not ridicule or abuse him and then leave him.",
+  "hook": "Know someone who's lost his way?",
+  "theme": "duty",
+  "visuals": [
+   "fog forest",
+   "signpost",
+   "still:ancient greek guide with a lantern leading a lost traveller back to a stone road at dusk",
+   "mountain path",
+   "men hiking",
+   "compass",
+   "lantern night",
+   "sunrise road"
+  ]
+ },
+ {
+  "id": "bad_neighbour",
+  "author": "Epictetus",
+  "citation": "Discourses III.20, trans. George Long",
+  "quote": "Is my neighbour bad? Bad to himself, but good to me: he exercises my good disposition, my moderation.",
+  "hook": "Someone testing your patience?",
+  "theme": "adversity",
+  "visuals": [
+   "barking dog",
+   "man mowing lawn",
+   "still:ancient greek wrestler training against a heavier partner in a sunlit stone gymnasium",
+   "man sparring",
+   "man punching bag",
+   "man breathing",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "make_it_good",
+  "author": "Epictetus",
+  "citation": "Discourses III.20, trans. George Long",
+  "quote": "Bring what you please, and I will make it good.",
+  "hook": "Whatever today throws at you.",
+  "theme": "adversity",
+  "visuals": [
+   "molten metal",
+   "storm sea",
+   "still:ancient greek philosopher standing calm on a cliff as a storm rolls in",
+   "lightning",
+   "hammer anvil",
+   "man running rain",
+   "sword forging",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "what_you_gained",
+  "author": "Epictetus",
+  "citation": "Discourses IV.3, trans. George Long",
+  "quote": "Keep this thought in readiness, when you lose any thing external, what you acquire in place of it; and if it be worth more, never say, I have had a loss.",
+  "hook": "Lost something? Count what you got instead.",
+  "theme": "resilience",
+  "visuals": [
+   "balance scale",
+   "cardboard boxes",
+   "empty room",
+   "still:ancient bronze balance scale on a stone market table, warm morning light",
+   "man walking",
+   "plant growing",
+   "open road",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "life_in_rome",
+  "author": "Epictetus",
+  "citation": "Discourses III.24, trans. George Long",
+  "quote": "If you be in Rome, do not imagine what the life in Athens is, but think only of the life in Rome.",
+  "hook": "Always wishing you were somewhere else?",
+  "theme": "time",
+  "visuals": [
+   "airplane wing",
+   "acropolis",
+   "still:ancient roman man standing calmly on a sunlit roman street, morning light",
+   "colosseum",
+   "rome street",
+   "man walking",
+   "coffee steam",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "now_is_the_contest",
+  "author": "Epictetus",
+  "citation": "Enchiridion 50, trans. George Long",
+  "quote": "Remember that now is the contest, now are the Olympic games, and they cannot be deferred.",
+  "hook": "Waiting for your big moment? It's today.",
+  "theme": "time",
+  "visuals": [
+   "stadium lights",
+   "still:ancient greek athlete stepping onto the track of an empty olympic stadium at dawn",
+   "clock",
+   "man sprinting",
+   "stadium crowd",
+   "torch fire",
+   "man boxing",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "what_does_he_want",
+  "author": "Epictetus",
+  "citation": "Discourses II.13, trans. George Long",
+  "quote": "When I see a man anxious, I say, What does this man want? If he did not want some thing which is not in his power, how could he be anxious?",
+  "hook": "Anxious? Ask yourself this one question.",
+  "theme": "fear",
+  "visuals": [
+   "empty stage",
+   "man pacing",
+   "still:ancient greek lyre player sitting alone on an empty stone stage, soft evening light",
+   "man checking phone",
+   "clock ticking",
+   "storm clouds",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "how_will_it_be",
+  "author": "Epictetus",
+  "citation": "Discourses IV.10, trans. George Long",
+  "quote": "No longer then say to me, How will it be? For however it may be, you will dispose of it well, and the result to you will be a fortunate one.",
+  "hook": "Worried how it'll all turn out?",
+  "theme": "fear",
+  "visuals": [
+   "dice rolling",
+   "fog road",
+   "still:ancient greek philosopher calmly walking into morning fog on a stone road",
+   "storm clouds",
+   "man walking fog",
+   "sailboat storm",
+   "calm sea",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "harsh_appearance",
+  "author": "Epictetus",
+  "citation": "Enchiridion 1, trans. George Long",
+  "quote": "Straightway then practise saying to every harsh appearance, You are an appearance, and in no manner what you appear to be.",
+  "hook": "Say this to your worst thought.",
+  "theme": "fear",
+  "visuals": [
+   "man shadow wall",
+   "mirage desert",
+   "still:ancient greek man raising an oil lamp toward a huge frightening shadow on a stone wall",
+   "storm clouds",
+   "fog clearing",
+   "man breathing",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "removing_the_desire",
+  "author": "Epictetus",
+  "citation": "Discourses IV.1, trans. George Long",
+  "quote": "Freedom is acquired not by the full possession of the things which are desired, but by removing the desire.",
+  "hook": "Think getting it will finally be enough?",
+  "theme": "desire",
+  "visuals": [
+   "luxury watch",
+   "sneakers",
+   "sports car",
+   "still:ancient greek philosopher sitting content on a stone step with only a plain cloak, morning sun",
+   "bird cage",
+   "bird flying",
+   "open field",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "fly_from_the_stronger",
+  "author": "Epictetus",
+  "citation": "Discourses III.12, trans. George Long",
+  "quote": "At first fly far from that which is stronger than yourself.",
+  "hook": "Can't resist it yet? Don't stand near it.",
+  "theme": "desire",
+  "visuals": [
+   "lightning strike",
+   "big wave",
+   "birds flying away",
+   "still:ancient greek young man turning away from a lavish banquet table toward a bright doorway",
+   "man walking away",
+   "man scrolling phone",
+   "mountain trail",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "gain_time",
+  "author": "Epictetus",
+  "citation": "Enchiridion 20, trans. George Long",
+  "quote": "For if you once gain time and delay, you will more easily master yourself.",
+  "hook": "About to snap? Give it a minute.",
+  "theme": "anger",
+  "visuals": [
+   "boiling water",
+   "hourglass",
+   "still:ancient greek man pausing with eyes closed before he speaks, stone room, torchlight",
+   "man breathing",
+   "kettle steam",
+   "storm passing",
+   "calm lake",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "listen_like_a_stone",
+  "author": "Epictetus",
+  "citation": "Discourses I.25, trans. George Long",
+  "quote": "Stand by a stone and revile it; and what will you gain? If then a man listens like a stone, what profit is there to the reviler?",
+  "hook": "Someone trying to get a rise out of you?",
+  "theme": "anger",
+  "visuals": [
+   "big rock",
+   "man shouting",
+   "still:ancient greek man shouting at a great boulder in an empty field, dramatic sky",
+   "waves rocks",
+   "warrior statue",
+   "rock in sea",
+   "mountain",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "first_ridiculed",
+  "author": "Epictetus",
+  "citation": "Enchiridion 22, trans. George Long",
+  "quote": "Remember that if you abide in the same principles, these men who first ridiculed will afterwards admire you.",
+  "hook": "Friends laughing at the new you?",
+  "theme": "ego",
+  "visuals": [
+   "men laughing",
+   "man training",
+   "still:ancient greek philosopher walking calmly past laughing men in a sunlit marketplace",
+   "man running rain",
+   "man lifting weights",
+   "crowd applause",
+   "mountain summit",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "find_fault_wrongly",
+  "author": "Epictetus",
+  "citation": "Enchiridion 35, trans. George Long",
+  "quote": "For if it is not right to do it, avoid doing the thing; but if it is right, why are you afraid of those who shall find fault wrongly?",
+  "hook": "Scared of what people will say?",
+  "theme": "ego",
+  "visuals": [
+   "security camera",
+   "crowd street",
+   "still:ancient greek philosopher walking steadily up a stone path under a dramatic sky",
+   "man walking",
+   "compass",
+   "man running",
+   "lighthouse",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "small_things_first",
+  "author": "Epictetus",
+  "citation": "Discourses I.18, trans. George Long",
+  "quote": "We ought to exercise ourselves in small things, and beginning with them to proceed to the greater.",
+  "hook": "Start smaller than you think.",
+  "theme": "discipline",
+  "visuals": [
+   "dominoes falling",
+   "seedling",
+   "still:ancient greek man stacking small stones into a tall cairn on a hillside, morning light",
+   "brick wall building",
+   "man climbing stairs",
+   "tree growing",
+   "mountain peak",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "spit_it_out",
+  "author": "Epictetus",
+  "citation": "Enchiridion 47, trans. George Long",
+  "quote": "If you are ever very thirsty, take a draught of cold water, and spit it out, and tell no man.",
+  "hook": "Want discipline? Try this. Tell nobody.",
+  "theme": "discipline",
+  "visuals": [
+   "desert heat",
+   "water glass",
+   "still:ancient greek athlete at a stone fountain in harsh noon sun, cupping cold water",
+   "water splash",
+   "man sweating",
+   "man training",
+   "closed door",
+   "sunrise"
+  ]
+ },
+ {
+  "id": "invincible",
+  "author": "Epictetus",
+  "citation": "Enchiridion 19, trans. George Long",
+  "quote": "You can be invincible, if you enter into no contest in which it is not in your power to conquer.",
+  "hook": "Want to be unbeatable? Pick your fights.",
+  "theme": "control",
+  "visuals": [
+   "men arm wrestling",
+   "lion walking",
+   "still:ancient greek wrestler standing calm and unbeaten in an empty sand arena at sunset",
+   "man boxing",
+   "chess",
+   "waves crashing rocks",
+   "mountain peak",
+   "sunrise"
+  ]
  }
 ]
