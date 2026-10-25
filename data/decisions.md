@@ -1398,6 +1398,14 @@ that story must always be captioned "recorded in the Historia Augusta", never
   * The HQ shows finished shifts as "Done for today" and work waiting on the
     owner as "Needs you": Orpheus's 9 original songs from Oct 12 went into the
     HQ as a pick (asks/music). Nothing new airs until the owner chooses.
+  * Done 2026-10-25 (the restock paused 10-23 to 10-25 on a usage limit):
+    +80 quotes, 112 fresh = 56 days, to 2026-12-20, balanced across the three
+    authors. Apelles now also rehearses right after every Producer run
+    (GitHub fired his crons 2-5 hours late), and a rehearsal plays only
+    approved sounds (the first one after the slash was removed still played
+    it). The citation checker read Enchiridion 29/42 and Discourses I.5 as
+    the section before; fixed, and every shelved and aired citation audited
+    correct.
 - **2026-10-25 — SOUND EFFECTS: the slash is out.** Owner, in the HQ:
   *"Remove the slash sound effect it sucks"*. The blade-swing whoosh
   (`whoosh_blade`) is unapproved in data/sfx.json; the stone slam, the boom
