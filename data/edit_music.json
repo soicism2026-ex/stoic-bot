@@ -7,7 +7,7 @@
   "start": 20.5,
   "start_how": "drop (5.8 dB build-to-drop contrast)",
   "duration": 44.5,
-  "approved": false,
+  "approved": true,
   "provenance": {
    "model": "ACE-Step 1.5 via acestep.cpp d881ad2 (DiT acestep-v15-xl-turbo-Q8_0.gguf, LM acestep-5Hz-lm-1.7B-Q8_0.gguf)",
    "license": "MIT (ACE-Step 1.5; commercial use of output allowed)",
@@ -20,7 +20,9 @@
    "lm_seed": 1419076099,
    "reference_audio": "none",
    "generated": "2026-10-12"
-  }
+  },
+  "approved_on": "2026-10-25",
+  "approved_how": "Owner, in the HQ: \"the first one and the last one are the best for now\" (sampler numbers 1 and 9), while a better source is found"
  },
  {
   "id": "caucasus_slowed__xl",
@@ -191,7 +193,7 @@
   "start": 14.0,
   "start_how": "loudest (2.3 dB build-to-drop contrast)",
   "duration": 42.5,
-  "approved": false,
+  "approved": true,
   "provenance": {
    "model": "ACE-Step 1.5 via acestep.cpp d881ad2 (DiT acestep-v15-xl-turbo-Q8_0.gguf, LM acestep-5Hz-lm-1.7B-Q8_0.gguf)",
    "license": "MIT (ACE-Step 1.5; commercial use of output allowed)",
@@ -204,6 +206,8 @@
    "lm_seed": 2125261824,
    "reference_audio": "none",
    "generated": "2026-10-12"
-  }
+  },
+  "approved_on": "2026-10-25",
+  "approved_how": "Owner, in the HQ: \"the first one and the last one are the best for now\" (sampler numbers 1 and 9), while a better source is found"
  }
 ]

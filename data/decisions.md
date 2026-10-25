@@ -1412,3 +1412,14 @@ that story must always be captioned "recorded in the Historia Augusta", never
   and the air whoosh stay, so every edit now opens on one of the two impacts
   and whooshes into the quote with the air whoosh. Supersedes the 10-22 "all
   four, rotating" for that one sound.
+- **2026-10-25 — EDIT MUSIC: songs 1 and 9 air for now; find much better
+  music.** Owner, in the HQ, about the 9 original ACE-Step songs from
+  Oct 12: *"All these still kinda suck, but I think the first one and the
+  last one are the best for now but we really do need to find much better
+  music so have an agent work on it"*. Approved `bass_motivation__xl` (#1,
+  piano + bass drops) and `promise_spedup__xl` (#9, bright sped-up), which
+  replace the Kevin MacLeod fallback and alternate (playlist shuffle) from
+  the 2026-10-26 posts. The other seven stay unapproved. Orpheus (Composer)
+  gets the standing job of finding much better music the channel can own
+  or license for monetized Shorts; the owner judges every candidate by ear
+  in the HQ, and nothing new airs until he picks it.
