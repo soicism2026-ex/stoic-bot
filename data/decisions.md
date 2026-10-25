@@ -1379,3 +1379,28 @@ that story must always be captioned "recorded in the Historia Augusta", never
   `ELEVENLABS_BACKUP_VOICE_ID` stays empty and Steffan stays the fallback. The
   code path is built and tested, so turning it on later is one id in
   daily-short.yml.
+- **2026-10-23 — "GET THEM WORKING": every bot has a standing job.** Owner,
+  in the HQ: *"Why is everybody on call? Get them working"*. Nothing was
+  broken (the bots' only standing job was 2 posts a day, done by 15:33 UTC),
+  but the idle lineup hid a real risk nobody watched: 36 unused edit quotes
+  (18 days at 2 a day), 1 story left, and a generated fallback that needs the
+  missing API credit, so the channel would have gone quiet around 2026-11-10.
+  On 10-21 the owner skipped the offered agent jobs; asked now to get the
+  team working, these became standing jobs:
+  * **Varro, the Librarian** (scheduled task `trig_0131CeoTYCTKpM5pQx4adBsn`,
+    Mondays 13:07 UTC, fires into the chief session) keeps the quote shelf at
+    30+ days via `scripts/shelf.py` (every quote verbatim and correctly cited,
+    never aired, written like the recent winners). The HQ warns under 14 days.
+  * **Apelles** rehearses the next post twice a day (edit-preview 08:40 and
+    19:40 UTC, DRY_RUN, rendered for its air day) and the HQ plays it under
+    Next on air before it airs. ~2 extra Brian reads a day (well inside the
+    40k-character Starter plan).
+  * The HQ shows finished shifts as "Done for today" and work waiting on the
+    owner as "Needs you": Orpheus's 9 original songs from Oct 12 went into the
+    HQ as a pick (asks/music). Nothing new airs until the owner chooses.
+- **2026-10-25 — SOUND EFFECTS: the slash is out.** Owner, in the HQ:
+  *"Remove the slash sound effect it sucks"*. The blade-swing whoosh
+  (`whoosh_blade`) is unapproved in data/sfx.json; the stone slam, the boom
+  and the air whoosh stay, so every edit now opens on one of the two impacts
+  and whooshes into the quote with the air whoosh. Supersedes the 10-22 "all
+  four, rotating" for that one sound.

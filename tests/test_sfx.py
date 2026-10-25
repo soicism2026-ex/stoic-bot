@@ -112,16 +112,28 @@ def test_sfx_track_places_each_sound_and_lasts_the_video(tmp_path):
 
 
 def test_every_edit_gets_the_owners_sounds():
-    """Owner, 2026-10-22 (HQ): "Use all four, rotating". Edits only: the
-    classic format already opens on its own hook sound."""
+    """Owner, 2026-10-22 (HQ): "Use all four, rotating"; 2026-10-25: "Remove
+    the slash sound effect it sucks", so the blade whoosh is off and every
+    whoosh is the air one. Edits only: the classic format already opens on its
+    own hook sound."""
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
     assert 'REEL_EDIT_SFX: "1"' in wf
     src = (ROOT / "scripts" / "daily_post.py").read_text()
     edit_pack = src[src.index('"edit": {'):src.index('"truestory": {')]
     assert '"REEL_SFX": os.environ.get("REEL_EDIT_SFX", "0")' in edit_pack
-    bank = json.loads((ROOT / "data" / "sfx.json").read_text())
-    assert len(bank) == 4 and all(t["approved"] is True for t in bank)
-    assert {t["role"] for t in bank} == set(sfx.ROLES)
+    bank = {t["id"]: t for t in json.loads((ROOT / "data" / "sfx.json").read_text())}
+    on = {i for i, t in bank.items() if t["approved"] is True}
+    assert on == {"impact_boom", "impact_stone", "whoosh_air"}
+    assert bank["whoosh_blade"]["approved"] is False
+    assert {bank[i]["role"] for i in on} == set(sfx.ROLES)
+
+
+def test_the_slash_never_airs_again(monkeypatch):
+    """A live edit picks only approved sounds; every day's whoosh is the air one."""
+    monkeypatch.delenv("DRY_RUN", raising=False)
+    days = [f"2026-11-{d:02d}" for d in range(1, 31)]
+    assert {sfx.pick("whoosh", d)["id"] for d in days} == {"whoosh_air"}
+    assert {sfx.pick("impact", d)["id"] for d in days} == {"impact_boom", "impact_stone"}
 
 
 def test_the_poster_cannot_hang_on_its_install_step():

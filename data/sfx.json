@@ -52,7 +52,7 @@
     "role": "whoosh",
     "label": "Blade swing",
     "file": "assets/sfx/whoosh_blade.mp3",
-    "approved": true,
+    "approved": false,
     "provenance": {
       "model": "eleven_text_to_sound_v2",
       "prompt": "A sword swung fast through the air: a whoosh ending in a soft metallic shing. No music, no voice.",
@@ -61,6 +61,8 @@
       "generated": "2026-10-22",
       "license": "ElevenLabs sound effects: royalty-free, commercial use on paid plans"
     },
-    "approved_on": "2026-10-22"
+    "approved_on": "2026-10-22",
+    "removed_on": "2026-10-25",
+    "removed_why": "Owner, in the HQ: \"Remove the slash sound effect it sucks\""
   }
 ]
