@@ -123,8 +123,18 @@ def source_location(quote: str, author: str) -> str | None:
         ench = t.find("THE ENCHEIRIDION, OR MANUAL")
         frag = t.find("FRAGMENTS", ench) if ench >= 0 else -1
         if ench >= 0 and i > ench and (frag < 0 or i < frag):
-            secs = re.findall(r"(?<![A-Za-z])([IVXLC]{1,7})\. (?=[A-Z])", t[ench:i + 4])
+            # A heading may carry a footnote marker ("XXIX. [ 20 ] In every
+            # act..."): without the "[" a quote in 29 read as 28, in 42 as 41.
+            secs = re.findall(r"(?<![A-Za-z])([IVXLC]{1,7})\. (?=[A-Z\[])", t[ench:i + 4])
             return f"Enchiridion {_roman(secs[-1])}" if secs else None
+        # Every chapter's page carries its own running title ("... Fragments
+        # — Book 1, Chapter 5"). The "CHAPTER V." headings are not reliable:
+        # Book I's chapter 5 has none in the source, so its quotes read as I.4.
+        pages = [(int(m.group(1)), int(m.group(2))) for m in
+                 re.finditer(r"Fragments — Book (\d), Chapter (\d+)", t[:i + 4])]
+        if pages:
+            book, chap = pages[-1]
+            return f"Discourses {('I', 'II', 'III', 'IV')[book - 1]}.{chap}"
         books = re.findall(r"BOOK ([IVX]+)", t[:i])
         chaps = [(m.start(), m.group(1)) for m in re.finditer(r"CHAPTER ([IVXLC]+)", t[:i + 12])]
         if not books or not chaps:

@@ -76,3 +76,19 @@ def test_citation_checker_catches_the_mistakes_it_was_built_for():
     assert v.source_location("In the morning when thou risest unwillingly", "Marcus Aurelius") == "5.1"
     assert v.source_location("How long will you then still defer thinking yourself worthy "
                              "of the best things", "Epictetus") == "Enchiridion 50"
+
+
+def test_citations_survive_footnote_markers_and_a_missing_chapter_heading():
+    """2026-10-25 (found by the shelf restock): "XXIX. [ 20 ] In every act..."
+    has a footnote marker after its heading, so Enchiridion 29 read as 28 and
+    42 as 41; and the source has no "CHAPTER V." heading in Book I, so I.5
+    read as I.4. Wikisource's running title on every chapter page now decides
+    the chapter."""
+    assert v.source_location("In every act observe the things which come first, and those "
+                             "which follow it", "Epictetus") == "Enchiridion 29"
+    assert v.source_location("When any person treats you ill or speaks ill of you, remember "
+                             "that he does this", "Epictetus") == "Enchiridion 42"
+    assert v.source_location("But this does not arise either from the", "Epictetus") == "Discourses I.5"
+    # neighbours unchanged
+    assert v.source_location("Every habit and faculty is maintained and increased by the "
+                             "corresponding actions", "Epictetus") == "Discourses II.18"
