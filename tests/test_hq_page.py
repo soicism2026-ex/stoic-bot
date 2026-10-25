@@ -46,3 +46,11 @@ def test_every_crew_sprite_is_a_clean_16_by_16_grid():
         assert set("".join(rows)) - {"."} <= set(pal), name
     crew_sprites = set(re.findall(r'sprite: "(\w+)"', PAGE))
     assert crew_sprites <= set(sprites), crew_sprites - set(sprites)
+
+
+def test_a_crew_member_on_a_helper_shift_lights_up_in_place():
+    """Varro's restock and Orpheus's music search run as Claude helpers: the
+    lineup shows that crew member working, not a second, anonymous helper."""
+    assert "const CREW_HELPERS = /^(varro|orpheus)$/i;" in PAGE
+    assert "const helping = CREW[crew] && CREW[crew].name ? onShift(CREW[crew].name) : null;" in PAGE
+    assert '.filter((h) => !CREW_HELPERS.test(h.name || ""))' in PAGE

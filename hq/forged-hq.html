@@ -633,7 +633,12 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const hidden = new Set((S.config && S.config.hidden) || []);
     return S.sessions.filter((s) => s.session_status !== "SESSION_STATUS_ARCHIVED" && !hidden.has(s.id) && sourcesOf(s).some((u) => u.includes(PROJECT)));
   }
-  const CREW_HELPERS = /^varro$/i;   // crew members who report through hq/now helpers
+  // Crew members Claude works for through hq/now helpers (Varro's weekly
+  // restock, Orpheus's music search) light up in the lineup in place, with
+  // the helper's task, instead of appearing twice.
+  const CREW_HELPERS = /^(varro|orpheus)$/i;
+  const onShift = (name) => ((S.now && S.now.helpers) || []).find((h) =>
+    String(h.name || "").toLowerCase() === String(name || "").toLowerCase() && h.status !== "done") || null;
   function helperAgents() {
     return ((S.now && S.now.helpers) || []).filter((h) => !CREW_HELPERS.test(h.name || "")).map((h, i) => {
       const status = h.status === "done" ? "done" : h.status === "failed" ? "failed" : "working";
@@ -674,8 +679,11 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       if (status === "idle") status = b.next ? "offduty" : "oncall";
       const waitingOn = asksFor(b.id);
       if (waitingOn.length && ["offduty", "oncall", "done"].includes(status)) { status = "waiting"; shift = ""; }
+      const helping = CREW[crew] && CREW[crew].name ? onShift(CREW[crew].name) : null;
+      if (helping && status !== "working") { status = "working"; shift = ""; }
       let facts = b.note || "";
-      if (!blind) {
+      if (helping) facts = helping.task || facts;
+      else if (!blind) {
         const lastTxt = status === "working" ? "running now, started " + ago(last.at)
           : status === "queued" ? "waiting for a GitHub runner"
           : last.conclusion === "success" ? "last run finished fine"
@@ -698,10 +706,10 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const id = S.config && S.config.librarian;
     const t = id && Array.isArray(S.triggers) ? S.triggers.find((x) => x.id === id) : null;
     const lr = (t && t.last_run) || {};
-    const onShift = ((S.now && S.now.helpers) || []).some((h) => CREW_HELPERS.test(h.name || "") && h.status !== "done");
+    const shift = onShift(CREW.librarian.name);
     let status = sh.low ? "failed" : "done";
     if (t && !t.enabled) status = "paused";
-    if (onShift) status = "working";
+    if (shift) status = "working";
     const next = t && t.enabled ? t.next_run_at : null;
     const until = new Date(sh.runsOut + "T12:00:00Z").toLocaleDateString([], { month: "short", day: "numeric" });
     return {
@@ -710,7 +718,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       name: CREW.librarian.name, title: CREW.librarian.title,
       role: "Keeps 30+ days of quotes on the shelf. Reads the classics, picks lines like the ones that are working, and checks every word against the original text. Restocks every week.",
       say: say("librarian", status, { days: String(sh.days), next: nextText(next) }),
-      facts: `${sh.left} checked quotes left, enough until ${until}` + (lr.fired_at ? ` · last restock ${ago(lr.finished_at || lr.fired_at)}` : ""),
+      facts: (shift && shift.task) || `${sh.left} checked quotes left, enough until ${until}` + (lr.fired_at ? ` · last restock ${ago(lr.finished_at || lr.fired_at)}` : ""),
       next, updated: S.studio.updated,
     };
   }
