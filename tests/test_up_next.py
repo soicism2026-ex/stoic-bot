@@ -64,9 +64,27 @@ def test_fetch_returns_the_metadata_and_the_local_file(tmp_path, monkeypatch):
     assert up_next.PUBLIC == "https://github.com/soicism2026-ex/stoic-bot/releases/download/up-next/"
 
 
-def test_apelles_rehearses_twice_a_day_for_the_day_the_post_airs():
+def test_need_rehearses_each_edit_once_and_stops_on_repeated_failure():
+    cur = {"edit": "be_such", "airDay": "2026-10-26", "renderedAt": "x"}
+    assert up_next.need("be_such", "2026-10-26", cur, 0)[0] is False       # already done
+    assert up_next.need("next_one", "2026-10-26", cur, 0)[0] is True        # a post went out
+    assert up_next.need("be_such", "2026-10-27", cur, 0)[0] is True         # same edit, new air day
+    assert up_next.need("next_one", "2026-10-26", None, 0)[0] is True       # no release yet
+    assert up_next.need("next_one", "2026-10-26", cur, 2)[0] is False       # broken: don't burn reads
+    assert up_next.need(None, "2026-10-26", None, 0)[0] is False            # empty shelf
+
+
+def test_apelles_rehearses_after_every_post_with_the_crons_as_backstop():
+    """GitHub fired the two crons 2-5 hours late (10-24's 19:40 ran at 21:50);
+    a Producer run that posted is the moment the next Short becomes known."""
     wf = yaml.safe_load(WF.read_text())
     on = wf[True]
+    assert on["workflow_run"] == {"workflows": ["daily-short"], "types": ["completed"]}
+    jobs = wf["jobs"]
+    assert "scripts/up_next.py need" in jobs["check"]["steps"][1]["run"]
+    assert jobs["preview"]["needs"] == "check" and jobs["preview"]["if"] == "needs.check.outputs.go == '1'"
+    assert "github.event_name == 'workflow_run'" in jobs["preview"]["env"]["UP_NEXT"]
+    assert wf["permissions"]["actions"] == "read"
     assert {c["cron"] for c in on["schedule"]} == {"40 8 * * *", "40 19 * * *"}
     steps = {s.get("name"): s for s in wf["jobs"]["preview"]["steps"]}
     assert "src/airday.py --next" in steps["The day the next post airs"]["run"]

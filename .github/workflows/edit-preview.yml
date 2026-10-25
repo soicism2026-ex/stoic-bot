@@ -2,15 +2,23 @@
 # video, free AI stills, epic music, QA) and saves it as an artifact.
 # DRY_RUN: nothing is uploaded to YouTube and nothing is logged.
 #
-# Apelles' shifts (owner 2026-10-23: "Get them working"): twice a day it
-# rehearses the NEXT post, rendered for the day it airs (src/airday.py), and
-# puts it in the `up-next` release. The HQ sync carries it into the HQ's "Up
-# next", so the owner can watch each Short before it goes out, and a render
-# that breaks shows up hours before its slot instead of at it.
+# Apelles' shifts (owner 2026-10-23: "Get them working"): it rehearses the
+# NEXT post, rendered for the day it airs (src/airday.py), and puts it in the
+# `up-next` release. The HQ sync carries it into the HQ's "Next on air", so
+# the owner can watch each Short before it goes out, and a render that breaks
+# shows up hours before its slot instead of at it.
+# When: right after every Producer run (2026-10-25: GitHub fired the crons
+# 2-5 hours late, one of them 3 hours before its post), with the two crons
+# kept as a backstop. The `check` job skips the render when the next edit is
+# already rehearsed (scripts/up_next.py need), so a run costs a Brian read
+# only when a post has gone out.
 #   08:40 UTC  -> the day's second post (airs from 15:00)
 #   19:40 UTC  -> tomorrow's first post (airs from 00:00)
 name: edit-preview
 on:
+  workflow_run:
+    workflows: [daily-short]
+    types: [completed]
   schedule:
     - cron: "40 8 * * *"
     - cron: "40 19 * * *"
@@ -36,18 +44,38 @@ on:
         default: false
 permissions:
   contents: write
+  actions: read
 concurrency:
   group: edit-preview
   cancel-in-progress: false
 jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      go: ${{ steps.need.outputs.go }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Is the next Short already rehearsed?
+      id: need
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        if [ "${{ github.event_name }}" = workflow_dispatch ]; then
+          echo "go=1" >> "$GITHUB_OUTPUT"; echo "go: asked by hand"
+        else
+          python3 scripts/up_next.py need
+        fi
   preview:
+    needs: check
+    if: needs.check.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
       VOICE: ${{ inputs.voice || 'brian' }}
       # A rehearsal is a faithful copy of the live post: the same voice and
       # sounds; an audition (music input) is not, so it never goes to the HQ.
-      UP_NEXT: ${{ (github.event_name == 'schedule' || inputs.up_next) && inputs.music == '' && '1' || '' }}
+      UP_NEXT: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.up_next) && inputs.music == '' && '1' || '' }}
     steps:
     - uses: actions/checkout@v4
     - name: Install ffmpeg + fonts
@@ -87,8 +115,8 @@ jobs:
         EOF
         # ElevenLabs' own check, as its onboarding asks. The key goes in a
         # temp file outside the checkout and is deleted straight after.
-        # Manual runs only: a scheduled rehearsal has nothing to learn from it.
-        if [ "${{ github.event_name }}" != schedule ]; then
+        # Manual runs only: a rehearsal has nothing to learn from it.
+        if [ "${{ github.event_name }}" = workflow_dispatch ]; then
           umask 077
           printf 'ELEVENLABS_API_KEY=%s\n' "$ELEVENLABS_API_KEY" > "$RUNNER_TEMP/el.env"
           npx -y @elevenlabs/cli@latest onboard check --env-path "$RUNNER_TEMP/el.env" || true

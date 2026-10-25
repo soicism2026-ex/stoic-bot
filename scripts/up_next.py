@@ -1,8 +1,16 @@
 """
 Apelles' rehearsal goes to the HQ: the next Short, rendered before it airs.
 
-    python scripts/up_next.py publish data/preview     # edit-preview, scheduled runs
+    python scripts/up_next.py need                     # edit-preview: is the next Short rehearsed?
+    python scripts/up_next.py publish data/preview     # edit-preview, after the render
     python scripts/up_next.py fetch /tmp/upnext        # the HQ sync, in a Claude session
+
+`need` (2026-10-25) lets edit-preview run right after every Producer run
+instead of only on its two crons, which GitHub fired 2-5 hours late (the
+19:40 rehearsal of 10-24 started at 21:50, three hours before its post). It
+prints `go` or `skip: <why>`: skip when the release already holds the next
+edit for its air day, or when two rehearsals failed today (a broken render
+must not burn a Brian read on every retry; Apelles already shows as failed).
 
 `publish` (GitHub Actions, GH_TOKEN) puts two files in the `up-next` release,
 a prerelease that only ever holds these two:
@@ -51,9 +59,57 @@ def describe(preview: Path, now: dt.datetime | None = None) -> dict:
     return meta
 
 
-def _gh(*args: str, check: bool = True) -> subprocess.CompletedProcess:
-    return subprocess.run(["gh", *args, "--repo", os.environ.get("GITHUB_REPOSITORY", REPO)],
-                          capture_output=True, text=True, check=check)
+def need(next_edit: str | None, air_day: str, current: dict | None,
+         failures_today: int) -> tuple[bool, str]:
+    """Should a scheduled or post-triggered rehearsal render now?"""
+    if not next_edit:
+        return False, "skip: no edit left to rehearse (the shelf is empty)"
+    if current and current.get("edit") == next_edit and current.get("airDay") == air_day:
+        return False, f"skip: {next_edit} for {air_day} is already rehearsed ({current.get('renderedAt')})"
+    if failures_today >= 2:
+        return False, f"skip: {failures_today} rehearsals failed today; waiting for a fix"
+    return True, f"go: rehearse {next_edit} for {air_day}"
+
+
+def _failures_today(now: dt.datetime) -> int:
+    """Failed edit-preview runs today (UTC), from the Actions API; 0 if unknown."""
+    try:
+        out = _gh("api", "-X", "GET", f"repos/{os.environ.get('GITHUB_REPOSITORY', REPO)}/actions/workflows/"
+                  f"edit-preview.yml/runs", "-f", f"created=>={now.date().isoformat()}",
+                  "-f", "status=failure", "--jq", ".total_count", check=False, repo=False)
+        return int((out.stdout or "0").strip() or 0)
+    except Exception:  # noqa: BLE001
+        return 0
+
+
+def _need_cli() -> int:
+    import csv
+    root = Path(__file__).resolve().parent.parent
+    sys.path.insert(0, str(root / "src"))
+    import airday  # noqa: PLC0415
+    import edits  # noqa: PLC0415
+    rows = list(csv.DictReader(open(root / "data" / "posts.csv", encoding="utf-8")))
+    q = edits.pick(rows)
+    day = airday.next_air_day(rows, airday.live_cap()).isoformat()
+    current = None
+    try:
+        with urllib.request.urlopen(urllib.request.Request(
+                PUBLIC + META, headers={"User-Agent": "stoic-bot-hq"}), timeout=30) as r:
+            current = json.loads(r.read())
+    except Exception:  # noqa: BLE001
+        pass   # no release yet, or GitHub didn't answer: rehearse
+    go, why = need(q and q["id"], day, current, _failures_today(dt.datetime.now(dt.timezone.utc)))
+    print(why)
+    out = os.environ.get("GITHUB_OUTPUT")
+    if out:
+        with open(out, "a", encoding="utf-8") as fh:
+            fh.write(f"go={'1' if go else '0'}\n")
+    return 0
+
+
+def _gh(*args: str, check: bool = True, repo: bool = True) -> subprocess.CompletedProcess:
+    extra = ["--repo", os.environ.get("GITHUB_REPOSITORY", REPO)] if repo else []
+    return subprocess.run(["gh", *args, *extra], capture_output=True, text=True, check=check)
 
 
 def publish(preview: Path) -> dict:
@@ -97,6 +153,8 @@ def fetch(dest: Path) -> dict:
 
 
 def main() -> int:
+    if sys.argv[1:] == ["need"]:
+        return _need_cli()
     if len(sys.argv) != 3 or sys.argv[1] not in ("publish", "fetch"):
         print(__doc__)
         return 2
