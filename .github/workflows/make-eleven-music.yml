@@ -6,6 +6,8 @@
 #              masters, and commits each track ENCRYPTED (src/vault.py) and
 #              UNAPPROVED; then a numbered sampler, encrypted to the HQ
 #              session's public key, goes to the `music-sampler` release.
+#   sampler    rebuilds that encrypted sampler from tracks already committed
+#              (ids input), e.g. for a new HQ session key: spends nothing.
 # The licence forbids making the tracks downloadable and this repo is public:
 # plaintext audio never leaves the runner.
 name: make-eleven-music
@@ -14,7 +16,7 @@ on:
     inputs:
       mode:
         type: choice
-        options: [preflight, generate]
+        options: [preflight, generate, sampler]
         default: preflight
       ids:
         description: Plan ids from data/edit_music_plans_eleven.json (comma separated; empty = all)
@@ -42,6 +44,7 @@ jobs:
     - name: Install deps
       run: pip install -r requirements.txt
     - name: Preflight (free)
+      if: inputs.mode != 'sampler'
       env:
         ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
       run: python scripts/make_eleven_music.py preflight --ids "${{ inputs.ids }}"
@@ -64,7 +67,7 @@ jobs:
         done
         exit 1
     - name: Sampler, encrypted to the HQ session
-      if: inputs.mode == 'generate' && inputs.recipient != ''
+      if: (inputs.mode == 'generate' || inputs.mode == 'sampler') && inputs.recipient != ''
       env:
         MUSIC_KEY: ${{ secrets.MUSIC_KEY }}
         RECIPIENT_B64: ${{ inputs.recipient }}

@@ -162,3 +162,12 @@ def test_the_music_workflow_checks_for_free_before_it_spends_and_never_ships_pla
     sampler = next(s for s in wf["jobs"]["music"]["steps"] if s.get("name") == "Sampler, encrypted to the HQ session")
     assert "--encrypt" in sampler["run"] and 'rm -f "$RUNNER_TEMP/sampler.mp4"' in sampler["run"]
     assert "music-sampler.mp4.gpg" in sampler["run"]
+
+
+def test_the_sampler_can_be_rebuilt_without_spending():
+    wf = _wf("make-eleven-music.yml")
+    assert "sampler" in wf[True]["workflow_dispatch"]["inputs"]["mode"]["options"]
+    steps = {s.get("name"): s for s in wf["jobs"]["music"]["steps"]}
+    assert steps["Preflight (free)"]["if"] == "inputs.mode != 'sampler'"
+    assert steps["Generate (encrypted, unapproved)"]["if"] == "inputs.mode == 'generate'"
+    assert "inputs.mode == 'sampler'" in steps["Sampler, encrypted to the HQ session"]["if"]
