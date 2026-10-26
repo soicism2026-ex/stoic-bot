@@ -24,6 +24,12 @@ disputed with evidence.
 Only tracks the owner has approved ("approved": true) ever air. The edit
 preview workflow can audition an unapproved track with REEL_EDIT_MUSIC=<id>,
 honoured ONLY when DRY_RUN=1, so an unapproved track can never be uploaded.
+
+From 2026-10-25 (owner: "we really do need to find much better music") the
+bank also holds ElevenLabs Music tracks (scripts/make_eleven_music.py). Their
+licence forbids making them downloadable, so they are stored encrypted
+(`<id>.mp3.gpg`, src/vault.py) and decrypted only into a temp file for one
+render. Without the MUSIC_KEY secret they are skipped, never broken.
 """
 from __future__ import annotations
 
@@ -34,6 +40,7 @@ from pathlib import Path
 
 import proc
 import shuffle
+import vault
 
 ROOT = Path(__file__).resolve().parent.parent
 BANK = ROOT / "data" / "edit_music.json"
@@ -50,6 +57,8 @@ def load() -> list[dict]:
 
 def _exists(t: dict) -> bool:
     p = ROOT / t["file"]
+    if p.suffix == vault.SUFFIX and not vault.available():
+        return False      # encrypted, and this job has no MUSIC_KEY: skip it
     return p.exists() and p.stat().st_size > 50_000
 
 
@@ -88,15 +97,21 @@ def pick(post_rows: list[dict], seed: str = "") -> dict | None:
 def fetch(track: dict, out_path: Path, seconds: float) -> Path | None:
     """The track from its drop, `seconds` long, with a short fade in and a
     1.2s fade out. None on any failure, so the caller keeps its fallback."""
+    import tempfile
     try:
-        src = ROOT / track["file"]
-        start = max(0.0, float(track.get("start", 0.0)))
-        fade_out = max(0.0, seconds - 1.2)
-        proc.run(["ffmpeg", "-y", "-v", "error", "-ss", f"{start:.2f}", "-i", str(src),
-                  "-t", f"{seconds:.2f}",
-                  "-af", f"afade=t=in:d=0.15,afade=t=out:st={fade_out:.2f}:d=1.2",
-                  "-c:a", "libmp3lame", "-b:a", "192k", str(out_path)],
-                 check=True, capture_output=True)
+        with tempfile.TemporaryDirectory() as td:
+            # An encrypted track is decrypted into this temp dir only, and the
+            # copy is gone when the render's cut is made.
+            src = vault.plain(ROOT / track["file"], Path(td))
+            if src is None:
+                raise RuntimeError("encrypted and no MUSIC_KEY, or the file is missing")
+            start = max(0.0, float(track.get("start", 0.0)))
+            fade_out = max(0.0, seconds - 1.2)
+            proc.run(["ffmpeg", "-y", "-v", "error", "-ss", f"{start:.2f}", "-i", str(src),
+                      "-t", f"{seconds:.2f}",
+                      "-af", f"afade=t=in:d=0.15,afade=t=out:st={fade_out:.2f}:d=1.2",
+                      "-c:a", "libmp3lame", "-b:a", "192k", str(out_path)],
+                     check=True, capture_output=True)
         return out_path if out_path.exists() and out_path.stat().st_size > 10_000 else None
     except Exception as e:  # noqa: BLE001
         print(f"[edit_music] {track.get('id')} unavailable ({e})", file=sys.stderr)

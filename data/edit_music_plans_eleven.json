@@ -1,0 +1,964 @@
+[
+ {
+  "id": "el_bass_piano",
+  "label": "Piano ostinato + massive bass drop",
+  "style_of": "You Aren't Trying (Bass Media)",
+  "seed": 1001,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "epic cinematic hybrid trailer instrumental",
+     "emotional solo piano ostinato",
+     "riser and reverse cymbal building tension",
+     "88 BPM",
+     "C minor",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "massive sub bass drop",
+     "deep trailer impacts every bar",
+     "piano ostinato continues on top",
+     "full string section",
+     "huge low brass swells",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "even bigger second drop",
+     "epic taiko percussion",
+     "piano up an octave",
+     "soaring high strings"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "final huge impact",
+     "long sub bass tail",
+     "reverb decay",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "el_bass_felt_dark",
+  "label": "Dark felt piano + braams",
+  "style_of": "You Aren't Trying (Bass Media)",
+  "seed": 1002,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "dark motivational cinematic instrumental",
+     "intimate felt piano motif",
+     "wordless synth choir pad",
+     "slow riser",
+     "90 BPM",
+     "D minor",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "crushing sub bass drop",
+     "trailer braams",
+     "felt piano motif over pounding low drums",
+     "dark strings",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "second drop with taiko and braams",
+     "relentless driving energy"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "last braam",
+     "sub bass tail",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "el_bass_from_1",
+  "label": "More like song 1, rebuilt",
+  "style_of": "You Aren't Trying (Bass Media)",
+  "seed": 1003,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "epic motivational cinematic instrumental",
+     "emotional repeating piano ostinato",
+     "rising strings",
+     "88 BPM",
+     "C minor",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "massive sub bass drops",
+     "deep trailer hits",
+     "determined and inspirational",
+     "huge powerful climax",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "bigger second drop",
+     "soaring strings",
+     "taiko"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "final impact",
+     "sub bass tail",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ],
+  "conditioning": {
+   "track": "bass_motivation__xl",
+   "start_ms": 18000,
+   "end_ms": 44000,
+   "strength": "medium"
+  }
+ },
+ {
+  "id": "el_bright_arp",
+  "label": "Bright arpeggios, sped-up energy",
+  "style_of": "God's Promise (sped up)",
+  "seed": 1004,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "ethereal uplifting electronic instrumental",
+     "shimmering bright synth arpeggios",
+     "airy heavenly pads",
+     "filtered build",
+     "140 BPM",
+     "E major",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "drop into a pulsing four on the floor kick",
+     "bright sparkling arpeggios",
+     "euphoric hopeful energy",
+     "wide shimmering pads",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "higher octave arpeggios",
+     "emotional lift",
+     "bright and dreamy"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "last shimmer",
+     "pads ring out",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "el_bright_from_9",
+  "label": "More like song 9, rebuilt",
+  "style_of": "God's Promise (sped up)",
+  "seed": 1005,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "ethereal uplifting electronic instrumental",
+     "shimmering synth arpeggios",
+     "heavenly pads",
+     "140 BPM",
+     "E major",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "pulsing kick drop",
+     "hopeful dreamy energy",
+     "bright high tone",
+     "emotional",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "bigger lift",
+     "brighter arpeggios"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "pads ring out",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ],
+  "conditioning": {
+   "track": "promise_spedup__xl",
+   "start_ms": 12000,
+   "end_ms": 42000,
+   "strength": "medium"
+  }
+ },
+ {
+  "id": "el_organ_drive",
+  "label": "Driving cathedral organ + ticking clock",
+  "style_of": "Hans Zimmer - No Time for Caution",
+  "seed": 1006,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "urgent cinematic film score instrumental",
+     "rapid repeating cathedral pipe organ arpeggios",
+     "relentless ticking clock pulse",
+     "96 BPM",
+     "E minor",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "massive pipe organ crescendo",
+     "pounding timpani",
+     "rising tension",
+     "epic space film score climax",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "organ at full power",
+     "timpani rolls",
+     "strings soaring"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "final organ chord",
+     "long reverb",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "el_dark_slowed",
+  "label": "Dark slowed half-time beat",
+  "style_of": "Me and the Devil / Chubina (slowed)",
+  "seed": 1007,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "dark slowed and reverbed cinematic instrumental",
+     "haunting minor key piano",
+     "heavy hall reverb",
+     "70 BPM",
+     "D minor",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "heavy 808 bass glide",
+     "slow half-time drums",
+     "Eastern plucked string melody",
+     "hypnotic brooding tension",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "deeper 808",
+     "haunting piano returns",
+     "late night mood"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "piano echo",
+     "808 tail",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "el_italo_pluck",
+  "label": "Late-90s Italo-dance pluck",
+  "style_of": "L'Amour Toujours (instrumental)",
+  "seed": 1008,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "euphoric late 1990s Italo dance instrumental",
+     "filtered catchy plucked synth lead",
+     "rising sweep",
+     "138 BPM",
+     "B minor",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "full four on the floor kick",
+     "offbeat rolling bass",
+     "bright catchy pluck lead melody",
+     "uplifting trance pads",
+     "festival anthem energy",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "lead up an octave",
+     "hands in the air euphoria"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "last pluck",
+     "pads ring out",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "el_heroic_organ",
+  "label": "Heroic organ + French horns",
+  "style_of": "Hans Zimmer - Where We're Going",
+  "seed": 1009,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "heroic cinematic orchestral instrumental",
+     "majestic pipe organ swell",
+     "warm French horns",
+     "80 BPM",
+     "F major",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "soaring strings",
+     "triumphant full orchestra",
+     "grand emotional swell",
+     "hopeful epic space film score",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "even grander swell",
+     "organ and horns together"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "final majestic chord",
+     "long reverb",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "el_gospel_stomp",
+  "label": "Gospel stomp and clap",
+  "style_of": "Freedom (instrumental)",
+  "seed": 1010,
+  "chunks": [
+   {
+    "text": "[Build]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "uplifting gospel inspired anthem instrumental",
+     "soulful Hammond organ",
+     "hand claps building",
+     "124 BPM",
+     "G major",
+     "great production quality"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "drums at full power"
+    ]
+   },
+   {
+    "text": "[Drop]",
+    "duration_ms": 18000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "stomping kick drum and loud hand claps",
+     "triumphant brass stabs",
+     "tambourine",
+     "celebratory festival energy",
+     "full energy from the first downbeat",
+     "no breakdown",
+     "sparse top line that leaves room for a narrator",
+     "loud modern master"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "breakdown",
+     "quiet section",
+     "fade out"
+    ]
+   },
+   {
+    "text": "[Lift]",
+    "duration_ms": 12000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "bigger stomp",
+     "brass and organ together"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "genre change"
+    ]
+   },
+   {
+    "text": "[End]",
+    "duration_ms": 5000,
+    "context_adherence": "high",
+    "positive_styles": [
+     "final stomp",
+     "organ swell",
+     "clean ending"
+    ],
+    "negative_styles": [
+     "vocals",
+     "lyrics",
+     "spoken word",
+     "rap",
+     "sung words",
+     "voiceover",
+     "new melody",
+     "abrupt cut"
+    ]
+   }
+  ]
+ }
+]

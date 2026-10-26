@@ -1,0 +1,81 @@
+# Orpheus: edit music from ElevenLabs Music v2.5 (owner 2026-10-25: "we really
+# do need to find much better music so have an agent work on it").
+#   preflight  free: proves the key may use music and every plan passes
+#              ElevenLabs' copyright filter (POST /v1/music/plan)
+#   generate   spends plan credits (about 6.8k for the 10 plans): composes,
+#              masters, and commits each track ENCRYPTED (src/vault.py) and
+#              UNAPPROVED; then a numbered sampler, encrypted to the HQ
+#              session's public key, goes to the `music-sampler` release.
+# The licence forbids making the tracks downloadable and this repo is public:
+# plaintext audio never leaves the runner.
+name: make-eleven-music
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        type: choice
+        options: [preflight, generate]
+        default: preflight
+      ids:
+        description: Plan ids from data/edit_music_plans_eleven.json (comma separated; empty = all)
+        default: ''
+      recipient:
+        description: base64 of an armoured gpg PUBLIC key; the sampler is encrypted to it (generate only)
+        default: ''
+permissions:
+  contents: write
+concurrency:
+  group: make-eleven-music
+  cancel-in-progress: false
+jobs:
+  music:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install ffmpeg + fonts
+      timeout-minutes: 20
+      run: bash scripts/ci_install_ffmpeg.sh
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install deps
+      run: pip install -r requirements.txt
+    - name: Preflight (free)
+      env:
+        ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+      run: python scripts/make_eleven_music.py preflight --ids "${{ inputs.ids }}"
+    - name: Generate (encrypted, unapproved)
+      if: inputs.mode == 'generate'
+      env:
+        ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        MUSIC_KEY: ${{ secrets.MUSIC_KEY }}
+      run: python scripts/make_eleven_music.py generate --ids "${{ inputs.ids }}"
+    - name: Commit the encrypted tracks
+      if: inputs.mode == 'generate'
+      run: |
+        git config user.name "stoic-bot"
+        git config user.email "stoic-bot@users.noreply.github.com"
+        git add assets/music/edit/*.gpg data/edit_music.json
+        git commit -m "music: ElevenLabs candidates (encrypted, unapproved)"
+        for i in 1 2 3 4; do
+          git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+          sleep $((i * 5))
+        done
+        exit 1
+    - name: Sampler, encrypted to the HQ session
+      if: inputs.mode == 'generate' && inputs.recipient != ''
+      env:
+        MUSIC_KEY: ${{ secrets.MUSIC_KEY }}
+        RECIPIENT_B64: ${{ inputs.recipient }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        python scripts/make_eleven_music.py sampler "$RUNNER_TEMP/sampler.mp4" --ids "${{ inputs.ids }}"
+        printf '%s' "$RECIPIENT_B64" | base64 -d > "$RUNNER_TEMP/hq.pub"
+        gpg --batch --yes --trust-model always --recipient-file "$RUNNER_TEMP/hq.pub" \
+            -o "$RUNNER_TEMP/music-sampler.mp4.gpg" --encrypt "$RUNNER_TEMP/sampler.mp4"
+        rm -f "$RUNNER_TEMP/sampler.mp4"
+        gh release view music-sampler >/dev/null 2>&1 || gh release create music-sampler --prerelease \
+          --title "Music sampler (encrypted)" \
+          --notes "Candidate edit music for the owner's ear test, encrypted to the HQ session's key. Unreadable without it. Auto-managed."
+        gh release upload music-sampler "$RUNNER_TEMP/music-sampler.mp4.gpg" --clobber

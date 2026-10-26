@@ -19,6 +19,8 @@ import tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "src"))
+import vault  # noqa: E402  (encrypted ElevenLabs tracks: decrypted to a temp dir only)
 BANK = ROOT / "data" / "edit_music.json"
 SECONDS = 14.0
 FONT = "/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf"
@@ -40,6 +42,9 @@ def build(tracks: list[dict], out: Path) -> Path:
         parts = []
         for n, t in enumerate(tracks, 1):
             p = Path(td) / f"part{n:02d}.mp4"
+            src = vault.plain(ROOT / t["file"], Path(td))
+            if src is None:
+                raise SystemExit(f"{t['id']}: encrypted and no MUSIC_KEY, or missing")
             label = t.get("label", t["id"])
             style = "in the style of " + t.get("style_of", "")
             vf = ",".join([
@@ -53,7 +58,7 @@ def build(tracks: list[dict], out: Path) -> Path:
             subprocess.run(
                 ["ffmpeg", "-y", "-v", "error",
                  "-f", "lavfi", "-i", f"color=c=0x101010:s=720x1280:d={SECONDS}:r=24",
-                 "-ss", str(t.get("start", 0)), "-t", str(SECONDS), "-i", str(ROOT / t["file"]),
+                 "-ss", str(t.get("start", 0)), "-t", str(SECONDS), "-i", str(src),
                  "-vf", vf,
                  "-af", f"afade=t=in:d=0.2,afade=t=out:st={SECONDS - 0.8}:d=0.8,aresample=44100",
                  "-map", "0:v", "-map", "1:a", "-c:v", "libx264", "-preset", "veryfast",

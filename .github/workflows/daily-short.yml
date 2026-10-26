@@ -165,6 +165,9 @@ jobs:
           CHATTERBOX_SENTENCE_GAP: "0.25"
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          # Decrypts the ElevenLabs edit tracks (src/vault.py). Without it they
+          # are skipped and the approved plain tracks play instead.
+          MUSIC_KEY: ${{ secrets.MUSIC_KEY }}
           # Brian (ElevenLabs) narrates EVERY post since 2026-10-21: the owner
           # picked him by ear in the HQ, from the same quote read by Brian and
           # by Steffan. 4 covers both daily posts and any backup rendered the
