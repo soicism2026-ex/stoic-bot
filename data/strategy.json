@@ -41,7 +41,7 @@
     "n": 4,
     "median_views_day3": 145.0,
     "lift": 1.37,
-    "median_retention": 83.5,
+    "median_retention": 80.1,
     "verdict": "winner"
    },
    {
@@ -147,7 +147,7 @@
    {
     "key": "question",
     "n": 2,
-    "median_views_day3": 307.5,
+    "median_views_day3": 307.0,
     "lift": 1.24,
     "median_retention": 91.1,
     "verdict": "too few"
@@ -183,7 +183,7 @@
     "n": 9,
     "median_views_day3": 47,
     "lift": 0.78,
-    "median_retention": 81.2,
+    "median_retention": 77.7,
     "verdict": "even"
    }
   ],
@@ -233,8 +233,8 @@
    {
     "key": "Ancient Rite",
     "n": 2,
-    "median_views_day3": 412.5,
-    "lift": 1.96,
+    "median_views_day3": 412.0,
+    "lift": 1.95,
     "median_retention": 160.9,
     "verdict": "too few"
    },
@@ -283,7 +283,7 @@
     "n": 2,
     "median_views_day3": 157.0,
     "lift": 0.69,
-    "median_retention": 77.3,
+    "median_retention": 73.8,
     "verdict": "too few"
    },
    {
@@ -333,7 +333,7 @@
     "n": 6,
     "median_views_day3": 211.0,
     "lift": 0.85,
-    "median_retention": 83.8,
+    "median_retention": 80.3,
     "verdict": "even"
    },
    {
@@ -407,7 +407,7 @@
    {
     "key": "Saturday",
     "n": 4,
-    "median_views_day3": 190.5,
+    "median_views_day3": 190.0,
     "lift": 0.77,
     "median_retention": 94.2,
     "verdict": "even"

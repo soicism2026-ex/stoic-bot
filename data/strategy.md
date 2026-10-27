@@ -6,7 +6,7 @@ _Updated 2026-10-27 by Frontinus (scripts/strategist.py, no paid API). Read from
 
 ## What Works
 
-- theme **resilience**: 1.37x the edits aired around it (145 views at day 3, 4 edits, 83.5% watched)
+- theme **resilience**: 1.37x the edits aired around it (145 views at day 3, 4 edits, 80.1% watched)
 - theme **discipline**: 1.32x the edits aired around it (92 views at day 3, 6 edits, 95.8% watched)
 - hook as a **command**: 2.5x the edits aired around it (412 views at day 3, 6 edits, 88.3% watched)
 - music **Heroic Age**: 2.15x the edits aired around it (130 views at day 3, 3 edits, 103.8% watched)
