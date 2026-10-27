@@ -319,7 +319,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: epic cinematic hybrid trailer instrumental, emotional solo piano ostinato, riser and reverse cymbal building tension, 88 BPM, C minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: massive sub bass drop, deep trailer impacts every bar, piano ostinato continues on top, full string section, huge low brass swells, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: even bigger second drop, epic taiko percussion, piano up an octave, soaring high strings (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: final huge impact, long sub bass tail, reverb decay, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none"
   }
  },
  {
@@ -428,7 +430,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: dark motivational cinematic instrumental, intimate felt piano motif, wordless synth choir pad, slow riser, 90 BPM, D minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: crushing sub bass drop, trailer braams, felt piano motif over pounding low drums, dark strings, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: second drop with taiko and braams, relentless driving energy (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: last braam, sub bass tail, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none"
   }
  },
  {
@@ -543,7 +547,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: epic motivational cinematic instrumental, emotional repeating piano ostinato, rising strings, 88 BPM, C minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: massive sub bass drops, deep trailer hits, determined and inspirational, huge powerful climax, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: bigger second drop, soaring strings, taiko (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: final impact, sub bass tail, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "own:bass_motivation__xl"
   }
  },
  {
@@ -653,7 +659,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: ethereal uplifting electronic instrumental, shimmering bright synth arpeggios, airy heavenly pads, filtered build, 140 BPM, E major, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: drop into a pulsing four on the floor kick, bright sparkling arpeggios, euphoric hopeful energy, wide shimmering pads, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: higher octave arpeggios, emotional lift, bright and dreamy (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: last shimmer, pads ring out, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none"
   }
  },
  {
@@ -766,7 +774,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: ethereal uplifting electronic instrumental, shimmering synth arpeggios, heavenly pads, 140 BPM, E major, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: pulsing kick drop, hopeful dreamy energy, bright high tone, emotional, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: bigger lift, brighter arpeggios (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: pads ring out, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "own:promise_spedup__xl"
   }
  },
  {
@@ -875,7 +885,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: urgent cinematic film score instrumental, rapid repeating cathedral pipe organ arpeggios, relentless ticking clock pulse, 96 BPM, E minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: massive pipe organ crescendo, pounding timpani, rising tension, epic space film score climax, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: organ at full power, timpani rolls, strings soaring (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: final organ chord, long reverb, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none"
   }
  },
  {
@@ -984,7 +996,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: dark slowed and reverbed cinematic instrumental, haunting minor key piano, heavy hall reverb, 70 BPM, D minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: heavy 808 bass glide, slow half-time drums, Eastern plucked string melody, hypnotic brooding tension, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: deeper 808, haunting piano returns, late night mood (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: piano echo, 808 tail, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none"
   }
  },
  {
@@ -1093,7 +1107,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: euphoric late 1990s Italo dance instrumental, filtered catchy plucked synth lead, rising sweep, 138 BPM, B minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: full four on the floor kick, offbeat rolling bass, bright catchy pluck lead melody, uplifting trance pads, festival anthem energy, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: lead up an octave, hands in the air euphoria (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: last pluck, pads ring out, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none"
   }
  },
  {
@@ -1201,7 +1217,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: heroic cinematic orchestral instrumental, majestic pipe organ swell, warm French horns, 80 BPM, F major, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: soaring strings, triumphant full orchestra, grand emotional swell, hopeful epic space film score, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: even grander swell, organ and horns together (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: final majestic chord, long reverb, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none"
   }
  },
  {
@@ -1309,7 +1327,9 @@
    "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
    "stored": "encrypted (src/vault.py)",
    "words_heard": "",
-   "generated": "2026-10-27"
+   "generated": "2026-10-27",
+   "prompt": "[Build] 5s: uplifting gospel inspired anthem instrumental, soulful Hammond organ, hand claps building, 124 BPM, G major, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: stomping kick drum and loud hand claps, triumphant brass stabs, tambourine, celebratory festival energy, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: bigger stomp, brass and organ together (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: final stomp, organ swell, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none"
   }
  }
 ]

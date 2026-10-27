@@ -42,7 +42,7 @@ BOTS = [
     {"id": "analyst", "name": "Analyst", "workflow": "pull-analytics.yml",
      "role": "Pulls YouTube views, likes and subscribers every day"},
     {"id": "strategist", "name": "Strategist", "workflow": "strategy-update.yml",
-     "role": "Rewrites the content strategy from the latest numbers"},
+     "role": "Reads what is working every day, for free, and moves winning themes up the quote shelf"},
     {"id": "reporter", "name": "Reporter", "workflow": "auto-improve.yaml",
      "role": "Weekly channel report with one recommendation"},
     {"id": "preview", "name": "Preview studio", "workflow": "edit-preview.yml",

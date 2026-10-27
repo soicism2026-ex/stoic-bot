@@ -498,6 +498,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     envoy: ["................",".....kkkkkk.....","....knnnnnnk....","....knnnnnnk....","....knssssnk....","....ksessesk....","....kssssssk....","....kssSSssk....","...kwbwwwwwwk...","...kwwbwwwwwk...","...kwwwbwwwwk...","...kswwwbwwsk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
     herald: ["................",".....kkkkkk.....","....kllllllk....","....kllllllk....","....klsssslk..kk","....ksessesk.kgg","....kssssssk.kgg","....kssSSssk.kgk","...kooooooookgk.","...koooooooogk..","...kooooooook...","...ksoooooosk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
     librarian: ["................",".....kkkkkk.....","....knnnnnnk....","....knnnnnnk....","....knssssnk....","....ksessesk....","....kssssssk....","....kssSSssk....","...kLllllllLk...","..kwwwwwwwwwwk..","..kWwkkwkwkwWk..","..kwwwwwwwwwwk..","...kLllllllLk...","....kllkkllk....","....knnkknnk....",".....kk..kk....."],
+    tactician: ["................",".....kkkkkk.....","....kmmmmmmk....","....kmmmmmmk....","....kmssssmk....","....ksessesk....","....kmssssmk....","....kmmmmmmk....","...kbbbbbbbbk...","..kyykyykbbbbk..","..kykyykybbbbk..","..kyykyykbbbbk..","...kBbbbbbbBk...","....kbbkkbbk....","....knnkknnk....",".....kk..kk....."],
   };
   const CREW = {
     chief: { name: "Claude", title: "Chief of Staff", sprite: "chief", lines: {
@@ -515,10 +516,13 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       done: "Counted the latest numbers. Next count {next}.",
       offduty: "Roosting. Next count {next}.",
       failed: "Hoo... my numbers came back wrong. Retrying {next}." } },
-    strategist: { name: "Agrippa", title: "Strategist", sprite: "general", lines: {
-      working: "Drawing up battle plans from the numbers.",
-      offduty: "Camp is quiet. March orders {next}.",
-      failed: "Out of supplies! I need Anthropic API credit to plan." } },
+    // Frontinus replaced Agrippa on 2026-10-27 (owner: fire the strategist,
+    // but find someone who does it for free first): same seat, no paid API.
+    strategist: { name: "Frontinus", title: "Strategist", sprite: "tactician", lines: {
+      working: "Reading the numbers. Free of charge.",
+      done: "Today's read is in: winning themes air first. Next read {next}.",
+      offduty: "Maps rolled up. Next read {next}.",
+      failed: "Couldn't read the numbers today. I try again {next}." } },
     reporter: { name: "Tiro", title: "Reporter", sprite: "scribe", lines: {
       working: "Writing this week's report.",
       done: "This week's report is filed. Next one {next}.",

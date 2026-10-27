@@ -27,6 +27,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BANK = ROOT / "data" / "edit_quotes.json"
+# Frontinus's daily read of what is working (scripts/strategist.py).
+STRATEGY = ROOT / "data" / "strategy.json"
 # Runs on which an edit was blocked by the preflight gate on every attempt.
 BLOCKS = ROOT / "data" / "edit_blocks.csv"
 MAX_BLOCKS = int(__import__("os").environ.get("EDIT_MAX_BLOCKS", "2"))
@@ -83,6 +85,15 @@ def jammed_ids() -> set:
     return {eid for eid, n in c.items() if n >= MAX_BLOCKS}
 
 
+def theme_rank() -> dict[str, int]:
+    """Frontinus's verdict per theme: 2 winning, 1 even or not enough data,
+    0 losing. Empty when there is no read, which leaves bank order alone."""
+    try:
+        return {k: int(v) for k, v in json.loads(STRATEGY.read_text(encoding="utf-8"))["theme_rank"].items()}
+    except Exception:  # noqa: BLE001
+        return {}
+
+
 def pick(post_rows: list[dict]) -> dict | None:
     """Next quote: never one already used, from the author used LEAST
     recently, avoiding the theme of the last edit.
@@ -106,10 +117,14 @@ def pick(post_rows: list[dict]) -> dict | None:
     for i, r in enumerate(edit_rows):
         seen[(r.get("author") or "").strip()] = i
     authors = sorted({q["author"] for q in fresh}, key=lambda a: (seen.get(a, -1), a))
+    rank = theme_rank()
     for a in authors:
-        for q in fresh:
-            if q["author"] == a and q["theme"] != last_theme:
-                return q
+        mine = [q for q in fresh if q["author"] == a and q["theme"] != last_theme]
+        if mine:
+            # Within the author's turn, winning themes air first and losing
+            # ones last (owner 2026-10-27: a strategist that does the job for
+            # free). max() keeps the first of equals: bank order breaks ties.
+            return max(mine, key=lambda q: rank.get(q["theme"], 1))
     return fresh[0]
 
 

@@ -1428,3 +1428,18 @@ that story must always be captioned "recorded in the Historia Augusta", never
   `whoosh_air` is unapproved too, so no whoosh airs; every edit still opens on
   one of the two impacts (boom or stone slam), rotating by day. Supersedes the
   10-22 "all four" and the 10-25 "the air whoosh stays".
+- **2026-10-27 — STRATEGIST: Agrippa fired, Frontinus hired for free.**
+  Owner, in the HQ: *"I want to fire our strategist find some who will do this
+  for free before we fire though"*. Agrippa (scripts/strategy_loop.py) sent
+  the numbers to Claude Opus through the paid API; the credit ran out before
+  his first real run, data/strategy.md was still the empty template, and he
+  failed every day. Frontinus (scripts/strategist.py) does the job with plain
+  statistics from data the bots already keep, so it costs nothing: edits
+  compared at day 3, each against the edits aired the same week (reach grew
+  5-10x mid-October, which raw views would blame on early October's ten Marcus
+  edits), plus retention; 3+ settled edits before a verdict. Unlike Agrippa,
+  his read steers what airs: data/strategy.json's theme_rank makes the edit
+  picker play winning themes first within the author rotation (first read:
+  discipline and resilience win; control and time lose; command-style hooks
+  2.5x). strategy-update.yml now runs him with no secrets. Hired first,
+  verified, then the paid strategist was retired, as asked.

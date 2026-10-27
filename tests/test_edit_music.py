@@ -72,7 +72,12 @@ def test_every_track_has_provenance_and_names_no_song():
         p = t.get("provenance", {})
         for k in ("model", "license", "prompt", "reference_audio", "generated"):
             assert p.get(k), f"{t['id']} missing provenance.{k}"
-        assert p["reference_audio"] == "none", t["id"]
+        # No one else's song, ever. An ElevenLabs rebuild may reference one of
+        # OUR approved originals (owner 2026-10-25: "more like 1 and 9").
+        ref = p["reference_audio"]
+        if ref != "none":
+            own = next((x for x in edit_music.load() if f"own:{x['id']}" == ref), None)
+            assert own and own["approved"] is True and "ACE-Step" in own["provenance"]["model"], t["id"]
         prompt = p["prompt"].lower()
         for name in FORBIDDEN_IN_PROMPTS:
             assert name not in prompt, f"{t['id']} prompt names '{name}'"

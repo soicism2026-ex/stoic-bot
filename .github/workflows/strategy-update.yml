@@ -1,62 +1,49 @@
 name: Update content strategy
 
-# Runs daily at 10:00 UTC — safely ≥48 h after any upload slot (07/12/17/22 UTC).
-# Also dispatchable manually with custom window and age settings.
+# Frontinus, the free strategist (owner 2026-10-27: "I want to fire our
+# strategist find some who will do this for free before we fire though").
+# Daily at 10:00 UTC he reads what is working from data the bots already keep
+# (posts.csv, analytics.csv, retention.csv): views at day 3, compared with the
+# edits aired the same week, plus retention. He writes data/strategy.md (the
+# generated-content prompt reads it) and data/strategy.json (the edit picker
+# airs winning themes first). No secrets, no paid API: the old strategist
+# (scripts/strategy_loop.py, Claude Opus through the API) never produced a
+# strategy because the credit ran out, and failed every day.
 on:
   schedule:
     - cron: "0 10 * * *"
   workflow_dispatch:
-    inputs:
-      window_days:
-        description: "Rolling window in days (default: 21)"
-        type: number
-        default: 21
-      min_age_hours:
-        description: "Min hours after upload for metrics to settle (default: 48)"
-        type: number
-        default: 48
-      force_refetch:
-        description: "Force re-fetch analytics even if cached"
-        type: boolean
-        default: false
 
 permissions:
   contents: write
 
+concurrency:
+  group: strategy-update
+  cancel-in-progress: false
+
 jobs:
   strategy-update:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0   # full history for git pull --rebase
 
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: Install deps
-        run: pip install -r requirements.txt
+      - name: Read what is working (free)
+        run: python scripts/strategist.py --write
 
-      - name: Validate secrets
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-        run: python scripts/check_secrets.py
-
-      - name: Run strategy loop
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-          STRATEGY_WINDOW_DAYS: ${{ inputs.window_days || '21' }}
-          STRATEGY_MIN_AGE_HOURS: ${{ inputs.min_age_hours || '48' }}
-          # Force-refetch analytics when requested (ignores cache)
-          STRATEGY_FORCE_REFETCH: ${{ inputs.force_refetch || 'false' }}
-          STRATEGY_COMMIT: "1"
-          # Stay well inside the 10k daily Analytics API quota
-          YOUTUBE_ANALYTICS_QUOTA_BUDGET: "200"
-        run: python scripts/strategy_loop.py
+      - name: Commit the read
+        run: |
+          git config user.name "stoic-bot"
+          git config user.email "stoic-bot@users.noreply.github.com"
+          git add data/strategy.md data/strategy.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "strategy: Frontinus's daily read [skip ci]"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1

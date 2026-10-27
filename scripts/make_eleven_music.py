@@ -51,7 +51,9 @@ MODEL = "music_v2_5"
 PLANS = ROOT / "data" / "edit_music_plans_eleven.json"
 BANK = ROOT / "data" / "edit_music.json"
 OUT_DIR = ROOT / "assets" / "music" / "edit"
-CREDITS_PER_MIN = 900          # Eleven Music, from the shared monthly pool
+CREDITS_PER_MIN = 300          # Eleven Music, shared pool. Research said 900; the first
+                               # round measured ~175/min (1,335 credits, 7.6 min with the
+                               # references, 2026-10-27). Kept above that on purpose.
 RESERVE = 12_000               # left untouched for Brian's narration
 USED_SECONDS = 16.0            # an edit uses ~16 s from the start point
 LICENSE = ("ElevenLabs Music Terms (updated 2026-10-09), {tier} plan: online commercial "
@@ -162,6 +164,13 @@ def body(p: dict, ref_song: str | None) -> dict:
     return {"model_id": MODEL, "seed": p["seed"], "composition_plan": {"chunks": chunks}}
 
 
+def plan_text(chunks: list[dict]) -> str:
+    """The plan as one line of text, for provenance (and the no-names test)."""
+    return " | ".join(f"{c['text']} {c['duration_ms'] / 1000:g}s: " + ", ".join(c["positive_styles"])
+                      + (" (not: " + ", ".join(c.get("negative_styles", [])) + ")" if c.get("negative_styles") else "")
+                      for c in chunks)
+
+
 def master(raw: Path, out_mp3: Path) -> tuple[float, str, float, float]:
     """One constant gain to -16 LUFS and a limiter, as for every edit track
     (single-pass loudnorm flattened the drop), then find the start point."""
@@ -240,7 +249,9 @@ def generate(plans: list[dict]) -> list[dict]:
                 "approved": False,
                 "provenance": {
                     "model": f"ElevenLabs Music v2.5 ({MODEL})", "song_id": r.headers.get("song-id", ""),
-                    "seed": p["seed"], "plan": p["chunks"],
+                    "seed": p["seed"], "plan": p["chunks"], "prompt": plan_text(p["chunks"]),
+                    # Only ever our own approved tracks, never someone else's song.
+                    "reference_audio": f"own:{c['track']}" if c else "none",
                     "conditioning": ({**c, "song_id": ref_song} if c else None),
                     "license": LICENSE.format(tier=tier), "stored": "encrypted (src/vault.py)",
                     "words_heard": heard, "generated": dt.date.today().isoformat(),

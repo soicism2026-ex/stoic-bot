@@ -103,6 +103,7 @@ After the main post loop, the workflow runs:
 | `scripts/improve_loop.py` | The brain of the continuous improvement loop. Joins posts.csv + analytics.csv, evaluates last run's outcome, picks next focus area, writes a data-grounded prompt to `data/improve_prompt.txt`, and saves run memory to `data/improve_state.json`. |
 | `scripts/prune_videos.py` | Unlists underperforming videos. |
 | `scripts/prep_guide_clips.py` | Normalises hand-generated GUIDE clips into `assets/guide/` (1080×1920, trimmed, muted, compressed, sequentially named) so they can be committed. Prompts to generate them: `docs/guide_clip_prompts.md`. |
+| `scripts/strategist.py` | Frontinus, the free strategist (owner 2026-10-27: "fire our strategist, find some who will do this for free"): daily, from posts/analytics/retention already in the repo, compares edits at day 3 against the edits aired within a week of them (reach changed a lot between seasons), by theme, author, hook form and length, quote length, music, voice, slot and weekday. Needs 3+ settled edits before calling a winner or loser. Writes `data/strategy.md` (content.py's prompt) and `data/strategy.json`, whose `theme_rank` makes `edits.pick` air winning themes first within the author rotation. Replaced `scripts/strategy_loop.py` (Agrippa: Claude Opus through the paid API, never produced a strategy, now unused). Tests: `tests/test_strategist.py`. |
 | `scripts/shelf.py` | The quote shelf: runway (`status`), what's working (`winners`), and the door new quotes come through (`check`/`add`). See "Quote shelf and rehearsals". |
 | `scripts/up_next.py` | Carries Apelles' rehearsal of the next Short from edit-preview (`publish`, to the `up-next` release) to the HQ sync (`fetch`). |
 | `src/airday.py` | The day a render is FOR: today on a live run; the next post's air day (`REEL_TODAY`) on a DRY_RUN rehearsal. Every day-keyed pick goes through it. |
@@ -118,6 +119,7 @@ After the main post loop, the workflow runs:
 |----------|---------|---------|
 | `daily-short.yml` | cron 3×/day | Main pipeline: post → analytics → prune → reply |
 | `pull-analytics.yml` | cron daily | Analytics-only pull |
+| `strategy-update.yml` | cron daily 10:00 UTC | Frontinus (`scripts/strategist.py --write`): no secrets, no paid API; commits `data/strategy.md` + `data/strategy.json` |
 | `refresh-assets.yml` | manual | Pre-download background clips to `data/hook_preset` |
 | `rethumbnail.yml` | manual | Backfill thumbnails for old videos |
 | `backfill.yml` | manual | Re-process old posts |
@@ -191,7 +193,8 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 | File | Contents |
 |------|----------|
 | `data/decisions.md` | Owner decision log — the channel's cross-session memory. Every chat directive/veto recorded with dates. Claude reads it first and appends new decisions same-turn. |
-| `data/doctrine.md` | The owner's PERMANENT creative standing orders (ICP, hook psychology, format philosophy). Injected into every content generation call. Never overwritten by automation — unlike `data/strategy.md`, which `strategy_loop.py` rewrites daily at 10:00 UTC. |
+| `data/doctrine.md` | The owner's PERMANENT creative standing orders (ICP, hook psychology, format philosophy). Injected into every content generation call. Never overwritten by automation — unlike `data/strategy.md`, which Frontinus (`scripts/strategist.py`) rewrites daily at 10:00 UTC. |
+| `data/strategy.json` | Frontinus's daily read: groups with day-3 views, lift against their own week, retention and a verdict; `theme_rank` (2 winning, 1 even or too few, 0 losing) orders the edit shelf. |
 | `data/posts.csv` | All posts: date, theme, quote, author, caption, video_url, video_id, voice_name, music_track, hook, experiment, format |
 | `data/analytics.csv` | Per-video view/like/comment snapshots |
 | `data/replied_comments.csv` | Comment IDs the bot has already replied to |
