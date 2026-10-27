@@ -1,0 +1,565 @@
+{
+ "updated": "2026-10-27",
+ "by": "Frontinus (scripts/strategist.py, no paid API)",
+ "window_days": 28,
+ "settled_edits": 27,
+ "median_views_day3": 130,
+ "median_retention": 88.8,
+ "theme_rank": {
+  "friendship": 1,
+  "desire": 1,
+  "resilience": 2,
+  "discipline": 2,
+  "ego": 1,
+  "adversity": 1,
+  "mortality": 1,
+  "control": 0,
+  "time": 0,
+  "fear": 1,
+  "anger": 1
+ },
+ "groups": {
+  "theme": [
+   {
+    "key": "friendship",
+    "n": 1,
+    "median_views_day3": 660,
+    "lift": 3.27,
+    "median_retention": 84.6,
+    "verdict": "too few"
+   },
+   {
+    "key": "desire",
+    "n": 1,
+    "median_views_day3": 498,
+    "lift": 2.59,
+    "median_retention": 218.0,
+    "verdict": "too few"
+   },
+   {
+    "key": "resilience",
+    "n": 4,
+    "median_views_day3": 145.0,
+    "lift": 1.37,
+    "median_retention": 83.5,
+    "verdict": "winner"
+   },
+   {
+    "key": "discipline",
+    "n": 6,
+    "median_views_day3": 92.0,
+    "lift": 1.32,
+    "median_retention": 95.8,
+    "verdict": "winner"
+   },
+   {
+    "key": "ego",
+    "n": 3,
+    "median_views_day3": 288,
+    "lift": 1.16,
+    "median_retention": 78.3,
+    "verdict": "even"
+   },
+   {
+    "key": "adversity",
+    "n": 1,
+    "median_views_day3": 249,
+    "lift": 1.01,
+    "median_retention": 116.4,
+    "verdict": "too few"
+   },
+   {
+    "key": "mortality",
+    "n": 2,
+    "median_views_day3": 110.0,
+    "lift": 0.74,
+    "median_retention": 82.3,
+    "verdict": "too few"
+   },
+   {
+    "key": "control",
+    "n": 4,
+    "median_views_day3": 54.5,
+    "lift": 0.6,
+    "median_retention": 89.0,
+    "verdict": "loser"
+   },
+   {
+    "key": "time",
+    "n": 3,
+    "median_views_day3": 90,
+    "lift": 0.49,
+    "median_retention": 93.4,
+    "verdict": "loser"
+   },
+   {
+    "key": "fear",
+    "n": 1,
+    "median_views_day3": 65,
+    "lift": 0.37,
+    "median_retention": 69.3,
+    "verdict": "too few"
+   },
+   {
+    "key": "anger",
+    "n": 1,
+    "median_views_day3": 0,
+    "lift": 0.0,
+    "median_retention": null,
+    "verdict": "too few"
+   }
+  ],
+  "author": [
+   {
+    "key": "Seneca",
+    "n": 9,
+    "median_views_day3": 247,
+    "lift": 1.0,
+    "median_retention": 88.3,
+    "verdict": "even"
+   },
+   {
+    "key": "Epictetus",
+    "n": 4,
+    "median_views_day3": 192.0,
+    "lift": 0.9,
+    "median_retention": 78.3,
+    "verdict": "even"
+   },
+   {
+    "key": "Marcus Aurelius",
+    "n": 14,
+    "median_views_day3": 78.0,
+    "lift": 0.89,
+    "median_retention": 92.3,
+    "verdict": "even"
+   }
+  ],
+  "hook_form": [
+   {
+    "key": "command",
+    "n": 6,
+    "median_views_day3": 411.5,
+    "lift": 2.5,
+    "median_retention": 88.3,
+    "verdict": "winner"
+   },
+   {
+    "key": "question",
+    "n": 2,
+    "median_views_day3": 307.5,
+    "lift": 1.24,
+    "median_retention": 91.1,
+    "verdict": "too few"
+   },
+   {
+    "key": "statement",
+    "n": 19,
+    "median_views_day3": 74,
+    "lift": 0.68,
+    "median_retention": 88.8,
+    "verdict": "loser"
+   }
+  ],
+  "hook_len": [
+   {
+    "key": "short (<=4 words)",
+    "n": 7,
+    "median_views_day3": 247,
+    "lift": 1.1,
+    "median_retention": 91.0,
+    "verdict": "even"
+   },
+   {
+    "key": "long (7+)",
+    "n": 11,
+    "median_views_day3": 82,
+    "lift": 1.01,
+    "median_retention": 86.7,
+    "verdict": "even"
+   },
+   {
+    "key": "medium (5-6)",
+    "n": 9,
+    "median_views_day3": 47,
+    "lift": 0.78,
+    "median_retention": 81.2,
+    "verdict": "even"
+   }
+  ],
+  "quote_len": [
+   {
+    "key": "long (25+)",
+    "n": 3,
+    "median_views_day3": 288,
+    "lift": 1.16,
+    "median_retention": 103.9,
+    "verdict": "even"
+   },
+   {
+    "key": "medium (13-24)",
+    "n": 16,
+    "median_views_day3": 125.5,
+    "lift": 0.95,
+    "median_retention": 85.6,
+    "verdict": "even"
+   },
+   {
+    "key": "short (<=12 words)",
+    "n": 8,
+    "median_views_day3": 77.5,
+    "lift": 0.43,
+    "median_retention": 91.0,
+    "verdict": "loser"
+   }
+  ],
+  "music": [
+   {
+    "key": "Clash Defiant",
+    "n": 2,
+    "median_views_day3": 403.5,
+    "lift": 2.67,
+    "median_retention": 88.8,
+    "verdict": "too few"
+   },
+   {
+    "key": "Heroic Age",
+    "n": 3,
+    "median_views_day3": 130,
+    "lift": 2.15,
+    "median_retention": 103.8,
+    "verdict": "winner"
+   },
+   {
+    "key": "Ancient Rite",
+    "n": 2,
+    "median_views_day3": 412.5,
+    "lift": 1.96,
+    "median_retention": 160.9,
+    "verdict": "too few"
+   },
+   {
+    "key": "Volatile Reaction",
+    "n": 2,
+    "median_views_day3": 161.5,
+    "lift": 1.74,
+    "median_retention": 73.2,
+    "verdict": "too few"
+   },
+   {
+    "key": "Five Armies",
+    "n": 2,
+    "median_views_day3": 288.0,
+    "lift": 1.43,
+    "median_retention": 91.0,
+    "verdict": "too few"
+   },
+   {
+    "key": "Prelude and Action",
+    "n": 2,
+    "median_views_day3": 160.5,
+    "lift": 1.38,
+    "median_retention": 87.2,
+    "verdict": "too few"
+   },
+   {
+    "key": "Crusade",
+    "n": 2,
+    "median_views_day3": 114.5,
+    "lift": 0.84,
+    "median_retention": 89.3,
+    "verdict": "too few"
+   },
+   {
+    "key": "Strength of the Titans",
+    "n": 2,
+    "median_views_day3": 165.0,
+    "lift": 0.82,
+    "median_retention": 78.3,
+    "verdict": "too few"
+   },
+   {
+    "key": "Rising Game",
+    "n": 2,
+    "median_views_day3": 157.0,
+    "lift": 0.69,
+    "median_retention": 77.3,
+    "verdict": "too few"
+   },
+   {
+    "key": "Achilles",
+    "n": 2,
+    "median_views_day3": 134.5,
+    "lift": 0.68,
+    "median_retention": 116.4,
+    "verdict": "too few"
+   },
+   {
+    "key": "Exhilarate",
+    "n": 2,
+    "median_views_day3": 104.0,
+    "lift": 0.49,
+    "median_retention": 82.3,
+    "verdict": "too few"
+   },
+   {
+    "key": "Unholy Knight",
+    "n": 2,
+    "median_views_day3": 92.0,
+    "lift": 0.46,
+    "median_retention": 109.2,
+    "verdict": "too few"
+   },
+   {
+    "key": "Impact Prelude",
+    "n": 2,
+    "median_views_day3": 47.5,
+    "lift": 0.26,
+    "median_retention": 101.3,
+    "verdict": "too few"
+   }
+  ],
+  "voice": [
+   {
+    "key": "Steffan",
+    "n": 19,
+    "median_views_day3": 130,
+    "lift": 1.01,
+    "median_retention": 89.3,
+    "verdict": "even"
+   },
+   {
+    "key": "Brian",
+    "n": 6,
+    "median_views_day3": 211.0,
+    "lift": 0.85,
+    "median_retention": 83.8,
+    "verdict": "even"
+   },
+   {
+    "key": "gTTS",
+    "n": 2,
+    "median_views_day3": 38.5,
+    "lift": 0.39,
+    "median_retention": null,
+    "verdict": "too few"
+   }
+  ],
+  "slot": [
+   {
+    "key": "first of the day",
+    "n": 21,
+    "median_views_day3": 121,
+    "lift": 1.01,
+    "median_retention": 88.8,
+    "verdict": "even"
+   },
+   {
+    "key": "second of the day",
+    "n": 6,
+    "median_views_day3": 171.0,
+    "lift": 0.69,
+    "median_retention": 89.0,
+    "verdict": "loser"
+   }
+  ],
+  "weekday": [
+   {
+    "key": "Sunday",
+    "n": 2,
+    "median_views_day3": 311.5,
+    "lift": 1.81,
+    "median_retention": 91.0,
+    "verdict": "too few"
+   },
+   {
+    "key": "Monday",
+    "n": 4,
+    "median_views_day3": 132.0,
+    "lift": 1.32,
+    "median_retention": 89.3,
+    "verdict": "winner"
+   },
+   {
+    "key": "Friday",
+    "n": 5,
+    "median_views_day3": 130,
+    "lift": 1.0,
+    "median_retention": 123.0,
+    "verdict": "even"
+   },
+   {
+    "key": "Tuesday",
+    "n": 4,
+    "median_views_day3": 138.0,
+    "lift": 1.0,
+    "median_retention": 85.6,
+    "verdict": "even"
+   },
+   {
+    "key": "Wednesday",
+    "n": 4,
+    "median_views_day3": 145.0,
+    "lift": 0.85,
+    "median_retention": 89.3,
+    "verdict": "even"
+   },
+   {
+    "key": "Saturday",
+    "n": 4,
+    "median_views_day3": 190.5,
+    "lift": 0.77,
+    "median_retention": 94.2,
+    "verdict": "even"
+   },
+   {
+    "key": "Thursday",
+    "n": 4,
+    "median_views_day3": 131.5,
+    "lift": 0.6,
+    "median_retention": 82.3,
+    "verdict": "loser"
+   }
+  ]
+ },
+ "top": [
+  {
+   "id": "rising_to_work",
+   "date": "2026-10-19",
+   "views": 725,
+   "retention": 95.8,
+   "theme": "discipline",
+   "author": "Marcus Aurelius",
+   "hook": "Don't want to get up? Read this.",
+   "hook_form": "command",
+   "hook_len": "long (7+)",
+   "quote_len": "medium (13-24)",
+   "music": "Clash Defiant",
+   "voice": "Steffan",
+   "slot": "second of the day",
+   "weekday": "Monday",
+   "rel": 3.589108910891089
+  },
+  {
+   "id": "better_man",
+   "date": "2026-10-17",
+   "views": 660,
+   "retention": 84.6,
+   "theme": "friendship",
+   "author": "Seneca",
+   "hook": "Look at the five people around you.",
+   "hook_form": "command",
+   "hook_len": "long (7+)",
+   "quote_len": "short (<=12 words)",
+   "music": "Heroic Age",
+   "voice": "Steffan",
+   "slot": "first of the day",
+   "weekday": "Saturday",
+   "rel": 3.267326732673267
+  },
+  {
+   "id": "everywhere_nowhere",
+   "date": "2026-10-18",
+   "views": 576,
+   "retention": 91.0,
+   "theme": "discipline",
+   "author": "Seneca",
+   "hook": "Pick one thing.",
+   "hook_form": "command",
+   "hook_len": "short (<=4 words)",
+   "quote_len": "short (<=12 words)",
+   "music": "Five Armies",
+   "voice": "Steffan",
+   "slot": "first of the day",
+   "weekday": "Sunday",
+   "rel": 2.8514851485148514
+  },
+  {
+   "id": "craves_more",
+   "date": "2026-10-16",
+   "views": 498,
+   "retention": 218.0,
+   "theme": "desire",
+   "author": "Seneca",
+   "hook": "Rich isn't a number.",
+   "hook_form": "statement",
+   "hook_len": "short (<=4 words)",
+   "quote_len": "medium (13-24)",
+   "music": "Ancient Rite",
+   "voice": "Steffan",
+   "slot": "first of the day",
+   "weekday": "Friday",
+   "rel": 2.59375
+  },
+  {
+   "id": "promontory",
+   "date": "2026-10-07",
+   "views": 121,
+   "retention": 69.5,
+   "theme": "resilience",
+   "author": "Marcus Aurelius",
+   "hook": "Let them crash. Stand still.",
+   "hook_form": "statement",
+   "hook_len": "medium (5-6)",
+   "quote_len": "medium (13-24)",
+   "music": "Volatile Reaction",
+   "voice": "Steffan",
+   "slot": "first of the day",
+   "weekday": "Wednesday",
+   "rel": 2.574468085106383
+  }
+ ],
+ "bottom": [
+  {
+   "id": "avenging",
+   "date": "2026-10-03",
+   "views": 0,
+   "retention": null,
+   "theme": "anger",
+   "author": "Marcus Aurelius",
+   "hook": "Want revenge? Here's the real kind.",
+   "hook_form": "statement",
+   "hook_len": "medium (5-6)",
+   "quote_len": "medium (13-24)",
+   "music": "Five Armies",
+   "voice": "Steffan",
+   "slot": "first of the day",
+   "weekday": "Saturday",
+   "rel": 0.0
+  },
+  {
+   "id": "habit_and_faculty",
+   "date": "2026-10-23",
+   "views": 5,
+   "retention": null,
+   "theme": "discipline",
+   "author": "Epictetus",
+   "hook": "You are what you repeat.",
+   "hook_form": "statement",
+   "hook_len": "medium (5-6)",
+   "quote_len": "short (<=12 words)",
+   "music": "Impact Prelude",
+   "voice": "Brian",
+   "slot": "second of the day",
+   "weekday": "Friday",
+   "rel": 0.020080321285140562
+  },
+  {
+   "id": "no_right_wind",
+   "date": "2026-10-24",
+   "views": 54,
+   "retention": null,
+   "theme": "discipline",
+   "author": "Seneca",
+   "hook": "No goal? Then nothing will feel right.",
+   "hook_form": "statement",
+   "hook_len": "long (7+)",
+   "quote_len": "medium (13-24)",
+   "music": "Heroic Age",
+   "voice": "Brian",
+   "slot": "second of the day",
+   "weekday": "Saturday",
+   "rel": 0.21774193548387097
+  }
+ ]
+}
