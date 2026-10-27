@@ -7,7 +7,7 @@
   "start": 20.5,
   "start_how": "drop (5.8 dB build-to-drop contrast)",
   "duration": 44.5,
-  "approved": true,
+  "approved": false,
   "provenance": {
    "model": "ACE-Step 1.5 via acestep.cpp d881ad2 (DiT acestep-v15-xl-turbo-Q8_0.gguf, LM acestep-5Hz-lm-1.7B-Q8_0.gguf)",
    "license": "MIT (ACE-Step 1.5; commercial use of output allowed)",
@@ -22,7 +22,9 @@
    "generated": "2026-10-12"
   },
   "approved_on": "2026-10-25",
-  "approved_how": "Owner, in the HQ: \"the first one and the last one are the best for now\" (sampler numbers 1 and 9), while a better source is found"
+  "approved_how": "Owner, in the HQ: \"the first one and the last one are the best for now\" (sampler numbers 1 and 9), while a better source is found",
+  "retired_on": "2026-10-27",
+  "retired_why": "Replaced by the ElevenLabs tracks the owner called better than what we had before"
  },
  {
   "id": "caucasus_slowed__xl",
@@ -193,7 +195,7 @@
   "start": 14.0,
   "start_how": "loudest (2.3 dB build-to-drop contrast)",
   "duration": 42.5,
-  "approved": true,
+  "approved": false,
   "provenance": {
    "model": "ACE-Step 1.5 via acestep.cpp d881ad2 (DiT acestep-v15-xl-turbo-Q8_0.gguf, LM acestep-5Hz-lm-1.7B-Q8_0.gguf)",
    "license": "MIT (ACE-Step 1.5; commercial use of output allowed)",
@@ -208,7 +210,9 @@
    "generated": "2026-10-12"
   },
   "approved_on": "2026-10-25",
-  "approved_how": "Owner, in the HQ: \"the first one and the last one are the best for now\" (sampler numbers 1 and 9), while a better source is found"
+  "approved_how": "Owner, in the HQ: \"the first one and the last one are the best for now\" (sampler numbers 1 and 9), while a better source is found",
+  "retired_on": "2026-10-27",
+  "retired_why": "Replaced by the ElevenLabs tracks the owner called better than what we had before"
  },
  {
   "id": "el_bass_piano",
@@ -218,7 +222,7 @@
   "start": 9.5,
   "start_how": "drop (8.7 dB build-to-drop contrast)",
   "duration": 40.0,
-  "approved": false,
+  "approved": true,
   "provenance": {
    "model": "ElevenLabs Music v2.5 (music_v2_5)",
    "song_id": "QeAqScYfSpnqTVahz5UZ",
@@ -322,7 +326,9 @@
    "generated": "2026-10-27",
    "prompt": "[Build] 5s: epic cinematic hybrid trailer instrumental, emotional solo piano ostinato, riser and reverse cymbal building tension, 88 BPM, C minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: massive sub bass drop, deep trailer impacts every bar, piano ostinato continues on top, full string section, huge low brass swells, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: even bigger second drop, epic taiko percussion, piano up an octave, soaring high strings (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: final huge impact, long sub bass tail, reverb decay, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
    "reference_audio": "none"
-  }
+  },
+  "approved_on": "2026-10-27",
+  "approved_how": "Owner, in the HQ, judging the ElevenLabs sampler: \"1 and 2 are good ... for now 1 and 2 pass for something better than we had before\""
  },
  {
   "id": "el_bass_felt_dark",
@@ -332,7 +338,7 @@
   "start": 2.5,
   "start_how": "drop (21.4 dB build-to-drop contrast)",
   "duration": 40.0,
-  "approved": false,
+  "approved": true,
   "provenance": {
    "model": "ElevenLabs Music v2.5 (music_v2_5)",
    "song_id": "Aond5NkHsx280BYvUfiT",
@@ -433,7 +439,9 @@
    "generated": "2026-10-27",
    "prompt": "[Build] 5s: dark motivational cinematic instrumental, intimate felt piano motif, wordless synth choir pad, slow riser, 90 BPM, D minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: crushing sub bass drop, trailer braams, felt piano motif over pounding low drums, dark strings, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: second drop with taiko and braams, relentless driving energy (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: last braam, sub bass tail, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
    "reference_audio": "none"
-  }
+  },
+  "approved_on": "2026-10-27",
+  "approved_how": "Owner, in the HQ, judging the ElevenLabs sampler: \"1 and 2 are good ... for now 1 and 2 pass for something better than we had before\""
  },
  {
   "id": "el_bass_from_1",

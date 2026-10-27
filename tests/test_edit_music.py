@@ -77,7 +77,8 @@ def test_every_track_has_provenance_and_names_no_song():
         ref = p["reference_audio"]
         if ref != "none":
             own = next((x for x in edit_music.load() if f"own:{x['id']}" == ref), None)
-            assert own and own["approved"] is True and "ACE-Step" in own["provenance"]["model"], t["id"]
+            assert own and ("ACE-Step" in own["provenance"]["model"]
+                            or "ElevenLabs" in own["provenance"]["model"]), t["id"]
         prompt = p["prompt"].lower()
         for name in FORBIDDEN_IN_PROMPTS:
             assert name not in prompt, f"{t['id']} prompt names '{name}'"
@@ -154,3 +155,10 @@ def test_generator_is_pinned_and_text_only():
         cap = s["caption"].lower()
         for name in FORBIDDEN_IN_PROMPTS:
             assert name not in cap, f"style {s['id']} names '{name}'"
+
+
+def test_the_owners_current_picks_are_what_airs():
+    """Owner 2026-10-27, judging the ElevenLabs sampler: "1 and 2 are good ...
+    for now 1 and 2 pass for something better than we had before"."""
+    approved = {t["id"] for t in edit_music.load() if t.get("approved")}
+    assert approved == {"el_bass_piano", "el_bass_felt_dark"}

@@ -44,11 +44,16 @@ def test_plans_describe_sound_only_and_put_the_drop_where_an_edit_starts():
             assert next(t for t in edit_music.load() if t["id"] == p["id"])["file"].endswith(".gpg")
 
 
-def test_rebuilds_of_songs_1_and_9_reference_the_owners_picks():
+def test_rebuilds_reference_only_our_own_tracks():
+    """References are our own tracks, never someone else's song. Round 1
+    rebuilt songs 1 and 9 (ACE-Step); later rounds may build on ElevenLabs
+    tracks the owner picked."""
     refs = {p["conditioning"]["track"] for p in m.load_plans() if p.get("conditioning")}
-    assert refs == {"bass_motivation__xl", "promise_spedup__xl"}
-    approved = {t["id"] for t in edit_music.load() if t.get("approved")}
-    assert refs <= approved
+    assert {"bass_motivation__xl", "promise_spedup__xl"} <= refs
+    bank = {t["id"]: t for t in edit_music.load()}
+    for r in refs:
+        assert r in bank and ("ACE-Step" in bank[r]["provenance"]["model"]
+                              or "ElevenLabs" in bank[r]["provenance"]["model"]), r
     for p in m.load_plans():
         c = p.get("conditioning")
         if c:

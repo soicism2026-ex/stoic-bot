@@ -1443,3 +1443,14 @@ that story must always be captioned "recorded in the Historia Augusta", never
   discipline and resilience win; control and time lose; command-style hooks
   2.5x). strategy-update.yml now runs him with no secrets. Hired first,
   verified, then the paid strategist was retired, as asked.
+- **2026-10-27 — EDIT MUSIC: ElevenLabs 1 and 2 replace songs 1 and 9.**
+  Owner, in the HQ, judging Orpheus's 10 ElevenLabs tracks: *"1 and 2 are
+  good, 3 and 4 are not, 5 is too loud, 6 is bad, 7 is too hype music, 8 is
+  alright a bit inspiring, 9 is way too much energy for our channel. Keep
+  working on getting better music but for now 1 and 2 pass for something
+  better than we had before."* Approved `el_bass_piano` (piano ostinato +
+  massive bass drop) and `el_bass_felt_dark` (dark felt piano + braams);
+  the ACE-Step songs 1 and 9 are retired from the rotation (unapproved, kept
+  in the bank). The channel's sound, from his ear: dark, piano-led,
+  cinematic, restrained energy; not bright, not organ, not hype, not loud.
+  Orpheus keeps working toward it.
