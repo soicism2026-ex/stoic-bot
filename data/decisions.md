@@ -1454,3 +1454,17 @@ that story must always be captioned "recorded in the Historia Augusta", never
   in the bank). The channel's sound, from his ear: dark, piano-led,
   cinematic, restrained energy; not bright, not organ, not hype, not loud.
   Orpheus keeps working toward it.
+- **2026-10-27 — EDIT MUSIC: all nine round-3 tracks join the rotation.**
+  Owner, in the HQ, on the round-3 sampler (nine tracks built from his two
+  picks: dark, piano-led, restrained): *"All are good rotate them"*. Approved
+  every `el3_*` track (felt piano + cello, grand piano + braams, heartbeat
+  pulse, distant taiko, warm upright piano, wordless choir + braams, low string
+  ostinato, minimal piano + sub, more like new 1), so 11 tracks shuffle: each
+  airs once per cycle (about 5.5 days at 2 posts a day), never twice in a row.
+  Orpheus's search for "much better music" is answered: no new round is made
+  unless the owner asks for one (ElevenLabs credit stays with Brian). Two
+  fixes ride along: a cut that would run out before the Short ends starts
+  early enough to end with the track (the upright piano drops 24 s into 40 s;
+  the bed loops, so it used to restart at the drop in the last second), and
+  Apelles re-rehearses when the next Short's planned music or sounds change,
+  not only when its quote does.

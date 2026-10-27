@@ -49,17 +49,20 @@ def _audition() -> bool:
     return _on("DRY_RUN") and not _on("REEL_REHEARSAL")
 
 
-def usable() -> list[dict]:
-    """Approved sounds, or every sound in an audition preview."""
-    return [t for t in load() if _exists(t) and (t.get("approved") is True or _audition())]
+def usable(audition: bool | None = None) -> list[dict]:
+    """Approved sounds, or every sound in an audition preview. `audition`
+    overrides the environment (False = what a live post would use)."""
+    aud = _audition() if audition is None else audition
+    return [t for t in load() if _exists(t) and (t.get("approved") is True or aud)]
 
 
-def pick(role: str, seed: str) -> dict | None:
-    pool = sorted((t for t in usable() if t["role"] == role), key=lambda t: t["id"])
+def pick(role: str, seed: str, audition: bool | None = None) -> dict | None:
+    aud = _audition() if audition is None else audition
+    pool = sorted((t for t in usable(aud) if t["role"] == role), key=lambda t: t["id"])
     if not pool:
         return None
     forced = os.environ.get("REEL_SFX_" + role.upper(), "").strip()
-    if forced and _audition():
+    if forced and aud:
         hit = next((t for t in pool if t["id"] == forced), None)
         if hit:
             return hit

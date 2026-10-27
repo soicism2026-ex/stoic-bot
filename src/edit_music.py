@@ -88,10 +88,44 @@ def pick(post_rows: list[dict], seed: str = "") -> dict | None:
             return t
         print(f"[edit_music] REEL_EDIT_MUSIC={forced} not found", file=sys.stderr)
     by_id = {t["id"]: t for t in approved()}
-    played = [(r.get("music_track") or "").removeprefix(PREFIX) for r in post_rows
-              if (r.get("music_track") or "").startswith(PREFIX)]
-    tid = shuffle.pick(by_id, played, seed)
+    tid = shuffle.pick(by_id, played(post_rows), seed)
     return by_id[tid] if tid else None
+
+
+def played(post_rows: list[dict]) -> list[str]:
+    """Ids of the original tracks that aired, oldest first."""
+    return [(r.get("music_track") or "").removeprefix(PREFIX) for r in post_rows
+            if (r.get("music_track") or "").startswith(PREFIX)]
+
+
+def planned(post_rows: list[dict], seed: str = "") -> str | None:
+    """The id `pick` chooses on a live run, from the approval flags alone, so
+    a job without MUSIC_KEY (the rehearsal check) can tell that the owner's
+    approvals changed the next Short's music."""
+    ids = [t["id"] for t in load() if t.get("approved") is True]
+    return shuffle.pick(ids, played(post_rows), seed)
+
+
+def _length(path: Path) -> float:
+    """Seconds of audio in `path`; 0.0 when ffprobe can't tell."""
+    try:
+        out = proc.run(["ffprobe", "-v", "error", "-show_entries", "format=duration",
+                        "-of", "csv=p=0", str(path)], check=True, capture_output=True, text=True)
+        return float(out.stdout.strip())
+    except Exception:  # noqa: BLE001
+        return 0.0
+
+
+def cut_start(start: float, seconds: float, length: float) -> float:
+    """Where the cut begins: at the drop, unless the track ends before the
+    Short does. render.py loops the bed, so a cut that runs out restarts at
+    the drop in the last second (el3_upright_tape drops at 24 s of 40 s, and
+    edits run to 17 s). Then it starts just early enough to end with the
+    track: the drop lands a moment in, and the song ends with the Short."""
+    start = max(0.0, start)
+    if length > 0 and start + seconds > length - 0.1:
+        return max(0.0, length - 0.1 - seconds)
+    return start
 
 
 def fetch(track: dict, out_path: Path, seconds: float) -> Path | None:
@@ -105,7 +139,11 @@ def fetch(track: dict, out_path: Path, seconds: float) -> Path | None:
             src = vault.plain(ROOT / track["file"], Path(td))
             if src is None:
                 raise RuntimeError("encrypted and no MUSIC_KEY, or the file is missing")
-            start = max(0.0, float(track.get("start", 0.0)))
+            drop = float(track.get("start", 0.0))
+            start = cut_start(drop, seconds, _length(src))
+            if start != max(0.0, drop):
+                print(f"  [edit_music] {track.get('id')}: the drop at {drop}s leaves too little "
+                      f"for {seconds:.1f}s; cutting from {start:.1f}s so the bed never loops")
             fade_out = max(0.0, seconds - 1.2)
             proc.run(["ffmpeg", "-y", "-v", "error", "-ss", f"{start:.2f}", "-i", str(src),
                       "-t", f"{seconds:.2f}",

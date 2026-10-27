@@ -9,14 +9,17 @@ Apelles' rehearsal goes to the HQ: the next Short, rendered before it airs.
 instead of only on its two crons, which GitHub fired 2-5 hours late (the
 19:40 rehearsal of 10-24 started at 21:50, three hours before its post). It
 prints `go` or `skip: <why>`: skip when the release already holds the next
-edit for its air day, or when two rehearsals failed today (a broken render
-must not burn a Brian read on every retry; Apelles already shows as failed).
+edit for its air day with the sounds the live run will pick (`plan`: music
+and sound effects, so approving new music re-rehearses it), or when two
+rehearsals failed today (a broken render must not burn a Brian read on every
+retry; Apelles already shows as failed).
 
 `publish` (GitHub Actions, GH_TOKEN) puts two files in the `up-next` release,
 a prerelease that only ever holds these two:
   up-next.mp4    the rehearsal, re-encoded for a phone (720 px wide, ~2-3 MB)
   up-next.json   what it is: the edit id, quote, hook, author, citation, the
-                 day it airs, the voice that spoke, when, and the run
+                 day it airs, the voice that spoke, when, the run, and the
+                 planned sounds it was made with
 Release assets live outside git, so no video enters the repo's history (the
 "never commit video files" rule).
 
@@ -36,6 +39,7 @@ import sys
 import urllib.request
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent.parent
 REPO = "soicism2026-ex/stoic-bot"
 TAG = "up-next"
 VIDEO, META = "up-next.mp4", "up-next.json"
@@ -52,22 +56,53 @@ def phone_cut(src: Path, dst: Path) -> Path:
     return dst
 
 
+def _rows() -> list[dict]:
+    import csv
+    p = ROOT / "data" / "posts.csv"
+    return list(csv.DictReader(open(p, encoding="utf-8"))) if p.exists() else []
+
+
+def plan(rows: list[dict], air_day: str) -> dict:
+    """The sounds the live run will pick for the Short airing on `air_day`,
+    from the repo alone (no MUSIC_KEY): the music track by its approval flag,
+    and the opening impact and whoosh. Stored with each rehearsal, so `need`
+    re-renders when they change, e.g. when the owner approves new music
+    (2026-10-27: nine tracks joined the shuffle the day after a rehearsal)."""
+    sys.path.insert(0, str(ROOT / "src"))
+    import edit_music  # noqa: PLC0415
+    import sfx  # noqa: PLC0415
+    music = edit_music.planned(rows, seed=air_day)
+    out = {"music": f"{edit_music.PREFIX}{music}" if music else None}
+    for role in sfx.ROLES:
+        t = sfx.pick(role, air_day, audition=False)
+        out[role] = t["id"] if t else None
+    return out
+
+
 def describe(preview: Path, now: dt.datetime | None = None) -> dict:
     meta = json.loads((preview / "meta.json").read_text(encoding="utf-8"))
     meta["renderedAt"] = (now or dt.datetime.now(dt.timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ")
     meta["run"] = os.environ.get("RUN_URL", "")
+    if meta.get("airDay"):
+        meta["plan"] = plan(_rows(), meta["airDay"])
     return meta
 
 
 def need(next_edit: str | None, air_day: str, current: dict | None,
-         failures_today: int) -> tuple[bool, str]:
-    """Should a scheduled or post-triggered rehearsal render now?"""
+         failures_today: int, planned: dict | None = None) -> tuple[bool, str]:
+    """Should a scheduled or post-triggered rehearsal render now? `planned`
+    is plan() for the next Short; a rehearsal made with other sounds is stale."""
     if not next_edit:
         return False, "skip: no edit left to rehearse (the shelf is empty)"
-    if current and current.get("edit") == next_edit and current.get("airDay") == air_day:
+    same = bool(current) and current.get("edit") == next_edit and current.get("airDay") == air_day
+    was = (current or {}).get("plan") or {}
+    changed = [f"{k} {was.get(k)} -> {v}" for k, v in (planned or {}).items() if was.get(k) != v]
+    if same and not changed:
         return False, f"skip: {next_edit} for {air_day} is already rehearsed ({current.get('renderedAt')})"
     if failures_today >= 2:
         return False, f"skip: {failures_today} rehearsals failed today; waiting for a fix"
+    if same:
+        return True, f"go: re-rehearse {next_edit} for {air_day}: " + "; ".join(changed)
     return True, f"go: rehearse {next_edit} for {air_day}"
 
 
@@ -83,12 +118,10 @@ def _failures_today(now: dt.datetime) -> int:
 
 
 def _need_cli() -> int:
-    import csv
-    root = Path(__file__).resolve().parent.parent
-    sys.path.insert(0, str(root / "src"))
+    sys.path.insert(0, str(ROOT / "src"))
     import airday  # noqa: PLC0415
     import edits  # noqa: PLC0415
-    rows = list(csv.DictReader(open(root / "data" / "posts.csv", encoding="utf-8")))
+    rows = _rows()
     q = edits.pick(rows)
     day = airday.next_air_day(rows, airday.live_cap()).isoformat()
     current = None
@@ -98,7 +131,8 @@ def _need_cli() -> int:
             current = json.loads(r.read())
     except Exception:  # noqa: BLE001
         pass   # no release yet, or GitHub didn't answer: rehearse
-    go, why = need(q and q["id"], day, current, _failures_today(dt.datetime.now(dt.timezone.utc)))
+    go, why = need(q and q["id"], day, current, _failures_today(dt.datetime.now(dt.timezone.utc)),
+                   plan(rows, day))
     print(why)
     out = os.environ.get("GITHUB_OUTPUT")
     if out:

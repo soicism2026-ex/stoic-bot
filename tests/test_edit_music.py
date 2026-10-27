@@ -1,7 +1,11 @@
 """Owned original music for edits: approval gate, shuffle, provenance."""
 import json
+import shutil
+import subprocess
 import sys
 from pathlib import Path
+
+import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
@@ -159,6 +163,53 @@ def test_generator_is_pinned_and_text_only():
 
 def test_the_owners_current_picks_are_what_airs():
     """Owner 2026-10-27, judging the ElevenLabs sampler: "1 and 2 are good ...
-    for now 1 and 2 pass for something better than we had before"."""
-    approved = {t["id"] for t in edit_music.load() if t.get("approved")}
-    assert approved == {"el_bass_piano", "el_bass_felt_dark"}
+    for now 1 and 2 pass for something better than we had before"; then, on
+    round 3, built from those two: "All are good rotate them"."""
+    bank = edit_music.load()
+    approved = {t["id"] for t in bank if t.get("approved")}
+    round3 = {t["id"] for t in bank if t["id"].startswith("el3_")}
+    assert len(round3) == 9
+    assert approved == {"el_bass_piano", "el_bass_felt_dark"} | round3
+    for t in bank:
+        if t["id"] in approved:
+            assert t["approved_on"] and t["approved_how"].startswith("Owner"), t["id"]
+
+
+def test_a_late_drop_starts_early_instead_of_looping():
+    """el3_upright_tape drops 24 s into a 40 s track and edits run to 17 s.
+    render.py loops the bed, so a cut that ran out restarted at the drop in
+    the last second. It starts early enough to end with the track instead."""
+    assert edit_music.cut_start(9.5, 17.0, 40.0) == 9.5             # room: from the drop
+    assert edit_music.cut_start(24.0, 12.0, 40.0) == 24.0
+    late = edit_music.cut_start(24.0, 17.3, 40.0)                    # a long edit
+    assert 22.0 < late < 24.0 and late + 17.3 <= 40.0
+    assert edit_music.cut_start(5.0, 50.0, 40.0) == 0.0              # shorter than the Short
+    assert edit_music.cut_start(24.0, 17.3, 0.0) == 24.0             # length unknown: as before
+    assert edit_music.cut_start(-1.0, 5.0, 40.0) == 0.0
+
+
+@pytest.mark.skipif(not shutil.which("ffmpeg"), reason="needs ffmpeg")
+def test_the_cut_covers_the_whole_short_even_from_a_late_drop(tmp_path):
+    src = tmp_path / "late.mp3"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "sine=frequency=220:duration=20",
+                    "-c:a", "libmp3lame", "-b:a", "192k", str(src)], check=True)
+    assert abs(edit_music._length(src) - 20.0) < 0.15
+    t = {"id": "late", "file": str(src), "approved": True, "start": 14.0}
+    got = edit_music.fetch(t, tmp_path / "cut.mp3", 12.0)
+    assert got and abs(edit_music._length(got) - 12.0) < 0.15        # not 6 s, then a loop
+    early = {"id": "early", "file": str(src), "approved": True, "start": 2.0}
+    got = edit_music.fetch(early, tmp_path / "cut2.mp3", 12.0)
+    assert got and abs(edit_music._length(got) - 12.0) < 0.15
+
+
+def test_the_planned_track_is_the_one_a_live_run_picks(monkeypatch):
+    """The rehearsal check has no MUSIC_KEY, so it plans from the approval
+    flags; with the key present the live pick must be the same track."""
+    _fake(monkeypatch, n=6)
+    monkeypatch.delenv("REEL_EDIT_MUSIC", raising=False)
+    rows = []
+    for day in range(1, 25):
+        seed = f"2026-11-{day:02d}"
+        live = edit_music.pick(rows, seed=seed)["id"]
+        assert edit_music.planned(rows, seed=seed) == live
+        rows.append({"music_track": edit_music.PREFIX + live})

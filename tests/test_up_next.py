@@ -42,6 +42,7 @@ def test_publish_replaces_both_files_in_the_release(tmp_path, monkeypatch):
     assert {Path(a).name for a in up if a.startswith("/")} == {"up-next.mp4", "up-next.json"}
     written = json.loads((tmp_path / "up-next" / "up-next.json").read_text())
     assert written["renderedAt"].endswith("Z") and written["airDay"] == "2026-10-24"
+    assert set(written["plan"]) == {"music", "impact", "whoosh"}     # what `need` compares
 
 
 def test_fetch_reports_failure_without_raising(tmp_path, monkeypatch):
@@ -72,6 +73,39 @@ def test_need_rehearses_each_edit_once_and_stops_on_repeated_failure():
     assert up_next.need("next_one", "2026-10-26", None, 0)[0] is True       # no release yet
     assert up_next.need("next_one", "2026-10-26", cur, 2)[0] is False       # broken: don't burn reads
     assert up_next.need(None, "2026-10-26", None, 0)[0] is False            # empty shelf
+
+
+def test_a_rehearsal_made_with_other_sounds_is_stale():
+    """2026-10-27: the owner approved nine tracks after fetter_my_leg had been
+    rehearsed over el_bass_piano. The live run picks from the new shuffle, so
+    the HQ would have shown music that never airs."""
+    planned = {"music": "edit:el3_minimal_sub", "impact": "impact_boom", "whoosh": None}
+    cur = {"edit": "fetter_my_leg", "airDay": "2026-10-28", "renderedAt": "x",
+           "plan": dict(planned, music="edit:el_bass_piano")}
+    go, why = up_next.need("fetter_my_leg", "2026-10-28", cur, 0, planned)
+    assert go and "edit:el_bass_piano -> edit:el3_minimal_sub" in why
+    assert up_next.need("fetter_my_leg", "2026-10-28", dict(cur, plan=planned), 0, planned)[0] is False
+    old = {k: v for k, v in cur.items() if k != "plan"}             # made before plans were kept
+    assert up_next.need("fetter_my_leg", "2026-10-28", old, 0, planned)[0] is True
+    assert up_next.need("fetter_my_leg", "2026-10-28", cur, 2, planned)[0] is False   # broken: don't burn reads
+
+
+def test_the_plan_is_what_the_live_run_will_pick(monkeypatch):
+    sys.path.insert(0, str(ROOT / "src"))
+    import edit_music
+    import sfx
+    rows, day = up_next._rows(), "2026-10-28"
+    monkeypatch.setenv("DRY_RUN", "1")                # planned from inside a preview job...
+    monkeypatch.delenv("REEL_REHEARSAL", raising=False)
+    monkeypatch.setenv("REEL_SFX_WHOOSH", "whoosh_air")       # an audition would force it in
+    p = up_next.plan(rows, day)
+    monkeypatch.delenv("DRY_RUN")                     # ...it is still the live post's pick
+    monkeypatch.delenv("REEL_SFX_WHOOSH")
+    monkeypatch.setattr(edit_music, "_exists", lambda t: True)     # as with MUSIC_KEY
+    live = edit_music.pick(rows, seed=day)
+    assert p["music"] == (edit_music.PREFIX + live["id"] if live else None)
+    impact = sfx.pick("impact", day)
+    assert p["impact"] == (impact["id"] if impact else None) and p["whoosh"] is None
 
 
 def test_apelles_rehearses_after_every_post_with_the_crons_as_backstop():

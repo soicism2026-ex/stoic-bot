@@ -171,3 +171,17 @@ def test_a_rehearsal_plays_only_what_the_live_post_will(monkeypatch):
     assert sfx.pick("impact", "2026-10-26")["id"] == "impact_b"
     wf = (ROOT / ".github" / "workflows" / "edit-preview.yml").read_text()
     assert "REEL_REHEARSAL: ${{ env.UP_NEXT }}" in wf
+
+
+def test_the_live_pick_can_be_asked_for_from_any_job(monkeypatch):
+    """The rehearsal check plans the next Short's sounds (scripts/up_next.py
+    plan) from inside a DRY_RUN job: audition=False is what a live post plays."""
+    bank = _bank(monkeypatch, approved=False)
+    bank[0]["approved"] = True
+    monkeypatch.setenv("DRY_RUN", "1")
+    monkeypatch.delenv("REEL_REHEARSAL", raising=False)
+    monkeypatch.setenv("REEL_SFX_IMPACT", "impact_b")
+    assert sfx.pick("impact", "2026-10-28")["id"] == "impact_b"                    # an audition
+    assert sfx.pick("impact", "2026-10-28", audition=False)["id"] == "impact_a"    # the live post
+    assert sfx.pick("whoosh", "2026-10-28", audition=False) is None
+
