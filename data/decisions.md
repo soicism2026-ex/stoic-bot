@@ -1423,3 +1423,8 @@ that story must always be captioned "recorded in the Historia Augusta", never
   gets the standing job of finding much better music the channel can own
   or license for monetized Shorts; the owner judges every candidate by ear
   in the HQ, and nothing new airs until he picks it.
+- **2026-10-27 — SOUND EFFECTS: no whoosh at all.** Owner, in the HQ:
+  *"Remove the swoosh sound effect it sucks"* (two days after the slash).
+  `whoosh_air` is unapproved too, so no whoosh airs; every edit still opens on
+  one of the two impacts (boom or stone slam), rotating by day. Supersedes the
+  10-22 "all four" and the 10-25 "the air whoosh stays".

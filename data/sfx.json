@@ -36,7 +36,7 @@
     "role": "whoosh",
     "label": "Air whoosh",
     "file": "assets/sfx/whoosh_air.mp3",
-    "approved": true,
+    "approved": false,
     "provenance": {
       "model": "eleven_text_to_sound_v2",
       "prompt": "One fast, clean air whoosh passing from left to right, a cinematic transition. No music, no voice.",
@@ -45,7 +45,9 @@
       "generated": "2026-10-22",
       "license": "ElevenLabs sound effects: royalty-free, commercial use on paid plans"
     },
-    "approved_on": "2026-10-22"
+    "approved_on": "2026-10-22",
+    "removed_on": "2026-10-27",
+    "removed_why": "Owner, in the HQ: \"Remove the swoosh sound effect it sucks\""
   },
   {
     "id": "whoosh_blade",

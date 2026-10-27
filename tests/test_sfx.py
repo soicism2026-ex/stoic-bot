@@ -113,9 +113,10 @@ def test_sfx_track_places_each_sound_and_lasts_the_video(tmp_path):
 
 def test_every_edit_gets_the_owners_sounds():
     """Owner, 2026-10-22 (HQ): "Use all four, rotating"; 2026-10-25: "Remove
-    the slash sound effect it sucks", so the blade whoosh is off and every
-    whoosh is the air one. Edits only: the classic format already opens on its
-    own hook sound."""
+    the slash sound effect it sucks" (the blade whoosh); 2026-10-27: "Remove
+    the swoosh sound effect it sucks" (the air whoosh). So edits open on one of
+    the two impacts and have no whoosh at all. Edits only: the classic format
+    already opens on its own hook sound."""
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
     assert 'REEL_EDIT_SFX: "1"' in wf
     src = (ROOT / "scripts" / "daily_post.py").read_text()
@@ -123,17 +124,23 @@ def test_every_edit_gets_the_owners_sounds():
     assert '"REEL_SFX": os.environ.get("REEL_EDIT_SFX", "0")' in edit_pack
     bank = {t["id"]: t for t in json.loads((ROOT / "data" / "sfx.json").read_text())}
     on = {i for i, t in bank.items() if t["approved"] is True}
-    assert on == {"impact_boom", "impact_stone", "whoosh_air"}
-    assert bank["whoosh_blade"]["approved"] is False
-    assert {bank[i]["role"] for i in on} == set(sfx.ROLES)
+    assert on == {"impact_boom", "impact_stone"}
+    assert bank["whoosh_blade"]["approved"] is False and bank["whoosh_air"]["approved"] is False
+    assert {bank[i]["role"] for i in on} == {"impact"}
 
 
-def test_the_slash_never_airs_again(monkeypatch):
-    """A live edit picks only approved sounds; every day's whoosh is the air one."""
+def test_no_whoosh_airs_again(monkeypatch):
+    """A live edit picks only approved sounds: an impact every day, no whoosh."""
     monkeypatch.delenv("DRY_RUN", raising=False)
+    monkeypatch.delenv("REEL_REHEARSAL", raising=False)
     days = [f"2026-11-{d:02d}" for d in range(1, 31)]
-    assert {sfx.pick("whoosh", d)["id"] for d in days} == {"whoosh_air"}
+    assert {sfx.pick("whoosh", d) for d in days} == {None}
     assert {sfx.pick("impact", d)["id"] for d in days} == {"impact_boom", "impact_stone"}
+    cues = sfx.cues(4.0, "2026-11-01")
+    assert [round(t, 2) for _, t in cues] == [0.0] and cues[0][0].name.startswith("impact")
+    monkeypatch.setenv("DRY_RUN", "1")
+    monkeypatch.setenv("REEL_REHEARSAL", "1")                # a rehearsal is no different
+    assert [t for _, t in sfx.cues(4.0, "2026-11-01")] == [0.0]
 
 
 def test_the_poster_cannot_hang_on_its_install_step():
