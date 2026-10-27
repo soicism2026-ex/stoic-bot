@@ -29,7 +29,7 @@ def _wf(name):
 
 def test_plans_describe_sound_only_and_put_the_drop_where_an_edit_starts():
     plans = m.load_plans()
-    assert len(plans) == 10 and len({p["id"] for p in plans}) == 10
+    assert len(plans) >= 10 and len({p["id"] for p in plans}) == len(plans)
     bank_ids = {t["id"] for t in edit_music.load()}
     for p in plans:
         text = " ".join(c["text"] + " " + " ".join(c["positive_styles"] + c.get("negative_styles", []))
@@ -76,7 +76,7 @@ def test_request_body_conditions_only_the_first_chunk():
 # ------------------------------------------------------------ spend guard --
 
 def test_round_cost_counts_composing_and_reference_uploads():
-    plans = m.load_plans()
+    plans = m.load_plans()[:10]                                       # round 1
     secs = sum(m.plan_seconds(p) for p in plans) + 26 + 30            # two 26 s / 30 s references
     assert m.round_cost(plans) == round(secs / 60 * m.CREDITS_PER_MIN)
 
@@ -176,3 +176,17 @@ def test_the_sampler_can_be_rebuilt_without_spending():
     assert steps["Preflight (free)"]["if"] == "inputs.mode != 'sampler'"
     assert steps["Generate (encrypted, unapproved)"]["if"] == "inputs.mode == 'generate'"
     assert "inputs.mode == 'sampler'" in steps["Sampler, encrypted to the HQ session"]["if"]
+
+
+def test_round_3_follows_the_owners_ear():
+    """Owner 2026-10-27: 1 and 2 good (dark piano + bass drop / braams); 5 too
+    loud, 7 too hype, 9 way too much energy. Round 3 stays in that lane."""
+    r3 = [p for p in m.load_plans() if p.get("round") == 3]
+    assert len(r3) == 10
+    for p in r3:
+        styles = " ".join(" ".join(c["positive_styles"]) for c in p["chunks"]).lower()
+        neg = " ".join(" ".join(c.get("negative_styles", [])) for c in p["chunks"]).lower()
+        assert "piano" in styles and "dark" in styles, p["id"]
+        assert "hype" in neg and "organ" in neg and "bright synths" in neg, p["id"]
+    refs = {p["conditioning"]["track"] for p in r3 if p.get("conditioning")}
+    assert refs == {"el_bass_piano", "el_bass_felt_dark"}           # built on his two picks
