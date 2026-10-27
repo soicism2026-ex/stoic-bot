@@ -1339,5 +1339,1088 @@
    "prompt": "[Build] 5s: uplifting gospel inspired anthem instrumental, soulful Hammond organ, hand claps building, 124 BPM, G major, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: stomping kick drum and loud hand claps, triumphant brass stabs, tambourine, celebratory festival energy, full energy from the first downbeat, no breakdown, sparse top line that leaves room for a narrator, loud modern master (not: vocals, lyrics, spoken word, rap, sung words, voiceover, breakdown, quiet section, fade out) | [Lift] 12s: bigger stomp, brass and organ together (not: vocals, lyrics, spoken word, rap, sung words, voiceover, genre change) | [End] 5s: final stomp, organ swell, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
    "reference_audio": "none"
   }
+ },
+ {
+  "id": "el3_felt_cello",
+  "file": "assets/music/edit/el3_felt_cello.mp3.gpg",
+  "label": "Felt piano + cello + sub drop",
+  "style_of": "the owner's picks of 2026-10-27 (ElevenLabs 1 and 2)",
+  "start": 4.5,
+  "start_how": "drop (15.4 dB build-to-drop contrast)",
+  "duration": 40.0,
+  "approved": false,
+  "provenance": {
+   "model": "ElevenLabs Music v2.5 (music_v2_5)",
+   "song_id": "JNLNvTM4eXbkknSMAug9",
+   "seed": 3001,
+   "plan": [
+    {
+     "text": "[Build]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "dark cinematic instrumental",
+      "intimate felt piano motif",
+      "solo cello sustain",
+      "84 BPM",
+      "C minor",
+      "great production quality"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "drums at full power"
+     ]
+    },
+    {
+     "text": "[Drop]",
+     "duration_ms": 18000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "deep sub bass drop",
+      "slow pounding low drums",
+      "felt piano motif continues",
+      "cello and low strings swell",
+      "restrained power, not hype",
+      "sparse top line that leaves room for a narrator",
+      "warm, dark, cinematic mix"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "breakdown",
+      "fade out"
+     ]
+    },
+    {
+     "text": "[Lift]",
+     "duration_ms": 12000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "second wave, a little bigger",
+      "wordless low choir pad"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "genre change"
+     ]
+    },
+    {
+     "text": "[End]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "felt piano alone",
+      "sub bass tail",
+      "clean ending"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "new melody",
+      "abrupt cut"
+     ]
+    }
+   ],
+   "prompt": "[Build] 5s: dark cinematic instrumental, intimate felt piano motif, solo cello sustain, 84 BPM, C minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: deep sub bass drop, slow pounding low drums, felt piano motif continues, cello and low strings swell, restrained power, not hype, sparse top line that leaves room for a narrator, warm, dark, cinematic mix (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, breakdown, fade out) | [Lift] 12s: second wave, a little bigger, wordless low choir pad (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, genre change) | [End] 5s: felt piano alone, sub bass tail, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none",
+   "conditioning": null,
+   "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
+   "stored": "encrypted (src/vault.py)",
+   "words_heard": "",
+   "generated": "2026-10-27"
+  }
+ },
+ {
+  "id": "el3_grand_braam",
+  "file": "assets/music/edit/el3_grand_braam.mp3.gpg",
+  "label": "Grand piano + slow braams",
+  "style_of": "the owner's picks of 2026-10-27 (ElevenLabs 1 and 2)",
+  "start": 2.5,
+  "start_how": "drop (21.4 dB build-to-drop contrast)",
+  "duration": 40.0,
+  "approved": false,
+  "provenance": {
+   "model": "ElevenLabs Music v2.5 (music_v2_5)",
+   "song_id": "qtkC5TODA0AqGq39ZTt3",
+   "seed": 3002,
+   "plan": [
+    {
+     "text": "[Build]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "dark motivational cinematic instrumental",
+      "grand piano chords in the low register",
+      "slow riser",
+      "80 BPM",
+      "D minor",
+      "great production quality"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "drums at full power"
+     ]
+    },
+    {
+     "text": "[Drop]",
+     "duration_ms": 18000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "slow trailer braams",
+      "sub bass hits on the downbeat",
+      "grand piano melody over low strings",
+      "restrained power, not hype",
+      "sparse top line that leaves room for a narrator",
+      "warm, dark, cinematic mix"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "breakdown",
+      "fade out"
+     ]
+    },
+    {
+     "text": "[Lift]",
+     "duration_ms": 12000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "braams with distant taiko",
+      "tension held, never released fully"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "genre change"
+     ]
+    },
+    {
+     "text": "[End]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "last braam",
+      "piano echo",
+      "clean ending"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "new melody",
+      "abrupt cut"
+     ]
+    }
+   ],
+   "prompt": "[Build] 5s: dark motivational cinematic instrumental, grand piano chords in the low register, slow riser, 80 BPM, D minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: slow trailer braams, sub bass hits on the downbeat, grand piano melody over low strings, restrained power, not hype, sparse top line that leaves room for a narrator, warm, dark, cinematic mix (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, breakdown, fade out) | [Lift] 12s: braams with distant taiko, tension held, never released fully (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, genre change) | [End] 5s: last braam, piano echo, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none",
+   "conditioning": null,
+   "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
+   "stored": "encrypted (src/vault.py)",
+   "words_heard": "",
+   "generated": "2026-10-27"
+  }
+ },
+ {
+  "id": "el3_heartbeat",
+  "file": "assets/music/edit/el3_heartbeat.mp3.gpg",
+  "label": "Piano over a heartbeat pulse",
+  "style_of": "the owner's picks of 2026-10-27 (ElevenLabs 1 and 2)",
+  "start": 2.5,
+  "start_how": "drop (14.6 dB build-to-drop contrast)",
+  "duration": 40.0,
+  "approved": false,
+  "provenance": {
+   "model": "ElevenLabs Music v2.5 (music_v2_5)",
+   "song_id": "mFNQfbejFCNTbGB8NQ3X",
+   "seed": 3003,
+   "plan": [
+    {
+     "text": "[Build]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "dark minimal cinematic instrumental",
+      "lonely piano notes",
+      "soft heartbeat-like low pulse",
+      "72 BPM",
+      "A minor",
+      "great production quality"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "drums at full power"
+     ]
+    },
+    {
+     "text": "[Drop]",
+     "duration_ms": 18000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "heartbeat kick and sub bass",
+      "piano motif repeats with quiet determination",
+      "dark string pad",
+      "restrained power, not hype",
+      "sparse top line that leaves room for a narrator",
+      "warm, dark, cinematic mix"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "breakdown",
+      "fade out"
+     ]
+    },
+    {
+     "text": "[Lift]",
+     "duration_ms": 12000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "heartbeat a little stronger",
+      "low cello line joins"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "genre change"
+     ]
+    },
+    {
+     "text": "[End]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "heartbeat stops",
+      "piano decay",
+      "clean ending"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "new melody",
+      "abrupt cut"
+     ]
+    }
+   ],
+   "prompt": "[Build] 5s: dark minimal cinematic instrumental, lonely piano notes, soft heartbeat-like low pulse, 72 BPM, A minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: heartbeat kick and sub bass, piano motif repeats with quiet determination, dark string pad, restrained power, not hype, sparse top line that leaves room for a narrator, warm, dark, cinematic mix (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, breakdown, fade out) | [Lift] 12s: heartbeat a little stronger, low cello line joins (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, genre change) | [End] 5s: heartbeat stops, piano decay, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none",
+   "conditioning": null,
+   "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
+   "stored": "encrypted (src/vault.py)",
+   "words_heard": "",
+   "generated": "2026-10-27"
+  }
+ },
+ {
+  "id": "el3_taiko_distant",
+  "file": "assets/music/edit/el3_taiko_distant.mp3.gpg",
+  "label": "Felt piano + distant taiko",
+  "style_of": "the owner's picks of 2026-10-27 (ElevenLabs 1 and 2)",
+  "start": 2.5,
+  "start_how": "drop (18.4 dB build-to-drop contrast)",
+  "duration": 40.0,
+  "approved": false,
+  "provenance": {
+   "model": "ElevenLabs Music v2.5 (music_v2_5)",
+   "song_id": "9OcqJ7Q2vGy5OvwOapjN",
+   "seed": 3004,
+   "plan": [
+    {
+     "text": "[Build]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "dark cinematic instrumental",
+      "felt piano ostinato",
+      "distant thunder-like swell",
+      "88 BPM",
+      "E minor",
+      "great production quality"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "drums at full power"
+     ]
+    },
+    {
+     "text": "[Drop]",
+     "duration_ms": 18000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "distant taiko drums",
+      "deep sub bass",
+      "felt piano ostinato on top",
+      "low brass breath",
+      "restrained power, not hype",
+      "sparse top line that leaves room for a narrator",
+      "warm, dark, cinematic mix"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "breakdown",
+      "fade out"
+     ]
+    },
+    {
+     "text": "[Lift]",
+     "duration_ms": 12000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "taiko closer, still controlled",
+      "strings rise"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "genre change"
+     ]
+    },
+    {
+     "text": "[End]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "final low hit",
+      "reverb tail",
+      "clean ending"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "new melody",
+      "abrupt cut"
+     ]
+    }
+   ],
+   "prompt": "[Build] 5s: dark cinematic instrumental, felt piano ostinato, distant thunder-like swell, 88 BPM, E minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: distant taiko drums, deep sub bass, felt piano ostinato on top, low brass breath, restrained power, not hype, sparse top line that leaves room for a narrator, warm, dark, cinematic mix (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, breakdown, fade out) | [Lift] 12s: taiko closer, still controlled, strings rise (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, genre change) | [End] 5s: final low hit, reverb tail, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none",
+   "conditioning": null,
+   "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
+   "stored": "encrypted (src/vault.py)",
+   "words_heard": "",
+   "generated": "2026-10-27"
+  }
+ },
+ {
+  "id": "el3_upright_tape",
+  "file": "assets/music/edit/el3_upright_tape.mp3.gpg",
+  "label": "Warm upright piano + bass drop",
+  "style_of": "the owner's picks of 2026-10-27 (ElevenLabs 1 and 2)",
+  "start": 24.0,
+  "start_how": "drop (3.1 dB build-to-drop contrast)",
+  "duration": 40.0,
+  "approved": false,
+  "provenance": {
+   "model": "ElevenLabs Music v2.5 (music_v2_5)",
+   "song_id": "ddzXf3PS1iocTq0xXd3B",
+   "seed": 3005,
+   "plan": [
+    {
+     "text": "[Build]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "dark warm cinematic instrumental",
+      "warm upright piano with tape texture",
+      "soft vinyl-free room tone",
+      "86 BPM",
+      "G minor",
+      "great production quality"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "drums at full power"
+     ]
+    },
+    {
+     "text": "[Drop]",
+     "duration_ms": 18000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "round sub bass drop",
+      "soft trailer impacts every two bars",
+      "upright piano motif",
+      "dark warm pads",
+      "restrained power, not hype",
+      "sparse top line that leaves room for a narrator",
+      "warm, dark, cinematic mix"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "breakdown",
+      "fade out"
+     ]
+    },
+    {
+     "text": "[Lift]",
+     "duration_ms": 12000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "impacts every bar",
+      "piano an octave higher, quietly"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "genre change"
+     ]
+    },
+    {
+     "text": "[End]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "piano alone",
+      "warm tail",
+      "clean ending"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "new melody",
+      "abrupt cut"
+     ]
+    }
+   ],
+   "prompt": "[Build] 5s: dark warm cinematic instrumental, warm upright piano with tape texture, soft vinyl-free room tone, 86 BPM, G minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: round sub bass drop, soft trailer impacts every two bars, upright piano motif, dark warm pads, restrained power, not hype, sparse top line that leaves room for a narrator, warm, dark, cinematic mix (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, breakdown, fade out) | [Lift] 12s: impacts every bar, piano an octave higher, quietly (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, genre change) | [End] 5s: piano alone, warm tail, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none",
+   "conditioning": null,
+   "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
+   "stored": "encrypted (src/vault.py)",
+   "words_heard": "",
+   "generated": "2026-10-27"
+  }
+ },
+ {
+  "id": "el3_choir_braam",
+  "file": "assets/music/edit/el3_choir_braam.mp3.gpg",
+  "label": "Dark piano + wordless choir + braams",
+  "style_of": "the owner's picks of 2026-10-27 (ElevenLabs 1 and 2)",
+  "start": 3.0,
+  "start_how": "drop (4.6 dB build-to-drop contrast)",
+  "duration": 40.0,
+  "approved": false,
+  "provenance": {
+   "model": "ElevenLabs Music v2.5 (music_v2_5)",
+   "song_id": "uT8MgdpYXnL0q0Lnpqjh",
+   "seed": 3006,
+   "plan": [
+    {
+     "text": "[Build]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "dark cinematic instrumental",
+      "sparse piano chords",
+      "wordless low choir humming",
+      "78 BPM",
+      "F minor",
+      "great production quality"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "drums at full power"
+     ]
+    },
+    {
+     "text": "[Drop]",
+     "duration_ms": 18000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "low braams",
+      "sub bass",
+      "piano motif over the choir pad",
+      "slow and heavy",
+      "restrained power, not hype",
+      "sparse top line that leaves room for a narrator",
+      "warm, dark, cinematic mix"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "breakdown",
+      "fade out"
+     ]
+    },
+    {
+     "text": "[Lift]",
+     "duration_ms": 12000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "choir swells, piano steady",
+      "braams spaced wide"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "genre change"
+     ]
+    },
+    {
+     "text": "[End]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "choir fades",
+      "piano last note",
+      "clean ending"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "new melody",
+      "abrupt cut"
+     ]
+    }
+   ],
+   "prompt": "[Build] 5s: dark cinematic instrumental, sparse piano chords, wordless low choir humming, 78 BPM, F minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: low braams, sub bass, piano motif over the choir pad, slow and heavy, restrained power, not hype, sparse top line that leaves room for a narrator, warm, dark, cinematic mix (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, breakdown, fade out) | [Lift] 12s: choir swells, piano steady, braams spaced wide (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, genre change) | [End] 5s: choir fades, piano last note, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none",
+   "conditioning": null,
+   "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
+   "stored": "encrypted (src/vault.py)",
+   "words_heard": "",
+   "generated": "2026-10-27"
+  }
+ },
+ {
+  "id": "el3_strings_ostinato",
+  "file": "assets/music/edit/el3_strings_ostinato.mp3.gpg",
+  "label": "Piano + low string ostinato",
+  "style_of": "the owner's picks of 2026-10-27 (ElevenLabs 1 and 2)",
+  "start": 3.0,
+  "start_how": "drop (9.3 dB build-to-drop contrast)",
+  "duration": 40.0,
+  "approved": false,
+  "provenance": {
+   "model": "ElevenLabs Music v2.5 (music_v2_5)",
+   "song_id": "pexNru5LpqzoQz6OGZgT",
+   "seed": 3007,
+   "plan": [
+    {
+     "text": "[Build]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "dark motivational cinematic instrumental",
+      "piano motif",
+      "low string ostinato starting quietly",
+      "92 BPM",
+      "B minor",
+      "great production quality"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "drums at full power"
+     ]
+    },
+    {
+     "text": "[Drop]",
+     "duration_ms": 18000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "sub bass drop",
+      "driving low string ostinato",
+      "piano motif on top",
+      "deep impacts every bar",
+      "restrained power, not hype",
+      "sparse top line that leaves room for a narrator",
+      "warm, dark, cinematic mix"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "breakdown",
+      "fade out"
+     ]
+    },
+    {
+     "text": "[Lift]",
+     "duration_ms": 12000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "ostinato fuller, still dark",
+      "piano doubles in octaves"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "genre change"
+     ]
+    },
+    {
+     "text": "[End]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "last impact",
+      "strings ring out",
+      "clean ending"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "new melody",
+      "abrupt cut"
+     ]
+    }
+   ],
+   "prompt": "[Build] 5s: dark motivational cinematic instrumental, piano motif, low string ostinato starting quietly, 92 BPM, B minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: sub bass drop, driving low string ostinato, piano motif on top, deep impacts every bar, restrained power, not hype, sparse top line that leaves room for a narrator, warm, dark, cinematic mix (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, breakdown, fade out) | [Lift] 12s: ostinato fuller, still dark, piano doubles in octaves (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, genre change) | [End] 5s: last impact, strings ring out, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none",
+   "conditioning": null,
+   "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
+   "stored": "encrypted (src/vault.py)",
+   "words_heard": "",
+   "generated": "2026-10-27"
+  }
+ },
+ {
+  "id": "el3_minimal_sub",
+  "file": "assets/music/edit/el3_minimal_sub.mp3.gpg",
+  "label": "Minimal piano + sub bass",
+  "style_of": "the owner's picks of 2026-10-27 (ElevenLabs 1 and 2)",
+  "start": 10.5,
+  "start_how": "drop (22.2 dB build-to-drop contrast)",
+  "duration": 40.0,
+  "approved": false,
+  "provenance": {
+   "model": "ElevenLabs Music v2.5 (music_v2_5)",
+   "song_id": "U8QyX4m9PtGqTjlOSYzg",
+   "seed": 3008,
+   "plan": [
+    {
+     "text": "[Build]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "dark minimal cinematic instrumental",
+      "three-note piano motif",
+      "near silence around it",
+      "76 BPM",
+      "C sharp minor",
+      "great production quality"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "drums at full power"
+     ]
+    },
+    {
+     "text": "[Drop]",
+     "duration_ms": 18000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "deep sub bass drop",
+      "minimal low drums",
+      "piano motif with space between notes",
+      "dark atmosphere",
+      "restrained power, not hype",
+      "sparse top line that leaves room for a narrator",
+      "warm, dark, cinematic mix"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "breakdown",
+      "fade out"
+     ]
+    },
+    {
+     "text": "[Lift]",
+     "duration_ms": 12000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "one more layer of low strings",
+      "motif repeats with conviction"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "genre change"
+     ]
+    },
+    {
+     "text": "[End]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "motif fades",
+      "sub tail",
+      "clean ending"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "new melody",
+      "abrupt cut"
+     ]
+    }
+   ],
+   "prompt": "[Build] 5s: dark minimal cinematic instrumental, three-note piano motif, near silence around it, 76 BPM, C sharp minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: deep sub bass drop, minimal low drums, piano motif with space between notes, dark atmosphere, restrained power, not hype, sparse top line that leaves room for a narrator, warm, dark, cinematic mix (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, breakdown, fade out) | [Lift] 12s: one more layer of low strings, motif repeats with conviction (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, genre change) | [End] 5s: motif fades, sub tail, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "none",
+   "conditioning": null,
+   "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
+   "stored": "encrypted (src/vault.py)",
+   "words_heard": "",
+   "generated": "2026-10-27"
+  }
+ },
+ {
+  "id": "el3_more_like_1",
+  "file": "assets/music/edit/el3_more_like_1.mp3.gpg",
+  "label": "More like new track 1",
+  "style_of": "the owner's picks of 2026-10-27 (ElevenLabs 1 and 2)",
+  "start": 2.5,
+  "start_how": "drop (11.4 dB build-to-drop contrast)",
+  "duration": 40.0,
+  "approved": false,
+  "provenance": {
+   "model": "ElevenLabs Music v2.5 (music_v2_5)",
+   "song_id": "xwicoU7fY77y2o3PcwGg",
+   "seed": 3009,
+   "plan": [
+    {
+     "text": "[Build]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "epic cinematic hybrid instrumental",
+      "emotional piano ostinato",
+      "riser",
+      "88 BPM",
+      "C minor",
+      "great production quality"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "drums at full power"
+     ]
+    },
+    {
+     "text": "[Drop]",
+     "duration_ms": 18000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "massive sub bass drop",
+      "deep trailer impacts",
+      "piano ostinato continues",
+      "full strings",
+      "restrained power, not hype",
+      "sparse top line that leaves room for a narrator",
+      "warm, dark, cinematic mix"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "breakdown",
+      "fade out"
+     ]
+    },
+    {
+     "text": "[Lift]",
+     "duration_ms": 12000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "second drop",
+      "low brass swells"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "hype",
+      "edm",
+      "bright synths",
+      "organ",
+      "festival energy",
+      "harsh distortion",
+      "genre change"
+     ]
+    },
+    {
+     "text": "[End]",
+     "duration_ms": 5000,
+     "context_adherence": "high",
+     "positive_styles": [
+      "final impact",
+      "clean ending"
+     ],
+     "negative_styles": [
+      "vocals",
+      "lyrics",
+      "spoken word",
+      "rap",
+      "sung words",
+      "voiceover",
+      "new melody",
+      "abrupt cut"
+     ]
+    }
+   ],
+   "prompt": "[Build] 5s: epic cinematic hybrid instrumental, emotional piano ostinato, riser, 88 BPM, C minor, great production quality (not: vocals, lyrics, spoken word, rap, sung words, voiceover, drums at full power) | [Drop] 18s: massive sub bass drop, deep trailer impacts, piano ostinato continues, full strings, restrained power, not hype, sparse top line that leaves room for a narrator, warm, dark, cinematic mix (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, breakdown, fade out) | [Lift] 12s: second drop, low brass swells (not: vocals, lyrics, spoken word, rap, sung words, voiceover, hype, edm, bright synths, organ, festival energy, harsh distortion, genre change) | [End] 5s: final impact, clean ending (not: vocals, lyrics, spoken word, rap, sung words, voiceover, new melody, abrupt cut)",
+   "reference_audio": "own:el_bass_piano",
+   "conditioning": {
+    "track": "el_bass_piano",
+    "start_ms": 8000,
+    "end_ms": 38000,
+    "strength": "low",
+    "song_id": "aZ9rZnLaoVKyhRvRDDej_upload"
+   },
+   "license": "ElevenLabs Music Terms (updated 2026-10-09), starter plan: online commercial use permitted, no attribution required; stored encrypted, never made available to third parties (section 4.2)",
+   "stored": "encrypted (src/vault.py)",
+   "words_heard": "",
+   "generated": "2026-10-27"
+  }
  }
 ]
