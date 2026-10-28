@@ -1,11 +1,12 @@
 {
- "checked": "2026-10-28T00:44:00Z",
+ "checked": "2026-10-28T00:47:20Z",
  "ok": false,
- "problem": "Instagram refused the key (Invalid OAuth access token - Cannot parse access token). It needs a new one.",
+ "problem": "Couldn't check Instagram: IG_USER_ID isn't a plain number.",
  "key": {
   "fingerprint": "18ac3e7343f0",
   "firstSeen": "2026-10-28",
   "kind": "facebook",
   "source": "github"
- }
+ },
+ "advice": "IG_USER_ID in GitHub isn't a plain number (it looks pasted across lines). The new key doesn't need it: delete it."
 }
