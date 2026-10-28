@@ -397,6 +397,7 @@ def test_a_junk_ig_user_id_is_flagged_for_deletion(data, monkeypatch):
     with patch.object(ig, "account", return_value=_acct()):
         echo.shift("check", now=NOW)
     assert "delete it" in json.loads(echo.STATUS.read_text())["advice"]
-    with pytest.raises(ig.IGError, match="plain number"):
+    with pytest.raises(ig.IGError, match="plain number") as e:
         ig.account("EAAB123", "e\nd")
+    assert echo.plain(e.value).startswith("The Instagram key in GitHub is the old kind")
 

@@ -108,6 +108,9 @@ def plain(e: ig.IGError) -> str:
     """Meta's refusal in words the owner reads in the HQ."""
     if e.key_rejected:
         return f"Instagram refused the key ({e.message}). It needs a new one."
+    if "IG_USER_ID" in e.message:
+        return ("The Instagram key in GitHub is the old kind, and the IG_USER_ID it needs is broken. "
+                "A new key fixes both: the steps are under Needs your call.")
     if e.status == 0:
         return f"Couldn't check Instagram: {e.message}."
     return f"Instagram refused the key check: {e.message}"
