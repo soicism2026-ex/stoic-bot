@@ -1,0 +1,72 @@
+# Echo, the Instagram crew member (owner 2026-10-28: "lets work on the
+# instagram account now ... and get people to run that aswell").
+#
+# After every Producer run, Echo posts the Short it uploaded to Instagram as a
+# Reel (daily-short hands it over as the posted-short artifact); once a day he
+# keeps the key alive (an Instagram key lasts 60 days; src/ig_key.py) and
+# pulls followers and each Reel's views. He writes data/ig_*.{csv,json}, which
+# the HQ shows. Instagram has its own job so it can never slow down, break or
+# leak into the YouTube one. scripts/echo.py says what each step does.
+#
+# The key: IG_ACCESS_TOKEN, made by the owner in Meta's App Dashboard
+# (Instagram > API setup with Instagram login > Generate token) and pasted
+# into GitHub as ONE line. IG_USER_ID is only needed for an older Facebook
+# Login key.
+name: instagram
+on:
+  workflow_run:
+    workflows: [daily-short]
+    types: [completed]
+  schedule:
+    - cron: "20 12 * * *"     # the daily backstop: key, numbers, catch-up
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: run = a full shift (post what's waiting, key, numbers); check = the key and the account only
+        type: choice
+        options: [run, check]
+        default: run
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: instagram
+  cancel-in-progress: false
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install requests
+        run: pip install "requests>=2.31.0,<3"
+
+      - name: Echo's shift
+        env:
+          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
+          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          GITHUB_TOKEN: ${{ github.token }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ECHO_MODE: ${{ inputs.mode || 'run' }}
+        run: python scripts/echo.py
+
+      - name: Commit Echo's log
+        if: always()
+        run: |
+          git config user.name "stoic-bot"
+          git config user.email "bot@users.noreply.github.com"
+          for f in data/ig_status.json data/ig_posts.csv data/ig_stats.csv data/ig_reels.csv; do
+            if [ -f "$f" ]; then git add "$f"; fi
+          done
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "instagram: Echo's shift [skip ci]"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1

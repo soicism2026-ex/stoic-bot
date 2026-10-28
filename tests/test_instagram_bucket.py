@@ -41,10 +41,10 @@ def test_bad_credentials_skip_before_any_upload(tmp_path):
     video = tmp_path / "v.mp4"
     video.write_bytes(b"x")
     rejected = _Resp(ok=False, status=400,
-                     payload={"error": {"message": "Invalid OAuth access token"}})
-    with patch.object(ig.requests, "get", return_value=rejected), \
+                     payload={"error": {"message": "Invalid OAuth access token", "code": 190}})
+    with patch.object(ig.requests, "request", return_value=rejected), \
          patch.object(ig, "_host_via_github_release") as host:
-        out = ig.publish_reel(video, "caption", ["#a"])
+        out = ig.publish_reel(video, "caption", token="IGtoken")
     host.assert_not_called()
     assert out["status"] == "skipped"
 
@@ -53,9 +53,9 @@ def test_credential_check_failure_fails_closed(tmp_path):
     """A network blip must skip, not upload on the assumption it is fine."""
     video = tmp_path / "v.mp4"
     video.write_bytes(b"x")
-    with patch.object(ig.requests, "get", side_effect=OSError("dns")), \
+    with patch.object(ig.requests, "request", side_effect=ig.requests.ConnectionError("dns")), \
          patch.object(ig, "_host_via_github_release") as host:
-        out = ig.publish_reel(video, "caption", [])
+        out = ig.publish_reel(video, "caption", token="IGtoken")
     host.assert_not_called()
     assert out["status"] == "skipped"
 
@@ -66,7 +66,7 @@ def test_missing_credentials_still_skip(tmp_path, monkeypatch):
     video = tmp_path / "v.mp4"
     video.write_bytes(b"x")
     with patch.object(ig, "_host_via_github_release") as host:
-        out = ig.publish_reel(video, "c", [])
+        out = ig.publish_reel(video, "c")
     host.assert_not_called()
     assert out["status"] == "skipped"
 
@@ -77,16 +77,16 @@ def test_good_credentials_proceed_to_upload(tmp_path, monkeypatch):
     monkeypatch.setenv("IG_USER_ID", "42")
     video = tmp_path / "v.mp4"
     video.write_bytes(b"x")
-    with patch.object(ig.requests, "get", return_value=_Resp(payload={"id": "42"})), \
+    with patch.object(ig.requests, "request", return_value=_Resp(payload={"id": "42"})), \
          patch.object(ig, "_host_via_github_release",
                       return_value=("http://u", "o/r", 7)) as host, \
          patch.object(ig, "_create_container", return_value="c1"), \
          patch.object(ig, "_wait_until_ready", return_value=True), \
          patch.object(ig, "_publish", return_value="m1"), \
          patch.object(ig, "_delete_asset"):
-        out = ig.publish_reel(video, "c", [])
+        out = ig.publish_reel(video, "c")
     host.assert_called_once()
-    assert out == {"status": "published", "media_id": "m1"}
+    assert out == {"status": "published", "media_id": "m1", "permalink": None}
 
 
 # ------------------------------------------------- asset cleanup
@@ -100,7 +100,7 @@ def _run_with_outcome(video, monkeypatch, **overrides):
         "_publish": "m1",
     }
     stack.update(overrides)
-    with patch.object(ig.requests, "get", return_value=_Resp(payload={"id": "42"})), \
+    with patch.object(ig.requests, "request", return_value=_Resp(payload={"id": "42"})), \
          patch.object(ig, "_host_via_github_release",
                       return_value=("http://u", "o/r", 7)), \
          patch.object(ig, "_delete_asset") as dele:
@@ -110,7 +110,7 @@ def _run_with_outcome(video, monkeypatch, **overrides):
         for c in ctxs:
             c.start()
         try:
-            out = ig.publish_reel(video, "c", [])
+            out = ig.publish_reel(video, "c")
         finally:
             for c in ctxs:
                 c.stop()

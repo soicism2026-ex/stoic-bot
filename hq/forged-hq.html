@@ -352,6 +352,10 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
         <h2 class="eyebrow" id="h-spark">Views per day, last 30 days</h2>
         <div class="chart" id="spark"><p class="sub">No daily numbers yet.</p></div>
       </section>
+      <section class="block" aria-labelledby="h-ig">
+        <h2 class="eyebrow" id="h-ig">Instagram</h2>
+        <div id="ig"><p class="empty">Echo reports here once Instagram is connected.</p></div>
+      </section>
       <section class="block" aria-labelledby="h-posts">
         <h2 class="eyebrow" id="h-posts">Latest Shorts</h2>
         <div id="posts"><p class="empty">No posts yet.</p></div>
@@ -499,6 +503,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     herald: ["................",".....kkkkkk.....","....kllllllk....","....kllllllk....","....klsssslk..kk","....ksessesk.kgg","....kssssssk.kgg","....kssSSssk.kgk","...kooooooookgk.","...koooooooogk..","...kooooooook...","...ksoooooosk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
     librarian: ["................",".....kkkkkk.....","....knnnnnnk....","....knnnnnnk....","....knssssnk....","....ksessesk....","....kssssssk....","....kssSSssk....","...kLllllllLk...","..kwwwwwwwwwwk..","..kWwkkwkwkwWk..","..kwwwwwwwwwwk..","...kLllllllLk...","....kllkkllk....","....knnkknnk....",".....kk..kk....."],
     tactician: ["................",".....kkkkkk.....","....kmmmmmmk....","....kmmmmmmk....","....kmssssmk....","....ksessesk....","....kmssssmk....","....kmmmmmmk....","...kbbbbbbbbk...","..kyykyykbbbbk..","..kykyykybbbbk..","..kyykyykbbbbk..","...kBbbbbbbBk...","....kbbkkbbk....","....knnkknnk....",".....kk..kk....."],
+    echo: ["................",".....kkkkkk.....","....kooooook....","...kooooooook...","...koossssook...","...kosessesok...","...kossssssok...","...kossSSssok...","...kopppppppk...","..kooppyppppPk..","..kopppyppppPk..","..kspppppyppsk..","...kppppppppk...","....kppkkppk....","....knnkknnk....",".....kk..kk....."],
   };
   const CREW = {
     chief: { name: "Claude", title: "Chief of Staff", sprite: "chief", lines: {
@@ -539,6 +544,15 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       waiting: "My songs are waiting for your pick, under Needs your call.",
       oncall: "Lyre's tuned. I write music when Claude asks.",
       failed: "Snapped a string on the last song." } },
+    // Echo runs Instagram (owner 2026-10-28: "get people to run that aswell"):
+    // posts every Short there as a Reel, keeps the key alive, brings the numbers.
+    instagram: { name: "Echo", title: "Instagram", sprite: "echo", lines: {
+      working: "Posting the new Short to Instagram.",
+      done: "Every Short is on Instagram too. Next check {next}.",
+      offduty: "Instagram is up to date. Next check {next}.",
+      oncall: "Instagram is up to date.",
+      waiting: "I need a working Instagram key from you. The steps are under Needs your call.",
+      failed: "Instagram won't let me in. It needs a new key." } },
     librarian: { name: "Varro", title: "Librarian", sprite: "librarian", lines: {
       working: "Restocking the quote shelf from the classics.",
       done: "{days} days of checked quotes on the shelf. Next restock {next}.",
@@ -682,7 +696,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       if (status === "idle" && shiftDone(b)) { status = "done"; shift = SHIFT_PILL[b.id] || "Done for today"; }
       if (status === "idle") status = b.next ? "offduty" : "oncall";
       const waitingOn = asksFor(b.id);
-      if (waitingOn.length && ["offduty", "oncall", "done"].includes(status)) { status = "waiting"; shift = ""; }
+      if (waitingOn.length && ["offduty", "oncall", "done", "failed"].includes(status)) { status = "waiting"; shift = ""; }
       const helping = CREW[crew] && CREW[crew].name ? onShift(CREW[crew].name) : null;
       if (helping && status !== "working") { status = "working"; shift = ""; }
       let facts = b.note || "";
@@ -957,7 +971,27 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     }
   }
 
+  // Echo's numbers (scripts/hq_snapshot.py instagram()): followers, Reels and
+  // their views, or what blocks him, in the owner's words.
+  function drawInstagram() {
+    const g = S.studio && S.studio.instagram, el = $("#ig");
+    if (!el) return;
+    if (!g) { el.innerHTML = `<p class="empty">Echo reports here once Instagram is connected.</p>`; return; }
+    if (!g.ok) { el.innerHTML = `<p class="sub">${esc(g.problem || "Echo can't reach Instagram yet.")}</p>`; return; }
+    const tile = (k, v, d, up) => `<div class="kpi"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span>${d ? `<span class="d ${up ? "up" : ""}">${esc(d)}</span>` : ""}</div>`;
+    const dF = g.followers != null && g.followersWeekAgo != null ? g.followers - g.followersWeekAgo : null;
+    const u = g.lastReel && safeUrl(g.lastReel.permalink);
+    el.innerHTML = `<div class="kpis">${[
+      tile(g.username ? "@" + g.username : "Followers", g.followers != null ? nf.format(g.followers) : "–", dF != null ? (dF >= 0 ? "+" : "") + dF + " this week" : "followers", dF > 0),
+      tile("Reels posted", nf.format(g.reels || 0), "by Echo"),
+      tile("Reel views, 7 days", g.views7d != null ? nf.format(g.views7d) : "–", "Reels from the last 7 days"),
+    ].join("")}</div>` +
+      (u ? `<p class="sub"><a href="${esc(u)}" target="_blank" rel="noopener">Latest Reel</a>${g.lastReel.date ? " · " + esc(dayName(g.lastReel.date + "T12:00:00")) : ""}</p>` : "") +
+      (g.numbersProblem ? `<p class="sub">${esc(g.numbersProblem)}</p>` : "");
+  }
+
   function drawChannel() {
+    drawInstagram();
     const c = S.studio && S.studio.channel;
     if (!c || !c.subs) return;
     const dSubs = c.subsWeekAgo != null ? c.subs - c.subsWeekAgo : null;

@@ -72,8 +72,6 @@ jobs:
           # also set, and every failure falls back to the stock chain.
           HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}
           REEL_KLING_BG: ${{ vars.REEL_KLING_BG }}
-          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: python scripts/check_secrets.py
@@ -195,11 +193,10 @@ jobs:
           REEL_KLING_BG: ${{ vars.REEL_KLING_BG }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
-          # Instagram cross-post (optional — pipeline skips if unset).
-          # IG_ACCESS_TOKEN: long-lived token for an IG Professional account.
-          # IG_USER_ID: the Instagram Business account id (numeric).
-          IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          # Instagram is Echo's job since 2026-10-28 (instagram.yml): this run
+          # hands each upload over (the posted-short artifact below) and never
+          # reads the Instagram secrets. While it did, a key pasted across
+          # several lines made GitHub blank every "e" and "d" in these logs.
           # Product promo — edit these to update copy without touching code.
           # Set PROMO_ENABLED to "0" to disable all promo behaviour.
           PROMO_ENABLED: "1"
@@ -261,6 +258,20 @@ jobs:
           # clone a specific voice.
           REPLICATE_API_TOKEN: ${{ secrets.REPLICATE_API_TOKEN }}
         run: python scripts/daily_post.py
+
+      # Echo (instagram.yml) posts each new Short to Instagram from this hand-
+      # over: the uploaded video and its Instagram caption, one folder per
+      # upload (scripts/daily_post.py _hand_to_echo). Kept 3 days so Echo can
+      # catch up when Instagram was down or the key was being replaced.
+      - name: Hand the upload to Echo (Instagram)
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: posted-short
+          path: data/posted/
+          if-no-files-found: ignore
+          retention-days: 3
 
       - name: Fetch analytics
         env:

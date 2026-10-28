@@ -95,7 +95,9 @@ After the main post loop, the workflow runs:
 | `src/promo.py` | Configurable CTA injection into description + comment. All copy in env vars. Toggle with `PROMO_ENABLED`. |
 | `src/analytics.py` | Pulls YouTube stats to `data/analytics.csv`. |
 | `src/logbook.py` | Appends each post to `data/posts.csv`. |
-| `src/publish_instagram.py` | Cross-posts to Instagram Reels via Meta Graph API. Requires `IG_ACCESS_TOKEN` + `IG_USER_ID`. Currently skipped: since 2026-10-21 the `IG_ACCESS_TOKEN` secret holds a malformed multi-line value (Graph API: "Cannot parse access token"). Its single-letter lines make GitHub mask every `e` and `d` in daily-short logs (logs of workflows that don't read the IG secrets are clean), so read those logs with that in mind. Fix = the owner re-pastes a valid long-lived token as one line, or deletes the secret. |
+| `src/publish_instagram.py` | Echo's hands on Instagram: posts a rendered Short as a Reel (Graph API: key check FIRST, host the MP4 as a public release asset, REELS container, wait, publish, delete the hosted copy on every path). Two key kinds by prefix: `IG...` = Instagram Login (graph.instagram.com, account from `/me`, no `IG_USER_ID`), anything else = the old Facebook Login (graph.facebook.com + `IG_USER_ID`). `caption()` = hook, quote with its source, a follow line, the CC BY credit when Kevin MacLeod played, at most 5 hashtags (Instagram's cap since Dec 2025), no `#shorts`, no links. Errors never carry the key (requests puts the URL in its exception text). |
+| `scripts/echo.py` | Echo, the Instagram crew member (owner 2026-10-28: "lets work on the instagram account now ... and get people to run that aswell"). One shift (`instagram.yml`): check the key (`problem_with` catches one pasted across lines, the 10-21 failure), post the oldest Short from the last 36 h that isn't on Instagram yet (one per shift, 3 tries each), keep the key alive, pull followers and each Reel's views/reach once a day. Writes `data/ig_status.json` (the HQ's view, never the key), `ig_posts.csv`, `ig_stats.csv`, `ig_reels.csv`. Exit 0 when the owner must act (no key, refused key: the HQ asks him), 1 when a post failed with a working key. `check` = key and account only. Tests: `tests/test_echo.py`. |
+| `src/ig_key.py` | Keeps Echo's key alive: an Instagram key lasts 60 days and is refreshed weekly (`due`: never on its first day, never twice a day). The owner's `IG_ACCESS_TOKEN` is the SEED; if Meta returns a different string, the new key is kept in the `echo-key` release as one file encrypted with the seed (AES-256, `src/vault.py`), useless without the GitHub secret, and nothing secret enters git. A new seed from the owner restarts the chain. Every key not from the secret store goes through `::add-mask::`; status files hold a 12-char fingerprint, never a key. |
 | `scripts/daily_post.py` | Main orchestrator. Self-healing retry loop. Backup bank logic. |
 | `scripts/qa_check.py` | Video QA: frozen frames, audio desync, contrast, safe-zone clipping. Returns pass/fail + severity. |
 | `scripts/reply_to_comments.py` | Auto-replies to best viewer comments. Filters own channel by `videoOwnerChannelId == authorChannelId` (channel ID comparison, not display name). Max 5 replies/run. Receptivity screen (`_is_receptive`, Haiku + `_is_dismissive` keyword prefilter) engages ONLY viewers who genuinely connect with the message — skips trolls/mockery/bad-faith to build community and avoid amplifying detractors; fails closed. |
@@ -129,6 +131,7 @@ After the main post loop, the workflow runs:
 | `make-sfx.yml` | manual | Generates the ElevenLabs sound effects and commits them UNAPPROVED |
 | `make-eleven-music.yml` | manual | Orpheus: `preflight` (free) or `generate` (ElevenLabs Music, ~6.8k credits for 10 tracks): commits the tracks encrypted and unapproved, then puts a numbered sampler, encrypted to the HQ session's one-time public key (`recipient` input, base64), in the `music-sampler` release. Plaintext audio never leaves the runner |
 | `make-music.yml` | manual | One parallel job per style: generates original edit tracks on free runners, commits them UNAPPROVED, attaches a sampler video |
+| `instagram.yml` | after each daily-short run, 12:20 UTC daily, manual | Echo (`scripts/echo.py`): posts each new Short to Instagram from the Producer's `posted-short` artifact (daily-short uploads `data/posted/<video id>/` = the video + its Instagram caption, kept 3 days), keeps the key alive, pulls Instagram's numbers, commits `data/ig_*`. Manual `mode: check` = key + account only. The Producer no longer reads any Instagram secret. |
 | `hq-status.yml` | whenever a bot starts or finishes | Publishes the bots' latest runs to the `hq-status` branch (one force-pushed file) for the HQ app: the HQ sync session has no GitHub API access but can read it over git |
 | `auto-improve.yaml` | cron daily 06:00 UTC | Continuous improvement loop: runs `improve_loop.py` to pick a data-driven focus, feeds the output prompt to Claude Code Action, Claude implements the change and commits directly to main |
 
@@ -150,8 +153,8 @@ After the main post loop, the workflow runs:
 | `REPLICATE_API_TOKEN` | tts.py — Chatterbox voice (primary; open-source, beats ElevenLabs in blind tests, pay-per-second) |
 | `OPENAI_API_KEY` | imagegen.py — activates AI-generated backgrounds (optional, paid) |
 | `MUSIC_KEY` | src/vault.py: decrypts the ElevenLabs edit tracks (`*.mp3.gpg`). A passphrase the owner made up himself; nobody else ever sees it. daily-short, edit-preview, repost, make-eleven-music |
-| `IG_ACCESS_TOKEN` | publish_instagram.py (optional) |
-| `IG_USER_ID` | publish_instagram.py (optional) |
+| `IG_ACCESS_TOKEN` | Echo (`instagram.yml` only). The owner makes it in Meta's App Dashboard: Instagram > API setup with Instagram login > Generate access tokens > Add account > Generate token (starts `IG`), pasted as ONE line. Echo refreshes it (`src/ig_key.py`). The `asks/instagram-key` HQ ask holds the steps. |
+| `IG_USER_ID` | Only for an old Facebook Login key; an `IG...` key finds its account itself. |
 
 Never commit secrets. They exist only in GitHub Actions secrets.
 
@@ -200,6 +203,8 @@ Thumbnail: 1080×1920 JPEG. Hook text at 130px all-caps (last line in gold #FFB8
 | `data/replied_comments.csv` | Comment IDs the bot has already replied to |
 | `data/improve_state.json` | Improvement loop memory: iteration count, current focus, focus history with before/after metrics and verdicts, metrics snapshot at each focus start |
 | `data/edit_music.json` | Edit music bank: file, drop start, label, the song whose style it follows, provenance (model, prompt, seeds, date) and the owner's `approved` flag. Approving a track = setting it `true`. |
+| `data/ig_status.json` | Echo's last shift: ok/problem (in the owner's words), the account (@username, followers), the key's source, first-seen, refresh and expiry dates (no key), the last Reel. The HQ's Echo card and Instagram block read it via `hq_snapshot.instagram()`. |
+| `data/ig_posts.csv` / `ig_stats.csv` / `ig_reels.csv` | Every Instagram attempt (YouTube id, Reel id, permalink, status); followers by day; each Reel's views, reach, likes, comments, shares, saves by day. |
 | `data/sfx.json` | Sound-effect bank: id, role (impact/whoosh), file, label, provenance (model, prompt, settings, date, licence) and the owner's `approved` flag. |
 | `data/edit_music_styles.json` | The 9 style descriptions (one per song the owner named). Sound only: tests fail if a prompt names a song or artist. |
 | `data/costs.json` | Editable money registry: subscriptions (Claude, ElevenLabs, API estimates), one-time purchases, free services. ASSUMED/ESTIMATE notes flag guessed numbers. Feeds `scripts/cost_report.py`. |

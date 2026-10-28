@@ -1468,3 +1468,28 @@ that story must always be captioned "recorded in the Historia Augusta", never
   the bed loops, so it used to restart at the drop in the last second), and
   Apelles re-rehearses when the next Short's planned music or sounds change,
   not only when its quote does.
+- **2026-10-28 — INSTAGRAM: Echo runs it.** Owner, in the HQ: *"lets work on
+  the instagram account now what do we still have to complete for setup and
+  get people to run that aswell"*. Where it stood: the cross-post had never
+  once worked since June. The key in GitHub was pasted across several lines
+  (Meta: "Cannot parse access token"), nothing refreshed a key that lasts 60
+  days, and every failure was hidden inside the Producer's logs, whose "e"s and
+  "d"s the broken secret blanked out.
+  Built: **Echo**, a crew member with his own job (`instagram.yml`,
+  `scripts/echo.py`). After every Producer run he posts the new Short to
+  Instagram as a Reel from the Producer's hand-over (the `posted-short`
+  artifact: the video and an Instagram caption with at most 5 hashtags, no
+  `#shorts`, the CC BY credit when one is owed). He keeps the key alive by
+  refreshing it weekly (`src/ig_key.py`; a changed key is kept encrypted with
+  the owner's own key in the `echo-key` release, never in git). He also brings
+  followers and Reel views into the HQ: the lineup and the Channel view's
+  Instagram block. The Producer no longer reads any Instagram secret, so its
+  logs are readable again. Key path: Instagram Login, made in Meta's App
+  Dashboard (Instagram > API setup with Instagram login > Generate token), so
+  no Facebook Page, app review or `IG_USER_ID` is needed.
+  **Owner's part** (HQ ask `instagram-key`): make the Instagram account public
+  and professional, create the Meta app, generate the key, and paste it into
+  `IG_ACCESS_TOKEN` as ONE line. Echo's first shift after that posts the
+  latest Short. Not touched: the 59 dead MP4s (12.2 GB) left in the
+  `media-bucket` release by the old cross-post. Deleting them is the owner's
+  call (2026-08-23).

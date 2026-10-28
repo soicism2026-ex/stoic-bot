@@ -13,8 +13,10 @@ Then a Claude session writes the file to the HQ's `hq/studio` document
 The HQ sync scheduled task does that every few hours, and any session that
 updates the HQ can too. See "HQ app" in CLAUDE.md.
 
-Reads only: posts.csv, analytics.csv, channel_stats.csv, the workflow files,
-and GitHub's public Actions API (no token needed for a public repo).
+Reads only: posts.csv, analytics.csv, channel_stats.csv, Echo's Instagram
+files (ig_status.json, ig_stats.csv, ig_posts.csv, ig_reels.csv), the
+workflow files, and GitHub's public Actions API (no token needed for a public
+repo).
 """
 from __future__ import annotations
 
@@ -49,6 +51,8 @@ BOTS = [
      "role": "Rehearses the next Short twice a day so you can watch it before it airs. Never posts"},
     {"id": "composer", "name": "Composer", "workflow": "make-music.yml",
      "role": "Generates original music for the edits"},
+    {"id": "instagram", "name": "Instagram", "workflow": "instagram.yml",
+     "role": "Posts every Short to Instagram as a Reel, keeps the key alive and brings in Instagram's numbers"},
 ]
 
 
@@ -249,8 +253,73 @@ def bots(runs: list[dict], now: dt.datetime, producer_note: str,
                "url": f"https://github.com/{REPO}/actions/workflows/{b['workflow']}"}
         if b["id"] == "producer":
             doc["note"] = producer_note
+        if b["id"] == "instagram":
+            ig = ig_status()
+            if ig.get("problem"):
+                doc["note"] = ig["problem"]
+                if doc["status"] not in ("working", "queued"):
+                    doc["status"] = "failed"     # blocked: the HQ asks the owner for a key
+            elif (ig.get("account") or {}).get("username"):
+                a = ig["account"]
+                doc["note"] = f"@{a['username']}" + (f" · {a['followers']:,} followers"
+                                                     if isinstance(a.get("followers"), int) else "")
         out.append(doc)
     return out
+
+
+# ---------------------------------------------------------------------------
+# Instagram (Echo, scripts/echo.py)
+# ---------------------------------------------------------------------------
+
+def ig_status() -> dict:
+    try:
+        return json.loads((DATA / "ig_status.json").read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return {}
+
+
+def instagram(now: dt.datetime) -> dict | None:
+    """Echo's numbers for the HQ: the account, followers this week, the
+    Reels posted and their views, the last Reel, and what blocks him."""
+    st = ig_status()
+    if not st:
+        return None
+    acct = st.get("account") or {}
+    stats = {}
+    for r in _rows("ig_stats.csv"):
+        stats[r.get("pulled_on", "")] = r          # last row of a day wins
+
+    def followers(day: str | None):
+        try:
+            return int(stats[day]["followers"]) if day else None
+        except (KeyError, ValueError, TypeError):
+            return None
+
+    days = sorted(d for d in stats if d)
+    week_ago = (now.date() - dt.timedelta(days=7)).isoformat()
+    then = next((d for d in days if d >= week_ago), None)
+    published = [r for r in _rows("ig_posts.csv") if r.get("status") == "published"]
+    latest: dict[str, int] = {}
+    for r in sorted(_rows("ig_reels.csv"), key=lambda r: r.get("pulled_on", "")):
+        try:
+            latest[r["ig_media_id"]] = int(r.get("views") or 0)
+        except (KeyError, ValueError):
+            continue
+    recent = [r for r in published if (r.get("date") or "") >= week_ago]
+    last = published[-1] if published else None
+    return {
+        "ok": bool(st.get("ok")),
+        "problem": st.get("problem"),
+        "checked": st.get("checked"),
+        "username": acct.get("username"),
+        "followers": acct.get("followers"),
+        "followersWeekAgo": followers(then) if then and then != (days[-1] if days else None) else None,
+        "reels": len(published),
+        "views7d": sum(latest.get(r.get("ig_media_id"), 0) for r in recent) if recent else None,
+        "lastReel": {"date": last.get("date"), "permalink": last.get("permalink") or None} if last else None,
+        "keyGoodUntil": (st.get("key") or {}).get("expiresAround"),
+        "numbersProblem": st.get("numbersProblem"),
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -382,6 +451,7 @@ def build(now: dt.datetime | None = None, runs: list[dict] | None = None) -> dic
         "shelf": shelf_status(now),
         "channel": channel(now),
         "posts": recent_posts(posts),
+        "instagram": instagram(now),
         "runsSeen": len(runs),
         "runsSource": source,
     }

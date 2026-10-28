@@ -455,6 +455,42 @@ def _add_to_backup_bank(today: str, music_track: dict):
 
 
 # ---------------------------------------------------------------------------
+# The hand-over to Echo (Instagram)
+# ---------------------------------------------------------------------------
+
+POSTED = ROOT / "data" / "posted"
+
+
+def _citation(content: dict) -> str:
+    """Where an edit's quote comes from (data/edit_quotes.json)."""
+    if content.get("_edit_id"):
+        return next((q.get("citation", "") for q in edits.load() if q["id"] == content["_edit_id"]), "")
+    return content.get("citation", "") or ""
+
+
+def _hand_to_echo(video: Path, result: dict, fields: dict) -> None:
+    """Leave an uploaded Short for Echo, who posts it to Instagram
+    (scripts/echo.py): daily-short uploads data/posted/ as the posted-short
+    artifact, which Echo's job opens. Best effort: Instagram must never cost
+    a YouTube post (owner 2026-10-28: Echo runs the Instagram account)."""
+    vid = (result or {}).get("video_id")
+    if not vid or not Path(video).exists():
+        return
+    try:
+        import shutil
+        d = POSTED / vid
+        d.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(video, d / "reel.mp4")
+        (d / "post.json").write_text(json.dumps({
+            "video_id": vid, "url": result.get("url"),
+            "uploadedAt": datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "video": "reel.mp4", **fields}, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+        print(f"  [echo] handed {vid} to Echo for Instagram")
+    except Exception as e:  # noqa: BLE001
+        print(f"  [echo] hand-over failed: {e}", file=sys.stderr)
+
+
+# ---------------------------------------------------------------------------
 # Main
 # ---------------------------------------------------------------------------
 
@@ -653,6 +689,7 @@ def main():
         f'{" ".join(content["hashtags"])}'
         f'{promo.description_block()}'
     )
+    music_credit = ""   # a CC BY track's credit line, which Instagram needs too
 
     # Experiment agent: assign this post's intro-sound + colour-grade combo.
     # QA-retry corrections merge ON TOP of this base so the variant sticks.
@@ -880,7 +917,8 @@ def main():
             if got:
                 music_path = got
                 music_track = {"name": f"epic:{track}"}
-                description += "\n\n" + epic_music.credit(track)
+                music_credit = epic_music.credit(track)
+                description += "\n\n" + music_credit
                 print(f"  music: {track} (epic, CC BY) from {epic_music.TRACKS[track]}s")
             else:
                 print("  music: epic track unavailable — keeping the default bed")
@@ -1108,18 +1146,16 @@ def main():
                 except Exception as e:
                     print(f"  [promo] comment skipped: {e}", file=sys.stderr)
 
-            # Cross-post the same Short to Instagram Reels (best-effort; never
-            # blocks the run). Skips silently if IG creds aren't configured.
-            try:
-                ig_caption = f"{hook_clean}.\n\n{content['caption']}"
-                ig_result = publish_instagram.publish_reel(
-                    video_path=video_path,
-                    caption=ig_caption,
-                    hashtags=content["hashtags"],
-                )
-                print(f"  [instagram] {ig_result.get('status')}")
-            except Exception as e:
-                print(f"  [instagram] cross-post skipped: {e}", file=sys.stderr)
+            # Echo (scripts/echo.py, instagram.yml) posts it to Instagram
+            # from his own job, so Instagram can never slow or break this one.
+            _hand_to_echo(video_path, upload_result, {
+                "date": today, "title": title, "hook": hook_clean,
+                "quote": content["quote"], "author": content["author"],
+                "citation": _citation(content), "hashtags": content["hashtags"],
+                "igCaption": publish_instagram.caption(
+                    hook_clean, content["quote"], content["author"], _citation(content),
+                    content["hashtags"], music_credit),
+            })
 
             if qa["issues"]:
                 _append_qa_log(today, attempt, qa["issues"], qa["severity"], uploaded=True)
@@ -1194,6 +1230,14 @@ def main():
                     music_track=bk_meta.get("music_track", ""),
                     hook=bk_meta.get("hook", ""),
                 )
+                _hand_to_echo(bk_video, upload_result, {
+                    "date": today, "title": bk_meta["title"], "hook": bk_meta.get("hook", ""),
+                    "quote": bk_meta.get("quote", ""), "author": bk_meta.get("author", ""),
+                    "hashtags": bk_meta.get("tags") or [],
+                    "igCaption": publish_instagram.caption(
+                        bk_meta.get("hook", ""), bk_meta.get("quote", ""),
+                        bk_meta.get("author", ""), "", bk_meta.get("tags") or []),
+                })
                 _remove_backup(bk_meta_file)
             else:
                 print("  [backup] bank empty — no upload today", file=sys.stderr)

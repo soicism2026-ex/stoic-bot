@@ -341,35 +341,12 @@ def check_cloudflare() -> bool:
     return True
 
 
-def check_instagram() -> bool:
-    """Optional — cross-post to Instagram Reels. Skips if not configured."""
-    token = os.environ.get("IG_ACCESS_TOKEN", "")
-    ig_user = os.environ.get("IG_USER_ID", "")
-    if not token or not ig_user:
-        print(f"  [{SKIP}] INSTAGRAM — IG_ACCESS_TOKEN/IG_USER_ID not set (cross-post disabled)")
-        return True
-    try:
-        resp = _requests.get(
-            f"https://graph.facebook.com/v21.0/{ig_user}",
-            params={"fields": "username,media_count", "access_token": token},
-            timeout=10,
-        )
-        resp.raise_for_status()
-        data = resp.json()
-        uname = data.get("username", "?")
-        count = data.get("media_count", "?")
-        print(f"  [{PASS}] INSTAGRAM — @{uname} ({count} posts), token valid")
-    except Exception as e:
-        # Optional — never block the pipeline; YouTube post still proceeds.
-        print(f"  [{SKIP}] INSTAGRAM — token check failed ({e}); cross-post will be skipped")
-    return True
-
-
 def main():
     print("=== Secrets pre-flight check ===")
     # Required: ElevenLabs, YouTube. Anthropic is OPTIONAL since the owner
     # dropped the paid API (2026-09-18) — a bad key still fails, a missing
-    # one is a choice. Pexels/Pixabay/Higgsfield/Instagram optional.
+    # one is a choice. Pexels/Pixabay/Higgsfield optional. Instagram is
+    # checked by Echo's own job (instagram.yml), not here.
     required = [
         check_anthropic(),
         check_elevenlabs(),
@@ -379,7 +356,6 @@ def main():
     check_pixabay()
     check_cloudflare()
     check_higgsfield()
-    check_instagram()
     print("================================")
     failures = sum(1 for r in required if not r)
     if failures:

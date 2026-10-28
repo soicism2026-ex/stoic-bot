@@ -1,4 +1,11 @@
 """
+SUPERSEDED 2026-10-28 (Echo, scripts/echo.py). The simple way now: in Meta's
+App Dashboard, Instagram > API setup with Instagram login > Generate access
+tokens > Add account > Generate token, and paste that key into the
+IG_ACCESS_TOKEN secret as ONE line. Echo finds the account from the key and
+keeps it alive (src/ig_key.py); IG_USER_ID is not needed. This helper is kept
+for the older Facebook Login path only.
+
 One-time helper: turn a short-lived Facebook token into the two secrets the
 Instagram cross-post needs — IG_ACCESS_TOKEN (long-lived, ~60 days) and
 IG_USER_ID (the Instagram Business account id).
