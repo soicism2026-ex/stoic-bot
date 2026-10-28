@@ -319,6 +319,7 @@ def instagram(now: dt.datetime) -> dict | None:
         "lastReel": {"date": last.get("date"), "permalink": last.get("permalink") or None} if last else None,
         "keyGoodUntil": (st.get("key") or {}).get("expiresAround"),
         "numbersProblem": st.get("numbersProblem"),
+        "advice": st.get("advice"),
     }
 
 

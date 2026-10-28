@@ -92,6 +92,18 @@ def save_status(st: dict) -> None:
     STATUS.write_text(json.dumps(st, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
 
 
+def id_advice(uid: str) -> str | None:
+    """IG_USER_ID is only for an old Facebook Login key. When it isn't a plain
+    number it is junk, and a secret pasted across lines makes GitHub blank
+    every single letter on its lines out of the logs of any job that reads it
+    (2026-10-28: Echo's key had no line breaks, yet his log lost every e and d)."""
+    uid = uid.strip()
+    if uid and not uid.isdigit():
+        return ("IG_USER_ID in GitHub isn't a plain number (it looks pasted across lines). "
+                "The new key doesn't need it: delete it.")
+    return None
+
+
 def plain(e: ig.IGError) -> str:
     """Meta's refusal in words the owner reads in the HQ."""
     if e.key_rejected:
@@ -206,6 +218,9 @@ def shift(mode: str = "run", now: dt.datetime | None = None) -> int:
     today = now.date()
     st = load_status()
     st["checked"] = _iso(now)
+    st["advice"] = id_advice(os.environ.get("IG_USER_ID", ""))
+    if st["advice"]:
+        print(f"Echo: {st['advice']}")
     key = dict(st.get("key") or {})
     seed = os.environ.get("IG_ACCESS_TOKEN", "")
     bad = ig_key.problem_with(seed)

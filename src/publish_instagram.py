@@ -111,6 +111,8 @@ def account(token: str, ig_user_id: str = "") -> dict:
     else:
         if not ig_user_id:
             raise IGError(0, "IG_USER_ID is not set (a Facebook Login key needs it)")
+        if not ig_user_id.isdigit():
+            raise IGError(0, "IG_USER_ID isn't a plain number")
         me = _call("GET", f"{base(token)}/{ig_user_id}", token,
                    fields="id,username,followers_count,media_count")
         ig_id = str(me.get("id") or ig_user_id)

@@ -385,3 +385,18 @@ def test_the_hq_page_has_echo_and_instagram_numbers():
     assert "function drawInstagram()" in page and 'id="ig"' in page
     # a blocked bot that waits on the owner reads "Needs you", not "failed"
     assert '["offduty", "oncall", "done", "failed"].includes(status)) { status = "waiting"' in page
+
+
+def test_a_junk_ig_user_id_is_flagged_for_deletion(data, monkeypatch):
+    """Echo's first shift: the key had no line breaks, yet his log lost every
+    e and d, so the junk was in IG_USER_ID, which the new key doesn't need."""
+    assert echo.id_advice("") is None and echo.id_advice("17841400000000000") is None
+    assert "delete it" in echo.id_advice("1784\ne\nd")
+    monkeypatch.setenv("IG_ACCESS_TOKEN", IG_KEY)
+    monkeypatch.setenv("IG_USER_ID", "e\nd")
+    with patch.object(ig, "account", return_value=_acct()):
+        echo.shift("check", now=NOW)
+    assert "delete it" in json.loads(echo.STATUS.read_text())["advice"]
+    with pytest.raises(ig.IGError, match="plain number"):
+        ig.account("EAAB123", "e\nd")
+

@@ -977,7 +977,8 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const g = S.studio && S.studio.instagram, el = $("#ig");
     if (!el) return;
     if (!g) { el.innerHTML = `<p class="empty">Echo reports here once Instagram is connected.</p>`; return; }
-    if (!g.ok) { el.innerHTML = `<p class="sub">${esc(g.problem || "Echo can't reach Instagram yet.")}</p>`; return; }
+    const advice = g.advice ? `<p class="sub">${esc(g.advice)}</p>` : "";
+    if (!g.ok) { el.innerHTML = `<p class="sub">${esc(g.problem || "Echo can't reach Instagram yet.")}</p>` + advice; return; }
     const tile = (k, v, d, up) => `<div class="kpi"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span>${d ? `<span class="d ${up ? "up" : ""}">${esc(d)}</span>` : ""}</div>`;
     const dF = g.followers != null && g.followersWeekAgo != null ? g.followers - g.followersWeekAgo : null;
     const u = g.lastReel && safeUrl(g.lastReel.permalink);
@@ -987,7 +988,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       tile("Reel views, 7 days", g.views7d != null ? nf.format(g.views7d) : "–", "Reels from the last 7 days"),
     ].join("")}</div>` +
       (u ? `<p class="sub"><a href="${esc(u)}" target="_blank" rel="noopener">Latest Reel</a>${g.lastReel.date ? " · " + esc(dayName(g.lastReel.date + "T12:00:00")) : ""}</p>` : "") +
-      (g.numbersProblem ? `<p class="sub">${esc(g.numbersProblem)}</p>` : "");
+      (g.numbersProblem ? `<p class="sub">${esc(g.numbersProblem)}</p>` : "") + advice;
   }
 
   function drawChannel() {
