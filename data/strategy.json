@@ -1,10 +1,10 @@
 {
- "updated": "2026-10-27",
+ "updated": "2026-10-28",
  "by": "Frontinus (scripts/strategist.py, no paid API)",
  "window_days": 28,
- "settled_edits": 27,
- "median_views_day3": 130,
- "median_retention": 88.8,
+ "settled_edits": 29,
+ "median_views_day3": 169,
+ "median_retention": 89.0,
  "theme_rank": {
   "friendship": 1,
   "desire": 1,
@@ -62,25 +62,25 @@
    },
    {
     "key": "adversity",
-    "n": 1,
-    "median_views_day3": 249,
-    "lift": 1.01,
-    "median_retention": 116.4,
+    "n": 2,
+    "median_views_day3": 279.0,
+    "lift": 1.13,
+    "median_retention": 102.6,
     "verdict": "too few"
    },
    {
     "key": "mortality",
-    "n": 2,
-    "median_views_day3": 110.0,
-    "lift": 0.74,
-    "median_retention": 82.3,
-    "verdict": "too few"
+    "n": 3,
+    "median_views_day3": 173,
+    "lift": 0.78,
+    "median_retention": 143.9,
+    "verdict": "even"
    },
    {
     "key": "control",
     "n": 4,
     "median_views_day3": 54.5,
-    "lift": 0.6,
+    "lift": 0.57,
     "median_retention": 89.0,
     "verdict": "loser"
    },
@@ -97,7 +97,7 @@
     "n": 1,
     "median_views_day3": 65,
     "lift": 0.37,
-    "median_retention": 69.3,
+    "median_retention": null,
     "verdict": "too few"
    },
    {
@@ -115,33 +115,33 @@
     "n": 9,
     "median_views_day3": 247,
     "lift": 1.0,
-    "median_retention": 88.3,
-    "verdict": "even"
-   },
-   {
-    "key": "Epictetus",
-    "n": 4,
-    "median_views_day3": 192.0,
-    "lift": 0.9,
-    "median_retention": 78.3,
+    "median_retention": 91.0,
     "verdict": "even"
    },
    {
     "key": "Marcus Aurelius",
-    "n": 14,
-    "median_views_day3": 78.0,
-    "lift": 0.89,
-    "median_retention": 92.3,
+    "n": 15,
+    "median_views_day3": 82,
+    "lift": 0.87,
+    "median_retention": 95.8,
+    "verdict": "even"
+   },
+   {
+    "key": "Epictetus",
+    "n": 5,
+    "median_views_day3": 202,
+    "lift": 0.87,
+    "median_retention": 83.5,
     "verdict": "even"
    }
   ],
   "hook_form": [
    {
     "key": "command",
-    "n": 6,
-    "median_views_day3": 411.5,
-    "lift": 2.5,
-    "median_retention": 88.3,
+    "n": 7,
+    "median_views_day3": 247,
+    "lift": 2.15,
+    "median_retention": 91.0,
     "verdict": "winner"
    },
    {
@@ -149,14 +149,14 @@
     "n": 2,
     "median_views_day3": 307.0,
     "lift": 1.24,
-    "median_retention": 91.1,
+    "median_retention": 89.3,
     "verdict": "too few"
    },
    {
     "key": "statement",
-    "n": 19,
-    "median_views_day3": 74,
-    "lift": 0.68,
+    "n": 20,
+    "median_views_day3": 78.0,
+    "lift": 0.73,
     "median_retention": 88.8,
     "verdict": "loser"
    }
@@ -166,16 +166,16 @@
     "key": "short (<=4 words)",
     "n": 7,
     "median_views_day3": 247,
-    "lift": 1.1,
+    "lift": 1.07,
     "median_retention": 91.0,
     "verdict": "even"
    },
    {
     "key": "long (7+)",
-    "n": 11,
-    "median_views_day3": 82,
+    "n": 13,
+    "median_views_day3": 173,
     "lift": 1.01,
-    "median_retention": 86.7,
+    "median_retention": 88.8,
     "verdict": "even"
    },
    {
@@ -190,25 +190,25 @@
   "quote_len": [
    {
     "key": "long (25+)",
-    "n": 3,
-    "median_views_day3": 288,
-    "lift": 1.16,
-    "median_retention": 103.9,
+    "n": 4,
+    "median_views_day3": 268.5,
+    "lift": 1.08,
+    "median_retention": 108.3,
     "verdict": "even"
    },
    {
     "key": "medium (13-24)",
     "n": 16,
     "median_views_day3": 125.5,
-    "lift": 0.95,
+    "lift": 0.94,
     "median_retention": 85.6,
     "verdict": "even"
    },
    {
     "key": "short (<=12 words)",
-    "n": 8,
-    "median_views_day3": 77.5,
-    "lift": 0.43,
+    "n": 9,
+    "median_views_day3": 90,
+    "lift": 0.49,
     "median_retention": 91.0,
     "verdict": "loser"
    }
@@ -218,7 +218,7 @@
     "key": "Clash Defiant",
     "n": 2,
     "median_views_day3": 403.5,
-    "lift": 2.67,
+    "lift": 2.55,
     "median_retention": 88.8,
     "verdict": "too few"
    },
@@ -235,40 +235,40 @@
     "n": 2,
     "median_views_day3": 412.0,
     "lift": 1.95,
-    "median_retention": 160.9,
+    "median_retention": 159.2,
     "verdict": "too few"
    },
    {
     "key": "Volatile Reaction",
     "n": 2,
     "median_views_day3": 161.5,
-    "lift": 1.74,
+    "lift": 1.72,
     "median_retention": 73.2,
-    "verdict": "too few"
-   },
-   {
-    "key": "Five Armies",
-    "n": 2,
-    "median_views_day3": 288.0,
-    "lift": 1.43,
-    "median_retention": 91.0,
     "verdict": "too few"
    },
    {
     "key": "Prelude and Action",
     "n": 2,
     "median_views_day3": 160.5,
-    "lift": 1.38,
+    "lift": 1.36,
     "median_retention": 87.2,
     "verdict": "too few"
    },
    {
+    "key": "Five Armies",
+    "n": 3,
+    "median_views_day3": 309,
+    "lift": 1.25,
+    "median_retention": 89.9,
+    "verdict": "winner"
+   },
+   {
     "key": "Crusade",
-    "n": 2,
-    "median_views_day3": 114.5,
+    "n": 3,
+    "median_views_day3": 182,
     "lift": 0.84,
-    "median_retention": 89.3,
-    "verdict": "too few"
+    "median_retention": 147.8,
+    "verdict": "even"
    },
    {
     "key": "Strength of the Titans",
@@ -283,7 +283,7 @@
     "n": 2,
     "median_views_day3": 157.0,
     "lift": 0.69,
-    "median_retention": 73.8,
+    "median_retention": 78.4,
     "verdict": "too few"
    },
    {
@@ -299,7 +299,7 @@
     "n": 2,
     "median_views_day3": 104.0,
     "lift": 0.49,
-    "median_retention": 82.3,
+    "median_retention": 81.4,
     "verdict": "too few"
    },
    {
@@ -325,15 +325,15 @@
     "n": 19,
     "median_views_day3": 130,
     "lift": 1.01,
-    "median_retention": 89.3,
+    "median_retention": 90.2,
     "verdict": "even"
    },
    {
     "key": "Brian",
-    "n": 6,
-    "median_views_day3": 211.0,
-    "lift": 0.85,
-    "median_retention": 80.3,
+    "n": 8,
+    "median_views_day3": 232.5,
+    "lift": 0.94,
+    "median_retention": 85.1,
     "verdict": "even"
    },
    {
@@ -348,37 +348,37 @@
   "slot": [
    {
     "key": "first of the day",
-    "n": 21,
-    "median_views_day3": 121,
-    "lift": 1.01,
+    "n": 22,
+    "median_views_day3": 125.5,
+    "lift": 1.04,
     "median_retention": 88.8,
     "verdict": "even"
    },
    {
     "key": "second of the day",
-    "n": 6,
-    "median_views_day3": 171.0,
-    "lift": 0.69,
-    "median_retention": 89.0,
+    "n": 7,
+    "median_views_day3": 173,
+    "lift": 0.7,
+    "median_retention": 95.8,
     "verdict": "loser"
    }
   ],
   "weekday": [
    {
-    "key": "Sunday",
-    "n": 2,
-    "median_views_day3": 311.5,
-    "lift": 1.81,
-    "median_retention": 91.0,
-    "verdict": "too few"
-   },
-   {
     "key": "Monday",
     "n": 4,
     "median_views_day3": 132.0,
-    "lift": 1.32,
+    "lift": 1.29,
     "median_retention": 89.3,
     "verdict": "winner"
+   },
+   {
+    "key": "Sunday",
+    "n": 4,
+    "median_views_day3": 262.5,
+    "lift": 1.06,
+    "median_retention": 91.0,
+    "verdict": "even"
    },
    {
     "key": "Friday",
@@ -392,7 +392,7 @@
     "key": "Tuesday",
     "n": 4,
     "median_views_day3": 138.0,
-    "lift": 1.0,
+    "lift": 0.97,
     "median_retention": 85.6,
     "verdict": "even"
    },
@@ -401,7 +401,7 @@
     "n": 4,
     "median_views_day3": 145.0,
     "lift": 0.85,
-    "median_retention": 89.3,
+    "median_retention": 109.2,
     "verdict": "even"
    },
    {
@@ -409,7 +409,7 @@
     "n": 4,
     "median_views_day3": 190.0,
     "lift": 0.77,
-    "median_retention": 94.2,
+    "median_retention": 92.4,
     "verdict": "even"
    },
    {
@@ -417,7 +417,7 @@
     "n": 4,
     "median_views_day3": 131.5,
     "lift": 0.6,
-    "median_retention": 82.3,
+    "median_retention": 81.4,
     "verdict": "loser"
    }
   ]
@@ -438,7 +438,7 @@
    "voice": "Steffan",
    "slot": "second of the day",
    "weekday": "Monday",
-   "rel": 3.589108910891089
+   "rel": 3.3564814814814814
   },
   {
    "id": "better_man",
@@ -472,7 +472,7 @@
    "voice": "Steffan",
    "slot": "first of the day",
    "weekday": "Sunday",
-   "rel": 2.8514851485148514
+   "rel": 2.6666666666666665
   },
   {
    "id": "craves_more",
