@@ -1,7 +1,7 @@
 {
- "checked": "2026-10-28T00:47:20Z",
+ "checked": "2026-10-28T00:48:01Z",
  "ok": false,
- "problem": "Couldn't check Instagram: IG_USER_ID isn't a plain number.",
+ "problem": "The Instagram key in GitHub is the old kind, and the IG_USER_ID it needs is broken. A new key fixes both: the steps are under Needs your call.",
  "key": {
   "fingerprint": "18ac3e7343f0",
   "firstSeen": "2026-10-28",
