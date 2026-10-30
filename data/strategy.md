@@ -1,13 +1,13 @@
 # Stoic Shorts Content Strategy
 
-_Updated 2026-10-29 by Frontinus (scripts/strategist.py, no paid API). Read from 31 edits of the last 28 days, compared at day 3 (median 173 views, 88.1% watched)._
+_Updated 2026-10-30 by Frontinus (scripts/strategist.py, no paid API). Read from 33 edits of the last 28 days, compared at day 3 (median 173 views, 88.8% watched)._
 
 ---
 
 ## What Works
 
 - theme **resilience**: 1.37x the edits aired around it (145 views at day 3, 4 edits, 80.0% watched)
-- hook as a **command**: 2.15x the edits aired around it (247 views at day 3, 7 edits, 91.0% watched)
+- hook as a **command**: 1.61x the edits aired around it (250 views at day 3, 8 edits, 88.3% watched)
 - music **Heroic Age**: 2.15x the edits aired around it (130 views at day 3, 3 edits, 103.8% watched)
 - music **Five Armies**: 1.25x the edits aired around it (309 views at day 3, 3 edits, 89.2% watched)
 
@@ -16,13 +16,14 @@ _Updated 2026-10-29 by Frontinus (scripts/strategist.py, no paid API). Read from
 - theme **control**: 0.55x the edits aired around it (54 views at day 3, 4 edits, 89.0% watched)
 - theme **time**: 0.49x the edits aired around it (90 views at day 3, 3 edits, 93.4% watched)
 - quote length **short (<=12 words)**: 0.49x the edits aired around it (90 views at day 3, 9 edits, 91.0% watched)
-- day **Thursday**: 0.6x the edits aired around it (132 views at day 3, 4 edits, 80.1% watched)
+- posted **second of the day**: 0.7x the edits aired around it (173 views at day 3, 9 edits, 99.0% watched)
+- day **Thursday**: 0.6x the edits aired around it (132 views at day 3, 4 edits, 81.0% watched)
 
 ## Top Recommendations for Next Posts
 
 - Air and write more **resilience**: the shelf now plays these themes first.
 - Fewer **control, time** edits: they move to the back of the shelf.
-- Hooks that work best right now: **command** form (2.15x).
+- Hooks that work best right now: **command** form (1.61x).
 - Copy the shape of "Look at the five people around you." (Seneca, friendship): 3.3x the edits around it, 660 views at day 3.
 - Copy the shape of "Don't want to get up? Read this." (Marcus Aurelius, discipline): 3.3x the edits around it, 725 views at day 3.
 - Copy the shape of "Pick one thing." (Seneca, discipline): 2.7x the edits around it, 576 views at day 3.
