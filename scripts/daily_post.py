@@ -1210,6 +1210,8 @@ def main():
             backup = _load_backup()
             if backup:
                 bk_video, bk_meta, bk_meta_file = backup
+                # Today's CTA, not the one the backup was rendered with.
+                bk_meta["description"] = promo.refresh(bk_meta["description"])
                 upload_result = publish_short(
                     video_path=bk_video, title=bk_meta["title"],
                     description=bk_meta["description"], tags=bk_meta["tags"],

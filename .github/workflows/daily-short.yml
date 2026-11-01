@@ -206,7 +206,7 @@ jobs:
           # comments, a bot-posted Gumroad CTA is the exact tell that says
           # "this is an automated account, nobody is here" - and the comment
           # section is the only place this channel can be a person. It costs
-          # more in personhood than a free journal earns. The description CTA
+          # more in personhood than the journal earns. The description CTA
           # stays; only the comment goes.
           PROMO_COMMENT: "0"
           # PROMO_CTA_VARIATIONS: pipe-delimited (|) list of 3-5 CTA strings.

@@ -7,8 +7,9 @@ and optionally posts a promo comment after upload (PROMO_COMMENT=1).
 All copy lives in env vars so you can update product name, pitch, URL, or
 CTA copy without touching any logic.
 
-PROMO_CTA_VARIATIONS: pipe-delimited (|) list of 3–5 CTA strings that rotate
-  deterministically by date. If not set, three built-in defaults are used.
+PROMO_CTA_VARIATIONS: pipe-delimited (|) list of CTA strings that rotate
+  deterministically by date. If not set, the built-in default is used (the
+  owner's own line since 2026-11-01).
   Each variation should include {url} or the full URL literally.
 
 Set PROMO_ENABLED=0 to disable all promo behaviour without code changes.
@@ -27,15 +28,13 @@ PROMO_PRODUCT_NAME = os.environ.get("PROMO_PRODUCT_NAME", "The Stoic Reset")
 PROMO_URL = os.environ.get("PROMO_URL", "https://soicism.gumroad.com/l/cslosv")
 
 _DEFAULT_CTAS = [
-    # Evergreen only. These strings ship in the description of every video and
-    # stay live forever, so a deadline written here ("only for June", "this
-    # month only") becomes a lie the moment the month turns — and reads to a
-    # viewer like an abandoned bot. tests/test_promo.py enforces this.
-    "📓 The Stoic Reset — my 30-day Stoic journal, free to download:\n{url}",
-    "📖 One quote a day is a start. The Stoic Reset turns it into a 30-day "
-    "practice — free:\n{url}",
-    "🪨 The Stoic Reset — a 30-day journal to put quotes like this into daily "
-    "practice. Free:\n{url}",
+    # The owner's own line (HQ, 2026-11-01): the journal is a paid product now
+    # (C$5.99 on Gumroad, about US$4.29), so the three old lines, which all
+    # said "free", went out. Evergreen only: these strings ship in the
+    # description of every video and stay live forever, so a deadline ("only
+    # for June", "this month only") becomes a lie the moment the month turns.
+    # tests/test_promo.py enforces both.
+    "Try our 30-Day Guided Journal ONLY $5.99 - {url}",
 ]
 
 
@@ -64,6 +63,14 @@ def description_block() -> str:
     if not PROMO_ENABLED:
         return ""
     return f"\n\n---\n{pick_cta()}"
+
+
+def refresh(description: str) -> str:
+    """The description with today's CTA in place of the promo block it was
+    written with. A backup is rendered weeks before it airs: the bank still
+    carried "FREE this month only" and "free, but only for June" on
+    2026-11-01, when the journal cost C$5.99."""
+    return description.split("\n\n---\n", 1)[0] + description_block()
 
 
 def comment_text() -> str:

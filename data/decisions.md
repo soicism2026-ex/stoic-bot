@@ -1493,3 +1493,14 @@ that story must always be captioned "recorded in the Historia Augusta", never
   latest Short. Not touched: the 59 dead MP4s (12.2 GB) left in the
   `media-bucket` release by the old cross-post. Deleting them is the owner's
   call (2026-08-23).
+- **2026-11-01 — PROMO: the journal costs $5.99, and descriptions use the
+  owner's own line.** Owner, in the HQ: *"I made Try our 30-Day Guided
+  Journal ONLY $5.99 - https://soicism.gumroad.com/l/cslosv"*. Gumroad lists
+  The Stoic Reset at C$5.99 (US$4.29). All three description CTAs said "free",
+  and the backup bank still carried "FREE this month only" and "free, but only
+  for June". From the next upload on, every description ends with his line,
+  verbatim, and a backup airs with the current line instead of the one it was
+  rendered with (`promo.refresh`). 276 published descriptions (2026-06-16 to
+  11-01) still say free: the owner decides whether to rewrite them (HQ ask
+  `old-descriptions`). Not "link in bio" on Instagram yet: captions can't hold
+  a tappable link, and whether his bio carries it is asked too.

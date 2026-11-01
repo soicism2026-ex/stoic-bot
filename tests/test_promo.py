@@ -79,9 +79,11 @@ class TestCTARotation(unittest.TestCase):
         for cta in p._cta_list():
             self.assertIn(url, cta)
 
-    def test_default_three_variations(self):
+    def test_the_default_is_the_owners_own_line(self):
+        """Owner, in the HQ, 2026-11-01: "Try our 30-Day Guided Journal ONLY
+        $5.99 - https://soicism.gumroad.com/l/cslosv"."""
         p = _reload_promo(PROMO_ENABLED="1", PROMO_URL="https://example.com")
-        self.assertEqual(len(p._cta_list()), 3)
+        self.assertEqual(p._cta_list(), ["Try our 30-Day Guided Journal ONLY $5.99 - https://example.com"])
 
     def test_pick_cta_cycles(self):
         """Different toordinal() values select different CTAs."""
@@ -108,7 +110,7 @@ class TestCTARotation(unittest.TestCase):
 
     def test_empty_variations_env_falls_back_to_defaults(self):
         p = _reload_promo(PROMO_ENABLED="1", PROMO_CTA_VARIATIONS="", PROMO_URL="https://x.com")
-        self.assertEqual(len(p._cta_list()), 3)
+        self.assertEqual(len(p._cta_list()), len(p._DEFAULT_CTAS))
 
 
 class TestCustomCopy(unittest.TestCase):
@@ -210,7 +212,36 @@ class TestCopyStaysTrue(unittest.TestCase):
 
     def test_every_default_still_names_the_product(self):
         for cta in self._defaults():
-            self.assertIn("Stoic Reset", cta)
+            self.assertIn("30-Day Guided Journal", cta)
+
+    def test_nothing_calls_the_paid_journal_free(self):
+        """It costs C$5.99 since 2026-11-01. Every default said "free", so
+        did the backup bank, and 276 published descriptions still do."""
+        root = Path(__file__).resolve().parent.parent
+        texts = list(self._defaults())
+        for name in ("daily-short.yml", "repost.yml", "edit-preview.yml"):
+            wf = root / ".github" / "workflows" / name
+            texts += [l for l in wf.read_text().splitlines()
+                      if "PROMO_" in l and not l.strip().startswith("#")]
+        import json
+        for f in sorted((root / "backups").glob("*.json")):
+            texts.append(json.loads(f.read_text(encoding="utf-8")).get("description", ""))
+        for t in texts:
+            self.assertNotRegex(t.lower(), r"\bfree\b", t[-160:])
+            self.assertIsNone(self._expiring_hit(t), t[-160:])
+
+    def test_a_backup_airs_with_todays_line_not_the_one_it_was_rendered_with(self):
+        p = _reload_promo(PROMO_ENABLED="1", PROMO_URL="https://example.com")
+        stale = ("The quiet weight after you cut a corner.\n\n#stoicism\n\n---\n"
+                 "📓 FREE this month only — The Stoic Reset, my 30-day Stoic journal. "
+                 "Grab it before the price goes up:\nhttps://example.com")
+        fresh = p.refresh(stale)
+        self.assertTrue(fresh.startswith("The quiet weight after you cut a corner.\n\n#stoicism"))
+        self.assertTrue(fresh.endswith("Try our 30-Day Guided Journal ONLY $5.99 - https://example.com"))
+        self.assertNotIn("FREE", fresh)
+        self.assertEqual(p.refresh("No promo yet."), "No promo yet." + p.description_block())
+        src = (Path(__file__).resolve().parent.parent / "scripts" / "daily_post.py").read_text()
+        self.assertIn('bk_meta["description"] = promo.refresh(bk_meta["description"])', src)
 
 
 if __name__ == "__main__":
