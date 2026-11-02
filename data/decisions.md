@@ -1504,3 +1504,8 @@ that story must always be captioned "recorded in the Historia Augusta", never
   11-01) still say free: the owner decides whether to rewrite them (HQ ask
   `old-descriptions`). Not "link in bio" on Instagram yet: captions can't hold
   a tappable link, and whether his bio carries it is asked too.
+- **2026-11-02 — The older descriptions stay as they are.** Owner, in the HQ,
+  on the 276 Shorts (2026-06-16 to 11-01) whose descriptions still call the
+  journal free: *"Leave them"*. Nothing published gets rewritten; only new
+  Shorts carry his $5.99 line (first live: 2026-11-01, youtu.be/_jeE4iqaJbc).
+  Don't propose a bulk rewrite again unless he asks.
