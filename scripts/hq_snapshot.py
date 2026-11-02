@@ -258,7 +258,10 @@ def bots(runs: list[dict], now: dt.datetime, producer_note: str,
             if ig.get("problem"):
                 doc["note"] = ig["problem"]
                 if doc["status"] not in ("working", "queued"):
-                    doc["status"] = "failed"     # blocked: the HQ asks the owner for a key
+                    # On hold when only the owner can fix it (2026-11-02: he
+                    # chose "Not now" for the key; failed would read as an
+                    # alarm), failed when Instagram itself misbehaved.
+                    doc["status"] = "paused" if ig.get("ownerAction") else "failed"
             elif (ig.get("account") or {}).get("username"):
                 a = ig["account"]
                 doc["note"] = f"@{a['username']}" + (f" · {a['followers']:,} followers"

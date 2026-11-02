@@ -384,7 +384,52 @@ def test_the_hq_page_has_echo_and_instagram_numbers():
     assert 'instagram: { name: "Echo", title: "Instagram", sprite: "echo"' in page
     assert "function drawInstagram()" in page and 'id="ig"' in page
     # a blocked bot that waits on the owner reads "Needs you", not "failed"
-    assert '["offduty", "oncall", "done", "failed"].includes(status)) { status = "waiting"' in page
+    assert '["offduty", "oncall", "done", "failed", "paused"].includes(status)) { status = "waiting"' in page
+    assert 'paused: "On hold until there\'s an Instagram key.' in page
+
+
+def test_on_hold_when_only_the_owner_can_fix_it(tmp_path, monkeypatch):
+    """2026-11-02: the owner chose "Not now" for the key. A refused or missing
+    key is his to fix, so Echo shows on hold, not failed; Instagram having a
+    bad moment still shows failed."""
+    monkeypatch.setattr(hq, "DATA", tmp_path)
+    run = {"path": ".github/workflows/instagram.yml", "status": "completed", "conclusion": "success",
+           "created_at": "2026-11-02T11:00:00Z"}
+    for owner, want in ((True, "paused"), (False, "failed")):
+        (tmp_path / "ig_status.json").write_text(json.dumps(
+            {"ok": False, "problem": "x", "ownerAction": owner}))
+        bot = next(b for b in hq.bots([run], NOW, "", fetch_missing=False) if b["id"] == "instagram")
+        assert bot["status"] == want
+
+
+def test_the_shift_says_whose_problem_it_is(data, monkeypatch):
+    monkeypatch.delenv("IG_ACCESS_TOKEN", raising=False)
+    echo.shift(now=NOW)
+    assert json.loads(echo.STATUS.read_text())["ownerAction"] is True        # no key
+    monkeypatch.setenv("IG_ACCESS_TOKEN", IG_KEY)
+    for err, owner in ((ig.IGError(400, "Cannot parse access token", 190), True),
+                       (ig.IGError(0, "IG_USER_ID isn't a plain number"), True),
+                       (ig.IGError(0, "could not reach Instagram (ConnectionError)"), False)):
+        with patch.object(ig, "account", side_effect=err):
+            echo.shift(now=NOW)
+        assert json.loads(echo.STATUS.read_text())["ownerAction"] is owner, err
+    with patch.object(ig, "account", return_value=_acct()), patch.object(echo, "handed_over", return_value=[]), \
+         patch.object(echo, "pull_numbers"):
+        echo.shift(now=NOW)
+    assert json.loads(echo.STATUS.read_text())["ownerAction"] is False
+
+
+def test_an_unchanged_status_is_not_rewritten(data, monkeypatch):
+    """A key that stayed broken from 10-29 to 11-02 still made 27 commits,
+    each changing only the check time."""
+    monkeypatch.delenv("IG_ACCESS_TOKEN", raising=False)
+    echo.shift(now=NOW)
+    first = echo.STATUS.read_text()
+    echo.shift(now=NOW + dt.timedelta(hours=4))
+    assert echo.STATUS.read_text() == first                            # nothing new: no write, no commit
+    monkeypatch.setenv("IG_ACCESS_TOKEN", IG_KEY + "\nx")
+    echo.shift(now=NOW + dt.timedelta(hours=8))
+    assert echo.STATUS.read_text() != first                            # a real change is written
 
 
 def test_a_junk_ig_user_id_is_flagged_for_deletion(data, monkeypatch):

@@ -1509,3 +1509,13 @@ that story must always be captioned "recorded in the Historia Augusta", never
   journal free: *"Leave them"*. Nothing published gets rewritten; only new
   Shorts carry his $5.99 line (first live: 2026-11-01, youtu.be/_jeE4iqaJbc).
   Don't propose a bulk rewrite again unless he asks.
+- **2026-11-02 — INSTAGRAM: on hold ("Not now").** Owner, in the HQ, on the
+  Instagram key steps (he had got stuck at Meta's developer sign-up): *"Not
+  now"*. YouTube posting is unchanged. Echo keeps his shifts but shows **on
+  hold** in the HQ instead of failed, because only the owner can fix a missing
+  or refused key (`ownerAction` in `data/ig_status.json`). He stops committing
+  a status whose only change is the check time: a key that stayed broken
+  had made 27 commits from 10-29 to 11-02. The day a working key lands in
+  `IG_ACCESS_TOKEN`, his next shift posts the latest Short with no other step.
+  The bio-link question is withdrawn until then. The steps stay in the HQ ask
+  `instagram-key` for whenever he picks it up again.

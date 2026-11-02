@@ -89,7 +89,19 @@ def load_status() -> dict:
 
 
 def save_status(st: dict) -> None:
+    """Write the status only when something besides the check time changed:
+    from 10-29 to 11-02, a key that stayed broken still made 27 commits."""
+    old = load_status()
+    if old and {k: v for k, v in old.items() if k != "checked"} == \
+            {k: v for k, v in st.items() if k != "checked"}:
+        return
     STATUS.write_text(json.dumps(st, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
+
+
+def owners_to_fix(e: ig.IGError) -> bool:
+    """Only the owner can fix this one (a refused key, a broken IG_USER_ID),
+    as opposed to Instagram having a bad moment."""
+    return e.key_rejected or "IG_USER_ID" in e.message
 
 
 def id_advice(uid: str) -> str | None:
@@ -228,7 +240,7 @@ def shift(mode: str = "run", now: dt.datetime | None = None) -> int:
     seed = os.environ.get("IG_ACCESS_TOKEN", "")
     bad = ig_key.problem_with(seed)
     if bad:
-        st.update(ok=False, problem=bad, key=key)
+        st.update(ok=False, problem=bad, ownerAction=True, key=key)
         save_status(st)
         print(f"Echo: {bad}")
         return 0
@@ -250,12 +262,12 @@ def shift(mode: str = "run", now: dt.datetime | None = None) -> int:
                 err = e2
         if acct is None:
             key.update(kind=ig.kind(token), source=source)
-            st.update(ok=False, problem=plain(err), key=key)
+            st.update(ok=False, problem=plain(err), ownerAction=owners_to_fix(err), key=key)
             save_status(st)
             print(f"Echo: {plain(err)}")
             return 0
     key.update(kind=acct["kind"], source=source)
-    st.update(ok=True, problem=None, account={k: acct.get(k) for k in
+    st.update(ok=True, problem=None, ownerAction=False, account={k: acct.get(k) for k in
                                                ("username", "accountType", "followers", "mediaCount")})
 
     # Keep the key alive.

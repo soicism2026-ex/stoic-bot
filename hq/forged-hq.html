@@ -552,7 +552,8 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       offduty: "Instagram is up to date. Next check {next}.",
       oncall: "Instagram is up to date.",
       waiting: "I need a working Instagram key from you. The steps are under Needs your call.",
-      failed: "Instagram won't let me in. It needs a new key." } },
+      paused: "On hold until there's an Instagram key. I start by myself the day one is in GitHub.",
+      failed: "Instagram is having trouble. I try again next shift." } },
     librarian: { name: "Varro", title: "Librarian", sprite: "librarian", lines: {
       working: "Restocking the quote shelf from the classics.",
       done: "{days} days of checked quotes on the shelf. Next restock {next}.",
@@ -696,7 +697,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       if (status === "idle" && shiftDone(b)) { status = "done"; shift = SHIFT_PILL[b.id] || "Done for today"; }
       if (status === "idle") status = b.next ? "offduty" : "oncall";
       const waitingOn = asksFor(b.id);
-      if (waitingOn.length && ["offduty", "oncall", "done", "failed"].includes(status)) { status = "waiting"; shift = ""; }
+      if (waitingOn.length && ["offduty", "oncall", "done", "failed", "paused"].includes(status)) { status = "waiting"; shift = ""; }
       const helping = CREW[crew] && CREW[crew].name ? onShift(CREW[crew].name) : null;
       if (helping && status !== "working") { status = "working"; shift = ""; }
       let facts = b.note || "";
