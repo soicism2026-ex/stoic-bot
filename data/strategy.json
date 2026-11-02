@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-01",
+ "updated": "2026-11-02",
  "by": "Frontinus (scripts/strategist.py, no paid API)",
  "window_days": 28,
- "settled_edits": 35,
- "median_views_day3": 189,
- "median_retention": 90.2,
+ "settled_edits": 36,
+ "median_views_day3": 195.5,
+ "median_retention": 91.0,
  "theme_rank": {
   "friendship": 1,
   "desire": 1,
@@ -39,7 +39,7 @@
     "key": "adversity",
     "n": 2,
     "median_views_day3": 279.0,
-    "lift": 1.19,
+    "lift": 1.26,
     "median_retention": 101.7,
     "verdict": "too few"
    },
@@ -53,33 +53,33 @@
    },
    {
     "key": "resilience",
-    "n": 6,
-    "median_views_day3": 164.5,
-    "lift": 1.03,
-    "median_retention": 80.0,
+    "n": 7,
+    "median_views_day3": 169,
+    "lift": 1.01,
+    "median_retention": 81.8,
     "verdict": "even"
    },
    {
     "key": "fear",
-    "n": 4,
-    "median_views_day3": 237.0,
+    "n": 5,
+    "median_views_day3": 222,
     "lift": 1.01,
     "median_retention": 80.2,
     "verdict": "even"
    },
    {
     "key": "mortality",
-    "n": 3,
-    "median_views_day3": 173,
-    "lift": 0.78,
+    "n": 2,
+    "median_views_day3": 194.5,
+    "lift": 0.84,
     "median_retention": 125.3,
-    "verdict": "even"
+    "verdict": "too few"
    },
    {
     "key": "discipline",
     "n": 8,
     "median_views_day3": 159.0,
-    "lift": 0.68,
+    "lift": 0.73,
     "median_retention": 95.8,
     "verdict": "loser"
    },
@@ -102,6 +102,14 @@
   ],
   "author": [
    {
+    "key": "Seneca",
+    "n": 13,
+    "median_views_day3": 222,
+    "lift": 1.01,
+    "median_retention": 88.3,
+    "verdict": "even"
+   },
+   {
     "key": "Epictetus",
     "n": 8,
     "median_views_day3": 241.0,
@@ -110,19 +118,11 @@
     "verdict": "even"
    },
    {
-    "key": "Seneca",
-    "n": 12,
-    "median_views_day3": 234.5,
-    "lift": 0.98,
-    "median_retention": 88.3,
-    "verdict": "even"
-   },
-   {
     "key": "Marcus Aurelius",
     "n": 15,
-    "median_views_day3": 121,
-    "lift": 0.87,
-    "median_retention": 95.8,
+    "median_views_day3": 173,
+    "lift": 0.97,
+    "median_retention": 98.0,
     "verdict": "even"
    }
   ],
@@ -131,7 +131,7 @@
     "key": "question",
     "n": 2,
     "median_views_day3": 307.0,
-    "lift": 1.24,
+    "lift": 1.28,
     "median_retention": 89.3,
     "verdict": "too few"
    },
@@ -139,26 +139,26 @@
     "key": "command",
     "n": 8,
     "median_views_day3": 249.5,
-    "lift": 1.06,
+    "lift": 1.1,
     "median_retention": 88.3,
     "verdict": "even"
    },
    {
     "key": "statement",
-    "n": 25,
-    "median_views_day3": 129,
-    "lift": 0.82,
-    "median_retention": 92.5,
+    "n": 26,
+    "median_views_day3": 144.5,
+    "lift": 0.84,
+    "median_retention": 95.7,
     "verdict": "even"
    }
   ],
   "hook_len": [
    {
     "key": "long (7+)",
-    "n": 16,
-    "median_views_day3": 219.0,
-    "lift": 1.1,
-    "median_retention": 87.0,
+    "n": 18,
+    "median_views_day3": 214.0,
+    "lift": 1.07,
+    "median_retention": 91.4,
     "verdict": "even"
    },
    {
@@ -171,10 +171,10 @@
    },
    {
     "key": "medium (5-6)",
-    "n": 12,
-    "median_views_day3": 144.5,
-    "lift": 0.79,
-    "median_retention": 87.0,
+    "n": 11,
+    "median_views_day3": 160,
+    "lift": 0.86,
+    "median_retention": 86.5,
     "verdict": "even"
    }
   ],
@@ -183,22 +183,22 @@
     "key": "long (25+)",
     "n": 7,
     "median_views_day3": 249,
-    "lift": 1.07,
+    "lift": 1.13,
     "median_retention": 80.2,
     "verdict": "even"
    },
    {
     "key": "medium (13-24)",
     "n": 19,
-    "median_views_day3": 173,
-    "lift": 0.86,
-    "median_retention": 92.5,
+    "median_views_day3": 182,
+    "lift": 0.97,
+    "median_retention": 95.7,
     "verdict": "even"
    },
    {
     "key": "short (<=12 words)",
-    "n": 9,
-    "median_views_day3": 90,
+    "n": 10,
+    "median_views_day3": 98.0,
     "lift": 0.49,
     "median_retention": 91.0,
     "verdict": "loser"
@@ -209,31 +209,31 @@
     "key": "Clash Defiant",
     "n": 2,
     "median_views_day3": 403.5,
-    "lift": 2.51,
+    "lift": 2.34,
     "median_retention": 88.8,
-    "verdict": "too few"
-   },
-   {
-    "key": "Ancient Rite",
-    "n": 2,
-    "median_views_day3": 412.0,
-    "lift": 1.96,
-    "median_retention": 159.2,
     "verdict": "too few"
    },
    {
     "key": "Five Armies",
     "n": 2,
     "median_views_day3": 442.5,
-    "lift": 1.96,
+    "lift": 2.03,
     "median_retention": 89.0,
+    "verdict": "too few"
+   },
+   {
+    "key": "Ancient Rite",
+    "n": 2,
+    "median_views_day3": 412.0,
+    "lift": 1.99,
+    "median_retention": 159.2,
     "verdict": "too few"
    },
    {
     "key": "Heroic Age",
     "n": 2,
     "median_views_day3": 357.0,
-    "lift": 1.74,
+    "lift": 1.75,
     "median_retention": 84.6,
     "verdict": "too few"
    },
@@ -241,7 +241,7 @@
     "key": "Volatile Reaction",
     "n": 2,
     "median_views_day3": 161.5,
-    "lift": 1.72,
+    "lift": 1.56,
     "median_retention": 73.2,
     "verdict": "too few"
    },
@@ -249,7 +249,7 @@
     "key": "Prelude and Action",
     "n": 2,
     "median_views_day3": 160.5,
-    "lift": 1.36,
+    "lift": 1.41,
     "median_retention": 85.6,
     "verdict": "too few"
    },
@@ -257,15 +257,15 @@
     "key": "el3_grand_braam",
     "n": 1,
     "median_views_day3": 297,
-    "lift": 1.26,
-    "median_retention": 127.1,
+    "lift": 1.36,
+    "median_retention": 123.9,
     "verdict": "too few"
    },
    {
     "key": "promise_spedup__xl",
     "n": 1,
     "median_views_day3": 280,
-    "lift": 1.19,
+    "lift": 1.28,
     "median_retention": 100.1,
     "verdict": "too few"
    },
@@ -273,7 +273,7 @@
     "key": "el_bass_piano",
     "n": 1,
     "median_views_day3": 252,
-    "lift": 1.07,
+    "lift": 1.15,
     "median_retention": 80.2,
     "verdict": "too few"
    },
@@ -281,16 +281,40 @@
     "key": "el3_taiko_distant",
     "n": 1,
     "median_views_day3": 248,
-    "lift": 1.06,
-    "median_retention": 61.2,
+    "lift": 1.13,
+    "median_retention": 62.1,
     "verdict": "too few"
    },
    {
     "key": "bass_motivation__xl",
     "n": 1,
     "median_views_day3": 222,
-    "lift": 0.95,
-    "median_retention": 70.2,
+    "lift": 1.01,
+    "median_retention": 71.9,
+    "verdict": "too few"
+   },
+   {
+    "key": "el3_upright_tape",
+    "n": 1,
+    "median_views_day3": 212,
+    "lift": 0.97,
+    "median_retention": 101.8,
+    "verdict": "too few"
+   },
+   {
+    "key": "Crusade",
+    "n": 2,
+    "median_views_day3": 199.0,
+    "lift": 0.9,
+    "median_retention": 129.5,
+    "verdict": "too few"
+   },
+   {
+    "key": "el3_heartbeat",
+    "n": 1,
+    "median_views_day3": 189,
+    "lift": 0.86,
+    "median_retention": 117.4,
     "verdict": "too few"
    },
    {
@@ -302,26 +326,18 @@
     "verdict": "too few"
    },
    {
-    "key": "Crusade",
-    "n": 3,
-    "median_views_day3": 182,
-    "lift": 0.82,
-    "median_retention": 129.5,
-    "verdict": "even"
-   },
-   {
-    "key": "el3_heartbeat",
+    "key": "el3_minimal_sub",
     "n": 1,
-    "median_views_day3": 189,
-    "lift": 0.8,
-    "median_retention": 117.4,
+    "median_views_day3": 160,
+    "lift": 0.73,
+    "median_retention": 95.7,
     "verdict": "too few"
    },
    {
     "key": "Achilles",
     "n": 2,
     "median_views_day3": 134.5,
-    "lift": 0.74,
+    "lift": 0.71,
     "median_retention": 116.4,
     "verdict": "too few"
    },
@@ -330,22 +346,14 @@
     "n": 2,
     "median_views_day3": 157.0,
     "lift": 0.69,
-    "median_retention": 78.3,
-    "verdict": "too few"
-   },
-   {
-    "key": "el3_minimal_sub",
-    "n": 1,
-    "median_views_day3": 160,
-    "lift": 0.68,
-    "median_retention": 97.3,
+    "median_retention": 77.2,
     "verdict": "too few"
    },
    {
     "key": "el_bass_felt_dark",
     "n": 1,
     "median_views_day3": 129,
-    "lift": 0.55,
+    "lift": 0.59,
     "median_retention": 95.8,
     "verdict": "too few"
    },
@@ -353,7 +361,7 @@
     "key": "Unholy Knight",
     "n": 2,
     "median_views_day3": 92.0,
-    "lift": 0.5,
+    "lift": 0.49,
     "median_retention": 109.2,
     "verdict": "too few"
    },
@@ -363,6 +371,14 @@
     "median_views_day3": 104.0,
     "lift": 0.49,
     "median_retention": 81.0,
+    "verdict": "too few"
+   },
+   {
+    "key": "el3_more_like_1",
+    "n": 1,
+    "median_views_day3": 106,
+    "lift": 0.48,
+    "median_retention": null,
     "verdict": "too few"
    },
    {
@@ -377,18 +393,18 @@
   "voice": [
    {
     "key": "Steffan",
-    "n": 17,
-    "median_views_day3": 169,
-    "lift": 1.05,
+    "n": 16,
+    "median_views_day3": 175.5,
+    "lift": 1.09,
     "median_retention": 90.2,
     "verdict": "even"
    },
    {
     "key": "Brian",
-    "n": 16,
-    "median_views_day3": 235.0,
-    "lift": 0.98,
-    "median_retention": 91.4,
+    "n": 18,
+    "median_views_day3": 219.0,
+    "lift": 0.99,
+    "median_retention": 95.7,
     "verdict": "even"
    },
    {
@@ -404,16 +420,16 @@
    {
     "key": "first of the day",
     "n": 24,
-    "median_views_day3": 202.0,
-    "lift": 1.05,
-    "median_retention": 85.6,
+    "median_views_day3": 217.0,
+    "lift": 1.09,
+    "median_retention": 86.3,
     "verdict": "even"
    },
    {
     "key": "second of the day",
-    "n": 11,
-    "median_views_day3": 189,
-    "lift": 0.8,
+    "n": 12,
+    "median_views_day3": 181.0,
+    "lift": 0.81,
     "median_retention": 100.1,
     "verdict": "even"
    }
@@ -423,24 +439,24 @@
     "key": "Saturday",
     "n": 3,
     "median_views_day3": 326,
-    "lift": 1.32,
+    "lift": 1.39,
     "median_retention": 92.4,
+    "verdict": "winner"
+   },
+   {
+    "key": "Sunday",
+    "n": 3,
+    "median_views_day3": 309,
+    "lift": 1.39,
+    "median_retention": 91.0,
     "verdict": "winner"
    },
    {
     "key": "Monday",
     "n": 6,
     "median_views_day3": 202.0,
-    "lift": 1.07,
+    "lift": 1.15,
     "median_retention": 89.3,
-    "verdict": "even"
-   },
-   {
-    "key": "Sunday",
-    "n": 4,
-    "median_views_day3": 262.5,
-    "lift": 1.06,
-    "median_retention": 91.0,
     "verdict": "even"
    },
    {
@@ -455,7 +471,7 @@
     "key": "Thursday",
     "n": 6,
     "median_views_day3": 210.5,
-    "lift": 0.88,
+    "lift": 0.92,
     "median_retention": 81.0,
     "verdict": "even"
    },
@@ -463,16 +479,16 @@
     "key": "Wednesday",
     "n": 6,
     "median_views_day3": 164.5,
-    "lift": 0.78,
+    "lift": 0.81,
     "median_retention": 109.2,
     "verdict": "even"
    },
    {
     "key": "Friday",
-    "n": 4,
-    "median_views_day3": 132.0,
-    "lift": 0.62,
-    "median_retention": 148.2,
+    "n": 6,
+    "median_views_day3": 159.0,
+    "lift": 0.73,
+    "median_retention": 101.8,
     "verdict": "loser"
    }
   ]
@@ -561,7 +577,7 @@
    "voice": "Steffan",
    "slot": "first of the day",
    "weekday": "Wednesday",
-   "rel": 2.574468085106383
+   "rel": 2.2616822429906542
   }
  ],
  "bottom": [
@@ -580,24 +596,7 @@
    "voice": "Brian",
    "slot": "second of the day",
    "weekday": "Friday",
-   "rel": 0.020161290322580645
-  },
-  {
-   "id": "no_right_wind",
-   "date": "2026-10-24",
-   "views": 54,
-   "retention": null,
-   "theme": "discipline",
-   "author": "Seneca",
-   "hook": "No goal? Then nothing will feel right.",
-   "hook_form": "statement",
-   "hook_len": "long (7+)",
-   "quote_len": "medium (13-24)",
-   "music": "Heroic Age",
-   "voice": "Brian",
-   "slot": "second of the day",
-   "weekday": "Saturday",
-   "rel": 0.21818181818181817
+   "rel": 0.020242914979757085
   },
   {
    "id": "life_is_opinion",
@@ -614,7 +613,24 @@
    "voice": "Steffan",
    "slot": "first of the day",
    "weekday": "Friday",
-   "rel": 0.23076923076923078
+   "rel": 0.2158273381294964
+  },
+  {
+   "id": "no_right_wind",
+   "date": "2026-10-24",
+   "views": 54,
+   "retention": null,
+   "theme": "discipline",
+   "author": "Seneca",
+   "hook": "No goal? Then nothing will feel right.",
+   "hook_form": "statement",
+   "hook_len": "long (7+)",
+   "quote_len": "medium (13-24)",
+   "music": "Heroic Age",
+   "voice": "Brian",
+   "slot": "second of the day",
+   "weekday": "Saturday",
+   "rel": 0.2302771855010661
   }
  ]
 }
