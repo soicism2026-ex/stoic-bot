@@ -503,6 +503,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     herald: ["................",".....kkkkkk.....","....kllllllk....","....kllllllk....","....klsssslk..kk","....ksessesk.kgg","....kssssssk.kgg","....kssSSssk.kgk","...kooooooookgk.","...koooooooogk..","...kooooooook...","...ksoooooosk...","....ksskkssk....","....ksskkssk....","....knnkknnk....",".....kk..kk....."],
     librarian: ["................",".....kkkkkk.....","....knnnnnnk....","....knnnnnnk....","....knssssnk....","....ksessesk....","....kssssssk....","....kssSSssk....","...kLllllllLk...","..kwwwwwwwwwwk..","..kWwkkwkwkwWk..","..kwwwwwwwwwwk..","...kLllllllLk...","....kllkkllk....","....knnkknnk....",".....kk..kk....."],
     tactician: ["................",".....kkkkkk.....","....kmmmmmmk....","....kmmmmmmk....","....kmssssmk....","....ksessesk....","....kmssssmk....","....kmmmmmmk....","...kbbbbbbbbk...","..kyykyykbbbbk..","..kykyykybbbbk..","..kyykyykbbbbk..","...kBbbbbbbBk...","....kbbkkbbk....","....knnkknnk....",".....kk..kk....."],
+    orator: ["................",".....kkkkkk.....","....kmmmmmmk....","....kmmmmmmk....","....kmssssmk....","....ksessesk....","....kssssssk....","....kssSSssk....","...kwwwwwwwpk...","..kwwwwwwwwpwk..","..kwwWwwwwpwwk..","..kswwwwwpwwsk..","...kwwwwpwwwk...","....kwwkkwwk....","....knnkknnk....",".....kk..kk....."],
     echo: ["................",".....kkkkkk.....","....kooooook....","...kooooooook...","...koossssook...","...kosessesok...","...kossssssok...","...kossSSssok...","...kopppppppk...","..kooppyppppPk..","..kopppyppppPk..","..kspppppyppsk..","...kppppppppk...","....kppkkppk....","....knnkknnk....",".....kk..kk....."],
   };
   const CREW = {
@@ -544,6 +545,15 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       waiting: "My songs are waiting for your pick, under Needs your call.",
       oncall: "Lyre's tuned. I write music when Claude asks.",
       failed: "Snapped a string on the last song." } },
+    // Cicero, the marketer (owner 2026-11-03: "Hire a marketing professional"):
+    // how the channel reaches people. Proposes one test at a time; ships none
+    // without the owner's yes (scripts/marketer.py).
+    marketer: { name: "Cicero", title: "Marketing", sprite: "orator", lines: {
+      working: "Reading how the channel reaches people.",
+      done: "Today's marketing read is in. Next one {next}.",
+      offduty: "Drafting the next pitch. Next read {next}.",
+      waiting: "I have a growth change ready. It needs your yes under Needs your call.",
+      failed: "Couldn't read the numbers today. I try again {next}." } },
     // Echo runs Instagram (owner 2026-10-28: "get people to run that aswell"):
     // posts every Short there as a Reel, keeps the key alive, brings the numbers.
     instagram: { name: "Echo", title: "Instagram", sprite: "echo", lines: {
