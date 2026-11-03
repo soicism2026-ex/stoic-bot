@@ -51,6 +51,8 @@ BOTS = [
      "role": "Rehearses the next Short twice a day so you can watch it before it airs. Never posts"},
     {"id": "composer", "name": "Composer", "workflow": "make-music.yml",
      "role": "Generates original music for the edits"},
+    {"id": "marketer", "name": "Marketing", "workflow": "marketing.yml",
+     "role": "Works on how the channel reaches people: posting times, packaging, turning viewers into subscribers. Tests one change at a time, each only with your yes"},
     {"id": "instagram", "name": "Instagram", "workflow": "instagram.yml",
      "role": "Posts every Short to Instagram as a Reel, keeps the key alive and brings in Instagram's numbers"},
 ]
@@ -253,6 +255,8 @@ def bots(runs: list[dict], now: dt.datetime, producer_note: str,
                "url": f"https://github.com/{REPO}/actions/workflows/{b['workflow']}"}
         if b["id"] == "producer":
             doc["note"] = producer_note
+        if b["id"] == "marketer":
+            doc["note"] = marketing().get("note") or ""
         if b["id"] == "instagram":
             ig = ig_status()
             if ig.get("problem"):
@@ -273,6 +277,14 @@ def bots(runs: list[dict], now: dt.datetime, producer_note: str,
 # ---------------------------------------------------------------------------
 # Instagram (Echo, scripts/echo.py)
 # ---------------------------------------------------------------------------
+
+def marketing() -> dict:
+    """Cicero's latest read (scripts/marketer.py)."""
+    try:
+        return json.loads((DATA / "marketing.json").read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return {}
+
 
 def ig_status() -> dict:
     try:

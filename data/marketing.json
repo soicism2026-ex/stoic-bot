@@ -1,0 +1,87 @@
+{
+ "updated": "2026-11-03",
+ "source": "scripts/marketer.py (Cicero, free)",
+ "funnel": {
+  "asOf": "2026-11-03",
+  "subscribers": 252,
+  "viewsPerDay": 323,
+  "viewsPerDayBefore": 548,
+  "subsPerDay": 1.3,
+  "subsPerDayBefore": 1.3,
+  "subsPer1kViews": 4.0,
+  "likesPer100Views": 4.6,
+  "viewsChange": -0.41
+ },
+ "hours": [
+  {
+   "band": "00-03",
+   "posts": 80,
+   "lift": 1.13,
+   "stalled": 12
+  },
+  {
+   "band": "04-07",
+   "posts": 29,
+   "lift": 1.01,
+   "stalled": 5
+  },
+  {
+   "band": "08-11",
+   "posts": 64,
+   "lift": 0.99,
+   "stalled": 11
+  },
+  {
+   "band": "12-15",
+   "posts": 29,
+   "lift": 0.77,
+   "stalled": 6
+  },
+  {
+   "band": "16-19",
+   "posts": 52,
+   "lift": 0.71,
+   "stalled": 9
+  },
+  {
+   "band": "20-23",
+   "posts": 42,
+   "lift": 0.74,
+   "stalled": 9
+  }
+ ],
+ "tests": [
+  {
+   "id": "second-post-morning",
+   "kind": "second_vs_first",
+   "question": "Does the second Short reach more people in the morning than in the afternoon?",
+   "change": "The second Short goes out from 07:00 UTC (about 3-5 AM Toronto) instead of 15:00 UTC (about 11 AM-1 PM Toronto). Still 2 a day; the evening Short stays put.",
+   "why": "Across 294 Shorts, each against its own week: 00-03 UTC 1.15x, 04-11 UTC 1.0x, 12-19 UTC 0.75x. Since October 19 the afternoon Short got a median 0.63x of the same day's evening Short, and six of them stalled under 90 views.",
+   "measure": "The second Short's day-1 views divided by the same day's first Short's, for 14 days, against the median before.",
+   "baselineSince": "2026-10-19",
+   "ask": "post-times",
+   "status": "proposed",
+   "proposed": "2026-11-03",
+   "started": null,
+   "before": {
+    "days": 15,
+    "median": 0.63
+   }
+  }
+ ],
+ "next": [
+  {
+   "id": "pinned-question",
+   "idea": "The pinned comment: every edit asks \"Which line hit hardest? Write it below.\" under a one-line quote, and no viewer has ever answered. Test a direct question about the viewer's own life, matched to the quote's theme, to get the first viewer comments (comments are a signal YouTube ranks on)."
+  },
+  {
+   "id": "playlists",
+   "idea": "A playlist per philosopher (Marcus Aurelius, Seneca, Epictetus), with every Short filed in it, so someone who likes one can binge the rest, and the playlists can show up in YouTube search."
+  },
+  {
+   "id": "third-short",
+   "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."
+  }
+ ],
+ "note": "323 views a day (-41% on last week) · 1.3 new subscribers a day · 1 test waiting for your yes"
+}

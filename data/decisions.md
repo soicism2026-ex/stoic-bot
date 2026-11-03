@@ -1530,3 +1530,15 @@ that story must always be captioned "recorded in the Historia Augusta", never
   week, 00-03 UTC posts get 1.15x, 04-11 UTC 1.0x, 12-19 UTC 0.75x. Since
   October the 15:00-UTC second post averages 0.60x, and all five weakest edits
   were posted in that slot.
+- **2026-11-03 — MARKETING: Cicero hired.** Owner, in the HQ: *"Hire a
+  marketing professional"*. Cicero (`scripts/marketer.py`, daily, free) works
+  on how the channel reaches people, where Frontinus reads what the content
+  does. Every day: the funnel (views and subscribers a day, this week against
+  last), reach by upload hour, and his tests. He tests one change at a time,
+  each with a question, a measure and a verdict, and ships none without the
+  owner's yes in the HQ. His first test is the waiting `post-times` ask (the
+  second Short in the morning). It is judged by the second Short's day-1 views
+  over the same day's first, 0.63x before (median of 15 days). Queued after it:
+  the pinned comment (every edit asks "Which line hit hardest?" under a one-line
+  quote, and no viewer has ever answered), a playlist per philosopher, and, if
+  mornings work, a third Short (that one is the owner's cadence call).

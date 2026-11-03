@@ -1,0 +1,46 @@
+# Cicero, the marketer (owner 2026-11-03: "Hire a marketing professional").
+# Daily at 10:30 UTC, after Frontinus's read: the funnel (views and
+# subscribers a day, this week against last), reach by upload hour, and his
+# tests, one change at a time, each shipped only after the owner says yes in
+# the HQ. Writes data/marketing.md and data/marketing.json (the HQ reads it).
+# Free: numbers the bots already keep, no secrets, no paid API.
+# scripts/marketer.py says how each number is made.
+name: marketing
+on:
+  schedule:
+    - cron: "30 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: marketing
+  cancel-in-progress: false
+
+jobs:
+  marketing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Read how the channel reaches people (free)
+        run: python scripts/marketer.py --write
+
+      - name: Commit the read
+        run: |
+          git config user.name "stoic-bot"
+          git config user.email "stoic-bot@users.noreply.github.com"
+          git add data/marketing.md data/marketing.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -q -m "marketing: Cicero's daily read [skip ci]"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
