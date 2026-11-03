@@ -4,10 +4,10 @@ _Updated 2026-11-03 by Cicero (scripts/marketer.py, free, no paid API)._
 
 ## The funnel
 
-- Views a day, last 7 days: **323** (the 7 before: 548, -41%)
-- New subscribers a day: **1.3** (the 7 before: 1.3); 252 in all
-- Subscribers per 1,000 views: 4.0
-- Likes per 100 views (Shorts of the last 14 days): 4.6
+- Views a day, last 7 days: **350** (the 7 before: 548, -36%)
+- New subscribers a day: **1.4** (the 7 before: 1.3); 253 in all
+- Subscribers per 1,000 views: 4.1
+- Likes per 100 views (Shorts of the last 14 days): 4.5
 
 ## Reach by upload hour (UTC)
 
@@ -15,7 +15,7 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 
 | Hour (UTC) | Shorts | Reach vs its week | Stalled (<0.4x) |
 |---|---|---|---|
-| 00-03 | 80 | 1.13x | 12 |
+| 00-03 | 80 | 1.19x | 12 |
 | 04-07 | 29 | 1.01x | 5 |
 | 08-11 | 64 | 0.99x | 11 |
 | 12-15 | 29 | 0.77x | 6 |
