@@ -119,7 +119,7 @@ def test_apelles_rehearses_after_every_post_with_the_crons_as_backstop():
     assert jobs["preview"]["needs"] == "check" and jobs["preview"]["if"] == "needs.check.outputs.go == '1'"
     assert "github.event_name == 'workflow_run'" in jobs["preview"]["env"]["UP_NEXT"]
     assert wf["permissions"]["actions"] == "read"
-    assert {c["cron"] for c in on["schedule"]} == {"40 8 * * *", "40 19 * * *"}
+    assert {c["cron"] for c in on["schedule"]} == {"40 4 * * *", "40 19 * * *"}
     steps = {s.get("name"): s for s in wf["jobs"]["preview"]["steps"]}
     assert "src/airday.py --next" in steps["The day the next post airs"]["run"]
     assert "REEL_TODAY=" in steps["The day the next post airs"]["run"]

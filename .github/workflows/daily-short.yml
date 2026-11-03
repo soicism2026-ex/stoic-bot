@@ -145,11 +145,19 @@ jobs:
           # disabled the voice steps on 2026-08-07.
           # 2/day since 2026-10-18 (owner: "push it more", chose 2 over 3).
           MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '2' }}
-          # Second post waits for 15:00 UTC so the two are spread (see
-          # daily_post.POST_SLOT_HOURS).
-          POST_SLOT_HOURS: "0,15"
-          # ...and never within 6 hours of the previous video.
-          MIN_GAP_HOURS: "6"
+          # Second post from 07:00 UTC (2026-11-03, owner-approved; was 15:00).
+          # Across 294 Shorts, each against its own week: 00-03 UTC posts got
+          # 1.15x, 04-11 UTC 1.0x, 12-19 UTC 0.75x, and since October the
+          # 15:00 post averaged 0.60x, holding all five weakest edits. The
+          # first post still goes out around 01:00-02:30 (the 23:00 cron, late);
+          # the second comes from the 07:00 cron, 6+ hours later
+          # (daily_post.POST_SLOT_HOURS).
+          POST_SLOT_HOURS: "0,7"
+          # ...and never within 5 hours of the previous video (6 until
+          # 2026-11-03: a first post at 02:30 then blocked the 07:00 run, which
+          # GitHub often starts by 08:00, pushing the second post into the
+          # weak afternoon window the slot change avoids).
+          MIN_GAP_HOURS: "5"
           # In-process Chatterbox is the primary voice. Defaults to on; set the
           # repo variable CHATTERBOX_LOCAL=0 to fall back to Replicate/edge-tts.
           CHATTERBOX_LOCAL: ${{ vars.CHATTERBOX_LOCAL || '0' }}
