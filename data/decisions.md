@@ -1519,3 +1519,14 @@ that story must always be captioned "recorded in the Historia Augusta", never
   `IG_ACCESS_TOKEN`, his next shift posts the latest Short with no other step.
   The bio-link question is withdrawn until then. The steps stay in the HQ ask
   `instagram-key` for whenever he picks it up again.
+- **2026-11-03 — PRIORITY: the channel and its growth.** Owner: *"Focus on
+  the channel and growth instagram is still up in the air for now"*. Work goes
+  to the YouTube channel's growth (views per day, subscribers, the 500 subs +
+  3M views/90d goal). Instagram stays on hold, as on 11-02, until he raises
+  it. First read: about 400 views a day from 2 Shorts (median ~200 each, nearly
+  all in a Short's first day), +1-4 subscribers a day, 252 subscribers. No video
+  trait (watch %, length, quote or hook length, looping) predicts reach across
+  32 edits. The upload hour does: across all 294 Shorts, each against its own
+  week, 00-03 UTC posts get 1.15x, 04-11 UTC 1.0x, 12-19 UTC 0.75x. Since
+  October the 15:00-UTC second post averages 0.60x, and all five weakest edits
+  were posted in that slot.
