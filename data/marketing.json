@@ -1,16 +1,16 @@
 {
- "updated": "2026-11-03",
+ "updated": "2026-11-04",
  "source": "scripts/marketer.py (Cicero, free)",
  "funnel": {
-  "asOf": "2026-11-03",
+  "asOf": "2026-11-04",
   "subscribers": 253,
-  "viewsPerDay": 350,
-  "viewsPerDayBefore": 548,
-  "subsPerDay": 1.4,
-  "subsPerDayBefore": 1.3,
-  "subsPer1kViews": 4.1,
-  "likesPer100Views": 4.5,
-  "viewsChange": -0.36
+  "viewsPerDay": 428,
+  "viewsPerDayBefore": 600,
+  "subsPerDay": 1.3,
+  "subsPerDayBefore": 1.1,
+  "subsPer1kViews": 3.0,
+  "likesPer100Views": 4.4,
+  "viewsChange": -0.29
  },
  "hours": [
   {
@@ -27,7 +27,7 @@
   },
   {
    "band": "08-11",
-   "posts": 64,
+   "posts": 65,
    "lift": 0.99,
    "stalled": 11
   },
@@ -39,8 +39,8 @@
   },
   {
    "band": "16-19",
-   "posts": 52,
-   "lift": 0.71,
+   "posts": 53,
+   "lift": 0.75,
    "stalled": 9
   },
   {
@@ -64,8 +64,8 @@
    "proposed": "2026-11-03",
    "started": null,
    "before": {
-    "days": 15,
-    "median": 0.63
+    "days": 16,
+    "median": 0.6
    }
   }
  ],
@@ -83,5 +83,5 @@
    "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."
   }
  ],
- "note": "350 views a day (-36% on last week) · 1.4 new subscribers a day · 1 test waiting for your yes"
+ "note": "428 views a day (-29% on last week) · 1.3 new subscribers a day · 1 test waiting for your yes"
 }
