@@ -111,14 +111,14 @@
  "source": "scripts/marketer.py (Cicero, free)",
  "funnel": {
   "asOf": "2026-11-06",
-  "subscribers": 256,
-  "viewsPerDay": 396,
+  "subscribers": 257,
+  "viewsPerDay": 446,
   "viewsPerDayBefore": 432,
-  "subsPerDay": 1.4,
+  "subsPerDay": 1.6,
   "subsPerDayBefore": 1.4,
-  "subsPer1kViews": 3.6,
+  "subsPer1kViews": 3.5,
   "likesPer100Views": 4.6,
-  "viewsChange": -0.08
+  "viewsChange": 0.03
  },
  "hours": [
   {
@@ -143,7 +143,7 @@
    "band": "12-15",
    "posts": 31,
    "lift": 0.69,
-   "stalled": 7
+   "stalled": 6
   },
   {
    "band": "16-19",
@@ -185,31 +185,60 @@
   {
    "id": "pinned-question",
    "kind": "pinned_question",
-   "question": "Does a real question under each Short get viewers talking?",
-   "change": "Under each edit, the channel's comment asks the viewer something about his own life, matched to the quote's theme (fear: \"What's one fear that turned out smaller than you expected?\"), instead of \"Which line hit hardest? Write it below.\" Days alternate between the two for 14 days, so both run in the same weeks.",
-   "why": "The current question sits under a one-line quote, and no viewer has ever answered it: every edit has exactly one comment, the channel's own. Comments are one of the signals YouTube ranks on.",
-   "measure": "Comments from viewers per 1,000 views, question days against generic days, over 14 days.",
+   "question": "Do a real description and a question under each Short get viewers talking?",
+   "change": "Every edit's description opens with three short paragraphs about the viewer's own life and asks one question (\"💬 Question: ... Share your thoughts in the comments.\"), modelled on the viral Short the owner sent; the same question is the channel's comment under the Short, instead of \"Which line hit hardest? Write it below.\" On every Short from November 6: the owner wants it on all of them, so it is not an A/B.",
+   "why": "Through November 5, viewers left 5 comments on 51 edits (0.48 per 1,000 views). Comments are one of the signals YouTube ranks on, and a question about the viewer's own life is easier to answer than one about the video.",
+   "measure": "Comments from viewers per 1,000 views on the Shorts in the new style (14 days from the start) against the Shorts of the 14 days before; likes per 100 views alongside.",
    "ask": "pinned-question",
-   "status": "proposed",
+   "status": "running",
    "proposed": "2026-11-06",
-   "started": null
+   "started": "2026-11-06",
+   "approved": "2026-11-06: owner, in the HQ, on this test's card: a viral Short's description, \"use it as inspiration for pur next shorts\"",
+   "before": {
+    "shorts": 28,
+    "views": 5977,
+    "comments": 5,
+    "likes": 276,
+    "per1k": 0.84,
+    "likesPer100": 4.6
+   },
+   "during": {
+    "arms": {
+     "old style": {
+      "shorts": 28,
+      "views": 5977,
+      "comments": 5,
+      "likes": 276,
+      "per1k": 0.84,
+      "likesPer100": 4.6
+     }
+    },
+    "ends": "2026-11-20"
+   }
   },
   {
    "id": "playlists",
    "kind": "traffic_source",
    "source": "PLAYLIST",
    "question": "Do playlists per philosopher bring in extra views?",
-   "change": "Three public playlists (\"Marcus Aurelius quotes: Stoic Shorts\", the same for Seneca and Epictetus), with every edit filed under its philosopher, newest first, and each new Short added the day it airs.",
+   "change": "Three public playlists (\"Marcus Aurelius quotes: Stoic Shorts\", the same for Seneca and Epictetus), with every public edit filed under its philosopher, newest first, and each new Short added the day it airs. A Short the prune bot unlists is taken out, so the playlists show the ones still on the channel.",
    "why": "Someone who liked one Short can watch that philosopher's others in a row, and the playlists can show up when people search for him.",
    "measure": "The share of the channel's views that come from playlists (YouTube's traffic sources), the 14 days after against the 14 before.",
    "ask": "playlists",
-   "status": "proposed",
+   "status": "running",
    "proposed": "2026-11-06",
-   "started": null,
+   "started": "2026-11-06",
+   "approved": "2026-11-06: owner, in the HQ: \"Yes, make the playlists\"",
    "before": {
     "views": 0,
     "of": 5289,
     "share": 0.0
+   },
+   "during": {
+    "views": 0,
+    "of": 0,
+    "share": null,
+    "ends": "2026-11-20"
    }
   }
  ],
@@ -223,5 +252,5 @@
    "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."
   }
  ],
- "note": "396 views a day (-8% on last week) · 1.4 new subscribers a day · testing: Does the second Short reach more people in the morning than in the afternoon?"
+ "note": "446 views a day (+3% on last week) · 1.6 new subscribers a day · testing: Does the second Short reach more people in the morning than in the afternoon? (+2 more)"
 }
