@@ -60,16 +60,24 @@ class _Req:
 class _YT:
     """A fake YouTube: the channel's playlists, what each holds, each video's privacy."""
 
-    def __init__(self, fail_after=None, unlisted=(), manual=True):
-        self.inserted, self.made, self.deleted = [], [], []
+    NOT_FOUND = RuntimeError("<HttpError 404 when requesting ... returned \"The playlist identified with "
+                             "the request's playlistId parameter cannot be found.\". Details: playlistNotFound>")
+
+    def __init__(self, fail_after=None, unlisted=(), manual=True, lag=0, empty_404=False):
+        self.inserted, self.made, self.deleted, self.reads = [], [], [], []
         self.fail_after, self.unlisted, self.manual = fail_after, set(unlisted), manual
+        self.lag, self.empty_404 = lag, empty_404       # 404s right after a playlist is made / when empty
         self.lists: dict[str, str] = {}                 # title -> playlist id
         self.held: dict[str, dict[str, str]] = {}       # playlist id -> {video id: item id}
+        self.fresh: dict[str, int] = {}                 # playlist id -> 404s left before YouTube sees it
         yt = self
 
         class Playlists:
             def list(self, **k):
-                return _Req({"items": [{"id": i, "snippet": {"title": t}} for t, i in yt.lists.items()]})
+                items = [{"id": i, "snippet": {"title": t}} for t, i in yt.lists.items()]
+                if "id" in k:
+                    items = [x for x in items if x["id"] == k["id"]]
+                return _Req({"items": items})
 
             def list_next(self, req, resp):
                 return None
@@ -79,10 +87,20 @@ class _YT:
                 assert body["status"]["privacyStatus"] == "public"
                 pid = f"PL{len(yt.made)}"
                 yt.lists[body["snippet"]["title"]] = pid
+                yt.fresh[pid] = yt.lag
                 return _Req({"id": pid})
+
+        def _seen(pid):
+            if pid not in yt.lists.values() or yt.fresh.get(pid, 0) > 0:
+                yt.fresh[pid] = yt.fresh.get(pid, 0) - 1
+                return False
+            return True
 
         class Items:
             def list(self, part, playlistId, maxResults):
+                yt.reads.append(playlistId)
+                if not _seen(playlistId) or (yt.empty_404 and not yt.held.get(playlistId)):
+                    return _Req(yt.NOT_FOUND)
                 return _Req({"items": [{"id": i, "contentDetails": {"videoId": v}}
                                        for v, i in yt.held.get(playlistId, {}).items()]})
 
@@ -93,6 +111,8 @@ class _YT:
                 sn = body["snippet"]
                 if yt.fail_after is not None and len(yt.inserted) >= yt.fail_after:
                     return _Req(RuntimeError("quotaExceeded"))
+                if not _seen(sn["playlistId"]):
+                    return _Req(yt.NOT_FOUND)
                 if "position" in sn and not yt.manual:
                     return _Req(RuntimeError("<HttpError 400: manualSortRequired>"))
                 yt.inserted.append((sn["playlistId"], sn["resourceId"]["videoId"], sn.get("position")))
@@ -108,7 +128,8 @@ class _YT:
                 return _Req({})
 
         class Videos:
-            def list(self, part, id, maxResults):  # noqa: A002
+            def list(self, part, id, **k):  # noqa: A002  (id lists take no maxResults)
+                assert "maxResults" not in k
                 return _Req({"items": [{"id": v, "status": {
                     "privacyStatus": "unlisted" if v in yt.unlisted else "public"}} for v in id.split(",")]})
 
@@ -194,6 +215,46 @@ def test_a_backfill_is_spread_over_runs_and_stays_newest_first(tmp_path, monkeyp
     for _ in range(3):
         playlists.run(yt=yt)
     assert [v for _, v, _ in yt.inserted] == ["v1", "v3", "v2"] and len(_filed()) == 3
+
+
+def test_a_new_playlist_is_not_read_back_and_youtubes_brief_404_is_waited_out(tmp_path, monkeypatch):
+    """2026-11-06 03:23 UTC, the first real run: Marcus Aurelius's playlist was
+    made, and reading it back one second later got "playlist not found"."""
+    _setup(tmp_path, monkeypatch)
+    slept = []
+    monkeypatch.setattr(playlists.time, "sleep", slept.append)
+    yt = _YT(lag=2)                                                         # YouTube needs a moment
+    playlists.run(yt=yt)
+    assert yt.reads == []                                                   # a new playlist holds nothing
+    assert [v for _, v, _ in yt.inserted] == ["v1", "v3", "v2"] and len(_filed()) == 3
+    assert slept == [3, 8, 3, 8]                                            # two waits per new playlist
+
+
+def test_the_playlist_the_first_run_left_empty_gets_its_shorts(tmp_path, monkeypatch):
+    """The state that run left: Marcus's playlist made, nothing filed; an
+    empty playlist may answer 404 to the item read, and it still exists."""
+    _setup(tmp_path, monkeypatch)
+    yt = _YT(empty_404=True)
+    yt.lists["Marcus Aurelius quotes: Stoic Shorts"] = "PLbrx2y4z1J8I"
+    playlists.STATE.write_text(json.dumps({"filed": {}, "playlists": {"Marcus Aurelius": "PLbrx2y4z1J8I"}}))
+    playlists.run(yt=yt)
+    assert yt.made == ["Seneca quotes: Stoic Shorts"]                       # Marcus's is reused
+    assert [(p, v) for p, v, _ in yt.inserted] == [("PLbrx2y4z1J8I", "v1"), ("PLbrx2y4z1J8I", "v3"), ("PL1", "v2")]
+    assert _filed() == {"v1": "Marcus Aurelius", "v2": "Seneca", "v3": "Marcus Aurelius"}
+
+
+def test_a_playlist_deleted_on_the_channel_is_made_again(tmp_path, monkeypatch):
+    _setup(tmp_path, monkeypatch)
+    monkeypatch.setattr(playlists.time, "sleep", lambda s: None)
+    playlists.STATE.write_text(json.dumps({"filed": {"v1": "Marcus Aurelius"},
+                                           "playlists": {"Marcus Aurelius": "PLgone"}}))
+    yt = _YT()
+    playlists.run(yt=yt)
+    assert "Marcus Aurelius" not in json.loads(playlists.STATE.read_text())["playlists"]
+    assert _filed() == {"v2": "Seneca"}
+    playlists.run(yt=yt)
+    assert yt.made == ["Seneca quotes: Stoic Shorts", "Marcus Aurelius quotes: Stoic Shorts"]
+    assert len(_filed()) == 3
 
 
 def test_the_owner_said_yes_to_playlists_on_2026_11_06():

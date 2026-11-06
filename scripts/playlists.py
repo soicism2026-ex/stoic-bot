@@ -33,6 +33,7 @@ import argparse
 import csv
 import json
 import sys
+import time
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -41,6 +42,10 @@ sys.path.insert(0, str(ROOT / "src"))
 STATE = ROOT / "data" / "playlists.json"
 TESTS = ROOT / "data" / "marketing_tests.json"
 MAX_CALLS = 40                      # 2,000 units at most per run
+# YouTube can answer 404 about a playlist it made a moment ago: the first
+# real run (2026-11-06 03:23 UTC) made Marcus Aurelius's and its read one
+# second later came back "playlist not found". Wait and ask again.
+WAITS = (3, 8, 20)                  # seconds
 AUTHORS = ("Marcus Aurelius", "Seneca", "Epictetus")
 TITLE = "{author} quotes: Stoic Shorts"
 DESCRIPTION = ("Short readings from {author}, word for word from the original text, "
@@ -108,35 +113,54 @@ def public_ids(yt, ids: list[str]) -> set[str]:
     """The ones still public, 50 per read (1 unit each)."""
     out: set[str] = set()
     for i in range(0, len(ids), 50):
-        resp = yt.videos().list(part="status", id=",".join(ids[i:i + 50]), maxResults=50).execute()
+        resp = yt.videos().list(part="status", id=",".join(ids[i:i + 50])).execute()
         out |= {v["id"] for v in resp.get("items", [])
                 if (v.get("status") or {}).get("privacyStatus") == "public"}
     return out
 
 
-def items_in(yt, pid: str) -> dict[str, str]:
-    """{video id: playlist item id} for what the playlist holds now."""
+def _not_found(e: Exception) -> bool:
+    status = getattr(getattr(e, "resp", None), "status", None)
+    return status == 404 or "HttpError 404" in str(e) or "NotFound" in str(e)
+
+
+def items_in(yt, pid: str) -> dict[str, str] | None:
+    """{video id: playlist item id} for what the playlist holds now; None if
+    YouTube has no such playlist any more (deleted on the channel). One that
+    exists but answers 404 to the item read (an empty one can) holds nothing."""
     out: dict[str, str] = {}
-    req = yt.playlistItems().list(part="contentDetails", playlistId=pid, maxResults=50)
-    while req is not None:
-        resp = req.execute()
-        for it in resp.get("items", []):
-            out[it["contentDetails"]["videoId"]] = it["id"]
-        req = yt.playlistItems().list_next(req, resp)
+    try:
+        req = yt.playlistItems().list(part="contentDetails", playlistId=pid, maxResults=50)
+        while req is not None:
+            resp = req.execute()
+            for it in resp.get("items", []):
+                out[it["contentDetails"]["videoId"]] = it["id"]
+            req = yt.playlistItems().list_next(req, resp)
+    except Exception as e:  # noqa: BLE001
+        if not _not_found(e):
+            raise
+        found = yt.playlists().list(part="id", id=pid).execute().get("items")
+        return {} if found else None
     return out
 
 
 def _insert(yt, pid: str, vid: str) -> None:
-    """At the top; a playlist that is not sorted by hand takes it at the end."""
+    """At the top; a playlist that is not sorted by hand takes it at the end.
+    A playlist made moments ago may answer 404 for a few seconds."""
     body = {"snippet": {"playlistId": pid, "position": 0,
                         "resourceId": {"kind": "youtube#video", "videoId": vid}}}
-    try:
-        yt.playlistItems().insert(part="snippet", body=body).execute()
-    except Exception as e:  # noqa: BLE001
-        if "manualSortRequired" not in str(e):
-            raise
-        del body["snippet"]["position"]
-        yt.playlistItems().insert(part="snippet", body=body).execute()
+    waits = list(WAITS)
+    while True:
+        try:
+            yt.playlistItems().insert(part="snippet", body=body).execute()
+            return
+        except Exception as e:  # noqa: BLE001
+            if "manualSortRequired" in str(e) and "position" in body["snippet"]:
+                del body["snippet"]["position"]
+            elif _not_found(e) and waits:
+                time.sleep(waits.pop(0))
+            else:
+                raise
 
 
 def run(dry_run: bool = False, yt=None) -> int:
@@ -166,7 +190,12 @@ def run(dry_run: bool = False, yt=None) -> int:
                 continue
             pid, made = ensure_playlist(yt, author, st)
             calls += int(made)
-            held = items_in(yt, pid)                 # what YouTube holds is the truth
+            held = {} if made else items_in(yt, pid)  # what YouTube holds is the truth
+            if held is None:                          # deleted on the channel: made again next run
+                print(f"  [playlists] {author}'s playlist is gone from YouTube; it is made again next run")
+                st["playlists"].pop(author, None)
+                st["filed"] = {v: a for v, a in st["filed"].items() if a != author}
+                continue
             st["filed"] = {**{v: a for v, a in st["filed"].items() if a != author},
                            **{v: author for v in held}}
             for vid, item in list(held.items()):     # unlisted since: out of the public playlist
@@ -184,7 +213,7 @@ def run(dry_run: bool = False, yt=None) -> int:
                     calls += 1
                     added += 1
     except Exception as e:  # noqa: BLE001  quota or a deleted video: keep what was done
-        print(f"  [playlists] stopped: {type(e).__name__}: {str(e)[:200]}", file=sys.stderr)
+        print(f"  [playlists] stopped: {type(e).__name__}: {str(e)[:400]}", file=sys.stderr)
     finally:
         save_state(st)
     print(f"  [playlists] +{added} filed, -{removed} taken out (unlisted); {len(st['filed'])} Shorts in "
