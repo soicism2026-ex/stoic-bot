@@ -58,36 +58,70 @@ class _Req:
 
 
 class _YT:
-    def __init__(self, fail_after=None):
-        self.inserted, self.made, self.fail_after = [], [], fail_after
+    """A fake YouTube: the channel's playlists, what each holds, each video's privacy."""
+
+    def __init__(self, fail_after=None, unlisted=(), manual=True):
+        self.inserted, self.made, self.deleted = [], [], []
+        self.fail_after, self.unlisted, self.manual = fail_after, set(unlisted), manual
+        self.lists: dict[str, str] = {}                 # title -> playlist id
+        self.held: dict[str, dict[str, str]] = {}       # playlist id -> {video id: item id}
         yt = self
 
         class Playlists:
             def list(self, **k):
-                return _Req({"items": []})
+                return _Req({"items": [{"id": i, "snippet": {"title": t}} for t, i in yt.lists.items()]})
 
             def list_next(self, req, resp):
                 return None
 
             def insert(self, part, body):
                 yt.made.append(body["snippet"]["title"])
-                return _Req({"id": f"PL{len(yt.made)}"})
+                assert body["status"]["privacyStatus"] == "public"
+                pid = f"PL{len(yt.made)}"
+                yt.lists[body["snippet"]["title"]] = pid
+                return _Req({"id": pid})
 
         class Items:
+            def list(self, part, playlistId, maxResults):
+                return _Req({"items": [{"id": i, "contentDetails": {"videoId": v}}
+                                       for v, i in yt.held.get(playlistId, {}).items()]})
+
+            def list_next(self, req, resp):
+                return None
+
             def insert(self, part, body):
+                sn = body["snippet"]
                 if yt.fail_after is not None and len(yt.inserted) >= yt.fail_after:
                     return _Req(RuntimeError("quotaExceeded"))
-                yt.inserted.append((body["snippet"]["playlistId"], body["snippet"]["resourceId"]["videoId"],
-                                    body["snippet"]["position"]))
+                if "position" in sn and not yt.manual:
+                    return _Req(RuntimeError("<HttpError 400: manualSortRequired>"))
+                yt.inserted.append((sn["playlistId"], sn["resourceId"]["videoId"], sn.get("position")))
+                yt.held.setdefault(sn["playlistId"], {})[sn["resourceId"]["videoId"]] = f"it{len(yt.inserted)}"
                 return _Req({})
 
-        self._p, self._i = Playlists(), Items()
+            def delete(self, id):  # noqa: A002  the API's own name
+                yt.deleted.append(id)
+                for items in yt.held.values():
+                    for v, i in list(items.items()):
+                        if i == id:
+                            del items[v]
+                return _Req({})
+
+        class Videos:
+            def list(self, part, id, maxResults):  # noqa: A002
+                return _Req({"items": [{"id": v, "status": {
+                    "privacyStatus": "unlisted" if v in yt.unlisted else "public"}} for v in id.split(",")]})
+
+        self._p, self._i, self._v = Playlists(), Items(), Videos()
 
     def playlists(self):
         return self._p
 
     def playlistItems(self):
         return self._i
+
+    def videos(self):
+        return self._v
 
 
 def _setup(tmp_path, monkeypatch, status="running", posts=None):
@@ -103,6 +137,10 @@ def _setup(tmp_path, monkeypatch, status="running", posts=None):
     (tmp_path / "data" / "posts.csv").write_text("\n".join(lines) + "\n")
 
 
+def _filed():
+    return json.loads(playlists.STATE.read_text())["filed"]
+
+
 def test_playlists_do_nothing_until_the_owner_says_yes(tmp_path, monkeypatch):
     _setup(tmp_path, monkeypatch, status="proposed")
     yt = _YT()
@@ -115,19 +153,55 @@ def test_playlists_file_each_edit_once_newest_first(tmp_path, monkeypatch):
     yt = _YT()
     playlists.run(yt=yt)
     assert yt.made == ["Marcus Aurelius quotes: Stoic Shorts", "Seneca quotes: Stoic Shorts"]
-    assert [v for _, v, _ in yt.inserted] == ["v1", "v2", "v3"]            # oldest first, each at the top
-    assert all(pos == 0 for _, _, pos in yt.inserted)                       # so the newest ends up first
-    st = json.loads(playlists.STATE.read_text())
-    assert st["filed"] == {"v1": "Marcus Aurelius", "v2": "Seneca", "v3": "Marcus Aurelius"}
-    yt2 = _YT()
-    playlists.run(yt=yt2)                                                   # nothing twice
-    assert yt2.made == [] and yt2.inserted == []
+    assert [v for _, v, _ in yt.inserted] == ["v1", "v3", "v2"]            # each philosopher oldest first,
+    assert all(pos == 0 for _, _, pos in yt.inserted)                       # each at the top: newest first
+    assert _filed() == {"v1": "Marcus Aurelius", "v2": "Seneca", "v3": "Marcus Aurelius"}
+    playlists.run(yt=yt)                                                    # nothing twice
+    assert len(yt.made) == 2 and len(yt.inserted) == 3
+    playlists.STATE.unlink()                                                # even with the state lost:
+    playlists.run(yt=yt)                                                    # found by title, read back
+    assert len(yt.made) == 2 and len(yt.inserted) == 3 and len(_filed()) == 3
+
+
+def test_unlisted_shorts_stay_out_and_leave_once_pruned(tmp_path, monkeypatch):
+    """prune_videos.py unlists weak Shorts after a week; a public playlist must not bring them back."""
+    _setup(tmp_path, monkeypatch)
+    yt = _YT(unlisted={"v3"})
+    playlists.run(yt=yt)
+    assert [v for _, v, _ in yt.inserted] == ["v1", "v2"] and "v3" not in _filed()
+    yt.unlisted.add("v1")
+    playlists.run(yt=yt)
+    assert yt.deleted == ["it1"] and _filed() == {"v2": "Seneca"}
 
 
 def test_a_quota_stop_keeps_what_was_filed(tmp_path, monkeypatch):
     _setup(tmp_path, monkeypatch)
     playlists.run(yt=_YT(fail_after=1))
-    assert json.loads(playlists.STATE.read_text())["filed"] == {"v1": "Marcus Aurelius"}
+    assert _filed() == {"v1": "Marcus Aurelius"}
+
+
+def test_a_playlist_not_sorted_by_hand_still_gets_the_short(tmp_path, monkeypatch):
+    _setup(tmp_path, monkeypatch)
+    yt = _YT(manual=False)
+    playlists.run(yt=yt)
+    assert [(v, pos) for _, v, pos in yt.inserted] == [("v1", None), ("v3", None), ("v2", None)]
+
+
+def test_a_backfill_is_spread_over_runs_and_stays_newest_first(tmp_path, monkeypatch):
+    _setup(tmp_path, monkeypatch)
+    monkeypatch.setattr(playlists, "MAX_CALLS", 2)                          # 50 units each
+    yt = _YT()
+    for _ in range(3):
+        playlists.run(yt=yt)
+    assert [v for _, v, _ in yt.inserted] == ["v1", "v3", "v2"] and len(_filed()) == 3
+
+
+def test_the_owner_said_yes_to_playlists_on_2026_11_06():
+    ledger = json.loads((ROOT / "data" / "marketing_tests.json").read_text())
+    t = next(t for t in ledger["tests"] if t["id"] == "playlists")
+    assert t["status"] == "running" and t["started"] == "2026-11-06"
+    assert "Yes, make the playlists" in t["approved"]
+    assert playlists.gate()
 
 
 # ---------------------------------------------------------------- the audience
@@ -150,6 +224,6 @@ def test_the_jobs_run_the_new_work_and_never_fail_a_post():
     assert "data/audience.json" in steps["Commit analytics"]["run"]
     daily = yaml.safe_load((ROOT / ".github" / "workflows" / "daily-short.yml").read_text())
     steps = {s.get("name"): s for s in daily["jobs"]["post"]["steps"]}
-    pl = steps["File the edits into playlists (Cicero, needs the owner's yes)"]
+    pl = steps["File the edits into playlists (Cicero's test 3)"]
     assert pl["run"] == "python scripts/playlists.py" and pl["continue-on-error"] is True
     assert "data/playlists.json" in steps["Commit log and backups"]["run"]

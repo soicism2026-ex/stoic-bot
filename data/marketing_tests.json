@@ -32,13 +32,14 @@
    "kind": "traffic_source",
    "source": "PLAYLIST",
    "question": "Do playlists per philosopher bring in extra views?",
-   "change": "Three public playlists (\"Marcus Aurelius quotes: Stoic Shorts\", the same for Seneca and Epictetus), with every edit filed under its philosopher, newest first, and each new Short added the day it airs.",
+   "change": "Three public playlists (\"Marcus Aurelius quotes: Stoic Shorts\", the same for Seneca and Epictetus), with every public edit filed under its philosopher, newest first, and each new Short added the day it airs. A Short the prune bot unlists is taken out, so the playlists show the ones still on the channel.",
    "why": "Someone who liked one Short can watch that philosopher's others in a row, and the playlists can show up when people search for him.",
    "measure": "The share of the channel's views that come from playlists (YouTube's traffic sources), the 14 days after against the 14 before.",
    "ask": "playlists",
-   "status": "proposed",
+   "status": "running",
    "proposed": "2026-11-06",
-   "started": null
+   "started": "2026-11-06",
+   "approved": "2026-11-06: owner, in the HQ: \"Yes, make the playlists\""
   }
  ],
  "next": [

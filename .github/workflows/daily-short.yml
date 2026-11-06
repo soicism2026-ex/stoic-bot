@@ -281,10 +281,11 @@ jobs:
           if-no-files-found: ignore
           retention-days: 3
 
-      # Cicero's test 3: a playlist per philosopher. Does nothing until the
-      # owner says yes in the HQ (scripts/playlists.py reads the ledger);
-      # then files each new edit, and backfills older ones a few at a time.
-      - name: File the edits into playlists (Cicero, needs the owner's yes)
+      # Cicero's test 3: a playlist per philosopher (owner's yes in the HQ,
+      # 2026-11-06; scripts/playlists.py reads the ledger). Files each new
+      # public edit, backfills older ones up to 40 a run, and takes out the
+      # ones prune_videos.py unlisted.
+      - name: File the edits into playlists (Cicero's test 3)
         continue-on-error: true
         env:
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}

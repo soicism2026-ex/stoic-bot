@@ -1587,3 +1587,13 @@ that story must always be captioned "recorded in the Historia Augusta", never
     comments on 28 edits, 0.87 per 1,000 views; 5 on all 51 edits since 10-02).
   * The HQ's Next on air card shows the next Short's description and question,
     so the owner can read them before they air and veto any.
+- **2026-11-06 — PLAYLISTS: one per philosopher.** Owner, in the HQ, on
+  Cicero's test 3: *"Yes, make the playlists"* (00:22 UTC; the message reached
+  the chief session 20 minutes late, after it had told him the test still
+  waited). Three public playlists, "Marcus Aurelius quotes: Stoic Shorts" and
+  the same for Seneca and Epictetus, made by the first daily-short run after
+  the change; every public edit filed newest first, older ones backfilled up to
+  40 a run, each new Short added the day it airs. Shorts the prune bot unlists
+  are kept out and taken out again, so the playlists don't bring back what
+  pruning hid. Cicero judges it by the share of views from playlists, 11-06 to
+  11-20 against the 14 days before (0% before).

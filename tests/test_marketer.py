@@ -177,14 +177,14 @@ def test_the_playlist_test_reads_the_traffic_source_share():
     assert got["verdict"] == "win"
 
 
-def test_the_ledger_holds_test_2_running_and_test_3_waiting_for_the_owner():
+def test_the_owner_said_yes_to_tests_2_and_3_on_2026_11_06():
     ledger = json.loads((ROOT / "data" / "marketing_tests.json").read_text())
     by_id = {t["id"]: t for t in ledger["tests"]}
     two = by_id["pinned-question"]
     assert two["kind"] == "pinned_question" and two["ask"] == "pinned-question"
     assert two["status"] == "running" and two["started"] == "2026-11-06" and "inspiration" in two["approved"]
     assert by_id["playlists"]["kind"] == "traffic_source" and by_id["playlists"]["source"] == "PLAYLIST"
-    assert by_id["playlists"]["status"] == "proposed"                          # still waiting for his yes
+    assert by_id["playlists"]["status"] == "running" and by_id["playlists"]["started"] == "2026-11-06"
     assert by_id["second-post-morning"]["status"] == "running" and by_id["second-post-morning"]["started"] == "2026-11-06"
 
 

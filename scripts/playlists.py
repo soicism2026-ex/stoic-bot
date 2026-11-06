@@ -15,10 +15,17 @@ Only edits are filed (the format since 2026-10-02, posts.csv experiment
 "edit:<id>"): the older formats are a different, weaker look the channel has
 moved on from. Newest first, so the playlist opens on the latest Short.
 
+Only PUBLIC Shorts are filed, and a Short that turns unlisted is taken out:
+scripts/prune_videos.py unlists weak Shorts after a week to keep them off the
+channel page, and a public playlist must not bring them back. What is in each
+playlist is read from YouTube every run, so a Short is never filed twice,
+even if the state file was lost.
+
 State: data/playlists.json {"playlists": {author: playlist id},
-"filed": {video id: author}}. Quota: a new playlist or a filed video costs 50
-of the 10,000 units a day the uploads also need (an upload is 1,600), so one
-run makes at most MAX_CALLS write calls; a backfill takes a few runs.
+"filed": {video id: author}} (what the playlists held after the last run).
+Quota: making a playlist, filing or removing a Short costs 50 of the 10,000
+units a day the uploads also need (an upload is 1,600), so one run makes at
+most MAX_CALLS of them; a backfill takes a few runs. Reads cost 1 per 50.
 """
 from __future__ import annotations
 
@@ -75,10 +82,11 @@ def to_file(posts: list[dict], filed: dict) -> list[tuple[str, str]]:
     return out
 
 
-def ensure_playlist(yt, author: str, st: dict) -> str:
-    """The author's playlist id, found by title among the channel's own or made."""
+def ensure_playlist(yt, author: str, st: dict) -> tuple[str, bool]:
+    """(the author's playlist id, whether it was just made): found by title
+    among the channel's own playlists, or made."""
     if st["playlists"].get(author):
-        return st["playlists"][author]
+        return st["playlists"][author], False
     title = TITLE.format(author=author)
     req = yt.playlists().list(part="snippet", mine=True, maxResults=50)
     while req is not None:
@@ -86,14 +94,49 @@ def ensure_playlist(yt, author: str, st: dict) -> str:
         for p in resp.get("items", []):
             if p["snippet"]["title"] == title:
                 st["playlists"][author] = p["id"]
-                return p["id"]
+                return p["id"], False
         req = yt.playlists().list_next(req, resp)
     made = yt.playlists().insert(part="snippet,status", body={
         "snippet": {"title": title, "description": DESCRIPTION.format(author=author), "defaultLanguage": "en"},
         "status": {"privacyStatus": "public"}}).execute()
     st["playlists"][author] = made["id"]
     print(f"  [playlists] made '{title}'")
-    return made["id"]
+    return made["id"], True
+
+
+def public_ids(yt, ids: list[str]) -> set[str]:
+    """The ones still public, 50 per read (1 unit each)."""
+    out: set[str] = set()
+    for i in range(0, len(ids), 50):
+        resp = yt.videos().list(part="status", id=",".join(ids[i:i + 50]), maxResults=50).execute()
+        out |= {v["id"] for v in resp.get("items", [])
+                if (v.get("status") or {}).get("privacyStatus") == "public"}
+    return out
+
+
+def items_in(yt, pid: str) -> dict[str, str]:
+    """{video id: playlist item id} for what the playlist holds now."""
+    out: dict[str, str] = {}
+    req = yt.playlistItems().list(part="contentDetails", playlistId=pid, maxResults=50)
+    while req is not None:
+        resp = req.execute()
+        for it in resp.get("items", []):
+            out[it["contentDetails"]["videoId"]] = it["id"]
+        req = yt.playlistItems().list_next(req, resp)
+    return out
+
+
+def _insert(yt, pid: str, vid: str) -> None:
+    """At the top; a playlist that is not sorted by hand takes it at the end."""
+    body = {"snippet": {"playlistId": pid, "position": 0,
+                        "resourceId": {"kind": "youtube#video", "videoId": vid}}}
+    try:
+        yt.playlistItems().insert(part="snippet", body=body).execute()
+    except Exception as e:  # noqa: BLE001
+        if "manualSortRequired" not in str(e):
+            raise
+        del body["snippet"]["position"]
+        yt.playlistItems().insert(part="snippet", body=body).execute()
 
 
 def run(dry_run: bool = False, yt=None) -> int:
@@ -103,37 +146,49 @@ def run(dry_run: bool = False, yt=None) -> int:
     with open(ROOT / "data" / "posts.csv", newline="", encoding="utf-8") as f:
         posts = list(csv.DictReader(f))
     st = load_state()
-    todo = to_file(posts, st["filed"])
-    if not todo:
-        print("  [playlists] every edit is filed")
+    edits = to_file(posts, {})                      # every edit, oldest first
+    if not edits:
+        print("  [playlists] no edits to file")
         return 0
     if dry_run:
-        for vid, author in todo[:MAX_CALLS]:
-            print(f"  [playlists] would file {vid} under {author}")
+        for vid, author in to_file(posts, st["filed"])[:MAX_CALLS]:
+            print(f"  [playlists] would file {vid} under {author} (if it is still public)")
         return 0
     if yt is None:
         from publish import _service  # noqa: PLC0415
         yt = _service(extra_scopes=[FORCE_SSL])
-    calls = 0
+    calls, added, removed = 0, 0, 0
     try:
-        for vid, author in todo:
-            if calls >= MAX_CALLS:
-                break
-            had = bool(st["playlists"].get(author))
-            pid = ensure_playlist(yt, author, st)
-            calls += 0 if had else 1
-            yt.playlistItems().insert(part="snippet", body={"snippet": {
-                "playlistId": pid, "position": 0,
-                "resourceId": {"kind": "youtube#video", "videoId": vid}}}).execute()
-            st["filed"][vid] = author
-            calls += 1
-    except Exception as e:  # noqa: BLE001  quota or a deleted video: keep what was filed
+        public = public_ids(yt, [v for v, _ in edits])
+        for author in AUTHORS:
+            mine = [v for v, a in edits if a == author]
+            if not mine or calls >= MAX_CALLS:
+                continue
+            pid, made = ensure_playlist(yt, author, st)
+            calls += int(made)
+            held = items_in(yt, pid)                 # what YouTube holds is the truth
+            st["filed"] = {**{v: a for v, a in st["filed"].items() if a != author},
+                           **{v: author for v in held}}
+            for vid, item in list(held.items()):     # unlisted since: out of the public playlist
+                if vid not in public and calls < MAX_CALLS:
+                    yt.playlistItems().delete(id=item).execute()
+                    del held[vid]
+                    st["filed"].pop(vid, None)
+                    calls += 1
+                    removed += 1
+            for vid in mine:
+                if vid in public and vid not in held and calls < MAX_CALLS:
+                    _insert(yt, pid, vid)
+                    held[vid] = ""
+                    st["filed"][vid] = author
+                    calls += 1
+                    added += 1
+    except Exception as e:  # noqa: BLE001  quota or a deleted video: keep what was done
         print(f"  [playlists] stopped: {type(e).__name__}: {str(e)[:200]}", file=sys.stderr)
     finally:
         save_state(st)
-    left = len(todo) - sum(1 for v, _ in todo if v in st["filed"])
-    print(f"  [playlists] filed {len(st['filed'])} edits in {len(st['playlists'])} playlists"
-          + (f"; {left} left for the next run" if left else ""))
+    print(f"  [playlists] +{added} filed, -{removed} taken out (unlisted); {len(st['filed'])} Shorts in "
+          f"{len(st['playlists'])} playlists" + ("; more next run" if calls >= MAX_CALLS else ""))
     return 0
 
 
