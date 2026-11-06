@@ -79,8 +79,11 @@ MAX_POSTS_PER_DAY = int(os.environ.get("MAX_POSTS_PER_DAY", "3"))
 # SPREAD THE DAY'S POSTS (owner, 2026-10-18: 2 a day). Post N of the day may
 # only go out from hour POST_SLOT_HOURS[N-1] (UTC). Without this the cap alone
 # lets the first two cron slots that fire post, 4 hours apart (03:00, 07:00),
-# so both videos compete for the same audience. "0,15" = first post any time,
-# second from 15:00 UTC (and 19:00 / 23:00 catch it if GitHub drops 15:00).
+# so both videos compete for the same audience. "0,7" = first post any time
+# (in practice ~01:00-02:30 UTC), second from 07:00 UTC, with MIN_GAP_HOURS
+# keeping them 5+ hours apart (11:00 / 15:00 catch it if GitHub drops 07:00).
+# It was "0,15" until 2026-11-03: the 12-19 UTC posts got 0.75x the reach of
+# their week across 294 Shorts, against 1.0x for 04-11 UTC.
 # Empty = no gating (the old behaviour).
 POST_SLOT_HOURS = [int(h) for h in os.environ.get("POST_SLOT_HOURS", "").split(",")
                    if h.strip().isdigit()]

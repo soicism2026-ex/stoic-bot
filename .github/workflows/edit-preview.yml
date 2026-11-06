@@ -12,7 +12,7 @@
 # kept as a backstop. The `check` job skips the render when the next edit is
 # already rehearsed (scripts/up_next.py need), so a run costs a Brian read
 # only when a post has gone out.
-#   08:40 UTC  -> the day's second post (airs from 15:00)
+#   04:40 UTC  -> the day's second post (airs from 07:00)
 #   19:40 UTC  -> tomorrow's first post (airs from 00:00)
 name: edit-preview
 on:
@@ -20,7 +20,7 @@ on:
     workflows: [daily-short]
     types: [completed]
   schedule:
-    - cron: "40 8 * * *"
+    - cron: "40 4 * * *"
     - cron: "40 19 * * *"
   workflow_dispatch:
     inputs:

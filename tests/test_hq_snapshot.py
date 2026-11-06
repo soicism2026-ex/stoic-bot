@@ -31,19 +31,22 @@ def test_producer_schedule_is_read_from_the_live_workflow():
     assert sorted(hq.crons("daily-short.yml")) == sorted(
         ["0 3 * * *", "0 7 * * *", "0 11 * * *", "0 15 * * *", "0 19 * * *", "0 23 * * *"])
     assert hq._env_value("daily-short.yml", "MAX_POSTS_PER_DAY", "x") == "2"
-    assert hq._env_value("daily-short.yml", "POST_SLOT_HOURS", "x") == "0,15"
-    assert hq._env_value("daily-short.yml", "MIN_GAP_HOURS", "x") == "6"
+    assert hq._env_value("daily-short.yml", "POST_SLOT_HOURS", "x") == "0,7"
+    assert hq._env_value("daily-short.yml", "MIN_GAP_HOURS", "x") == "5"
 
 
 def test_next_post_follows_the_cap_slots_and_gap():
     now = t("2026-10-21T00:12:00")
     # nothing posted today: the first cron of the day
     assert hq.next_post([], now, t("2026-10-20T15:05:00"))["at"] == "2026-10-21T03:00:00Z"
-    # one posted at 03:05: the second waits for the 15:00 slot (also > 6 h later)
     one = [{"date": "2026-10-21"}]
+    # the usual day: first post at 01:30, the second from the 07:00 slot, 5.5 h later
+    got = hq.next_post(one, t("2026-10-21T02:00:00"), t("2026-10-21T01:30:00"))
+    assert got["at"] == "2026-10-21T07:00:00Z" and got["postsToday"] == 1
+    # first post at 03:05: 07:00 is under 5 h after it, so 11:00
     got = hq.next_post(one, t("2026-10-21T03:30:00"), t("2026-10-21T03:05:00"))
-    assert got["at"] == "2026-10-21T15:00:00Z" and got["postsToday"] == 1
-    # posted at 11:05 (a late first post): 15:00 is under 6 h, so 19:00
+    assert got["at"] == "2026-10-21T11:00:00Z"
+    # posted at 11:05 (a late first post): 15:00 is under 5 h, so 19:00
     got = hq.next_post(one, t("2026-10-21T11:30:00"), t("2026-10-21T11:05:00"))
     assert got["at"] == "2026-10-21T19:00:00Z"
     # both posted: tomorrow's first cron

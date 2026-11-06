@@ -158,19 +158,22 @@ def test_people_shots_ask_for_a_man():
 
 
 def test_second_daily_post_waits_for_its_slot():
-    """2/day (owner, 2026-10-18): the second post waits for 15:00 UTC so the
-    two videos do not go out 4 hours apart and split the same audience."""
+    """2/day (owner, 2026-10-18): the second post waits for its slot so the
+    two videos do not go out 4 hours apart and split the same audience. The
+    slot is 07:00 UTC since 2026-11-03 (15:00 before): 12-19 UTC posts got
+    0.75x the reach of their week, 04-11 UTC posts 1.0x."""
     import daily_post
-    slots = [0, 15]
+    slots = [0, 7]
     assert daily_post.slot_open(0, 3, slots)          # first post: any time
-    assert not daily_post.slot_open(1, 7, slots)      # second: not at 07:00
-    assert daily_post.slot_open(1, 15, slots)         # ...but from 15:00
+    assert not daily_post.slot_open(1, 3, slots)      # second: not at 03:00
+    assert not daily_post.slot_open(1, 6, slots)      # ...nor 06:00
+    assert daily_post.slot_open(1, 7, slots)          # ...but from 07:00
     assert daily_post.slot_open(1, 23, slots)         # ...or a later slot
     assert daily_post.slot_open(2, 3, slots)          # beyond: cap decides
     assert daily_post.slot_open(1, 3, [])             # no slots = no gating
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
     assert "MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '2' }}" in wf
-    assert 'POST_SLOT_HOURS: "0,15"' in wf
+    assert 'POST_SLOT_HOURS: "0,7"' in wf
 
 
 def test_edits_rotate_authors():
@@ -247,7 +250,7 @@ def test_posts_keep_a_minimum_gap(tmp_path, monkeypatch):
                         lambda: "2026-10-19T22:45:00Z")
     assert abs(daily_post.hours_since_last_post(now) - 0.25) < 1e-6
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
-    assert 'MIN_GAP_HOURS: "6"' in wf
+    assert 'MIN_GAP_HOURS: "5"' in wf      # 6 until 2026-11-03 (the 07:00 slot needs 5)
 
 
 def test_edits_never_reair_a_quote_from_any_older_post():
