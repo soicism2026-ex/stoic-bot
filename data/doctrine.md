@@ -181,3 +181,39 @@ one" — and a laugh is the thing people share. Rules for comedy on this channel
 - **Still true.** A funny story is a true story told with timing. The quote is
   still verbatim and the facts are still checked (e.g. the lamp thief came
   through the DOOR in Discourses I.18, not a window).
+
+## 10. Describe it like the viral one: three short paragraphs and a question.
+
+Owner, 2026-11-06, in the HQ, sending a viral Short's description from another
+channel: *"use it as inspiration for pur next shorts"*. His example, verbatim:
+
+> Real power doesn't come from being the strongest, fastest, or smartest. It
+> comes from your mindset, determination, and willingness to do whatever it
+> takes to achieve your goals.
+>
+> Success isn't reserved for people born with extraordinary talent. It's built
+> by those who refuse to give up, push beyond their limits, and keep moving
+> forward when everyone else quits.
+>
+> Stop comparing yourself to others. Start building the discipline, courage,
+> and determination to become the person you were meant to be.
+>
+> 💬 Question: What matters more in life — talent or determination? Share your
+> thoughts in the [comments]
+
+Every Short's description follows that shape (`data/edit_quotes.json`
+`description` + `question`, checked by `scripts/shelf.py`):
+- **Paragraph 1: the truth, plainly, about HIS life.** Open on his problem
+  (§8), with the philosopher as the evidence: "Feel behind everyone your age?
+  Seneca's answer: what do they have to do with you?"
+- **Paragraph 2: what it means this week.** One concrete picture, not a
+  lecture. Absolve before you instruct (§5).
+- **Paragraph 3: one handle for today.** Something he can do in five minutes,
+  and, where it fits, a step toward people (§5).
+- **The question: one line he can answer from his own life**, often a choice
+  between two, like the example's "talent or determination?". Never a test
+  he can fail, never shame. It ends the description and is also the channel's
+  comment under the Short.
+- 35-95 words. No links or hashtags in the paragraphs (the hashtags, the quote
+  with its source and the journal line are added after). Only historical facts
+  that are certain; the quote's words stay verbatim in the source block below.

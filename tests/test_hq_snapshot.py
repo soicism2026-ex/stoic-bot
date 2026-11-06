@@ -135,5 +135,9 @@ def test_the_snapshot_carries_the_shelf_and_the_next_edit_id():
     assert {"left", "days", "runsOut", "low", "target", "warn", "toTarget"} <= set(sh)
     assert sh["perDay"] == doc["nextPost"]["cap"]
     assert doc["nextOnAir"]["id"] and doc["nextOnAir"]["left"] == sh["left"]
+    # the owner reads the words that go under it before it airs (2026-11-06)
+    assert doc["nextOnAir"]["description"] and doc["nextOnAir"]["question"].endswith("?")
+    page = (ROOT / "hq" / "forged-hq.html").read_text(encoding="utf-8")
+    assert "q.description ? `<details class=\"desc\">" in page and "esc(q.question)" in page
     preview = next(b for b in doc["bots"] if b["id"] == "preview")
     assert preview["next"]          # rehearses on a schedule now, not only when asked

@@ -431,8 +431,11 @@ def next_on_air(posts: list[dict]) -> dict | None:
         q = edits.pick(posts)
         if not q:
             return None
+        # description + question: the words that go under it (the owner's
+        # style since 2026-11-06), so he reads them before they air
         return {"id": q.get("id"), "quote": q.get("quote"), "author": q.get("author"),
                 "citation": q.get("citation"), "hook": q.get("hook"),
+                "description": q.get("description") or None, "question": q.get("question") or None,
                 "left": edits.remaining(posts)}
     except Exception:  # noqa: BLE001
         return None

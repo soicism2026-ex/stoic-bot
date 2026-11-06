@@ -97,3 +97,11 @@ def test_instagram_gets_the_same_words():
     assert f"Question: {q['question']}" in cap and "#shorts" not in cap
     old = publish_instagram.caption("Hook", "Q.", "Seneca", "Letters 13")
     assert old.startswith("Hook.\n\n“Q.”")              # no paragraphs: as before
+
+
+def test_the_owners_example_is_kept_in_the_doctrine():
+    doc = (ROOT / "data" / "doctrine.md").read_text(encoding="utf-8")
+    assert "## 10. Describe it like the viral one" in doc
+    assert "What matters more in life — talent or determination?" in doc
+    log = (ROOT / "data" / "decisions.md").read_text(encoding="utf-8")
+    assert "2026-11-06 — DESCRIPTIONS" in log

@@ -1565,3 +1565,25 @@ that story must always be captioned "recorded in the Historia Augusta", never
   * **Glaux** now also pulls who watches (countries, traffic sources,
     subscribed or not) every day, so Cicero's timing calls rest on where
     viewers are, not only on upload hours.
+- **2026-11-06 — DESCRIPTIONS: the owner's viral style on every Short.**
+  Owner, in the HQ, on Cicero's test 2 card ("a real question under each
+  Short?"): *"This is a viral description from a short not from our channel
+  that did well use it as inspiration for pur next shorts: Real power doesn't
+  come from being the strongest, fastest, or smartest. ... 💬 Question: What
+  matters more in life — talent or determination? Share your thoughts in the"*
+  (the full example is in doctrine 10). Read as his yes to test 2 AND the style
+  for every Short from now on: no A/B, he asked for it on "our next shorts".
+  Done the same day:
+  * Each of the 90 quotes still to air has its own three short paragraphs and
+    one question (`data/edit_quotes.json`). `scripts/shelf.py` refuses a new
+    quote without them, so Varro writes them with every restock.
+  * The description is now: paragraphs, "💬 Question: <question> Share your
+    thoughts in the comments.", the quote word for word with its source, the
+    hashtags, the journal line. The same question is the channel's comment
+    under the Short, replacing "Which line hit hardest? Write it below." Echo's
+    Instagram caption carries the same words once Instagram resumes.
+  * Cicero's test 2 now judges it before/after: viewer comments per 1,000 views
+    on new-style Shorts, 11-06 to 11-20, against the 14 days before (5 viewer
+    comments on 28 edits, 0.87 per 1,000 views; 5 on all 51 edits since 10-02).
+  * The HQ's Next on air card shows the next Short's description and question,
+    so the owner can read them before they air and veto any.

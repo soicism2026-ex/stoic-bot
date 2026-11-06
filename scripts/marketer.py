@@ -45,6 +45,11 @@ BANDS = [(0, 3), (4, 7), (8, 11), (12, 15), (16, 19), (20, 23)]
 TEST_DAYS = 14            # how long a test runs before its verdict
 MIN_TEST_DAYS = 7         # days with both Shorts needed for a verdict
 WIN, LOSE = 1.2, 0.85     # the change in the median that counts as a win / a loss
+# The line every description in the owner's style ends its paragraphs with
+# (src/edits.py QUESTION_MARK, tests/test_marketer.py keeps them equal):
+# posts.csv's caption column is the full description, so it tells a Short in
+# the new style from one in the old.
+NEW_STYLE = "\U0001F4AC Question:"
 
 
 def _rows(name: str) -> list[dict]:
@@ -187,34 +192,43 @@ def load_tests() -> dict:
         return {"tests": [], "next": []}
 
 
+def style_of(post: dict) -> str:
+    """"new style" for a Short whose description is in the owner's style
+    (2026-11-06: paragraphs and a question), "old style" otherwise."""
+    return "new style" if NEW_STYLE in (post.get("caption") or "") else "old style"
+
+
 def viewer_comments(posts: list[dict], analytics: list[dict], since: dt.date, until: dt.date,
-                    arm_of) -> dict:
-    """Per arm: Shorts, views and comments from viewers (the channel posts one
-    comment of its own under each, which is taken off) for edits aired in
-    [since, until). `arm_of(day)` names the arm a day belonged to."""
-    latest: dict[str, tuple[str, int, int]] = {}
+                    arm_of=style_of) -> dict:
+    """Per arm: Shorts, views, likes and comments from viewers (the channel
+    posts one comment of its own under each, which is taken off) for edits
+    aired in [since, until), at their latest snapshot. `arm_of(post)` names
+    the arm a posts.csv row belongs to."""
+    latest: dict[str, tuple[str, int, int, int]] = {}
     for r in analytics:
         v = r.get("video_id")
         try:
-            row = (r.get("pulled_on") or "", int(r.get("views") or 0), int(r.get("comments") or 0))
+            row = (r.get("pulled_on") or "", int(r.get("views") or 0), int(r.get("comments") or 0),
+                   int(r.get("likes") or 0))
         except ValueError:
             continue
-        if v and row[0] >= latest.get(v, ("", 0, 0))[0]:
+        if v and row[0] >= latest.get(v, ("", 0, 0, 0))[0]:
             latest[v] = row
     arms: dict[str, dict] = {}
     for r in posts:
         if not (r.get("experiment") or "").startswith("edit:") or r.get("video_id") not in latest:
             continue
-        day = _day(r["date"])
-        if not since <= day < until:
+        if not since <= _day(r["date"]) < until:
             continue
-        _, n, c = latest[r["video_id"]]
-        a = arms.setdefault(arm_of(day), {"shorts": 0, "views": 0, "comments": 0})
+        _, n, c, likes = latest[r["video_id"]]
+        a = arms.setdefault(arm_of(r), {"shorts": 0, "views": 0, "comments": 0, "likes": 0})
         a["shorts"] += 1
         a["views"] += n
         a["comments"] += max(0, c - 1)
+        a["likes"] += likes
     for a in arms.values():
         a["per1k"] = round(1000 * a["comments"] / a["views"], 2) if a["views"] else None
+        a["likesPer100"] = round(100 * a["likes"] / a["views"], 1) if a["views"] else None
     return arms
 
 
@@ -236,24 +250,29 @@ def source_share(rows: list[dict], source: str, since: dt.date, until: dt.date) 
 def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
           analytics: list[dict] | None = None, sources: list[dict] | None = None) -> dict:
     """Where a test stands, in numbers. Kinds: `second_vs_first` (a posting
-    time, against the day's other Short), `pinned_question` (alternate days,
-    viewer comments per 1,000 views) and `traffic_source` (a source's share
-    of views, the 14 days before against the 14 after)."""
+    time, against the day's other Short), `pinned_question` (the owner's
+    description style with its question, viewer comments per 1,000 views on
+    the edits of the 14 days before against those after, each Short sorted by
+    its own description) and `traffic_source` (a source's share of views,
+    the 14 days before against the 14 after)."""
     out = {"id": test["id"], "status": test.get("status")}
     start = _day(test["started"]) if test.get("started") else today
     end = start + dt.timedelta(days=TEST_DAYS)
     running = test.get("status") == "running" and bool(test.get("started"))
     if test.get("kind") == "pinned_question":
-        def arm(day: dt.date) -> str:
-            return "themed" if (day - start).days % 2 == 0 else "generic"
+        # Not an A/B: the owner wants it on every Short (2026-11-06), so the
+        # Shorts before the change are the control.
+        arms = viewer_comments(posts, analytics or [], start - dt.timedelta(days=TEST_DAYS),
+                               min(end, today) if running else start)
+        out["before"] = arms.get("old style")
         if running:
-            arms = viewer_comments(posts, analytics or [], start, min(end, today), arm)
             out["during"] = {"arms": arms, "ends": end.isoformat()}
-            t, g = arms.get("themed"), arms.get("generic")
-            if today >= end and t and g:
-                if t["comments"] >= 3 and t["per1k"] is not None and t["per1k"] >= 2 * (g["per1k"] or 0):
+            new, old = arms.get("new style"), arms.get("old style") or {}
+            if today >= end and new:
+                before = old.get("per1k") or 0
+                if new["comments"] >= 3 and new["per1k"] is not None and new["per1k"] >= 2 * before:
                     out["verdict"] = "win"
-                elif t["comments"] <= g["comments"]:
+                elif (new["per1k"] or 0) <= before:
                     out["verdict"] = "loss"
                 else:
                     out["verdict"] = "no clear change"
@@ -331,10 +350,15 @@ def note(r: dict) -> str:
     running = [t for t in r["tests"] if t.get("status") == "running"]
     waiting = [t for t in r["tests"] if t.get("status") == "proposed"]
     if running:
-        bits.append(f"testing: {running[0]['question']}")
+        bits.append(f"testing: {running[0]['question']}"
+                    + (f" (+{len(running) - 1} more)" if len(running) > 1 else ""))
     elif waiting:
         bits.append(f"{len(waiting)} test waiting for your yes")
     return " · ".join(bits)
+
+
+def _arms(t: dict) -> dict:
+    return (t.get("during") or {}).get("arms") or {}
 
 
 def markdown(r: dict) -> str:
@@ -377,18 +401,22 @@ def markdown(r: dict) -> str:
         lines.append(f"- Why: {t.get('why')}")
         lines.append(f"- Judged by: {t.get('measure')}")
         b = t.get("before") or {}
+        if b.get("comments") is not None and not _arms(t):
+            lines.append(f"- Before: {b['comments']} viewer comments on {b['shorts']} Shorts "
+                         f"({b['per1k']} per 1,000 views)")
         if b.get("median") is not None:
             lines.append(f"- Before: median {b['median']}x over {b['days']} days")
         d = t.get("during") or {}
         if d.get("median") is not None:
             lines.append(f"- During: median {d['median']}x over {d['days']} days (ends {d['ends']})")
         for name, arm in (d.get("arms") or {}).items():
-            lines.append(f"- {name}: {arm['comments']} viewer comments on {arm['shorts']} Shorts "
-                         f"({arm['per1k']} per 1,000 views)")
+            lines.append(f"- {name.capitalize()}: {arm['comments']} viewer comments on {arm['shorts']} Shorts "
+                         f"({arm['per1k']} per 1,000 views; {arm.get('likesPer100')} likes per 100 views)")
         if b.get("share") is not None or d.get("share") is not None:
-            lines.append(f"- Share of views: {b.get('share')} before, {d.get('share')} during")
+            lines.append(f"- Share of views: {b.get('share')} before"
+                         + (f", {d['share']} during" if d.get("share") is not None else ""))
         if t.get("verdict"):
-            lines.append(f"- Verdict: **{t['verdict']}** ({t.get('change')}x)")
+            lines.append(f"- Verdict: **{t['verdict']}**" + (f" ({t['change']}x)" if t.get("change") else ""))
         lines.append("")
     if r["next"]:
         lines += ["## Next ideas (each is proposed in the HQ first)", ""]

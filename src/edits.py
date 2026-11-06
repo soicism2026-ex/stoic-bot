@@ -134,9 +134,9 @@ def remaining(post_rows: list[dict]) -> int:
                and not _already_aired(q, aired))
 
 
-# The comment the channel posts under every edit. Through 2026-11-06 it was
-# PINNED_GENERIC under every one, and no viewer ever answered it: every edit
-# had exactly one comment, the channel's own. On 2026-11-06 the owner sent a
+# The comment the channel posts under every edit. Through 2026-11-05 it was
+# PINNED_GENERIC under every one, and viewers left 5 comments on 51 edits
+# (0.48 per 1,000 views; analytics.csv). On 2026-11-06 the owner sent a
 # viral Short's description (on Cicero's test 2, "a real question under each
 # Short?") "as inspiration for our next shorts": three short paragraphs and a
 # question for the comments. Since then each quote on the shelf carries its

@@ -125,24 +125,42 @@ def test_cicero_works_for_free_every_day_and_shows_in_the_hq():
 
 # ------------------------------------------- "Get everyone working harder" (2026-11-06)
 
-def test_the_pinned_question_test_compares_viewer_comments_by_arm():
+def test_the_description_test_compares_the_new_style_with_the_weeks_before():
+    """2026-11-06: the owner wants his description style on every Short, so
+    the Shorts before it are the control, each sorted by its own description."""
     start = dt.date(2026, 11, 6)
     posts, analytics = [], []
-    for d in range(14):
+    for d in range(-14, 14):
         day = start + dt.timedelta(days=d)
-        themed = d % 2 == 0
-        posts.append({"date": day.isoformat(), "video_id": f"v{d}", "experiment": f"edit:e{d}"})
+        new = d >= 1                           # the first Short of the start day went out the old way
+        posts.append({"date": day.isoformat(), "video_id": f"v{d}", "experiment": f"edit:e{d}",
+                      "caption": ("Para.\n\n" + mk.NEW_STYLE + " Why? Share your thoughts in the comments.")
+                      if new else "Hook.\n\nQuote."})
         # the channel's own comment is 1 of the count on every Short
         analytics.append({"video_id": f"v{d}", "pulled_on": (day + dt.timedelta(days=3)).isoformat(),
-                          "views": "200", "comments": str(1 + (2 if themed else 0))})
+                          "views": "200", "likes": "10", "comments": str(1 + (1 if new else 0))})
+    posts.append({"date": "2026-11-07", "video_id": "s", "experiment": "story:x", "caption": mk.NEW_STYLE})
     test = {"id": "pinned-question", "kind": "pinned_question", "status": "running", "started": start.isoformat()}
-    got = mk.judge(test, posts, mk.Views(analytics), dt.date(2026, 11, 21), analytics, [])
+    got = mk.judge(test, posts, mk.Views(analytics), dt.date(2026, 11, 20), analytics, [])
     arms = got["during"]["arms"]
-    assert arms["themed"] == {"shorts": 7, "views": 1400, "comments": 14, "per1k": 10.0}
-    assert arms["generic"]["comments"] == 0 and got["verdict"] == "win"
-    proposed = mk.judge({**test, "status": "proposed", "started": None}, posts, mk.Views(analytics), TODAY,
-                        analytics, [])
-    assert "during" not in proposed and "verdict" not in proposed
+    assert arms["new style"] == {"shorts": 13, "views": 2600, "comments": 13, "likes": 130, "per1k": 5.0,
+                                 "likesPer100": 5.0}
+    assert arms["old style"]["shorts"] == 15 and arms["old style"]["comments"] == 0
+    assert got["before"] == arms["old style"] and got["verdict"] == "win"
+    assert "verdict" not in mk.judge(test, posts, mk.Views(analytics), dt.date(2026, 11, 19), analytics, [])
+    flat = [dict(a, comments="1") for a in analytics]                        # nobody answers
+    assert mk.judge(test, posts, mk.Views(flat), dt.date(2026, 11, 20), flat, [])["verdict"] == "loss"
+    proposed = mk.judge({**test, "status": "proposed", "started": None}, posts, mk.Views(analytics),
+                        dt.date(2026, 11, 6), analytics, [])
+    assert "during" not in proposed and proposed["before"]["shorts"] == 14
+
+
+def test_cicero_and_the_producer_mark_the_new_style_the_same_way():
+    sys.path.insert(0, str(ROOT / "src"))
+    import edits  # noqa: PLC0415
+    assert mk.NEW_STYLE == edits.QUESTION_MARK
+    assert mk.style_of({"caption": edits.QUESTION_LINE.format(question="Why?")}) == "new style"
+    assert mk.style_of({"caption": "Hook.\n\nQuote"}) == mk.style_of({}) == "old style"
 
 
 def test_the_playlist_test_reads_the_traffic_source_share():
@@ -159,11 +177,14 @@ def test_the_playlist_test_reads_the_traffic_source_share():
     assert got["verdict"] == "win"
 
 
-def test_the_ledger_holds_tests_2_and_3_waiting_for_the_owner():
+def test_the_ledger_holds_test_2_running_and_test_3_waiting_for_the_owner():
     ledger = json.loads((ROOT / "data" / "marketing_tests.json").read_text())
     by_id = {t["id"]: t for t in ledger["tests"]}
-    assert by_id["pinned-question"]["kind"] == "pinned_question" and by_id["pinned-question"]["ask"] == "pinned-question"
+    two = by_id["pinned-question"]
+    assert two["kind"] == "pinned_question" and two["ask"] == "pinned-question"
+    assert two["status"] == "running" and two["started"] == "2026-11-06" and "inspiration" in two["approved"]
     assert by_id["playlists"]["kind"] == "traffic_source" and by_id["playlists"]["source"] == "PLAYLIST"
+    assert by_id["playlists"]["status"] == "proposed"                          # still waiting for his yes
     assert by_id["second-post-morning"]["status"] == "running" and by_id["second-post-morning"]["started"] == "2026-11-06"
 
 

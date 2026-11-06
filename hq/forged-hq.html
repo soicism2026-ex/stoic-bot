@@ -198,6 +198,10 @@ button { font: inherit; color: inherit; }
 .onair .cite { font-size: 13px; color: var(--gold); font-weight: 600; }
 .onair video { width: 100%; max-height: 62vh; aspect-ratio: 9 / 16; object-fit: contain; background: #000; border-radius: 10px; }
 .onair .sub { margin: -4px 0 0; }
+.onair .desc { border-top: 1px solid var(--line); padding-top: 10px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+.onair .desc summary { cursor: pointer; color: var(--fg); font-weight: 600; font-size: 13px; min-height: 24px; }
+.onair .desc p { margin: 8px 0 0; max-width: 60ch; }
+.onair .desc .ask { color: var(--fg); }
 
 /* Channel */
 .kpis { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
@@ -939,6 +943,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       ${q.hook ? `<p class="hook">${esc(q.hook)}</p>` : ""}
       <blockquote>${esc(q.quote)}</blockquote>
       <div class="cite">${esc(q.author)}${q.citation ? ", " + esc(q.citation) : ""}</div>
+      ${q.description ? `<details class="desc"><summary>Its description and comment question</summary>${q.description.split(/\n\n/).map((x) => `<p>${esc(x)}</p>`).join("")}${q.question ? `<p class="ask">\u{1F4AC} ${esc(q.question)}</p>` : ""}</details>` : ""}
       <div class="meta">${np && np.at ? `<span>next post try ${esc(when(np.at))}</span>` : ""}${np ? `<span>${np.postsToday} of ${np.cap} posted today</span>` : ""}${left ? `<span>${esc(left)}</span>` : ""}</div>
     </div>`;
   }
