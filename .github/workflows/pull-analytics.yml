@@ -23,10 +23,29 @@ jobs:
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
         run: python src/analytics.py
+      # Who watches and how they find the Shorts (owner 2026-11-06: "Get
+      # everyone working harder"): countries, traffic sources, subscribers'
+      # share, from the YouTube Analytics API (its own free quota). Cicero
+      # reads it; a failure never fails the job.
+      - name: Pull the audience (countries, traffic sources)
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/audience.py
       - name: Commit analytics
         run: |
           git config user.name "stoic-bot"
           git config user.email "bot@users.noreply.github.com"
           git add data/analytics.csv data/channel_stats.csv
-          git diff --staged --quiet || git commit -m "analytics: $(date -u +%F)"
-          git push
+          for f in data/audience.json data/traffic_sources.csv; do
+            if [ -f "$f" ]; then git add "$f"; fi
+          done
+          git diff --staged --quiet && exit 0
+          git commit -m "analytics: $(date -u +%F)"
+          for i in 1 2 3 4; do
+            git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0
+            sleep $((i * 5))
+          done
+          exit 1

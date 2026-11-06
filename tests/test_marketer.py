@@ -91,7 +91,8 @@ def test_the_ledger_proposes_before_it_ships():
         assert t.get("started") or t["status"] in ("proposed", "declined"), t["id"]
         for k in ("question", "change", "why", "measure"):
             assert t[k], (t["id"], k)
-    assert {n["id"] for n in ledger["next"]} >= {"pinned-question", "playlists"}
+    assert {t["id"] for t in ledger["tests"]} >= {"pinned-question", "playlists"}   # ideas became tests
+    assert {n["id"] for n in ledger["next"]} >= {"third-short"}
 
 
 def test_the_read_is_written_for_people_and_for_the_hq(tmp_path, monkeypatch):
@@ -120,3 +121,56 @@ def test_cicero_works_for_free_every_day_and_shows_in_the_hq():
     page = (ROOT / "hq" / "forged-hq.html").read_text(encoding="utf-8")
     assert 'marketer: { name: "Cicero", title: "Marketing", sprite: "orator"' in page
     assert "\n    orator: [" in page
+
+
+# ------------------------------------------- "Get everyone working harder" (2026-11-06)
+
+def test_the_pinned_question_test_compares_viewer_comments_by_arm():
+    start = dt.date(2026, 11, 6)
+    posts, analytics = [], []
+    for d in range(14):
+        day = start + dt.timedelta(days=d)
+        themed = d % 2 == 0
+        posts.append({"date": day.isoformat(), "video_id": f"v{d}", "experiment": f"edit:e{d}"})
+        # the channel's own comment is 1 of the count on every Short
+        analytics.append({"video_id": f"v{d}", "pulled_on": (day + dt.timedelta(days=3)).isoformat(),
+                          "views": "200", "comments": str(1 + (2 if themed else 0))})
+    test = {"id": "pinned-question", "kind": "pinned_question", "status": "running", "started": start.isoformat()}
+    got = mk.judge(test, posts, mk.Views(analytics), dt.date(2026, 11, 21), analytics, [])
+    arms = got["during"]["arms"]
+    assert arms["themed"] == {"shorts": 7, "views": 1400, "comments": 14, "per1k": 10.0}
+    assert arms["generic"]["comments"] == 0 and got["verdict"] == "win"
+    proposed = mk.judge({**test, "status": "proposed", "started": None}, posts, mk.Views(analytics), TODAY,
+                        analytics, [])
+    assert "during" not in proposed and "verdict" not in proposed
+
+
+def test_the_playlist_test_reads_the_traffic_source_share():
+    start = dt.date(2026, 11, 10)
+    rows = []
+    for d in range(-14, 14):
+        day = (start + dt.timedelta(days=d)).isoformat()
+        rows.append({"date": day, "source": "SHORTS", "views": "400"})
+        rows.append({"date": day, "source": "PLAYLIST", "views": "20" if d >= 0 else "0"})
+    test = {"id": "playlists", "kind": "traffic_source", "source": "PLAYLIST", "status": "running",
+            "started": start.isoformat()}
+    got = mk.judge(test, [], mk.Views([]), dt.date(2026, 11, 25), [], rows)
+    assert got["before"]["share"] == 0.0 and got["during"]["share"] == round(20 / 420, 4)
+    assert got["verdict"] == "win"
+
+
+def test_the_ledger_holds_tests_2_and_3_waiting_for_the_owner():
+    ledger = json.loads((ROOT / "data" / "marketing_tests.json").read_text())
+    by_id = {t["id"]: t for t in ledger["tests"]}
+    assert by_id["pinned-question"]["kind"] == "pinned_question" and by_id["pinned-question"]["ask"] == "pinned-question"
+    assert by_id["playlists"]["kind"] == "traffic_source" and by_id["playlists"]["source"] == "PLAYLIST"
+    assert by_id["second-post-morning"]["status"] == "running" and by_id["second-post-morning"]["started"] == "2026-11-06"
+
+
+def test_the_read_shows_who_watches(tmp_path, monkeypatch):
+    monkeypatch.setattr(mk, "DATA", tmp_path)
+    (tmp_path / "audience.json").write_text(json.dumps({
+        "pulled_on": "2026-11-06", "countries": [{"key": "US", "views": 500, "share": 0.4}],
+        "sources": [{"key": "SHORTS", "views": 1100, "share": 0.9}], "subscribed": []}))
+    md = mk.markdown({**mk.read(today=TODAY), "audience": mk.audience()})
+    assert "## Who watches" in md and "US 40%" in md and "SHORTS 90%" in md

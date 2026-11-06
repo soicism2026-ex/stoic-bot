@@ -187,17 +187,92 @@ def load_tests() -> dict:
         return {"tests": [], "next": []}
 
 
-def judge(test: dict, posts: list[dict], views: Views, today: dt.date) -> dict:
-    """Where a test stands, in numbers. Only `second_vs_first` tests exist yet."""
+def viewer_comments(posts: list[dict], analytics: list[dict], since: dt.date, until: dt.date,
+                    arm_of) -> dict:
+    """Per arm: Shorts, views and comments from viewers (the channel posts one
+    comment of its own under each, which is taken off) for edits aired in
+    [since, until). `arm_of(day)` names the arm a day belonged to."""
+    latest: dict[str, tuple[str, int, int]] = {}
+    for r in analytics:
+        v = r.get("video_id")
+        try:
+            row = (r.get("pulled_on") or "", int(r.get("views") or 0), int(r.get("comments") or 0))
+        except ValueError:
+            continue
+        if v and row[0] >= latest.get(v, ("", 0, 0))[0]:
+            latest[v] = row
+    arms: dict[str, dict] = {}
+    for r in posts:
+        if not (r.get("experiment") or "").startswith("edit:") or r.get("video_id") not in latest:
+            continue
+        day = _day(r["date"])
+        if not since <= day < until:
+            continue
+        _, n, c = latest[r["video_id"]]
+        a = arms.setdefault(arm_of(day), {"shorts": 0, "views": 0, "comments": 0})
+        a["shorts"] += 1
+        a["views"] += n
+        a["comments"] += max(0, c - 1)
+    for a in arms.values():
+        a["per1k"] = round(1000 * a["comments"] / a["views"], 2) if a["views"] else None
+    return arms
+
+
+def source_share(rows: list[dict], source: str, since: dt.date, until: dt.date) -> dict:
+    """Views from one traffic source as a share of all, over [since, until),
+    from data/traffic_sources.csv."""
+    total = part = 0
+    for r in rows:
+        try:
+            day, n = _day(r["date"]), int(r.get("views") or 0)
+        except (KeyError, ValueError):
+            continue
+        if since <= day < until:
+            total += n
+            part += n if r.get("source") == source else 0
+    return {"views": part, "of": total, "share": round(part / total, 4) if total else None}
+
+
+def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
+          analytics: list[dict] | None = None, sources: list[dict] | None = None) -> dict:
+    """Where a test stands, in numbers. Kinds: `second_vs_first` (a posting
+    time, against the day's other Short), `pinned_question` (alternate days,
+    viewer comments per 1,000 views) and `traffic_source` (a source's share
+    of views, the 14 days before against the 14 after)."""
     out = {"id": test["id"], "status": test.get("status")}
+    start = _day(test["started"]) if test.get("started") else today
+    end = start + dt.timedelta(days=TEST_DAYS)
+    running = test.get("status") == "running" and bool(test.get("started"))
+    if test.get("kind") == "pinned_question":
+        def arm(day: dt.date) -> str:
+            return "themed" if (day - start).days % 2 == 0 else "generic"
+        if running:
+            arms = viewer_comments(posts, analytics or [], start, min(end, today), arm)
+            out["during"] = {"arms": arms, "ends": end.isoformat()}
+            t, g = arms.get("themed"), arms.get("generic")
+            if today >= end and t and g:
+                if t["comments"] >= 3 and t["per1k"] is not None and t["per1k"] >= 2 * (g["per1k"] or 0):
+                    out["verdict"] = "win"
+                elif t["comments"] <= g["comments"]:
+                    out["verdict"] = "loss"
+                else:
+                    out["verdict"] = "no clear change"
+        return out
+    if test.get("kind") == "traffic_source":
+        src = test.get("source", "PLAYLIST")
+        out["before"] = source_share(sources or [], src, start - dt.timedelta(days=TEST_DAYS), start)
+        if running:
+            out["during"] = {**source_share(sources or [], src, start, min(end, today)), "ends": end.isoformat()}
+            if today >= end and out["during"]["share"] is not None:
+                b = out["before"]["share"] or 0
+                out["verdict"] = ("win" if out["during"]["share"] >= max(0.01, 2 * b) else "no clear change")
+        return out
     if test.get("kind") != "second_vs_first":
         return out
-    start = _day(test["started"]) if test.get("started") else today
     base = second_vs_first(posts, views, _day(test.get("baselineSince", "2026-01-01")), start)
     out["before"] = {"days": len(base), "median": round(st.median([d["ratio"] for d in base]), 2) if base else None}
-    if test.get("status") != "running" or not test.get("started"):
+    if not running:
         return out
-    end = start + dt.timedelta(days=TEST_DAYS)
     during = second_vs_first(posts, views, start, min(end, today))
     med = round(st.median([d["ratio"] for d in during]), 2) if during else None
     out["during"] = {"days": len(during), "median": med, "ends": end.isoformat()}
@@ -209,15 +284,29 @@ def judge(test: dict, posts: list[dict], views: Views, today: dt.date) -> dict:
     return out
 
 
+# ---------------------------------------------------------------- the audience
+
+def audience() -> dict | None:
+    """Glaux's pull (scripts/audience.py): countries, traffic sources and
+    subscribers' share of views over the last 28 days."""
+    try:
+        return json.loads((DATA / "audience.json").read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return None
+
+
 # ---------------------------------------------------------------- the read
 
 def read(today: dt.date | None = None) -> dict:
     today = today or dt.datetime.now(dt.timezone.utc).date()
     posts = _rows("posts.csv")
-    views = Views(_rows("analytics.csv"))
+    analytics = _rows("analytics.csv")
+    views = Views(analytics)
+    sources = _rows("traffic_sources.csv")
     ledger = load_tests()
-    tests = [{**t, **judge(t, posts, views, today)} for t in ledger.get("tests", [])]
+    tests = [{**t, **judge(t, posts, views, today, analytics, sources)} for t in ledger.get("tests", [])]
     return {
+        "audience": audience(),
         "updated": today.isoformat(),
         "source": "scripts/marketer.py (Cicero, free)",
         "funnel": funnel(_rows("channel_stats.csv"), views, today),
@@ -272,6 +361,13 @@ def markdown(r: dict) -> str:
         "|---|---|---|---|",
     ]
     lines += [f"| {h['band']} | {h['posts']} | {h['lift']}x | {h['stalled']} |" for h in r["hours"]]
+    a = r.get("audience")
+    if a:
+        top = lambda xs, k=5: ", ".join(f"{x['key']} {x['share']:.0%}" for x in xs[:k])  # noqa: E731
+        lines += ["", f"## Who watches (last 28 days, pulled {a.get('pulled_on')})", "",
+                  f"- Countries: {top(a.get('countries') or [], 6)}",
+                  f"- How they find the Shorts: {top(a.get('sources') or [])}",
+                  f"- Subscribed or not: {top(a.get('subscribed') or [])}"]
     lines += ["", "## Tests (one change at a time, each only with the owner's yes)", ""]
     for t in r["tests"]:
         lines.append(f"### {t['question']}")
@@ -286,6 +382,11 @@ def markdown(r: dict) -> str:
         d = t.get("during") or {}
         if d.get("median") is not None:
             lines.append(f"- During: median {d['median']}x over {d['days']} days (ends {d['ends']})")
+        for name, arm in (d.get("arms") or {}).items():
+            lines.append(f"- {name}: {arm['comments']} viewer comments on {arm['shorts']} Shorts "
+                         f"({arm['per1k']} per 1,000 views)")
+        if b.get("share") is not None or d.get("share") is not None:
+            lines.append(f"- Share of views: {b.get('share')} before, {d.get('share')} during")
         if t.get("verdict"):
             lines.append(f"- Verdict: **{t['verdict']}** ({t.get('change')}x)")
         lines.append("")

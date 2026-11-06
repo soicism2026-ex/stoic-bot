@@ -134,8 +134,62 @@ def remaining(post_rows: list[dict]) -> int:
                and not _already_aired(q, aired))
 
 
-def as_content(q: dict) -> dict:
-    """Same contract as stories.as_content, so render/QA/upload are unchanged."""
+# The comment the channel posts under every edit. Cicero's test 2 (owner's yes
+# needed, data/marketing_tests.json "pinned-question"): the generic one sits
+# under a one-line quote, and through 2026-11-06 no viewer had ever answered
+# it. The themed ones ask the viewer something about his own life, short to
+# answer, in doctrine 5's register: a handle he can use, never shame.
+PINNED_GENERIC = "Which line hit hardest? Write it below."
+PINNED_BY_THEME = {
+    "discipline": "What's one small thing you'll do today even if you don't feel like it?",
+    "resilience": "What's something hard you got through that you'd forgotten you got through?",
+    "fear": "What's one fear that turned out smaller than you expected?",
+    "time": "What's one thing you'll stop putting off this week?",
+    "friendship": "What does a real friend do that a contact never will?",
+    "adversity": "What setback ended up teaching you the most?",
+    "anger": "What helps you cool down before you say something you'd regret?",
+    "ego": "What's one thing you only learned after admitting you were wrong?",
+    "desire": "What's something you wanted badly and turned out to be fine without?",
+    "duty": "What's one duty you'll do well today, even if nobody sees it?",
+    "control": "What's one worry on your mind right now that isn't in your control?",
+    "mortality": "What's one thing you'd stop postponing if you remembered time is short?",
+}
+MARKETING_TESTS = ROOT / "data" / "marketing_tests.json"
+
+
+def pinned_arm(day) -> str:
+    """"themed" or "generic" for the comment under the edit that airs on `day`.
+    While the owner-approved test runs, days alternate from its start (even
+    days themed), so both kinds air in the same weeks; once he adopts the
+    winner it is used every day; otherwise the generic one, as before."""
+    import datetime as _dt
+    try:
+        tests = json.loads(MARKETING_TESTS.read_text(encoding="utf-8")).get("tests", [])
+        t = next(t for t in tests if t.get("id") == "pinned-question")
+    except Exception:  # noqa: BLE001  no ledger, no test: nothing changes
+        return "generic"
+    if t.get("adopted") in ("themed", "generic"):
+        return t["adopted"]
+    if t.get("status") != "running" or not t.get("started"):
+        return "generic"
+    start = _dt.date.fromisoformat(t["started"])
+    if day < start:
+        return "generic"
+    return "themed" if (day - start).days % 2 == 0 else "generic"
+
+
+def pinned_comment(q: dict, day) -> str:
+    if pinned_arm(day) == "themed" and q.get("theme") in PINNED_BY_THEME:
+        return PINNED_BY_THEME[q["theme"]]
+    return PINNED_GENERIC
+
+
+def as_content(q: dict, day=None) -> dict:
+    """Same contract as stories.as_content, so render/QA/upload are unchanged.
+    `day` is the day the edit airs (src/airday.py), for the pinned comment."""
+    if day is None:
+        import airday  # noqa: PLC0415
+        day = airday.today()
     caption = f"{q['quote']}\n— {q['author']}, {q['citation']}"
     return {
         "theme": q["theme"],
@@ -151,7 +205,7 @@ def as_content(q: dict) -> dict:
         "voiceover_lesson": "",
         "broll_queries": q["visuals"],
         "cta": "",
-        "pinned_comment": "Which line hit hardest? Write it below.",
+        "pinned_comment": pinned_comment(q, day),
         "callout_words": [],
         "_edit_id": q["id"],
         "_citation": q["citation"],

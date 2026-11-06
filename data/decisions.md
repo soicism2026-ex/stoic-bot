@@ -1550,3 +1550,18 @@ that story must always be captioned "recorded in the Historia Augusta", never
   unchanged. Cicero judges it from 11-06 to 11-20 by the second Short's day-1
   views over the same day's first, against the 0.63x median before (15 days),
   then reports a verdict: win at 1.2x or better, loss at 0.85x or worse.
+- **2026-11-06 — "Get everyone working harder."** Owner, in the HQ. The
+  content crew already works every day: Producer 2 Shorts, Apelles rehearses
+  each, Frontinus and Cicero read daily, Varro restocks weekly (48 days on the
+  shelf). Instagram is still on hold by his choice, and Orpheus makes music only
+  on request. So the extra effort went where growth is:
+  * **Cicero** proposes his next two tests now, each built and gated on the
+    ledger, so nothing changes until the owner says yes. Test 2: a real
+    question under each Short, matched to the quote's theme (no viewer has ever
+    answered "Which line hit hardest?"), alternating days, judged by viewer
+    comments per 1,000 views. Test 3: a playlist per philosopher, judged by the
+    share of views from playlists. The third Short a day waits for the slot test
+    to end (11-20), because it would muddle that test.
+  * **Glaux** now also pulls who watches (countries, traffic sources,
+    subscribed or not) every day, so Cicero's timing calls rest on where
+    viewers are, not only on upload hours.

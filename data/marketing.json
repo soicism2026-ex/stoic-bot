@@ -1,4 +1,5 @@
 {
+ "audience": null,
  "updated": "2026-11-06",
  "source": "scripts/marketer.py (Cicero, free)",
  "funnel": {
@@ -73,17 +74,39 @@
     "median": null,
     "ends": "2026-11-20"
    }
-  }
- ],
- "next": [
+  },
   {
    "id": "pinned-question",
-   "idea": "The pinned comment: every edit asks \"Which line hit hardest? Write it below.\" under a one-line quote, and no viewer has ever answered. Test a direct question about the viewer's own life, matched to the quote's theme, to get the first viewer comments (comments are a signal YouTube ranks on)."
+   "kind": "pinned_question",
+   "question": "Does a real question under each Short get viewers talking?",
+   "change": "Under each edit, the channel's comment asks the viewer something about his own life, matched to the quote's theme (fear: \"What's one fear that turned out smaller than you expected?\"), instead of \"Which line hit hardest? Write it below.\" Days alternate between the two for 14 days, so both run in the same weeks.",
+   "why": "The current question sits under a one-line quote, and no viewer has ever answered it: every edit has exactly one comment, the channel's own. Comments are one of the signals YouTube ranks on.",
+   "measure": "Comments from viewers per 1,000 views, question days against generic days, over 14 days.",
+   "ask": "pinned-question",
+   "status": "proposed",
+   "proposed": "2026-11-06",
+   "started": null
   },
   {
    "id": "playlists",
-   "idea": "A playlist per philosopher (Marcus Aurelius, Seneca, Epictetus), with every Short filed in it, so someone who likes one can binge the rest, and the playlists can show up in YouTube search."
-  },
+   "kind": "traffic_source",
+   "source": "PLAYLIST",
+   "question": "Do playlists per philosopher bring in extra views?",
+   "change": "Three public playlists (\"Marcus Aurelius quotes: Stoic Shorts\", the same for Seneca and Epictetus), with every edit filed under its philosopher, newest first, and each new Short added the day it airs.",
+   "why": "Someone who liked one Short can watch that philosopher's others in a row, and the playlists can show up when people search for him.",
+   "measure": "The share of the channel's views that come from playlists (YouTube's traffic sources), the 14 days after against the 14 before.",
+   "ask": "playlists",
+   "status": "proposed",
+   "proposed": "2026-11-06",
+   "started": null,
+   "before": {
+    "views": 0,
+    "of": 0,
+    "share": null
+   }
+  }
+ ],
+ "next": [
   {
    "id": "third-short",
    "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."
