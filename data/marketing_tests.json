@@ -9,14 +9,24 @@
    "measure": "The second Short's day-1 views divided by the same day's first Short's, for 14 days, against the median before.",
    "baselineSince": "2026-10-19",
    "ask": "post-times",
-   "status": "proposed",
+   "status": "running",
    "proposed": "2026-11-03",
-   "started": null
+   "started": "2026-11-06",
+   "approved": "2026-11-06: owner, in the HQ: \"Yes, move it\""
   }
  ],
  "next": [
-  {"id": "pinned-question", "idea": "The pinned comment: every edit asks \"Which line hit hardest? Write it below.\" under a one-line quote, and no viewer has ever answered. Test a direct question about the viewer's own life, matched to the quote's theme, to get the first viewer comments (comments are a signal YouTube ranks on)."},
-  {"id": "playlists", "idea": "A playlist per philosopher (Marcus Aurelius, Seneca, Epictetus), with every Short filed in it, so someone who likes one can binge the rest, and the playlists can show up in YouTube search."},
-  {"id": "third-short", "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."}
+  {
+   "id": "pinned-question",
+   "idea": "The pinned comment: every edit asks \"Which line hit hardest? Write it below.\" under a one-line quote, and no viewer has ever answered. Test a direct question about the viewer's own life, matched to the quote's theme, to get the first viewer comments (comments are a signal YouTube ranks on)."
+  },
+  {
+   "id": "playlists",
+   "idea": "A playlist per philosopher (Marcus Aurelius, Seneca, Epictetus), with every Short filed in it, so someone who likes one can binge the rest, and the playlists can show up in YouTube search."
+  },
+  {
+   "id": "third-short",
+   "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."
+  }
  ]
 }

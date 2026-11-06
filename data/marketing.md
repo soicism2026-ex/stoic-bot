@@ -1,13 +1,13 @@
 # Marketing: how the channel reaches people
 
-_Updated 2026-11-05 by Cicero (scripts/marketer.py, free, no paid API)._
+_Updated 2026-11-06 by Cicero (scripts/marketer.py, free, no paid API)._
 
 ## The funnel
 
-- Views a day, last 7 days: **440** (the 7 before: 382, +15%)
-- New subscribers a day: **1.3** (the 7 before: 1.4); 254 in all
-- Subscribers per 1,000 views: 2.9
-- Likes per 100 views (Shorts of the last 14 days): 4.4
+- Views a day, last 7 days: **485** (the 7 before: 382, +27%)
+- New subscribers a day: **1.6** (the 7 before: 1.4); 256 in all
+- Subscribers per 1,000 views: 3.2
+- Likes per 100 views (Shorts of the last 14 days): 4.6
 
 ## Reach by upload hour (UTC)
 
@@ -26,7 +26,7 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 
 ### Does the second Short reach more people in the morning than in the afternoon?
 
-- Status: **proposed**
+- Status: **running** since 2026-11-06
 - Change: The second Short goes out from 07:00 UTC (about 3-5 AM Toronto) instead of 15:00 UTC (about 11 AM-1 PM Toronto). Still 2 a day; the evening Short stays put.
 - Why: Across 294 Shorts, each against its own week: 00-03 UTC 1.15x, 04-11 UTC 1.0x, 12-19 UTC 0.75x. Since October 19 the afternoon Short got a median 0.63x of the same day's evening Short, and six of them stalled under 90 views.
 - Judged by: The second Short's day-1 views divided by the same day's first Short's, for 14 days, against the median before.

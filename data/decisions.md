@@ -1542,3 +1542,11 @@ that story must always be captioned "recorded in the Historia Augusta", never
   the pinned comment (every edit asks "Which line hit hardest?" under a one-line
   quote, and no viewer has ever answered), a playlist per philosopher, and, if
   mornings work, a third Short (that one is the owner's cadence call).
+- **2026-11-06 — POSTING TIME: the second Short moves to the morning.** Owner,
+  in the HQ, on Cicero's first test: *"Yes, move it"*. `POST_SLOT_HOURS`
+  0,15 -> 0,7 and `MIN_GAP_HOURS` 6 -> 5: the second Short now comes from the
+  07:00 UTC run (GitHub starts it around 08:00-10:30, about 3-5 AM Toronto)
+  instead of 15:00 (about 11 AM-1 PM). Still 2 a day, and the evening Short is
+  unchanged. Cicero judges it from 11-06 to 11-20 by the second Short's day-1
+  views over the same day's first, against the 0.63x median before (15 days),
+  then reports a verdict: win at 1.2x or better, loss at 0.85x or worse.
