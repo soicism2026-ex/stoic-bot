@@ -134,11 +134,16 @@ def remaining(post_rows: list[dict]) -> int:
                and not _already_aired(q, aired))
 
 
-# The comment the channel posts under every edit. Cicero's test 2 (owner's yes
-# needed, data/marketing_tests.json "pinned-question"): the generic one sits
-# under a one-line quote, and through 2026-11-06 no viewer had ever answered
-# it. The themed ones ask the viewer something about his own life, short to
-# answer, in doctrine 5's register: a handle he can use, never shame.
+# The comment the channel posts under every edit. Through 2026-11-06 it was
+# PINNED_GENERIC under every one, and no viewer ever answered it: every edit
+# had exactly one comment, the channel's own. On 2026-11-06 the owner sent a
+# viral Short's description (on Cicero's test 2, "a real question under each
+# Short?") "as inspiration for our next shorts": three short paragraphs and a
+# question for the comments. Since then each quote on the shelf carries its
+# own `description` and `question` (data/edit_quotes.json, checked by
+# scripts/shelf.py); the question ends the description and is the channel's
+# comment. A quote without one falls back to its theme's question, written in
+# doctrine 5's register: about the viewer's own life, a handle, never shame.
 PINNED_GENERIC = "Which line hit hardest? Write it below."
 PINNED_BY_THEME = {
     "discipline": "What's one small thing you'll do today even if you don't feel like it?",
@@ -154,42 +159,42 @@ PINNED_BY_THEME = {
     "control": "What's one worry on your mind right now that isn't in your control?",
     "mortality": "What's one thing you'd stop postponing if you remembered time is short?",
 }
-MARKETING_TESTS = ROOT / "data" / "marketing_tests.json"
+# The line that ends every new-style description, worded like the owner's
+# example; Cicero (scripts/marketer.py) tells old Shorts from new by it.
+QUESTION_MARK = "\U0001F4AC Question:"
+QUESTION_LINE = QUESTION_MARK + " {question} Share your thoughts in the comments."
 
 
-def pinned_arm(day) -> str:
-    """"themed" or "generic" for the comment under the edit that airs on `day`.
-    While the owner-approved test runs, days alternate from its start (even
-    days themed), so both kinds air in the same weeks; once he adopts the
-    winner it is used every day; otherwise the generic one, as before."""
-    import datetime as _dt
-    try:
-        tests = json.loads(MARKETING_TESTS.read_text(encoding="utf-8")).get("tests", [])
-        t = next(t for t in tests if t.get("id") == "pinned-question")
-    except Exception:  # noqa: BLE001  no ledger, no test: nothing changes
-        return "generic"
-    if t.get("adopted") in ("themed", "generic"):
-        return t["adopted"]
-    if t.get("status") != "running" or not t.get("started"):
-        return "generic"
-    start = _dt.date.fromisoformat(t["started"])
-    if day < start:
-        return "generic"
-    return "themed" if (day - start).days % 2 == 0 else "generic"
+def pinned_comment(q: dict) -> str:
+    """The quote's own question, else its theme's, else the generic line."""
+    own = (q.get("question") or "").strip()
+    return own or PINNED_BY_THEME.get(q.get("theme"), PINNED_GENERIC)
 
 
-def pinned_comment(q: dict, day) -> str:
-    if pinned_arm(day) == "themed" and q.get("theme") in PINNED_BY_THEME:
-        return PINNED_BY_THEME[q["theme"]]
-    return PINNED_GENERIC
+def description(content: dict) -> str:
+    """The YouTube description of an edit, in the style of the viral Short the
+    owner sent (2026-11-06): the quote's three short paragraphs, then its
+    question for the comments, then the quote word for word with its source
+    (the channel's promise), then the hashtags. The caller adds the promo
+    block and any music credit. A quote without paragraphs keeps the layout
+    every edit had before: the hook, then the quote and its source."""
+    body = (content.get("_description") or "").strip()
+    ask = (content.get("_question") or "").strip()
+    source = "\u2014 " + ", ".join(x for x in (content["author"], content.get("_citation") or "") if x)
+    if not body:
+        hook = content["hook"].strip().rstrip(".!? ")
+        parts = [f"{hook}." if hook else "", content["caption"]]
+    else:
+        parts = [body, QUESTION_LINE.format(question=ask) if ask else "",
+                 f"\u201c{content['quote'].strip()}\u201d\n{source}"]
+    parts.append(" ".join(content["hashtags"]))
+    return "\n\n".join(p for p in parts if p)
 
 
-def as_content(q: dict, day=None) -> dict:
+def as_content(q: dict) -> dict:
     """Same contract as stories.as_content, so render/QA/upload are unchanged.
-    `day` is the day the edit airs (src/airday.py), for the pinned comment."""
-    if day is None:
-        import airday  # noqa: PLC0415
-        day = airday.today()
+    `_description` and `_question` carry the owner's description style
+    (description() above) to scripts/daily_post.py."""
     caption = f"{q['quote']}\n— {q['author']}, {q['citation']}"
     return {
         "theme": q["theme"],
@@ -205,8 +210,10 @@ def as_content(q: dict, day=None) -> dict:
         "voiceover_lesson": "",
         "broll_queries": q["visuals"],
         "cta": "",
-        "pinned_comment": pinned_comment(q, day),
+        "pinned_comment": pinned_comment(q),
         "callout_words": [],
         "_edit_id": q["id"],
         "_citation": q["citation"],
+        "_description": q.get("description", ""),
+        "_question": q.get("question", ""),
     }

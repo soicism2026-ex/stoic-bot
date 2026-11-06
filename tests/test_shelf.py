@@ -18,9 +18,11 @@ import edits  # noqa: E402
 import shelf  # noqa: E402
 
 # A real, unaired-looking entry to mutate: the bank's own first quote,
-# checked against a bank that does not contain it.
+# checked against a bank that does not contain it. It aired before quotes
+# carried a description and question (2026-11-06), so it borrows a real pair.
 BANK = edits.load()
-GOOD = copy.deepcopy(BANK[0])
+SAMPLE = next(q for q in BANK if q.get("description"))
+GOOD = {k: copy.deepcopy(BANK[0].get(k, SAMPLE.get(k))) for k in shelf.KEYS}
 OTHERS = [q for q in BANK if q["id"] != GOOD["id"]]
 
 
@@ -32,7 +34,28 @@ def _why(**change):
 
 def test_every_shelved_quote_passes_the_rules_it_would_be_held_to_today():
     for q in BANK:
+        if "description" not in q:          # aired before 2026-11-06 (tests/test_descriptions.py)
+            q = {k: q.get(k, SAMPLE.get(k)) for k in shelf.KEYS}
         assert shelf.problems(q, [b for b in BANK if b["id"] != q["id"]], []) == [], q["id"]
+
+
+def test_a_new_quote_needs_the_owners_description_and_question():
+    """2026-11-06: the owner sent a viral Short's description to model ours on."""
+    assert _why() == ""
+    two = "One short line that speaks to the viewer about his own life today and what to do.\n\n" * 2
+    assert "description: 2-3 short paragraphs" in _why(description="")
+    assert "2-3 paragraphs" in _why(description="One paragraph only. " * 8)
+    assert "2-3 paragraphs" in _why(description=(two * 2).strip())               # four paragraphs
+    assert "2-3 paragraphs" in _why(description="Line one.\nLine two " * 8 + "\n\nThree.")
+    assert "description is 160 words" in _why(description=("word " * 80).strip() + "\n\n" + ("word " * 80).strip())
+    assert "no links" in _why(description=two.strip() + " #stoic")
+    assert "no links" in _why(description=two.strip() + " https://x.y")
+    assert "question: one question" in _why(question="")
+    assert "ending in '?'" in _why(question="What do you think.")
+    assert "ending in '?'" in _why(question="Why " + "really " * 30 + "?")
+    assert "ending in '?'" in _why(question="Why?")
+    assert "shames" in _why(question="Are you a coward or a man?")
+    assert "shames" in _why(description=two.strip() + " Stop being a pathetic loser.")
 
 
 def test_a_misquote_is_refused():

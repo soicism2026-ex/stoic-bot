@@ -1,7 +1,7 @@
-"""The code behind Cicero's tests 2 and 3 ships before the owner's yes, so it
-must change nothing until the ledger says the test is running (owner's rule:
-"dont ship anything until i approve it"), and Glaux's audience pull feeds him."""
-import datetime as dt
+"""The code behind Cicero's test 3 ships before the owner's yes, so it must
+change nothing until the ledger says the test is running (owner's rule:
+"dont ship anything until i approve it"); test 2 the owner answered himself
+(2026-11-06, tests/test_descriptions.py); Glaux's audience pull feeds him."""
 import json
 import sys
 from pathlib import Path
@@ -26,23 +26,14 @@ def _ledger(tmp_path, monkeypatch, module, attr, **test):
 
 # ---------------------------------------------------------------- test 2
 
-def test_the_pinned_comment_stays_generic_until_the_owner_says_yes(tmp_path, monkeypatch):
-    _ledger(tmp_path, monkeypatch, edits, "MARKETING_TESTS", id="pinned-question", status="proposed", started=None)
-    assert edits.as_content(Q, dt.date(2026, 11, 7))["pinned_comment"] == edits.PINNED_GENERIC
-    _ledger(tmp_path, monkeypatch, edits, "MARKETING_TESTS")
-    assert edits.pinned_comment(Q, dt.date(2026, 11, 7)) == edits.PINNED_GENERIC
-
-
-def test_once_running_the_days_alternate_and_an_adopted_winner_stays(tmp_path, monkeypatch):
-    _ledger(tmp_path, monkeypatch, edits, "MARKETING_TESTS", id="pinned-question", status="running",
-            started="2026-11-07")
-    assert edits.pinned_comment(Q, dt.date(2026, 11, 6)) == edits.PINNED_GENERIC      # before the start
-    assert edits.pinned_comment(Q, dt.date(2026, 11, 7)) == edits.PINNED_BY_THEME["fear"]
-    assert edits.pinned_comment(Q, dt.date(2026, 11, 8)) == edits.PINNED_GENERIC
-    assert edits.pinned_comment({**Q, "theme": "unknown"}, dt.date(2026, 11, 7)) == edits.PINNED_GENERIC
-    _ledger(tmp_path, monkeypatch, edits, "MARKETING_TESTS", id="pinned-question", status="done",
-            started="2026-11-07", adopted="themed")
-    assert edits.pinned_comment(Q, dt.date(2026, 12, 1)) == edits.PINNED_BY_THEME["fear"]
+def test_each_short_asks_its_own_question_since_the_owners_example():
+    """2026-11-06: the owner answered test 2 with a viral Short's description
+    to model ours on, so the question is on from the next Short, no A/B."""
+    own = {**Q, "question": "What's one fear you faced this year?"}
+    assert edits.as_content(own)["pinned_comment"] == own["question"]
+    assert edits.pinned_comment(Q) == edits.PINNED_BY_THEME["fear"]           # no question: its theme's
+    assert edits.pinned_comment({**Q, "theme": "unknown"}) == edits.PINNED_GENERIC
+    assert edits.pinned_comment({**own, "question": "  "}) == edits.PINNED_BY_THEME["fear"]
 
 
 def test_every_theme_on_the_shelf_has_a_kind_question():

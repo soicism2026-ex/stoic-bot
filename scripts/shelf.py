@@ -26,6 +26,10 @@ standing rule):
   * stock searches are short keywords, and people shots ask for a man
     (doctrine §1; tests/test_edits.py)
   * no shame in the hook (doctrine §5)
+  * a description and a question in the owner's style (2026-11-06, a viral
+    Short's description he sent "as inspiration for our next shorts"): 2-3
+    short paragraphs that speak to the viewer about his own life, and one
+    question for the comments; no links, hashtags or shame
 """
 from __future__ import annotations
 
@@ -56,7 +60,7 @@ CITATION = {
     "Epictetus": re.compile(r"^(?:Discourses [IV]{1,3}\.\d{1,2}|Enchiridion \d{1,2}), "
                             r"trans\. George Long$"),
 }
-KEYS = ["id", "author", "citation", "quote", "hook", "theme", "visuals"]
+KEYS = ["id", "author", "citation", "quote", "hook", "theme", "description", "question", "visuals"]
 # The same words tests/test_edits.py checks: these return women's fitness
 # footage unless the query names a man.
 PEOPLE = {"boxer", "boxing", "training", "weight", "weightlifting", "lifting",
@@ -64,6 +68,9 @@ PEOPLE = {"boxer", "boxing", "training", "weight", "weightlifting", "lifting",
 SHAME = ("pathetic", "loser", "worthless", "coward", "nobody is coming",
          "nobody's coming", "no one is coming", "no one's coming")
 QUOTE_WORDS = (3, 36)   # "Everywhere means nowhere." (3) to the bank's longest (36, ~13 s read)
+DESC_WORDS = (35, 95)   # the owner's example is 82 words in 3 paragraphs
+QUESTION_CHARS = 100    # one line in the comments
+TAGS = re.compile(r"https?://|www\.|#\w|@\w|[<>]")   # YouTube refuses < and >
 
 
 def _rows() -> list[dict]:
@@ -106,6 +113,35 @@ def status(today: dt.date | None = None, rows: list[dict] | None = None,
 
 def _norm(t: str) -> str:
     return edits._norm(t)
+
+
+def description_problems(q: dict) -> list[str]:
+    """What is wrong with a quote's description and question (empty = fine):
+    the layout of the owner's example, short, and kind (doctrine §5)."""
+    out = []
+    d, ask = q.get("description"), q.get("question")
+    if not isinstance(d, str) or not d.strip():
+        out.append("description: 2-3 short paragraphs about the viewer's own life")
+    else:
+        paras = d.split("\n\n")
+        if not 2 <= len(paras) <= 3 or any(not p.strip() or "\n" in p for p in paras):
+            out.append("description: 2-3 paragraphs, each one line, a blank line between them")
+        n = len(d.split())
+        if not DESC_WORDS[0] <= n <= DESC_WORDS[1]:
+            out.append(f"description is {n} words; {DESC_WORDS[0]}-{DESC_WORDS[1]}")
+        if TAGS.search(d):
+            out.append("description: no links, hashtags, @names, < or > (the hashtags and links are added)")
+    if not isinstance(ask, str) or not ask.strip():
+        out.append("question: one question for the comments")
+    else:
+        if not ask.endswith("?") or "\n" in ask or len(ask) > QUESTION_CHARS or len(ask.split()) < 4:
+            out.append(f"question: one line, 4+ words, at most {QUESTION_CHARS} characters, ending in '?'")
+        if TAGS.search(ask):
+            out.append("question: no links, hashtags, @names, < or >")
+    text = f"{d if isinstance(d, str) else ''} {ask if isinstance(ask, str) else ''}".lower()
+    if any(s in text for s in SHAME):
+        out.append("description or question shames the viewer (doctrine §5)")
+    return out
 
 
 def problems(q: dict, bank: list[dict], rows: list[dict], batch_ids: set | None = None) -> list[str]:
@@ -151,6 +187,7 @@ def problems(q: dict, bank: list[dict], rows: list[dict], batch_ids: set | None 
         out.append("hook shames the viewer (doctrine §5)")
     if q["theme"] not in THEMES:
         out.append(f"theme must be one of {sorted(THEMES)}")
+    out += description_problems(q)
     vis = q["visuals"]
     if not isinstance(vis, list) or not 6 <= len(vis) <= 10:
         out.append("visuals: 6-10 shots")

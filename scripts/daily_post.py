@@ -692,6 +692,11 @@ def main():
         f'{" ".join(content["hashtags"])}'
         f'{promo.description_block()}'
     )
+    if content.get("format") == "edit":
+        # The owner's style since 2026-11-06 (a viral Short's description he
+        # sent): three short paragraphs, a question for the comments, then the
+        # quote and its source. src/edits.py:description().
+        description = edits.description(content) + promo.description_block()
     music_credit = ""   # a CC BY track's credit line, which Instagram needs too
 
     # Experiment agent: assign this post's intro-sound + colour-grade combo.
@@ -1157,7 +1162,8 @@ def main():
                 "citation": _citation(content), "hashtags": content["hashtags"],
                 "igCaption": publish_instagram.caption(
                     hook_clean, content["quote"], content["author"], _citation(content),
-                    content["hashtags"], music_credit),
+                    content["hashtags"], music_credit, body=content.get("_description", ""),
+                    question=content.get("_question", "")),
             })
 
             if qa["issues"]:

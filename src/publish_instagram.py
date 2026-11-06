@@ -138,13 +138,19 @@ def hashtags(tags: list[str] | None) -> list[str]:
 
 
 def caption(hook: str, quote: str, author: str, citation: str = "",
-            tags: list[str] | None = None, credit: str = "") -> str:
+            tags: list[str] | None = None, credit: str = "", body: str = "",
+            question: str = "") -> str:
     """Instagram's caption: the hook, the quote with its source, a follow
     line, the music credit when a CC BY track played (the licence needs it),
-    and the hashtags. No links: Instagram doesn't make caption links tappable."""
+    and the hashtags. No links: Instagram doesn't make caption links tappable.
+    An edit with the owner's description (2026-11-06: `body`, three short
+    paragraphs, and its `question`) opens with those instead of the hook,
+    the same words as on YouTube."""
     hook = hook.strip().rstrip(".!? ")
     source = "— " + ", ".join(x for x in (author.strip(), citation.strip()) if x)
-    parts = [f"{hook}." if hook else "", f"“{quote.strip()}”\n{source}" if quote.strip() else "",
+    opening = [body.strip(), f"\U0001F4AC Question: {question.strip()} Share your thoughts in the comments."
+               if question.strip() else ""] if body.strip() else [f"{hook}." if hook else ""]
+    parts = [*opening, f"“{quote.strip()}”\n{source}" if quote.strip() else "",
              FOLLOW_LINE, credit.strip(), " ".join(hashtags(tags))]
     return "\n\n".join(p for p in parts if p)[:CAPTION_MAX]
 

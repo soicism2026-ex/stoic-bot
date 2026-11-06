@@ -672,6 +672,8 @@
   "quote": "Seek not that the things which happen should happen as you wish; but wish the things which happen to be as they are, and you will have a tranquil flow of life.",
   "hook": "Stop wishing things went differently.",
   "theme": "control",
+  "description": "Most of your stress isn't what happened. It's the fight with what happened: replaying it, wishing it had gone another way.\n\nEpictetus didn't say stop caring. He said stop arguing with what already is. It's the ground you stand on now, and you can't build on ground you keep refusing.\n\nAccept it first. Then choose your next move. That's where your peace and your power both start.",
+  "question": "What's harder to let go of: what happened, or how you wanted it to go?",
   "visuals": [
    "river flowing",
    "still:ancient greek philosopher by a calm river, soft light",
@@ -780,6 +782,8 @@
   "quote": "For the fault is not in the wealth, but in the mind itself.",
   "hook": "Money isn't your problem.",
   "theme": "desire",
+  "description": "More money rarely fixes a restless mind. If enough is never enough, the number was never the problem.\n\nSeneca was one of the richest men in Rome when he wrote this. Wealth didn't calm him. Training what he wanted did.\n\nBefore you chase the next raise, ask how you'd feel if you had it. Then start building that feeling now.",
+  "question": "What would make you feel rich: more money, or wanting less?",
   "visuals": [
    "luxury car",
    "still:marble bust of a roman senator, dramatic side light",
@@ -798,6 +802,8 @@
   "quote": "Would you rather be poor and sated, or rich and hungry?",
   "hook": "Poor and full, or rich and starving?",
   "theme": "desire",
+  "description": "Seneca's question still lands: would you rather have little and feel full, or have plenty and still feel empty?\n\nHunger for more can drive you. It can also make every win feel like nothing. Being content isn't giving up. It's being able to enjoy what you've already earned.\n\nKeep your ambition. Just don't let it steal today.",
+  "question": "Poor and content, or rich and never satisfied: which would you pick?",
   "visuals": [
    "gold coins",
    "still:roman banquet table at night, candlelight",
@@ -816,6 +822,8 @@
   "quote": "Some men, indeed, only begin to live when it is time for them to leave off living.",
   "hook": "Don't start living at the end.",
   "theme": "time",
+  "description": "Someday. When the job is better, when the money's right, when things calm down. Seneca watched men wait their whole lives for that day.\n\nLife isn't what starts after the preparation. It's the hours you're in right now, on an ordinary Tuesday.\n\nPick one thing you've been saving for later and do a small version of it this week.",
+  "question": "What have you been putting off until someday?",
   "visuals": [
    "old man walking",
    "still:hourglass on stone, candle light",
@@ -852,6 +860,8 @@
   "quote": "For we are mistaken when we look forward to death; the major portion of death has already passed.",
   "hook": "Death isn't ahead of you.",
   "theme": "mortality",
+  "description": "We think of the end as something far ahead. Seneca saw it differently: every day already lived is time that's gone for good.\n\nThat isn't meant to scare you. It's meant to wake you up. The hours you have left are the only ones you can still spend well.\n\nSo spend today on purpose: on the people, the work and the rest that actually matter to you.",
+  "question": "What matters more to you: more time, or better use of the time you have?",
   "visuals": [
    "empty road",
    "still:ancient roman tomb at dusk, dramatic light",
@@ -870,6 +880,8 @@
   "quote": "The beginning is in our own power; fortune decides the issue, but I do not allow her to pass sentence upon myself.",
   "hook": "You control the start. Not the end.",
   "theme": "control",
+  "description": "You don't control the outcome. The interview, the deal, the result: luck and other people get a vote.\n\nWhat you do control is the start: showing up prepared, doing the work, making the call. Seneca refused to let fortune judge him on results he couldn't command.\n\nMeasure yourself by what you put in, not only by what comes back.",
+  "question": "What do you judge yourself by more: your effort or your results?",
   "visuals": [
    "starting line",
    "still:marble statue of a stoic facing the sea, dramatic light",
@@ -888,6 +900,8 @@
   "quote": "You should lay hold, once for all, upon a single norm to live by, and should regulate your whole life according to this norm.",
   "hook": "Pick one rule. Live by it.",
   "theme": "discipline",
+  "description": "Most people run on twenty half-kept rules and wonder why nothing sticks.\n\nSeneca's advice was simpler: choose one standard and let it decide the small things for you. One rule you actually keep beats ten you only admire.\n\nPick yours this week, write it down, and let it make the next hard choice easy.",
+  "question": "If you could live by one rule, what would it be?",
   "visuals": [
    "compass",
    "still:ancient stone tablet carved with laws, torchlight",
@@ -906,6 +920,8 @@
   "quote": "The body should be treated more rigorously, that it may not be disobedient to the mind.",
   "hook": "Train your body to obey you.",
   "theme": "discipline",
+  "description": "Your mind says get up, train, go to bed on time. Your body says five more minutes. Whoever wins that argument most days runs your life.\n\nSeneca's fix wasn't punishment. It was practice: small, regular hardships that teach the body to follow the mind.\n\nStart with one: an early alarm, a cold shower, one more set.",
+  "question": "Which is harder for you: starting the workout, or finishing it?",
   "visuals": [
    "man cold shower",
    "still:marble statue of a roman athlete, dramatic side light",
@@ -924,6 +940,8 @@
   "quote": "Of things some are in our power, and others are not.",
   "hook": "Some things aren't yours to fix.",
   "theme": "control",
+  "description": "This is the first line of Epictetus's handbook, and still the most useful sentence in Stoicism.\n\nYour effort, your words and your choices are yours. The weather, other people's opinions and most of the news are not. A lot of anxiety comes from mixing up the two lists.\n\nTonight, sort one worry. If it's yours, act on it. If it isn't, set it down.",
+  "question": "Do you worry more about what you can control, or what you can't?",
   "visuals": [
    "chess",
    "still:ancient greek philosopher, dramatic side light",
@@ -960,6 +978,8 @@
   "quote": "How long will you then still defer thinking yourself worthy of the best things?",
   "hook": "How long will you wait?",
   "theme": "discipline",
+  "description": "You already know what the better version of your life looks like. Epictetus's question is how long you'll keep putting it off.\n\nWaiting to feel ready is the most comfortable way to never start. Readiness usually shows up after the first step, not before it.\n\nYou're worth the effort today, not someday. Pick the first step and take it.",
+  "question": "What holds you back more: fear of failing, or waiting to feel ready?",
   "visuals": [
    "clock",
    "still:ancient greek philosopher at dawn, warm light",
@@ -978,6 +998,8 @@
   "quote": "If you choose, you are free; if you choose, you will blame no one: you will charge no one.",
   "hook": "Freedom is a choice.",
   "theme": "control",
+  "description": "Blaming feels good for a minute. Then it hands your peace to someone else.\n\nEpictetus was born a slave, and he still said freedom is a choice. Not because hard things aren't real, but because your response stays yours.\n\nNext time you catch yourself blaming, ask one question: what's my move from here?",
+  "question": "What's harder: taking responsibility, or letting go of blame?",
   "visuals": [
    "open road",
    "still:ancient greek philosopher on a cliff above the sea",
@@ -1104,6 +1126,8 @@
   "quote": "Do not disturb thyself by thinking of the whole of thy life.",
   "hook": "Don't carry your whole life today.",
   "theme": "fear",
+  "description": "Thinking about your whole future at once is like carrying every bag in one trip. Of course it's too heavy.\n\nMarcus Aurelius ran an empire and still had to tell himself this. Deal with what's in front of you today. You'll meet tomorrow with tomorrow's strength.\n\nShrink the problem to today's piece, and do that piece well.",
+  "question": "What weighs on you more: today, or the years ahead?",
   "visuals": [
    "fog road",
    "still:marble bust of a stoic philosopher in fog, cinematic",
@@ -1122,6 +1146,8 @@
   "quote": "On every occasion a man should ask himself, Is this one of the unnecessary things?",
   "hook": "Ask this before you scroll.",
   "theme": "time",
+  "description": "Before you open the app, before you say yes, before you start the argument: is this necessary?\n\nMarcus asked himself this all day long. Most of what drains us isn't hard work. It's the unnecessary things we never questioned.\n\nCut one today and notice how much time and calm you get back.",
+  "question": "What's one unnecessary thing you could cut this week?",
   "visuals": [
    "phone scrolling",
    "still:marble bust of Marcus Aurelius, dramatic candlelight",
@@ -1140,6 +1166,8 @@
   "quote": "Be not ashamed to be helped; for it is thy business to do thy duty like a soldier in the assault on a town.",
   "hook": "Needing help isn't weakness.",
   "theme": "friendship",
+  "description": "Needing help isn't weakness. Even Marcus Aurelius, emperor of Rome, had to remind himself of that.\n\nHis picture was a soldier climbing a wall. If you're hurt and can't get up alone, letting a comrade lift you is part of doing your duty, not a failure of it.\n\nIf you're carrying something heavy, tell one person this week. That's strength too.",
+  "question": "What's harder for you: asking for help, or accepting it?",
   "visuals": [
    "castle wall",
    "still:roman soldiers lifting a wounded comrade onto a fortress wall, dust and sunlight",
@@ -1158,6 +1186,8 @@
   "quote": "Accustom thyself to attend carefully to what is said by another, and as much as it is possible, be in the speaker's mind.",
   "hook": "Stop waiting for your turn to talk.",
   "theme": "friendship",
+  "description": "Most of us don't listen. We wait for our turn to talk.\n\nMarcus trained himself to get inside what the other person actually meant. It's one of the rarest skills there is, and people remember how it feels to be heard.\n\nIn your next conversation, ask one more question before you give your answer.",
+  "question": "Are you a better talker or a better listener?",
   "visuals": [
    "two chairs",
    "coffee cups",
@@ -1176,6 +1206,8 @@
   "quote": "When thou wishest to delight thyself, think of the virtues of those who live with thee.",
   "hook": "Bad day? Think about your people.",
   "theme": "friendship",
+  "description": "Bad day? Marcus had a simple fix: think about the good in the people around you.\n\nOne friend's loyalty, another's humor, someone's quiet patience. Noticing what's good in others lifts you too, and it changes how you treat them.\n\nTell one of them what you admire about them today.",
+  "question": "What's a quality you admire in someone close to you?",
   "visuals": [
    "dinner table",
    "still:roman friends sharing bread at a long wooden table, warm lamplight",
@@ -1194,6 +1226,8 @@
   "quote": "Nothing is more disgraceful than a wolfish friendship (false friendship). Avoid this most of all.",
   "hook": "Friends who only show up to take?",
   "theme": "friendship",
+  "description": "Some friends only show up when they need something. Marcus called it wolfish friendship, and said to avoid it above everything else.\n\nReal friendship gives as much as it takes. You can be kind to everyone and still be careful about who gets close.\n\nLook at your circle honestly, and be the kind of friend you'd want to keep.",
+  "question": "What matters more in a friend: loyalty or honesty?",
   "visuals": [
    "wolf",
    "sheep flock",
@@ -1212,6 +1246,8 @@
   "quote": "If it is not right, do not do it: if it is not true, do not say it.",
   "hook": "Tempted to lie or cut corners?",
   "theme": "duty",
+  "description": "Two lines, and most of ethics fits inside them.\n\nMarcus didn't overcomplicate it. Small lies and shortcuts feel harmless, but they add up to a person you don't respect.\n\nKeep it simple today: if it's not right, don't do it. If it's not true, don't say it.",
+  "question": "Which is harder: doing the right thing, or saying the true thing?",
   "visuals": [
    "traffic light",
    "crossroads",
@@ -1230,6 +1266,8 @@
   "quote": "Never value anything as profitable to thyself which shall compel thee to break thy promise, to lose thy self-respect.",
   "hook": "No paycheck is worth your word.",
   "theme": "duty",
+  "description": "Some deals cost more than they pay. If it makes you break your word or lose your self-respect, it's a loss, whatever the number says.\n\nMarcus put character first because it's the one thing nobody can take from you unless you hand it over.\n\nKeep your word on the small things this week. That's how it holds on the big ones.",
+  "question": "What's worth more: a good deal or a kept promise?",
   "visuals": [
    "broken chain",
    "money counting",
@@ -1248,6 +1286,8 @@
   "quote": "Let it make no difference to thee whether thou art cold or warm, if thou art doing thy duty; and whether thou art drowsy or satisfied with sleep.",
   "hook": "Tired and cold? Do it anyway.",
   "theme": "duty",
+  "description": "Tired, cold, not in the mood. The work doesn't care, and neither did Marcus.\n\nHe wrote this to himself while leading an empire through war and plague. Feeling right isn't a condition for doing right.\n\nDo today's task tired if you have to. You'll be glad you didn't wait for perfect conditions.",
+  "question": "What stops you more often: tiredness or lack of motivation?",
   "visuals": [
    "frost window",
    "fireplace",
@@ -1266,6 +1306,8 @@
   "quote": "That which is not good for the swarm, neither is it good for the bee.",
   "hook": "Good for you but bad for them?",
   "theme": "duty",
+  "description": "If something's good for you but bad for everyone around you, it isn't really good for you.\n\nMarcus thought of people like bees in a hive: we rise or fall together. Your family, your team and your friends are part of your own wellbeing.\n\nBefore your next big choice, ask who else it touches.",
+  "question": "Do you decide more for yourself, or for the people around you?",
   "visuals": [
    "bee hive",
    "bees flowers",
@@ -1284,6 +1326,8 @@
   "quote": "Remember too on every occasion which leads thee to vexation to apply this principle; not that this is a misfortune, but that to bear it nobly is good fortune.",
   "hook": "Bad break? Here's how to flip it.",
   "theme": "adversity",
+  "description": "Bad breaks happen to everyone. What happens next is the part you get to write.\n\nMarcus's reframe: the setback isn't the story. Bearing it well is a kind of good fortune, because it shows you who you are.\n\nNext time something goes wrong, ask how the person you want to be would carry it.",
+  "question": "What defines you more: what happens to you, or how you handle it?",
   "visuals": [
    "flat tire",
    "spilled coffee",
@@ -1302,6 +1346,8 @@
   "quote": "A cucumber is bitter. Throw it away. There are briers in the road. Turn aside from them. This is enough. Do not add, And why were such things made in the world?",
   "hook": "Stuck asking why me?",
   "theme": "adversity",
+  "description": "A bitter cucumber? Throw it away. Thorns on the path? Step around them. Marcus didn't waste breath asking why.\n\nAsking 'why me?' feels natural, but it keeps you stuck in the moment instead of moving past it.\n\nDeal with what's in front of you, then keep walking.",
+  "question": "When things go wrong, do you ask 'why me' or 'what now'?",
   "visuals": [
    "cucumber",
    "trash can",
@@ -1320,6 +1366,8 @@
   "quote": "If a thing is difficult to be accomplished by thyself, do not think that it is impossible for man.",
   "hook": "Hard for you isn't impossible.",
   "theme": "adversity",
+  "description": "Hard for you right now doesn't mean impossible. Someone, somewhere, has done the thing you're struggling with.\n\nMarcus took that as proof it can be learned. Difficulty isn't a verdict on you. It shows you where the next lesson is.\n\nBreak it into the smallest step you can take today.",
+  "question": "What's something you thought was impossible until you did it?",
   "visuals": [
    "rubik cube",
    "still:roman builders raising a giant stone column with ropes, dust and sunlight",
@@ -1338,6 +1386,8 @@
   "quote": "Practise thyself even in the things which thou despairest of accomplishing.",
   "hook": "Think you'll never be good at it?",
   "theme": "adversity",
+  "description": "Think you'll never be good at it? Practise it anyway.\n\nMarcus noticed that the left hand, clumsy at most things, holds the reins better than the right, because it's used to it. Skill follows repetition, not talent.\n\nPick the thing you've given up on and give it ten minutes today.",
+  "question": "What matters more in life: talent or practice?",
   "visuals": [
    "horse reins",
    "still:roman rider gripping the reins of a rearing horse, dust and sunlight",
@@ -1356,6 +1406,8 @@
   "quote": "It is not fit that I should give myself pain, for I have never intentionally given pain even to another.",
   "hook": "Stop being so hard on yourself.",
   "theme": "resilience",
+  "description": "You'd never talk to a friend the way you talk to yourself after a mistake.\n\nMarcus noticed the same thing: he wouldn't hurt anyone on purpose, so why do it to himself? Being hard on yourself isn't the same as holding a standard.\n\nFix what you can, learn the lesson, and let the rest go.",
+  "question": "Who are you harder on: yourself or other people?",
   "visuals": [
    "rope knot",
    "man mirror",
@@ -1374,6 +1426,8 @@
   "quote": "To recover thy life is in thy power. Look at things again as thou didst use to look at them.",
   "hook": "Want your old self back?",
   "theme": "resilience",
+  "description": "Feel like you've lost your old self? Marcus believed you can get it back.\n\nNot by changing everything at once, but by looking at things again the way you used to, with the clarity you had before life got noisy.\n\nStart with one old habit that made you feel like you, and bring it back this week.",
+  "question": "What's one habit from your best days you'd bring back?",
   "visuals": [
    "old photographs",
    "vinyl record",
@@ -1392,6 +1446,8 @@
   "quote": "When thou hast been compelled by circumstances to be disturbed in a manner, quickly return to thyself, and do not continue out of tune longer than the compulsion lasts.",
   "hook": "Knocked off balance? Get back faster.",
   "theme": "resilience",
+  "description": "Everyone gets knocked off balance. The goal isn't to never lose it. It's to come back faster.\n\nMarcus compared it to music: you'll slip out of tune sometimes, and the more often you return to yourself, the better you get at it.\n\nNext time you're thrown, take one breath and ask: what's my next right move?",
+  "question": "What helps you reset faster: time alone, or talking it out?",
   "visuals": [
    "guitar strings",
    "storm sea",
@@ -1410,6 +1466,8 @@
   "quote": "Be content if the smallest thing goes on well, and consider such an event to be no small matter.",
   "hook": "Small win today? It's not small.",
   "theme": "resilience",
+  "description": "Small wins aren't small. A workout done, a promise kept, a hard conversation handled: that's how big changes get built.\n\nMarcus told himself to be glad when even the smallest thing went well. Progress you notice is progress you keep.\n\nWrite down one thing that went right today.",
+  "question": "What was your small win today?",
   "visuals": [
    "seedling",
    "still:roman mason setting a single stone into a new wall, morning light",
@@ -1428,6 +1486,8 @@
   "quote": "Thou choosest rather to become good to-morrow than to be good to-day.",
   "hook": "Waiting for Monday to start?",
   "theme": "time",
+  "description": "Monday. Next month. The new year. We love starting tomorrow.\n\nMarcus caught himself doing it too: choosing to become good tomorrow instead of being good today. Tomorrow is always available, so it never comes.\n\nDo one small part of it today. That's the start you keep waiting for.",
+  "question": "What's one thing you'll start today instead of Monday?",
   "visuals": [
    "calendar",
    "still:roman sundial casting a sharp shadow across marble, dramatic light",
@@ -1446,6 +1506,8 @@
   "quote": "Do not waste the remainder of thy life in thoughts about others, when thou dost not refer thy thoughts to some object of common utility.",
   "hook": "Still checking what they're up to?",
   "theme": "time",
+  "description": "Checking what they're doing, what they said, what they think of you. It feels like nothing, but it eats whole evenings.\n\nMarcus called it wasting the rest of your life. Thinking about others is good when it helps someone. When it's just watching, it's time you don't get back.\n\nNext time you catch yourself scrolling someone else's life, turn the attention back to yours.",
+  "question": "What gets more of your attention: your own goals, or what others are doing?",
   "visuals": [
    "binoculars",
    "window blinds",
@@ -1464,6 +1526,8 @@
   "quote": "As the heaps of sand piled on one another hide the former sands; so in life the events which go before are soon covered by those which come after.",
   "hook": "Can't stop replaying that cringe moment?",
   "theme": "time",
+  "description": "That cringe moment you keep replaying? Most people forgot it long ago.\n\nMarcus compared life to sand: each day piles new sand on the last, and what felt huge gets buried fast. The embarrassment fades. The lesson can stay.\n\nKeep the lesson. Drop the replay.",
+  "question": "What do you replay more: your mistakes or your wins?",
   "visuals": [
    "sand dunes",
    "desert wind",
@@ -1482,6 +1546,8 @@
   "quote": "Set thyself in motion, if it is in thy power, and do not look about thee to see if any one will observe it.",
   "hook": "Scared they'll watch you try?",
   "theme": "fear",
+  "description": "Scared they'll watch you try and fail? Most people are too busy with their own lives to notice.\n\nMarcus told himself to just start, without looking around to see who's watching. The audience in your head is louder than the real one.\n\nDo the thing you've been hiding. Let them watch if they want to.",
+  "question": "What's stopped you more: fear of failing, or fear of being seen trying?",
   "visuals": [
    "security camera",
    "empty stadium",
@@ -1500,6 +1566,8 @@
   "quote": "If thou seest clear, go by this way content, without turning back; but if thou dost not see clear, stop and take the best advisers.",
   "hook": "Stuck on a big decision?",
   "theme": "fear",
+  "description": "Big decision and no clear answer? You don't have to figure it out alone.\n\nMarcus's rule was simple: when the path is clear, go without looking back. When it isn't, stop and ask the wisest people you know.\n\nName one person whose judgment you trust, and ask them this week.",
+  "question": "When you're stuck, do you decide alone or ask for advice?",
   "visuals": [
    "windshield wipers",
    "fog road",
@@ -1518,6 +1586,8 @@
   "quote": "Thou art come according to thy old fashion. I am not angry with thee: only go away.",
   "hook": "That old thought is back? Tell it this.",
   "theme": "fear",
+  "description": "That old worry is back, the same one as always. Marcus had a way of talking to his.\n\nHe didn't fight it or panic. He recognised it like an old acquaintance: you again. I'm not angry with you. Now go.\n\nNext time the familiar thought shows up, name it, don't feed it, and let it pass.",
+  "question": "Do you fight your negative thoughts, or let them pass?",
   "visuals": [
    "ceiling fan",
    "smoke",
@@ -1536,6 +1606,8 @@
   "quote": "Mildness and gentleness, as they are more agreeable to human nature, so also are they more manly; and he who possesses these qualities possesses strength, nerves, and courage.",
   "hook": "Think calm makes you soft?",
   "theme": "anger",
+  "description": "Calm isn't soft. Anyone can snap. It takes strength to stay steady when you're provoked.\n\nMarcus, who commanded armies, wrote that gentleness takes nerve and courage. The man who stays calm is the one in control of the room.\n\nNext time you feel the heat rise, try the stronger move: slow down.",
+  "question": "What takes more strength: losing your temper, or keeping it?",
   "visuals": [
    "lion resting",
    "still:roman general calmly sheathing his sword, dramatic side light",
@@ -1554,6 +1626,8 @@
   "quote": "It is thy duty to leave another man's wrongful act there where it is.",
   "hook": "Can't let go of what he did?",
   "theme": "anger",
+  "description": "What he did is on him. Carrying it around is on you.\n\nMarcus told himself to leave other people's wrongs where they happened. Replaying them doesn't punish the other person. It only keeps hurting you.\n\nDeal with what needs dealing with, then set the rest down.",
+  "question": "What's harder to let go of: what someone did, or what they said?",
   "visuals": [
    "boulder",
    "man carrying",
@@ -1572,6 +1646,8 @@
   "quote": "Suppose any man shall despise me. Let him look to that himself. But I will look to this, that I be not discovered doing or saying anything deserving of contempt.",
   "hook": "Someone looks down on you? Let them.",
   "theme": "ego",
+  "description": "Someone looks down on you? That's their business.\n\nMarcus's answer to contempt was to make sure he wasn't doing anything that deserved it. Their opinion is theirs to manage. Your conduct is yours.\n\nSpend your energy on your own behaviour, not on changing their mind.",
+  "question": "What matters more to you: being respected, or being worthy of respect?",
   "visuals": [
    "pigeon",
    "still:roman senator sneering down from marble steps at a calm young man, dramatic light",
@@ -1590,6 +1666,8 @@
   "quote": "If any man is able to convince me and show me that I do not think or act right, I will gladly change.",
   "hook": "Being wrong isn't losing.",
   "theme": "ego",
+  "description": "Being wrong isn't losing. Staying wrong is.\n\nMarcus, the most powerful man in his world, wrote that he'd gladly change his mind if someone showed him a better way. Pride defends a mistake. Strength fixes it.\n\nNext time someone challenges you, ask: what if they're right?",
+  "question": "What's harder: admitting you were wrong, or changing what you do?",
   "visuals": [
    "chalkboard",
    "chess",
@@ -1608,6 +1686,8 @@
   "quote": "Receive wealth or prosperity without arrogance; and be ready to let it go.",
   "hook": "Winning right now? Hold it loosely.",
   "theme": "desire",
+  "description": "Winning right now? Enjoy it, and hold it loosely.\n\nMarcus had everything an emperor could have and still reminded himself it could all go. Good times are borrowed, not owned, and the pride that comes with them is often what trips you.\n\nBe grateful for what's going well, and stay the same person you were before it did.",
+  "question": "Does success change people, or reveal who they are?",
   "visuals": [
    "trophy",
    "gold coins",
@@ -1626,6 +1706,8 @@
   "quote": "On the occasion of every act ask thyself, How is this with respect to me? Shall I repent of it?",
   "hook": "About to do something you'll regret?",
   "theme": "desire",
+  "description": "One question can save you a lot of regret: will I wish I hadn't done this?\n\nMarcus asked it before every act. The urge feels big in the moment. The regret usually lasts longer.\n\nBefore the next impulse, take one breath and ask it.",
+  "question": "What do you regret more: things you did, or things you didn't do?",
   "visuals": [
    "credit card",
    "whiskey glass",
@@ -1644,6 +1726,8 @@
   "quote": "You should share with a friend at least all your worries and reflections. Regard him as loyal, and you will make him loyal.",
   "hook": "Carrying it all alone? Tell a friend.",
   "theme": "friendship",
+  "description": "Carrying it all alone isn't strength. It's just heavy.\n\nSeneca told his friend Lucilius to share his worries with someone he trusts, and to treat that friend as loyal. Trust is often how loyalty starts.\n\nPick one person and tell them what's been on your mind this week.",
+  "question": "When things get heavy, who do you talk to: a friend or family?",
   "visuals": [
    "kettle boiling",
    "still:two Roman legionaries talking quietly by a campfire at night, warm firelight",
@@ -1662,6 +1746,8 @@
   "quote": "He who begins to be your friend because it pays will also cease because it pays.",
   "hook": "Why some friends vanish when you're down.",
   "theme": "friendship",
+  "description": "Some people are friends with your usefulness, not with you.\n\nSeneca saw it clearly: a friendship that starts because it pays will end when it stops paying. That's why some people vanish when you're down.\n\nValue the ones who stay, and be that kind of friend yourself.",
+  "question": "When do you find out who your real friends are: the good times or the hard times?",
   "visuals": [
    "slot machine",
    "coins falling",
@@ -1680,6 +1766,8 @@
   "quote": "No good thing is pleasant to possess, without friends to share it.",
   "hook": "Got the win and nobody to tell?",
   "theme": "friendship",
+  "description": "A win with nobody to tell feels strangely quiet.\n\nSeneca knew good things are better shared. Success, a great meal, a breakthrough: they grow when someone else is glad too.\n\nCall someone this week and share something good, theirs or yours.",
+  "question": "What's better: winning alone, or winning with your people?",
   "visuals": [
    "trophy",
    "empty stadium",
@@ -1698,6 +1786,8 @@
   "quote": "Let us greedily enjoy our friends, because we do not know how long this privilege will be ours.",
   "hook": "When did you last see your friends?",
   "theme": "friendship",
+  "description": "When did you last see your friends, and not just like their posts?\n\nSeneca wrote that we should enjoy our friends greedily, because none of us knows how long we'll have them. Time with people is what we postpone most and regret most.\n\nMake one plan this week. Coffee, a walk, a call. Just make it real.",
+  "question": "Who's someone you've been meaning to catch up with?",
   "visuals": [
    "empty bench",
    "hourglass",
@@ -1716,6 +1806,8 @@
   "quote": "Give me courage to meet hardships; make me calm in the face of the unavoidable.",
   "hook": "Something hard coming? Say this first.",
   "theme": "adversity",
+  "description": "Something hard is coming, and you can't stop it. Seneca asked for two things: courage for what you can face, and calm for what you can't avoid.\n\nYou don't need to feel ready. You need to be steady enough to take the next step.\n\nSay it before the hard day: courage for this, calm for the rest.",
+  "question": "What do you need more right now: courage or calm?",
   "visuals": [
    "tide coming in",
    "storm clouds",
@@ -1734,6 +1826,8 @@
   "quote": "You cannot escape necessities, but you can overcome them.",
   "hook": "Can't avoid it? Go through it.",
   "theme": "adversity",
+  "description": "Some things you can't avoid: the hard conversation, the loss, the bill, the deadline.\n\nSeneca's point is that you can't escape them, but you can get through them. The way out is through.\n\nStop looking for the exit and take the first step forward.",
+  "question": "When something hard can't be avoided, do you face it early or put it off?",
   "visuals": [
    "ship ice",
    "brick wall",
@@ -1752,6 +1846,8 @@
   "quote": "There are obstacles in our path; so let us fight, and call to our assistance some helpers.",
   "hook": "Fight it. Just don't fight alone.",
   "theme": "adversity",
+  "description": "Fight the obstacle. Just don't fight it alone.\n\nSeneca didn't treat asking for help as weakness. He called it smart: every hard road goes better with someone beside you.\n\nWho could help with what you're facing? Ask them this week.",
+  "question": "Do you usually push through alone, or ask for help?",
   "visuals": [
    "fallen tree",
    "man boxing",
@@ -1770,6 +1866,8 @@
   "quote": "Rise, draw a fresh breath, and surmount that hill, if possible, at a single spurt!",
   "hook": "Halfway up and out of breath?",
   "theme": "adversity",
+  "description": "Halfway up and out of breath? That's exactly where most people stop.\n\nSeneca's advice: stand up, take a fresh breath, and push for the top. The last stretch always feels the hardest, and it's usually shorter than it looks.\n\nTake the breath. Then finish the climb.",
+  "question": "What's harder for you: starting something, or finishing it?",
   "visuals": [
    "man breathing cold",
    "steep hill",
@@ -1806,6 +1904,8 @@
   "quote": "After a shipwreck, sailors try the sea again.",
   "hook": "Failed once? Scared to try again?",
   "theme": "resilience",
+  "description": "Failed once and scared to try again? So were the sailors.\n\nSeneca's point: after a shipwreck, sailors still go back to sea. Not because they forgot, but because one wreck isn't the end of the voyage.\n\nLearn what sank you, then try again.",
+  "question": "After a failure, do you try again fast or take time first?",
   "visuals": [
    "shipwreck",
    "storm sea",
@@ -1824,6 +1924,8 @@
   "quote": "That which was bitter to bear is pleasant to have borne.",
   "hook": "You'll be glad you got through this.",
   "theme": "resilience",
+  "description": "What's hard now will one day be something you're proud you got through.\n\nSeneca noticed it: what was bitter to carry becomes good to look back on. The hard season becomes the story you tell.\n\nIf you're in it right now, keep going. Future you will be glad you did.",
+  "question": "What's the hardest thing you're proud of getting through?",
   "visuals": [
    "lemon slice",
    "man carrying log",
@@ -1842,6 +1944,8 @@
   "quote": "Lay hold of to-day’s task, and you will not need to depend so much upon to-morrow’s.",
   "hook": "Worried about tomorrow? Win today first.",
   "theme": "time",
+  "description": "Worried about tomorrow? Win today first.\n\nSeneca's point was practical: when today's work gets done, tomorrow has less to carry. A lot of worry about the future is unfinished business from today.\n\nPick today's most important task and do it before anything else.",
+  "question": "What's the one task you'll finish today?",
   "visuals": [
    "sticky notes",
    "man hammering nail",
@@ -1860,6 +1964,8 @@
   "quote": "Very often the things that cost nothing cost us the most heavily.",
   "hook": "Free apps aren't free.",
   "theme": "time",
+  "description": "Free apps aren't free. You pay with your hours and your attention.\n\nSeneca noticed it two thousand years ago: the things that cost no money often cost the most, because we spend them without thinking.\n\nCheck your screen time this week and decide if it's worth what you're paying.",
+  "question": "What costs you more: money or attention?",
   "visuals": [
    "mouse trap",
    "price tag",
@@ -1878,6 +1984,8 @@
   "quote": "We break up life into little bits, and fritter it away.",
   "hook": "Where did today actually go?",
   "theme": "time",
+  "description": "Five minutes here, ten there. By evening the day is gone and you can't say where.\n\nSeneca watched people break their lives into little bits and fritter them away. Focus is what turns scattered hours back into a life.\n\nGive one block of time today to one thing, with nothing else open.",
+  "question": "Where does most of your lost time go?",
   "visuals": [
    "glass shattering",
    "puzzle pieces",
@@ -1896,6 +2004,8 @@
   "quote": "The wages of a good deed is to have done it.",
   "hook": "Did good and got nothing back?",
   "theme": "duty",
+  "description": "Did something good and got nothing back? You already got paid.\n\nSeneca's point: doing good is its own reward. If you only help when it's noticed, it's a trade, not kindness.\n\nDo one quiet good thing today and tell no one.",
+  "question": "What's a kind thing someone did for you that you never forgot?",
   "visuals": [
    "man planting tree",
    "seedling growing",
@@ -1914,6 +2024,8 @@
   "quote": "Our relations with one another are like a stone arch, which would collapse if the stones did not mutually support each other.",
   "hook": "Lean on people. Let them lean on you.",
   "theme": "duty",
+  "description": "Nobody stands alone. We hold each other up.\n\nSeneca compared people to the stones of an arch: take away the support and the whole thing falls. Leaning on others isn't weakness, and letting them lean on you isn't a burden.\n\nCheck on someone this week, and let someone check on you.",
+  "question": "Who's someone you can always lean on?",
   "visuals": [
    "cracked wall",
    "stone arch",
@@ -1932,6 +2044,8 @@
   "quote": "You must live for your neighbour, if you would live for yourself.",
   "hook": "Stuck in your own head? Help someone.",
   "theme": "duty",
+  "description": "Stuck in your own head? Help someone.\n\nSeneca believed that living only for yourself makes for a small, anxious life. Helping someone else gets you out of your own loop and gives your days a purpose.\n\nDo one useful thing for someone today, however small.",
+  "question": "What lifts you more on a bad day: helping someone, or being helped?",
   "visuals": [
    "man shoveling snow",
    "front door",
@@ -1950,6 +2064,8 @@
   "quote": "It does not matter how great is the flame, but what it falls upon.",
   "hook": "Snapped over something small?",
   "theme": "anger",
+  "description": "Snapped over something small? The spark wasn't the problem. The dry wood was.\n\nSeneca's point: anger depends less on what happens than on what it lands on. Tired, hungry, stressed: that's when small things set us off.\n\nLook after the dry wood: sleep, food, a breather. Fewer sparks will catch.",
+  "question": "When do you snap more: when you're tired, or when you're stressed?",
   "visuals": [
    "match strike",
    "dry leaves",
@@ -1968,6 +2084,8 @@
   "quote": "Nothing need provoke one’s anger if one does not add to one’s pile of troubles by getting angry.",
   "hook": "Angry about it? Now it's two problems.",
   "theme": "anger",
+  "description": "Something went wrong. Getting angry about it makes it two problems.\n\nSeneca's point is simple: anger rarely fixes the first problem, and it always adds a second one. The calm response is usually the useful one.\n\nNext time, deal with the problem and skip the second one.",
+  "question": "Does anger help you fix problems, or make them worse?",
   "visuals": [
    "burnt toast",
    "spilled coffee",
@@ -1986,6 +2104,8 @@
   "quote": "A golden bit does not make a better horse.",
   "hook": "Upgrading your stuff isn't upgrading you.",
   "theme": "ego",
+  "description": "Upgrading your stuff isn't upgrading you.\n\nSeneca put it in one line: a golden bit doesn't make a better horse. The watch, the car and the clothes don't change who's wearing them.\n\nInvest in what goes with you everywhere: your habits, your skills, your character.",
+  "question": "What's the better investment: things or skills?",
   "visuals": [
    "gold watch",
    "luxury car",
@@ -2004,6 +2124,8 @@
   "quote": "What have you to do with the others? You have outstripped yourself.",
   "hook": "Feel behind everyone your age?",
   "theme": "ego",
+  "description": "Feel behind everyone your age? Seneca's answer: what do they have to do with you?\n\nThe only fair race is against who you were last year. If you're ahead of that person, you're winning, whatever anyone else's timeline says.\n\nWrite down one way you've grown this year. Then keep going.",
+  "question": "Who do you compare yourself to more: other people, or your past self?",
   "visuals": [
    "stadium track",
    "man running",
@@ -2022,6 +2144,8 @@
   "quote": "Many a sight that is held a terror in the night-time, is turned to ridicule by day.",
   "hook": "Everything feels worse at 2am.",
   "theme": "fear",
+  "description": "Everything feels worse at 2am. The worries are bigger, the problems darker, the future shakier.\n\nSeneca noticed it too: what terrifies us at night often looks almost silly by daylight. Tiredness magnifies everything.\n\nIf it's late and your mind is racing, write it down and decide in the morning. Sleep is part of the answer.",
+  "question": "Do your worries feel bigger at night or in the morning?",
   "visuals": [
    "digital clock",
    "shadow wall",
@@ -2040,6 +2164,8 @@
   "quote": "Our lack of confidence is not the result of difficulty; the difficulty comes from our lack of confidence.",
   "hook": "Think it's too hard for you?",
   "theme": "fear",
+  "description": "Think it's too hard for you? Seneca flipped that around.\n\nOften it isn't that things are hard so we doubt ourselves. It's that we doubt ourselves, so they feel hard. Confidence isn't a feeling you wait for. It's built by trying.\n\nPick the thing you've been avoiding and take one small swing at it.",
+  "question": "What comes first for you: confidence or action?",
   "visuals": [
    "man diving board",
    "high cliff",
@@ -2058,6 +2184,8 @@
   "quote": "How many men, I say to myself, train their bodies, and how few train their minds!",
   "hook": "Most men skip this workout.",
   "theme": "discipline",
+  "description": "Plenty of people train their bodies. Far fewer train their minds.\n\nSeneca noticed it in his own city. Strength of mind (focus, patience, self-control) takes reps too, and it's the muscle you use every single day.\n\nGive your mind one rep today: read ten pages, sit in silence for five minutes, or keep one hard promise.",
+  "question": "Which do you train more: your body or your mind?",
   "visuals": [
    "stadium lights",
    "man weightlifting",
@@ -2112,6 +2240,8 @@
   "quote": "Let not these thoughts afflict you, I shall live unhonoured and be nobody nowhere.",
   "hook": "Scared you'll never be anyone?",
   "theme": "fear",
+  "description": "Scared you'll never be anyone? That fear is older than you think.\n\nEpictetus told his students not to be tormented by it. Being somebody isn't about titles or followers. It's about doing well at what's actually yours: your work, your word, the people you show up for.\n\nDo those well today, and you're already somebody to someone.",
+  "question": "What matters more to you: being known, or being good at what you do?",
   "visuals": [
    "small town",
    "desert road",
@@ -2130,6 +2260,8 @@
   "quote": "What then, since I am naturally dull, shall I, for this reason, take no pains? I hope not.",
   "hook": "Not naturally gifted? Read this.",
   "theme": "discipline",
+  "description": "Not naturally gifted? Neither was the guy who got good anyway.\n\nEpictetus asked: if I'm not naturally talented, should I stop trying? His answer was no. Talent decides where you start. Effort decides where you end up.\n\nPick the skill you think you're bad at and practise it for ten minutes today.",
+  "question": "What matters more in life: talent or effort?",
   "visuals": [
    "man sharpening knife",
    "still:ancient greek man patiently sharpening a dull iron blade on a whetstone, warm workshop light",
@@ -2148,6 +2280,8 @@
   "quote": "It is not the sight of a human creature which removes us from solitude, but the sight of one who is faithful and modest and helpful.",
   "hook": "Lonely even with people around?",
   "theme": "friendship",
+  "description": "Lonely even with people around? Epictetus knew that feeling.\n\nBeing surrounded doesn't end loneliness. Being known by even one person who is loyal, humble and kind does.\n\nYou can be that person for someone this week. That's often how you find one too.",
+  "question": "What's lonelier: being alone, or being around people who don't get you?",
   "visuals": [
    "lighthouse night",
    "crowd timelapse",
@@ -2166,6 +2300,8 @@
   "quote": "Which would you rather have, money or a faithful and modest friend?",
   "hook": "What's worth more than money?",
   "theme": "friendship",
+  "description": "Epictetus asked his students a simple question: money, or a faithful friend?\n\nMoney can buy comfort, but not someone who shows up when it's hard. Most of us chase the first and take the second for granted.\n\nMessage a friend who's been there for you, and tell them it mattered.",
+  "question": "Money or a loyal friend: which would you pick?",
   "visuals": [
    "empty chair",
    "money counting",
@@ -2184,6 +2320,8 @@
   "quote": "Choose then whether you will be a hard drinker and pleasant to your former associates or a sober man and disagreeable to them.",
   "hook": "Quit drinking? Some friends won't like it.",
   "theme": "friendship",
+  "description": "Quit drinking, or quit anything, and some friends won't like it.\n\nEpictetus was blunt: you can't change your life and stay exactly who your old circle expects. Some people will push back. The ones who matter will adjust.\n\nChoose who you're becoming, and be kind to the people who don't get it yet.",
+  "question": "When you made a big change, did your friends back you or push back?",
   "visuals": [
    "beer foam",
    "empty bar",
@@ -2202,6 +2340,8 @@
   "quote": "If a man places a piece of quenched charcoal close to a piece that is burning, either the quenched charcoal will quench the other, or the burning charcoal will light that which is quenched.",
   "hook": "Your friends either light you or put you out.",
   "theme": "friendship",
+  "description": "Put a dead coal next to a burning one: either the dead one catches, or the burning one goes out.\n\nEpictetus used it to describe the people around you. Your circle either lights you up or slowly puts you out.\n\nSpend more time with someone who makes you better this week, and try to be that for them.",
+  "question": "Do the people around you light you up or put you out?",
   "visuals": [
    "glowing embers",
    "charcoal fire",
@@ -2220,6 +2360,8 @@
   "quote": "It is enough if every man fully discharges the work that is his own.",
   "hook": "You don't have to fix everything.",
   "theme": "duty",
+  "description": "You don't have to fix everything. You have to do your part well.\n\nEpictetus said it's enough if each person fully does the work that's his own. Trying to carry everyone's load usually means doing nothing properly.\n\nName what's actually yours today, and finish that.",
+  "question": "Do you tend to take on too much, or too little?",
   "visuals": [
    "blacksmith forge",
    "man carpenter",
@@ -2238,6 +2380,8 @@
   "quote": "Does a brother wrong you? Maintain then your own position towards him, and do not examine what he is doing, but what you must do.",
   "hook": "Someone close hurt you? Here's your move.",
   "theme": "duty",
+  "description": "Someone close hurt you. The hardest part is deciding who you'll be about it.\n\nEpictetus's advice was not to study what they did, but what you must do. Their behaviour is theirs. Yours still belongs to you.\n\nRespond in a way you'll respect in a year, not just tonight.",
+  "question": "When someone close hurts you, do you talk it out or step back?",
   "visuals": [
    "door closing",
    "men arguing",
@@ -2256,6 +2400,8 @@
   "quote": "A guide, when he has found a man out of the road leads him into the right way: he does not ridicule or abuse him and then leave him.",
   "hook": "Know someone who's lost his way?",
   "theme": "duty",
+  "description": "Know someone who's lost his way? Mocking him won't help.\n\nEpictetus compared it to a guide on a road: when he finds a traveller lost, he walks him back to the path. He doesn't ridicule him and leave.\n\nIf someone you know is struggling, reach out instead of judging.",
+  "question": "When you were lost, what helped more: advice, or someone just being there?",
   "visuals": [
    "fog forest",
    "signpost",
@@ -2274,6 +2420,8 @@
   "quote": "Is my neighbour bad? Bad to himself, but good to me: he exercises my good disposition, my moderation.",
   "hook": "Someone testing your patience?",
   "theme": "adversity",
+  "description": "Someone testing your patience? Epictetus saw them as a training partner.\n\nA difficult person is bad for themselves but good for you: they give your patience and self-control a workout no easy day can.\n\nNext time they push, treat it as a rep, not a fight.",
+  "question": "What tests your patience more: people or situations?",
   "visuals": [
    "barking dog",
    "man mowing lawn",
@@ -2292,6 +2440,8 @@
   "quote": "Bring what you please, and I will make it good.",
   "hook": "Whatever today throws at you.",
   "theme": "adversity",
+  "description": "Whatever today throws at you, Epictetus had one answer: bring it, and I'll make something good of it.\n\nNot every event is good. But every event can be used: to learn, to grow, to show who you are.\n\nPick one thing that went wrong this week and ask what you can build from it.",
+  "question": "What's something bad that turned into something good for you?",
   "visuals": [
    "molten metal",
    "storm sea",
@@ -2310,6 +2460,8 @@
   "quote": "Keep this thought in readiness, when you lose any thing external, what you acquire in place of it; and if it be worth more, never say, I have had a loss.",
   "hook": "Lost something? Count what you got instead.",
   "theme": "resilience",
+  "description": "Lost something? Count what you got in its place.\n\nEpictetus taught his students to ask what they gained whenever they lost something outside themselves: patience, a lesson, freedom from a worry. Sometimes the trade is better than it looked.\n\nThink of one recent loss and name what it gave you.",
+  "question": "What's a loss that taught you the most?",
   "visuals": [
    "balance scale",
    "cardboard boxes",
@@ -2328,6 +2480,8 @@
   "quote": "If you be in Rome, do not imagine what the life in Athens is, but think only of the life in Rome.",
   "hook": "Always wishing you were somewhere else?",
   "theme": "time",
+  "description": "Always wishing you were somewhere else? Epictetus had advice for that.\n\nIf you're in Rome, live in Rome. Daydreaming about another city, job or life makes it hard to enjoy, or improve, the one you've got.\n\nFind one good thing about where you are right now, and make the most of it today.",
+  "question": "Do you spend more time living where you are, or wishing you were elsewhere?",
   "visuals": [
    "airplane wing",
    "acropolis",
@@ -2346,6 +2500,8 @@
   "quote": "Remember that now is the contest, now are the Olympic games, and they cannot be deferred.",
   "hook": "Waiting for your big moment? It's today.",
   "theme": "time",
+  "description": "Waiting for your big moment? Epictetus said it's already here.\n\nNow is the contest. Now are the games. Not after you feel ready, not next year. The day in front of you is where the result gets decided.\n\nTreat today like it counts, because it does.",
+  "question": "What are you training for right now?",
   "visuals": [
    "stadium lights",
    "still:ancient greek athlete stepping onto the track of an empty olympic stadium at dawn",
@@ -2364,6 +2520,8 @@
   "quote": "When I see a man anxious, I say, What does this man want? If he did not want some thing which is not in his power, how could he be anxious?",
   "hook": "Anxious? Ask yourself this one question.",
   "theme": "fear",
+  "description": "Anxious? Epictetus would ask one question: what do you want that isn't in your control?\n\nAnxiety usually comes from wanting what only others or luck can give: their approval, a certain outcome, a guarantee. Shift the want to what's yours, and the anxiety loosens.\n\nName the want behind today's worry, and find the part you can act on.",
+  "question": "What makes you more anxious: other people's opinions, or the unknown?",
   "visuals": [
    "empty stage",
    "man pacing",
@@ -2382,6 +2540,8 @@
   "quote": "No longer then say to me, How will it be? For however it may be, you will dispose of it well, and the result to you will be a fortunate one.",
   "hook": "Worried how it'll all turn out?",
   "theme": "fear",
+  "description": "How will it all turn out? Epictetus told his students to drop the question.\n\nHowever it goes, you'll deal with it. You've handled every hard day so far. You'll handle the next one too.\n\nTrade 'how will it be?' for 'what will I do?'",
+  "question": "Do you worry more about the outcome, or about how you'll handle it?",
   "visuals": [
    "dice rolling",
    "fog road",
@@ -2400,6 +2560,8 @@
   "quote": "Straightway then practise saying to every harsh appearance, You are an appearance, and in no manner what you appear to be.",
   "hook": "Say this to your worst thought.",
   "theme": "fear",
+  "description": "Your worst thought isn't a fact. It's a thought.\n\nEpictetus taught a simple practice: when something looks harsh or frightening, remind yourself it's an impression, not necessarily what it seems. Then look at it calmly.\n\nTry it on the next scary thought: name it, question it, then decide.",
+  "question": "How often do your worst fears actually come true?",
   "visuals": [
    "man shadow wall",
    "mirage desert",
@@ -2418,6 +2580,8 @@
   "quote": "Freedom is acquired not by the full possession of the things which are desired, but by removing the desire.",
   "hook": "Think getting it will finally be enough?",
   "theme": "desire",
+  "description": "Think getting it will finally be enough? Usually there's a next thing.\n\nEpictetus said freedom doesn't come from having everything you want. It comes from wanting less. Every desire you drop is one less thing pulling you around.\n\nPick one want that's been running you, and let it go this week.",
+  "question": "What makes you freer: having more, or needing less?",
   "visuals": [
    "luxury watch",
    "sneakers",
@@ -2436,6 +2600,8 @@
   "quote": "At first fly far from that which is stronger than yourself.",
   "hook": "Can't resist it yet? Don't stand near it.",
   "theme": "desire",
+  "description": "Can't resist it yet? Don't stand near it.\n\nEpictetus didn't expect willpower to win every fight. His advice for the start was distance: stay far from what's stronger than you until you're stronger.\n\nDelete the app, skip the aisle, change the route. Make the right choice the easy one.",
+  "question": "What works better for you: willpower or avoiding temptation?",
   "visuals": [
    "lightning strike",
    "big wave",
@@ -2454,6 +2620,8 @@
   "quote": "For if you once gain time and delay, you will more easily master yourself.",
   "hook": "About to snap? Give it a minute.",
   "theme": "anger",
+  "description": "About to snap? Give it a minute.\n\nEpictetus knew the first moment of anger is the strongest. If you can just buy some time, you'll master yourself far more easily.\n\nNext time: pause, breathe, walk away if you need to. Answer later.",
+  "question": "What calms you down faster: a pause or a walk?",
   "visuals": [
    "boiling water",
    "hourglass",
@@ -2472,6 +2640,8 @@
   "quote": "Stand by a stone and revile it; and what will you gain? If then a man listens like a stone, what profit is there to the reviler?",
   "hook": "Someone trying to get a rise out of you?",
   "theme": "anger",
+  "description": "Someone trying to get a rise out of you? Be the stone.\n\nEpictetus asked what anyone gains by insulting a stone. Nothing. If you listen like a stone, the provoker gets nothing either.\n\nNot every insult deserves an answer. Sometimes calm is the strongest reply.",
+  "question": "Do you usually react to provocation, or let it go?",
   "visuals": [
    "big rock",
    "man shouting",
@@ -2490,6 +2660,8 @@
   "quote": "Remember that if you abide in the same principles, these men who first ridiculed will afterwards admire you.",
   "hook": "Friends laughing at the new you?",
   "theme": "ego",
+  "description": "Friends laughing at the new you? Stay the course.\n\nEpictetus warned his students they'd be mocked for changing. He also said that if you hold to your principles, the ones who laughed first will admire you later.\n\nKeep going quietly. Let the results answer for you.",
+  "question": "Have you ever been laughed at for changing, and proved them wrong?",
   "visuals": [
    "men laughing",
    "man training",
@@ -2508,6 +2680,8 @@
   "quote": "For if it is not right to do it, avoid doing the thing; but if it is right, why are you afraid of those who shall find fault wrongly?",
   "hook": "Scared of what people will say?",
   "theme": "ego",
+  "description": "Scared of what people will say? Epictetus had a two-step test.\n\nIf it isn't right, don't do it. If it is right, why fear the people who'll criticise you wrongly? Their wrong opinion doesn't make you wrong.\n\nCheck the action, not the audience.",
+  "question": "What stops you more: doubting it's right, or fearing what people will say?",
   "visuals": [
    "security camera",
    "crowd street",
@@ -2526,6 +2700,8 @@
   "quote": "We ought to exercise ourselves in small things, and beginning with them to proceed to the greater.",
   "hook": "Start smaller than you think.",
   "theme": "discipline",
+  "description": "Start smaller than you think.\n\nEpictetus trained his students like athletes: master the small things first, then move to the bigger ones. Discipline is built in reps, not in one heroic day.\n\nPick one tiny habit and do it every day this week.",
+  "question": "What's one small habit that changed your life?",
   "visuals": [
    "dominoes falling",
    "seedling",
@@ -2544,6 +2720,8 @@
   "quote": "If you are ever very thirsty, take a draught of cold water, and spit it out, and tell no man.",
   "hook": "Want discipline? Try this. Tell nobody.",
   "theme": "discipline",
+  "description": "Want real discipline? Try something nobody will ever know about.\n\nEpictetus suggested a strange drill: when you're thirsty, take a mouthful of cold water, spit it out, and tell no one. Discipline done for an audience is a show. Done in private, it's yours.\n\nDo one hard thing today, and don't post about it.",
+  "question": "Is discipline easier when someone's watching, or when no one is?",
   "visuals": [
    "desert heat",
    "water glass",
@@ -2562,6 +2740,8 @@
   "quote": "You can be invincible, if you enter into no contest in which it is not in your power to conquer.",
   "hook": "Want to be unbeatable? Pick your fights.",
   "theme": "control",
+  "description": "Want to be unbeatable? Pick your fights.\n\nEpictetus said you can be invincible if you only enter contests that are yours to win: your effort, your choices, your character. Fight over what others decide and you'll lose half the time.\n\nPut your energy where the result is actually yours.",
+  "question": "What's one fight you should stop fighting?",
   "visuals": [
    "men arm wrestling",
    "lion walking",
