@@ -1,23 +1,130 @@
 {
- "audience": null,
+ "audience": {
+  "pulled_on": "2026-11-06",
+  "window": [
+   "2026-10-09",
+   "2026-11-06"
+  ],
+  "countries": [
+   {
+    "key": "US",
+    "views": 4227,
+    "share": 0.843
+   },
+   {
+    "key": "IN",
+    "views": 503,
+    "share": 0.1
+   },
+   {
+    "key": "GB",
+    "views": 104,
+    "share": 0.021
+   },
+   {
+    "key": "CA",
+    "views": 101,
+    "share": 0.02
+   },
+   {
+    "key": "PH",
+    "views": 48,
+    "share": 0.01
+   },
+   {
+    "key": "ZA",
+    "views": 30,
+    "share": 0.006
+   },
+   {
+    "key": "BR",
+    "views": 0,
+    "share": 0.0
+   },
+   {
+    "key": "DE",
+    "views": 0,
+    "share": 0.0
+   }
+  ],
+  "sources": [
+   {
+    "key": "SHORTS",
+    "views": 8761,
+    "share": 0.918
+   },
+   {
+    "key": "YT_SEARCH",
+    "views": 403,
+    "share": 0.042
+   },
+   {
+    "key": "YT_OTHER_PAGE",
+    "views": 176,
+    "share": 0.018
+   },
+   {
+    "key": "YT_CHANNEL",
+    "views": 165,
+    "share": 0.017
+   },
+   {
+    "key": "EXT_URL",
+    "views": 29,
+    "share": 0.003
+   },
+   {
+    "key": "SUBSCRIBER",
+    "views": 9,
+    "share": 0.001
+   },
+   {
+    "key": "PLAYLIST",
+    "views": 3,
+    "share": 0.0
+   },
+   {
+    "key": "NOTIFICATION",
+    "views": 1,
+    "share": 0.0
+   },
+   {
+    "key": "NO_LINK_OTHER",
+    "views": 0,
+    "share": 0.0
+   }
+  ],
+  "subscribed": [
+   {
+    "key": "UNSUBSCRIBED",
+    "views": 9329,
+    "share": 0.977
+   },
+   {
+    "key": "SUBSCRIBED",
+    "views": 218,
+    "share": 0.023
+   }
+  ]
+ },
  "updated": "2026-11-06",
  "source": "scripts/marketer.py (Cicero, free)",
  "funnel": {
-  "asOf": "2026-11-05",
+  "asOf": "2026-11-06",
   "subscribers": 256,
-  "viewsPerDay": 485,
-  "viewsPerDayBefore": 382,
-  "subsPerDay": 1.6,
+  "viewsPerDay": 396,
+  "viewsPerDayBefore": 432,
+  "subsPerDay": 1.4,
   "subsPerDayBefore": 1.4,
-  "subsPer1kViews": 3.2,
+  "subsPer1kViews": 3.6,
   "likesPer100Views": 4.6,
-  "viewsChange": 0.27
+  "viewsChange": -0.08
  },
  "hours": [
   {
    "band": "00-03",
-   "posts": 81,
-   "lift": 1.15,
+   "posts": 82,
+   "lift": 1.19,
    "stalled": 13
   },
   {
@@ -34,9 +141,9 @@
   },
   {
    "band": "12-15",
-   "posts": 30,
-   "lift": 0.73,
-   "stalled": 6
+   "posts": 31,
+   "lift": 0.69,
+   "stalled": 7
   },
   {
    "band": "16-19",
@@ -66,8 +173,8 @@
    "started": "2026-11-06",
    "approved": "2026-11-06: owner, in the HQ: \"Yes, move it\"",
    "before": {
-    "days": 17,
-    "median": 0.63
+    "days": 18,
+    "median": 0.61
    },
    "during": {
     "days": 0,
@@ -101,16 +208,20 @@
    "started": null,
    "before": {
     "views": 0,
-    "of": 0,
-    "share": null
+    "of": 5289,
+    "share": 0.0
    }
   }
  ],
  "next": [
   {
+   "id": "follow-line",
+   "idea": "Subscribers: 98% of views come from people who don't follow the channel (Glaux, 28 days to 11-06), and it gains about 1.5 subscribers a day toward the 500 it needs. Test a short, calm follow line at the end of each Short (\"One Stoic line a day. Follow for tomorrow's.\"), judged by subscribers per 1,000 views."
+  },
+  {
    "id": "third-short",
    "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."
   }
  ],
- "note": "485 views a day (+27% on last week) · 1.6 new subscribers a day · testing: Does the second Short reach more people in the morning than in the afternoon?"
+ "note": "396 views a day (-8% on last week) · 1.4 new subscribers a day · testing: Does the second Short reach more people in the morning than in the afternoon?"
 }
