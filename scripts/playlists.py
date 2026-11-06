@@ -42,10 +42,13 @@ sys.path.insert(0, str(ROOT / "src"))
 STATE = ROOT / "data" / "playlists.json"
 TESTS = ROOT / "data" / "marketing_tests.json"
 MAX_CALLS = 40                      # 2,000 units at most per run
-# YouTube can answer 404 about a playlist it made a moment ago: the first
-# real run (2026-11-06 03:23 UTC) made Marcus Aurelius's and its read one
-# second later came back "playlist not found". Wait and ask again.
+# YouTube's brief refusals, waited out: the first real run (2026-11-06 03:23
+# UTC) read back a playlist made one second before and got 404 "playlist not
+# found"; the second (10:14 UTC) filed 23 Shorts in ten seconds, made the
+# next playlist and got 409 "The operation was aborted" (SERVICE_UNAVAILABLE)
+# on its first filing. Wait and try again, and pause between writes.
 WAITS = (3, 8, 20)                  # seconds
+PAUSE = 1.0                         # seconds between two writes
 AUTHORS = ("Marcus Aurelius", "Seneca", "Epictetus")
 TITLE = "{author} quotes: Stoic Shorts"
 DESCRIPTION = ("Short readings from {author}, word for word from the original text, "
@@ -119,22 +122,38 @@ def public_ids(yt, ids: list[str]) -> set[str]:
     return out
 
 
+def _status(e: Exception) -> int | None:
+    return getattr(getattr(e, "resp", None), "status", None)
+
+
 def _not_found(e: Exception) -> bool:
-    status = getattr(getattr(e, "resp", None), "status", None)
-    return status == 404 or "HttpError 404" in str(e) or "NotFound" in str(e)
+    return _status(e) == 404 or "HttpError 404" in str(e) or "NotFound" in str(e)
 
 
-def items_in(yt, pid: str) -> dict[str, str] | None:
-    """{video id: playlist item id} for what the playlist holds now; None if
-    YouTube has no such playlist any more (deleted on the channel). One that
-    exists but answers 404 to the item read (an empty one can) holds nothing."""
-    out: dict[str, str] = {}
+def _busy(e: Exception) -> bool:
+    """YouTube asking us to come back: 409 aborted, 500, 503."""
+    text = str(e)
+    return (_status(e) in (409, 500, 503) or any(f"HttpError {c}" in text for c in (409, 500, 503))
+            or "SERVICE_UNAVAILABLE" in text or "backendError" in text)
+
+
+def _pause() -> None:
+    if PAUSE:
+        time.sleep(PAUSE)
+
+
+def items_in(yt, pid: str) -> dict[str, list[str]] | None:
+    """{video id: [playlist item ids]} for what the playlist holds now (two
+    ids = filed twice); None if YouTube has no such playlist any more
+    (deleted on the channel). One that exists but answers 404 to the item
+    read (an empty one can) holds nothing."""
+    out: dict[str, list[str]] = {}
     try:
         req = yt.playlistItems().list(part="contentDetails", playlistId=pid, maxResults=50)
         while req is not None:
             resp = req.execute()
             for it in resp.get("items", []):
-                out[it["contentDetails"]["videoId"]] = it["id"]
+                out.setdefault(it["contentDetails"]["videoId"], []).append(it["id"])
             req = yt.playlistItems().list_next(req, resp)
     except Exception as e:  # noqa: BLE001
         if not _not_found(e):
@@ -144,23 +163,33 @@ def items_in(yt, pid: str) -> dict[str, str] | None:
     return out
 
 
+def _write(make, retry_not_found: bool = False):
+    """Run one write, waiting out YouTube's brief refusals; then pause."""
+    waits = list(WAITS)
+    while True:
+        try:
+            out = make().execute()
+            _pause()
+            return out
+        except Exception as e:  # noqa: BLE001
+            if waits and (_busy(e) or (retry_not_found and _not_found(e))):
+                time.sleep(waits.pop(0))
+            else:
+                raise
+
+
 def _insert(yt, pid: str, vid: str) -> None:
     """At the top; a playlist that is not sorted by hand takes it at the end.
     A playlist made moments ago may answer 404 for a few seconds."""
     body = {"snippet": {"playlistId": pid, "position": 0,
                         "resourceId": {"kind": "youtube#video", "videoId": vid}}}
-    waits = list(WAITS)
-    while True:
-        try:
-            yt.playlistItems().insert(part="snippet", body=body).execute()
-            return
-        except Exception as e:  # noqa: BLE001
-            if "manualSortRequired" in str(e) and "position" in body["snippet"]:
-                del body["snippet"]["position"]
-            elif _not_found(e) and waits:
-                time.sleep(waits.pop(0))
-            else:
-                raise
+    try:
+        _write(lambda: yt.playlistItems().insert(part="snippet", body=body), retry_not_found=True)
+    except Exception as e:  # noqa: BLE001
+        if "manualSortRequired" not in str(e):
+            raise
+        del body["snippet"]["position"]
+        _write(lambda: yt.playlistItems().insert(part="snippet", body=body), retry_not_found=True)
 
 
 def run(dry_run: bool = False, yt=None) -> int:
@@ -190,17 +219,23 @@ def run(dry_run: bool = False, yt=None) -> int:
                 continue
             pid, made = ensure_playlist(yt, author, st)
             calls += int(made)
-            held = {} if made else items_in(yt, pid)  # what YouTube holds is the truth
-            if held is None:                          # deleted on the channel: made again next run
+            found = {} if made else items_in(yt, pid)  # what YouTube holds is the truth
+            if found is None:                          # deleted on the channel: made again next run
                 print(f"  [playlists] {author}'s playlist is gone from YouTube; it is made again next run")
                 st["playlists"].pop(author, None)
                 st["filed"] = {v: a for v, a in st["filed"].items() if a != author}
                 continue
+            held = {v: ids[0] for v, ids in found.items()}
             st["filed"] = {**{v: a for v, a in st["filed"].items() if a != author},
                            **{v: author for v in held}}
+            for extra in [i for ids in found.values() for i in ids[1:]]:   # filed twice: once is enough
+                if calls < MAX_CALLS:
+                    _write(lambda: yt.playlistItems().delete(id=extra))
+                    calls += 1
+                    removed += 1
             for vid, item in list(held.items()):     # unlisted since: out of the public playlist
                 if vid not in public and calls < MAX_CALLS:
-                    yt.playlistItems().delete(id=item).execute()
+                    _write(lambda: yt.playlistItems().delete(id=item))
                     del held[vid]
                     st["filed"].pop(vid, None)
                     calls += 1
@@ -216,7 +251,7 @@ def run(dry_run: bool = False, yt=None) -> int:
         print(f"  [playlists] stopped: {type(e).__name__}: {str(e)[:400]}", file=sys.stderr)
     finally:
         save_state(st)
-    print(f"  [playlists] +{added} filed, -{removed} taken out (unlisted); {len(st['filed'])} Shorts in "
+    print(f"  [playlists] +{added} filed, -{removed} taken out (unlisted or doubled); {len(st['filed'])} Shorts in "
           f"{len(st['playlists'])} playlists" + ("; more next run" if calls >= MAX_CALLS else ""))
     return 0
 

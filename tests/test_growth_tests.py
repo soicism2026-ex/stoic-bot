@@ -63,12 +63,16 @@ class _YT:
     NOT_FOUND = RuntimeError("<HttpError 404 when requesting ... returned \"The playlist identified with "
                              "the request's playlistId parameter cannot be found.\". Details: playlistNotFound>")
 
-    def __init__(self, fail_after=None, unlisted=(), manual=True, lag=0, empty_404=False):
+    BUSY = RuntimeError("<HttpError 409 when requesting ... returned \"The operation was aborted.\". "
+                        "Details: \"[{'domain': 'youtube.CoreErrorDomain', 'reason': 'SERVICE_UNAVAILABLE'}]\">")
+
+    def __init__(self, fail_after=None, unlisted=(), manual=True, lag=0, empty_404=False, aborted=0):
         self.inserted, self.made, self.deleted, self.reads = [], [], [], []
         self.fail_after, self.unlisted, self.manual = fail_after, set(unlisted), manual
         self.lag, self.empty_404 = lag, empty_404       # 404s right after a playlist is made / when empty
+        self.aborted = aborted                          # 409 "operation was aborted" on the next inserts
         self.lists: dict[str, str] = {}                 # title -> playlist id
-        self.held: dict[str, dict[str, str]] = {}       # playlist id -> {video id: item id}
+        self.held: dict[str, list[tuple[str, str]]] = {}  # playlist id -> [(video id, item id)]
         self.fresh: dict[str, int] = {}                 # playlist id -> 404s left before YouTube sees it
         yt = self
 
@@ -102,7 +106,7 @@ class _YT:
                 if not _seen(playlistId) or (yt.empty_404 and not yt.held.get(playlistId)):
                     return _Req(yt.NOT_FOUND)
                 return _Req({"items": [{"id": i, "contentDetails": {"videoId": v}}
-                                       for v, i in yt.held.get(playlistId, {}).items()]})
+                                       for v, i in yt.held.get(playlistId, [])]})
 
             def list_next(self, req, resp):
                 return None
@@ -113,18 +117,19 @@ class _YT:
                     return _Req(RuntimeError("quotaExceeded"))
                 if not _seen(sn["playlistId"]):
                     return _Req(yt.NOT_FOUND)
+                if yt.aborted > 0:
+                    yt.aborted -= 1
+                    return _Req(yt.BUSY)
                 if "position" in sn and not yt.manual:
                     return _Req(RuntimeError("<HttpError 400: manualSortRequired>"))
                 yt.inserted.append((sn["playlistId"], sn["resourceId"]["videoId"], sn.get("position")))
-                yt.held.setdefault(sn["playlistId"], {})[sn["resourceId"]["videoId"]] = f"it{len(yt.inserted)}"
+                yt.held.setdefault(sn["playlistId"], []).append((sn["resourceId"]["videoId"], f"it{len(yt.inserted)}"))
                 return _Req({})
 
             def delete(self, id):  # noqa: A002  the API's own name
                 yt.deleted.append(id)
-                for items in yt.held.values():
-                    for v, i in list(items.items()):
-                        if i == id:
-                            del items[v]
+                for pid, items in yt.held.items():
+                    yt.held[pid] = [(v, i) for v, i in items if i != id]
                 return _Req({})
 
         class Videos:
@@ -146,6 +151,7 @@ class _YT:
 
 
 def _setup(tmp_path, monkeypatch, status="running", posts=None):
+    monkeypatch.setattr(playlists, "PAUSE", 0)                              # no real waiting in tests
     monkeypatch.setattr(playlists, "ROOT", tmp_path)
     monkeypatch.setattr(playlists, "STATE", tmp_path / "data" / "playlists.json")
     (tmp_path / "data").mkdir()
@@ -254,6 +260,44 @@ def test_a_playlist_deleted_on_the_channel_is_made_again(tmp_path, monkeypatch):
     assert _filed() == {"v2": "Seneca"}
     playlists.run(yt=yt)
     assert yt.made == ["Seneca quotes: Stoic Shorts", "Marcus Aurelius quotes: Stoic Shorts"]
+    assert len(_filed()) == 3
+
+
+def test_youtubes_aborted_operation_is_waited_out(tmp_path, monkeypatch):
+    """2026-11-06 10:14 UTC: 23 Shorts filed in ten seconds, then the next
+    playlist's first filing got 409 "The operation was aborted"."""
+    _setup(tmp_path, monkeypatch)
+    slept = []
+    monkeypatch.setattr(playlists.time, "sleep", slept.append)
+    yt = _YT(aborted=2)
+    playlists.run(yt=yt)
+    assert len(_filed()) == 3 and slept == [3, 8]
+    yt.aborted = 9                                                          # still refusing after 3 waits:
+    playlists.STATE.unlink()                                                # stop, keep what was done
+    with open(tmp_path / "data" / "posts.csv", "a") as f:                  # a new Seneca Short
+        f.write("2026-10-06,Seneca,edit:d,v4\n")
+    playlists.run(yt=yt)
+    assert "v4" not in _filed() and len(_filed()) == 3
+
+
+def test_pauses_between_writes(tmp_path, monkeypatch):
+    _setup(tmp_path, monkeypatch)
+    monkeypatch.setattr(playlists, "PAUSE", 1.0)
+    slept = []
+    monkeypatch.setattr(playlists.time, "sleep", slept.append)
+    playlists.run(yt=_YT())
+    assert slept == [1.0, 1.0, 1.0]                                         # one after each filing
+
+
+def test_a_short_filed_twice_is_left_once(tmp_path, monkeypatch):
+    """A retried write YouTube had already done can leave a double."""
+    _setup(tmp_path, monkeypatch)
+    yt = _YT()
+    playlists.run(yt=yt)
+    pid = yt.lists["Marcus Aurelius quotes: Stoic Shorts"]
+    yt.held[pid].append(("v1", "itdouble"))
+    playlists.run(yt=yt)
+    assert yt.deleted == ["itdouble"] and [v for v, _ in yt.held[pid]].count("v1") == 1
     assert len(_filed()) == 3
 
 
