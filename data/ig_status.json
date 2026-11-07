@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-07T23:05:39Z",
+ "checked": "2026-11-07T23:06:24Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -17,5 +17,13 @@
   "followers": null,
   "mediaCount": null
  },
- "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept."
+ "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
+ "lastPost": {
+  "at": "2026-11-07T23:06:24Z",
+  "youtube": "_G4E_gm3Wjg",
+  "title": "\"Snapped over something small\" — Seneca | Stoicism",
+  "status": "queued",
+  "permalink": null,
+  "reason": null
+ }
 }
