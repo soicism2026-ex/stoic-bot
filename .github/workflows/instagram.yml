@@ -12,7 +12,7 @@
 # insagram withoiut goign though meta developers?"): Echo posts through Buffer,
 # where the owner connected the channel's Instagram (src/buffer_ig.py).
 # Without it, the old path: IG_ACCESS_TOKEN from Meta's App Dashboard
-# (IG_USER_ID only for an older Facebook Login key).
+# (an Instagram Login key: it finds its own account).
 name: instagram
 on:
   workflow_run:
@@ -51,7 +51,9 @@ jobs:
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-          IG_USER_ID: ${{ secrets.IG_USER_ID }}
+          # IG_USER_ID is no longer passed (2026-11-07): only an old Facebook
+          # Login key needed it, and the broken one in GitHub made GitHub hide
+          # every "e" and "d" in this job's logs.
           GITHUB_TOKEN: ${{ github.token }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           ECHO_MODE: ${{ inputs.mode || 'run' }}

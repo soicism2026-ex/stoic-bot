@@ -228,4 +228,5 @@ def test_buffer_comes_first_and_the_job_passes_its_key():
     wf = yaml.safe_load((ROOT / ".github" / "workflows" / "instagram.yml").read_text())
     env = next(s for s in wf["jobs"]["echo"]["steps"] if s.get("name") == "Echo's shift")["env"]
     assert env["BUFFER_API_KEY"] == "${{ secrets.BUFFER_API_KEY }}"
+    assert "IG_USER_ID" not in env              # the broken one hid every "e" and "d" in the logs
     assert echo.to_post([{"youtube_id": "a", "status": "queued"}], [{"video_id": "a"}]) is None   # never twice
