@@ -348,6 +348,7 @@ def test_the_audience_pull_asks_youtube_what_people_searched(tmp_path, monkeypat
     assert doc["searchTermsAllTime"][1]["key"] == "how to control your emotions"
     alltime = [a for a in asked if a["dimensions"] == "insightTrafficSourceDetail"][1]
     assert alltime["startDate"] == audience.CHANNEL_START
+    assert (tmp_path / "traffic_sources.csv").read_text().splitlines()[1] == "2026-11-01,SHORTS,100"   # not data/
 
 
 def test_a_failed_search_report_never_costs_the_rest(tmp_path, monkeypatch):

@@ -165,6 +165,49 @@ QUESTION_MARK = "\U0001F4AC Question:"
 QUESTION_LINE = QUESTION_MARK + " {question} Share your thoughts in the comments."
 
 
+# The YouTube searches our audience makes (owner 2026-11-07: "a list of 10
+# things people might potentially search for ... we will use it make our
+# shorts easier to find"; data/search_research.md). Each quote answers one,
+# by its id or its theme. Used only once the owner says yes: Cicero's ledger,
+# test "search-phrases" ("descriptions": the description opens with it and a
+# matching hashtag and tags join; "titles": the title carries it too).
+SEARCH_PHRASES = ROOT / "data" / "search_phrases.json"
+MARKETING_TESTS = ROOT / "data" / "marketing_tests.json"
+
+
+def search_phrase(q: dict) -> dict | None:
+    """{id, phrase, hashtag, ...}: the search this quote answers, or None."""
+    try:
+        data = json.loads(SEARCH_PHRASES.read_text(encoding="utf-8"))
+    except Exception:  # noqa: BLE001
+        return None
+    pid = (data.get("overrides") or {}).get(q.get("id")) or (data.get("byTheme") or {}).get(q.get("theme"))
+    return next((p for p in data.get("phrases", []) if p.get("id") == pid), None)
+
+
+def search_use() -> str | None:
+    """None until the owner says yes; then "descriptions" or "titles"."""
+    try:
+        tests = json.loads(MARKETING_TESTS.read_text(encoding="utf-8")).get("tests", [])
+        t = next(t for t in tests if t.get("id") == "search-phrases")
+    except Exception:  # noqa: BLE001  no ledger, no test: nothing changes
+        return None
+    if t.get("adopted") in ("descriptions", "titles"):
+        return t["adopted"]
+    if t.get("status") == "running":
+        return t.get("use") if t.get("use") in ("descriptions", "titles") else "descriptions"
+    return None
+
+
+def search_lead(content: dict) -> str:
+    """The description's first line when the search is on, in plain words,
+    e.g. How to stop overthinking: Epictetus's answer."""
+    found = content.get("_search")
+    if not found:
+        return ""
+    return f"{found['phrase'][0].upper()}{found['phrase'][1:]}: {content['author']}'s answer."
+
+
 def pinned_comment(q: dict) -> str:
     """The quote's own question, else its theme's, else the generic line."""
     own = (q.get("question") or "").strip()
@@ -187,6 +230,7 @@ def description(content: dict) -> str:
     else:
         parts = [body, QUESTION_LINE.format(question=ask) if ask else "",
                  f"\u201c{content['quote'].strip()}\u201d\n{source}"]
+    parts.insert(0, search_lead(content))            # only once the owner said yes
     parts.append(" ".join(content["hashtags"]))
     return "\n\n".join(p for p in parts if p)
 
@@ -196,6 +240,11 @@ def as_content(q: dict) -> dict:
     `_description` and `_question` carry the owner's description style
     (description() above) to scripts/daily_post.py."""
     caption = f"{q['quote']}\n— {q['author']}, {q['citation']}"
+    use = search_use()
+    found = search_phrase(q) if use else None
+    tags = ["#stoicism", "#motivation", "#discipline", "#stoic", "#shorts"]
+    if found and found.get("hashtag") and found["hashtag"] not in tags:
+        tags.insert(1, found["hashtag"])
     return {
         "theme": q["theme"],
         "quote": q["quote"],
@@ -203,7 +252,7 @@ def as_content(q: dict) -> dict:
         "caption": caption,
         "hook": q["hook"],
         "format": "edit",
-        "hashtags": ["#stoicism", "#motivation", "#discipline", "#stoic", "#shorts"],
+        "hashtags": tags,
         # act 1 is the hook alone; act 3 is the quote (spoken-quote mode puts
         # it first) with nothing after it — the edit ends on the quote.
         "voiceover_story": "",
@@ -216,4 +265,6 @@ def as_content(q: dict) -> dict:
         "_citation": q["citation"],
         "_description": q.get("description", ""),
         "_question": q.get("question", ""),
+        "_search": found,
+        "_searchUse": use if found else None,
     }

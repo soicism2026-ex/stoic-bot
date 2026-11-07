@@ -83,8 +83,10 @@ def shares(rows: list) -> list[dict]:
     return sorted(out, key=lambda x: -x["views"])
 
 
-def upsert_sources(rows: list, path: Path = SOURCES) -> int:
-    """Merge [[date, source, views], ...] into the CSV, one row per (date, source)."""
+def upsert_sources(rows: list, path: Path | None = None) -> int:
+    """Merge [[date, source, views], ...] into the CSV, one row per (date, source).
+    The path is looked up when called, so a test's tmp path is honoured."""
+    path = path or SOURCES
     have: dict[tuple[str, str], int] = {}
     if path.exists():
         with open(path, newline="", encoding="utf-8") as f:

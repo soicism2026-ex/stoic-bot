@@ -661,6 +661,11 @@ def main():
     # can't disable, and longer keyword-rich titles measurably out-view short
     # ones) — so keep the length but trim at a WORD boundary, never mid-word.
     title = f'"{hook_clean}" — {content["author"]} | Stoicism'
+    if content.get("_searchUse") == "titles":
+        # The search its quote answers, once the owner said yes to titles
+        # (data/search_research.md, Cicero's test "search-phrases").
+        phrase = content["_search"]["phrase"]
+        title = f'"{hook_clean}" | {phrase[0].upper()}{phrase[1:]} — {content["author"]}'
     if len(title) > 90:
         title = title[:90].rsplit(" ", 1)[0].rstrip(" —|")
 
@@ -675,6 +680,9 @@ def main():
         content["theme"].replace("/", " ").replace(" ", ""),
         "motivation", "self improvement", "philosophy", "mindset",
     ]
+    if content.get("_search"):
+        # the exact search first: YouTube matches tags word for word
+        seo_tags = [content["_search"]["phrase"], f'{content["author"].lower()} quotes'] + seo_tags
     all_tags = list(dict.fromkeys(base_tags + seo_tags))[:30]  # dedup, cap at 30
 
     # Mission counter — enrols the viewer in a streak they can root for.

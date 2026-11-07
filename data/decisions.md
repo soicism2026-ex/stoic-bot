@@ -1631,3 +1631,21 @@ that story must always be captioned "recorded in the Historia Augusta", never
   Jan 1, 2027; November and December are the run-up. This replaces "500
   subs + 3M Shorts views in 90 days" as the working goal (that payout tier
   is the step after).
+- **2026-11-07 — WHAT OUR AUDIENCE SEARCHES FOR (researched; how to use it
+  waits for his yes).** Owner, in the HQ: *"do some research on things that
+  our audience actually care about and would watch in our niche. give me a list
+  of 10 things people might potentially search for. we will use it make our
+  shorts easier to find"*. Researched from YouTube's own search suggestions
+  (about 160 starting phrases), the searches that already found us (Glaux now
+  pulls them: `data/audience.json` searchTerms) and the audience profile. The
+  finding: search brought 225 views since June, all from broad words
+  (stoicism 52, stoic 18, marcus aurelius 16), none from problem searches,
+  which are searched far more. The ten (`data/search_phrases.json`,
+  `data/search_research.md`): how to stop overthinking, how to control your
+  emotions, how to not care what others think, how to stay calm under
+  pressure, how to stay disciplined, how to stop procrastinating, how to get
+  through hard times, how to deal with toxic people, how to be happy with
+  less, marcus aurelius quotes. Left out on purpose (doctrine 5): the
+  manosphere corner (women, manipulation, narcissists). How to use them is
+  Cicero's test 4 (`search-phrases`, HQ `asks/search-phrases`): built and
+  off until he says yes.

@@ -53,6 +53,10 @@ def test_the_description_follows_the_owners_example():
     q = next(q for q in _fresh())
     c = edits.as_content(q)
     d = edits.description(c)
+    lead = edits.search_lead(c)                               # the search line, once the owner says yes
+    if lead:
+        assert d.startswith(lead + "\n\n")
+        d = d[len(lead) + 2:]
     paras = d.split("\n\n")
     body = q["description"].split("\n\n")
     assert paras[:len(body)] == body                          # his layout: the paragraphs open it

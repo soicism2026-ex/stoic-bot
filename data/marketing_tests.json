@@ -40,6 +40,19 @@
    "proposed": "2026-11-06",
    "started": "2026-11-06",
    "approved": "2026-11-06: owner, in the HQ: \"Yes, make the playlists\""
+  },
+  {
+   "id": "search-phrases",
+   "kind": "traffic_source",
+   "source": "YT_SEARCH",
+   "question": "Do the searches people make bring more of them to our Shorts?",
+   "change": "Each Short's description opens with the YouTube search its quote answers (\"How to stop overthinking: Epictetus's answer.\"), a matching hashtag joins #stoicism, and the search goes into the tags. Ten searches, picked from YouTube's own suggestions (data/search_phrases.json, data/search_research.md). The title carries it too only if the owner picks titles.",
+   "why": "Since June, YouTube search brought 225 views, all from broad words (stoicism, marcus aurelius). Searches like \"how to stop overthinking\" are among YouTube's most popular, and brought us none: our Shorts never use those words.",
+   "measure": "The share of views from YouTube search, the 14 days after against the 14 before.",
+   "ask": "search-phrases",
+   "status": "proposed",
+   "proposed": "2026-11-07",
+   "started": null
   }
  ],
  "next": [

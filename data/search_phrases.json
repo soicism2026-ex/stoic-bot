@@ -1,0 +1,32 @@
+{
+ "note": "What our audience searches for on YouTube (owner 2026-11-07, in the HQ: \"do some research on things that our audience actually care about and would watch in our niche. give me a list of 10 things people might potentially search for. we will use it make our shorts easier to find\"). Picked from YouTube's own search suggestions (US, English; the order is roughly how often people search), the searches that already brought viewers to our Shorts (data/audience.json, YouTube Analytics), and the channel's audience (doctrine 1: men 18-34 on a self-improvement arc). The full research is in data/search_research.md. Each quote is matched to the search it answers by its theme (byTheme), or by its id (overrides). Nothing here changes a Short until the owner says yes (data/marketing_tests.json, test search-phrases).",
+ "researched": "2026-11-07",
+ "phrases": [
+  {"id": "overthinking", "phrase": "how to stop overthinking", "hashtag": "#overthinking", "themes": ["control", "fear"],
+   "evidence": "YouTube's #1 suggestion for \"how to stop\"; also \"stoicism overthinking\", \"how to stop worrying about things you can't control\""},
+  {"id": "emotions", "phrase": "how to control your emotions", "hashtag": "#emotionalcontrol", "themes": ["anger"],
+   "evidence": "Top suggestion for \"how to control\" and for \"stoicism how to\"; \"how to control your anger\" right behind"},
+  {"id": "others", "phrase": "how to not care what others think", "hashtag": "#selfrespect", "themes": ["ego"],
+   "evidence": "YouTube's #1 suggestion for \"how to not\"; also \"stoicism and the art of not caring\", \"how to stop seeking validation\""},
+  {"id": "calm", "phrase": "how to stay calm under pressure", "hashtag": "#calm", "themes": ["resilience"],
+   "evidence": "Top 3 for \"how to stay\"; also \"stoicism how to stay calm\", \"calm is power\""},
+  {"id": "discipline", "phrase": "how to stay disciplined", "hashtag": "#selfdiscipline", "themes": ["discipline", "duty"],
+   "evidence": "\"how to stay disciplined and focused\", \"how to be more disciplined\", \"self discipline\": the core of our audience's self-improvement arc"},
+  {"id": "procrastinating", "phrase": "how to stop procrastinating", "hashtag": "#procrastination", "themes": ["time", "mortality"],
+   "evidence": "Top 7 for \"how to stop\"; also \"how to stop wasting time\""},
+  {"id": "hardtimes", "phrase": "how to get through hard times", "hashtag": "#hardtimes", "themes": ["adversity"],
+   "evidence": "\"stoic quotes for hard times\", \"stoic advice for hard times\", \"how to get through hard times\""},
+  {"id": "toxic", "phrase": "how to deal with toxic people", "hashtag": "#toxicpeople", "themes": ["friendship"],
+   "evidence": "\"stoicism how to deal with toxic people\" (top 4 for \"stoicism how to\"); also \"how to choose friends wisely\""},
+  {"id": "less", "phrase": "how to be happy with less", "hashtag": "#contentment", "themes": ["desire"],
+   "evidence": "\"how to be happy with less\", \"how to be content with what you have\", \"how to stop wanting things\""},
+  {"id": "marcus", "phrase": "marcus aurelius quotes", "hashtag": "#marcusaurelius", "themes": [],
+   "evidence": "Top 5 for \"marcus aurelius\"; \"marcus aurelius\" and \"stoicism marcus aurelius\" already bring us viewers from search"}
+ ],
+ "byTheme": {
+  "control": "overthinking", "fear": "overthinking", "anger": "emotions", "ego": "others", "resilience": "calm",
+  "discipline": "discipline", "duty": "discipline", "time": "procrastinating", "mortality": "procrastinating",
+  "adversity": "hardtimes", "friendship": "toxic", "desire": "less"
+ },
+ "overrides": {}
+}
