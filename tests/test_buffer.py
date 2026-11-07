@@ -230,3 +230,23 @@ def test_buffer_comes_first_and_the_job_passes_its_key():
     assert env["BUFFER_API_KEY"] == "${{ secrets.BUFFER_API_KEY }}"
     assert "IG_USER_ID" not in env              # the broken one hid every "e" and "d" in the logs
     assert echo.to_post([{"youtube_id": "a", "status": "queued"}], [{"video_id": "a"}]) is None   # never twice
+
+
+def test_settle_reads_back_what_is_going_out_and_posts_nothing_new(data):
+    echo._rewrite(echo.POSTS, echo.POST_FIELDS, [{"tried_at": "2026-11-07T23:06:24Z", "youtube_id": "yt0",
+                                                  "status": "queued", "via": "buffer", "buffer_id": "p0",
+                                                  "asset_id": "70"}])
+    with patch.object(bf, "instagram_channel", return_value=IG), \
+         patch.object(echo, "handed_over", return_value=_handed(data)) as handed, \
+         patch.object(echo.ig, "_delete_asset") as dele, \
+         patch.object(bf, "create_reel") as made, \
+         patch.object(bf, "post_state", return_value={"id": "p0", "status": "sent",
+                                                      "externalLink": "https://instagram.com/reel/B"}):
+        assert echo.shift("settle", now=NOW + dt.timedelta(minutes=10)) == 0
+    assert not made.called and not handed.called
+    row = echo._read(echo.POSTS)[0]
+    assert row["status"] == "published" and row["permalink"] == "https://instagram.com/reel/B"
+    assert dele.call_args[0] == ("me/repo", 70)
+    wf = yaml.safe_load((ROOT / ".github" / "workflows" / "instagram.yml").read_text())
+    assert wf[True]["workflow_dispatch"]["inputs"]["mode"]["options"] == ["run", "check", "settle"]
+

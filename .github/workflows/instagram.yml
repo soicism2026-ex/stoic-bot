@@ -23,9 +23,9 @@ on:
   workflow_dispatch:
     inputs:
       mode:
-        description: run = a full shift (post what's waiting, key, numbers); check = the key and the account only
+        description: run = a full shift (post what's waiting, key, numbers); check = the key and the account only; settle = through Buffer, read back posts still going out (posts nothing new)
         type: choice
-        options: [run, check]
+        options: [run, check, settle]
         default: run
 permissions:
   contents: write

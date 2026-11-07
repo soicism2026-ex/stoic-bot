@@ -31,6 +31,7 @@ the hosted copy of the video, which Buffer fetches when the post goes out.
 
     python scripts/echo.py           # a full shift
     python scripts/echo.py check     # the key and the account only
+    python scripts/echo.py settle    # Buffer only: read back posts still going out; post nothing new
 """
 from __future__ import annotations
 
@@ -335,7 +336,7 @@ def buffer_shift(mode: str, now: dt.datetime, key: str) -> int:
             print(f"Echo: couldn't read back Buffer's posts: {e.message}", file=sys.stderr)
             changed = False
         with tempfile.TemporaryDirectory() as td:
-            post = to_post(log, handed_over(now, Path(td)))
+            post = to_post(log, handed_over(now, Path(td))) if mode != "settle" else None
             if post:
                 text = post.get("igCaption") or ig.caption(
                     post.get("hook", ""), post.get("quote", ""), post.get("author", ""),
@@ -377,8 +378,13 @@ def buffer_shift(mode: str, now: dt.datetime, key: str) -> int:
                 print(f"Echo: {post['video_id']} -> {row['status']}"
                       + (f" {row['permalink']}" if row.get("permalink") else "")
                       + (f" ({row['reason']})" if row.get("reason") else ""))
-            else:
+            elif mode != "settle":
                 print("Echo: nothing new to post.")
+        for r in log:
+            if r.get("via") == "buffer" and r.get("buffer_id") and r.get("tried_at", "") >= _iso(now - dt.timedelta(days=3)):
+                print(f"Echo: {r.get('youtube_id')} is {r.get('status')}"
+                      + (f" {r['permalink']}" if r.get("permalink") else "")
+                      + (f" ({r['reason']})" if r.get("reason") else ""))
         if changed:
             _rewrite(POSTS, POST_FIELDS, log)
             lp = st.get("lastPost") or {}
@@ -459,7 +465,7 @@ def shift(mode: str = "run", now: dt.datetime | None = None) -> int:
     if mode != "check":
         log = _read(POSTS)
         with tempfile.TemporaryDirectory() as td:
-            post = to_post(log, handed_over(now, Path(td)))
+            post = to_post(log, handed_over(now, Path(td))) if mode != "settle" else None
             if post:
                 text = post.get("igCaption") or ig.caption(
                     post.get("hook", ""), post.get("quote", ""), post.get("author", ""),
@@ -490,7 +496,7 @@ def shift(mode: str = "run", now: dt.datetime | None = None) -> int:
 
 def main() -> int:
     mode = (sys.argv[1] if len(sys.argv) > 1 else os.environ.get("ECHO_MODE", "run")) or "run"
-    if mode not in ("run", "check"):
+    if mode not in ("run", "check", "settle"):
         print(__doc__)
         return 2
     return shift(mode)
