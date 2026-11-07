@@ -1649,3 +1649,30 @@ that story must always be captioned "recorded in the Historia Augusta", never
   manosphere corner (women, manipulation, narcissists). How to use them is
   Cicero's test 4 (`search-phrases`, HQ `asks/search-phrases`): built and
   off until he says yes.
+- **2026-11-07 — SEARCHES ON: descriptions, hashtags and tags (not titles).**
+  Owner, in the HQ, on `asks/search-phrases`: *"Yes: descriptions, hashtags
+  and tags"*. From the first Short of 11-08, each edit's description opens with
+  the search its quote answers ("How to control your emotions: Marcus
+  Aurelius's answer."), its topic hashtag follows #stoicism, and the search
+  and "<author> quotes" lead its tags. Titles stay as they are. Cicero's test 4
+  (`search-phrases`, running from 11-08) judges it by the share of views from
+  YouTube search, 14 days against the 14 before (about 4% now).
+- **2026-11-07 — "use this advice to grow our youtube channel": evidence before
+  we make a Short.** Owner, in the HQ, pasting the first 2:36 of Jake Trinder's
+  talk on growing channels (the paste stops mid-sentence). Its plan: ideas the
+  audience is proven to want ("Knowing your audience matters, but it does not
+  prove that they will choose the subject on YouTube. So, you need evidence
+  that they will actually watch these videos before you even press record"),
+  packaging that beats the competition, videos good enough to sell, and
+  winner after winner from data. Applied:
+  * Evidence: the scout (`scripts/scout.py`, daily in Glaux's job, free):
+    this month's Stoicism Shorts on other channels that reached far past their
+    own subscribers, by our themes and philosophers, with the titles that won.
+    Varro now reads it before every restock: write on the topics the niche
+    proves, packaged like its winners.
+  * Evidence from search: the 10 searches (on from 11-08) and the searches
+    that already find us (Glaux's daily pull).
+  * Winner after winner from data: Frontinus (our own winners order the
+    shelf), Cicero (tests judged against the 2027 goal).
+  If the owner pastes the rest of the talk, apply its packaging and data steps
+  the same way.

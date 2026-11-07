@@ -68,13 +68,21 @@ def test_the_description_follows_the_owners_example():
     assert edits.QUESTION_MARK in d                           # Cicero tells old from new by it
 
 
-def test_a_quote_without_paragraphs_keeps_the_old_layout():
+def test_a_quote_without_paragraphs_keeps_the_old_layout(tmp_path, monkeypatch):
     q = {"id": "x", "theme": "fear", "quote": "Q.", "author": "Seneca", "citation": "Letters 13",
          "hook": "Stop fearing.", "visuals": []}
+    off = tmp_path / "off.json"
+    off.write_text('{"tests": []}')
+    monkeypatch.setattr(edits, "MARKETING_TESTS", off)                 # the search line off
     d = edits.description(edits.as_content(q))
     assert d.split("\n\n") == ["Stop fearing.", "Q.\n— Seneca, Letters 13", "#stoicism #motivation "
                                "#discipline #stoic #shorts"]
     assert edits.QUESTION_MARK not in d
+    on = tmp_path / "on.json"
+    on.write_text('{"tests": [{"id": "search-phrases", "status": "running"}]}')
+    monkeypatch.setattr(edits, "MARKETING_TESTS", on)                  # on: it opens with the search too
+    d = edits.description(edits.as_content(q))
+    assert d.split("\n\n")[:2] == ["How to stop overthinking: Seneca's answer.", "Stop fearing."]
 
 
 def test_youtube_takes_every_description(monkeypatch):

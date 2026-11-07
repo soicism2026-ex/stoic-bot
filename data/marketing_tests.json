@@ -50,9 +50,11 @@
    "why": "Since June, YouTube search brought 225 views, all from broad words (stoicism, marcus aurelius). Searches like \"how to stop overthinking\" are among YouTube's most popular, and brought us none: our Shorts never use those words.",
    "measure": "The share of views from YouTube search, the 14 days after against the 14 before.",
    "ask": "search-phrases",
-   "status": "proposed",
+   "status": "running",
    "proposed": "2026-11-07",
-   "started": null
+   "started": "2026-11-08",
+   "use": "descriptions",
+   "approved": "2026-11-07: owner, in the HQ: \"Yes: descriptions, hashtags and tags\" (titles stay as they are)"
   }
  ],
  "next": [
