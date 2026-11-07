@@ -1,13 +1,21 @@
 {
- "checked": "2026-11-02T23:23:02Z",
- "ok": false,
- "problem": "The Instagram key in GitHub is the old kind, and the IG_USER_ID it needs is broken. A new key fixes both.",
- "key": {
-  "fingerprint": "18ac3e7343f0",
-  "firstSeen": "2026-10-28",
-  "kind": "facebook",
-  "source": "github"
+ "checked": "2026-11-07T23:05:39Z",
+ "ok": true,
+ "problem": null,
+ "ownerAction": false,
+ "via": "buffer",
+ "buffer": {
+  "channelId": "6aefac98e29c69a1719afcdf",
+  "organizationId": "6aefac80736a55e56b4fd310",
+  "checked": "2026-11-07",
+  "name": "forged.in.stoicism",
+  "link": "https://instagram.com/forged.in.stoicism"
  },
- "advice": "IG_USER_ID in GitHub isn't a plain number (it looks pasted across lines). The new key doesn't need it: delete it.",
- "ownerAction": true
+ "account": {
+  "username": "forged.in.stoicism",
+  "accountType": "Instagram, through Buffer",
+  "followers": null,
+  "mediaCount": null
+ },
+ "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept."
 }
