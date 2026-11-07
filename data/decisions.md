@@ -1676,3 +1676,13 @@ that story must always be captioned "recorded in the Historia Augusta", never
     shelf), Cicero (tests judged against the 2027 goal).
   If the owner pastes the rest of the talk, apply its packaging and data steps
   the same way.
+- **2026-11-07 — INSTAGRAM THROUGH BUFFER (not Meta's developer site).**
+  Owner, in chat: *"how can i connect this to insagram withoiut goign though
+  meta developers?"*, then a screenshot of Meta's developer sign-up stuck on the
+  text code that never arrives (a known Meta problem in 2026), then *"
+  BUFFER_API_KEY is added"*. Echo now posts each new Short as a Reel through
+  Buffer (`src/buffer_ig.py`), which Meta has approved: the owner connected the
+  channel's Instagram inside Buffer, no developer account. Buffer's free plan
+  covers it (3 channels, 1 API key). The Meta path (`IG_ACCESS_TOKEN`) stays as
+  the fallback when `BUFFER_API_KEY` is not set. Instagram's own numbers
+  (followers, views) aren't pulled through Buffer; each Reel's link is.

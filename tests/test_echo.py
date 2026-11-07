@@ -50,6 +50,7 @@ def data(tmp_path, monkeypatch):
         monkeypatch.setattr(echo, name, tmp_path / Path(getattr(echo, name)).name)
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
     monkeypatch.delenv("IG_USER_ID", raising=False)
+    monkeypatch.delenv("BUFFER_API_KEY", raising=False)                # these are Meta's own path
     monkeypatch.setattr(ig_key, "load", lambda seed: (seed.strip(), "github"))
     return tmp_path
 

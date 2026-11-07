@@ -20,6 +20,15 @@ Reel's numbers by day). It exits 0 when the problem is on the owner's side
 (no key, a refused key: the HQ asks him for a new one) and 1 when a post
 failed with a working key (the HQ shows Echo failed, and Claude looks).
 
+Through Buffer (owner 2026-11-07: "how can i connect this to insagram withoiut
+goign though meta developers?"): when BUFFER_API_KEY is in GitHub, Echo posts
+through Buffer (src/buffer_ig.py) instead of Meta's API, and steps 1, 3 and 4
+change: the check is "Buffer has a connected Instagram channel" (once a day;
+its id is kept), there is no key to keep alive, and Instagram's own numbers
+aren't pulled. A post goes out as "queued" with Buffer's post id; Echo reads it
+back until Buffer says sent (the Reel's link) or error, and only then deletes
+the hosted copy of the video, which Buffer fetches when the post goes out.
+
     python scripts/echo.py           # a full shift
     python scripts/echo.py check     # the key and the account only
 """
@@ -30,8 +39,10 @@ import datetime as dt
 import io
 import json
 import os
+import shutil
 import sys
 import tempfile
+import time
 import zipfile
 from collections import Counter
 from pathlib import Path
@@ -40,6 +51,7 @@ import requests
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
+import buffer_ig as bf  # noqa: E402
 import ig_key  # noqa: E402
 import publish_instagram as ig  # noqa: E402
 
@@ -54,7 +66,11 @@ WINDOW_HOURS = 36       # how far back a Short still goes to Instagram
 MAX_TRIES = 3           # failed attempts before Echo gives up on one Short
 NUMBERS_DAYS = 30       # Reels whose numbers are pulled daily
 METRICS = "views,reach,likes,comments,shares,saved"
-POST_FIELDS = ["tried_at", "date", "youtube_id", "ig_media_id", "permalink", "status", "reason"]
+POST_FIELDS = ["tried_at", "date", "youtube_id", "ig_media_id", "permalink", "status", "reason",
+               "via", "buffer_id", "asset_id"]
+SETTLE_POLLS = 6        # Buffer, right after a post: read it back up to 6 times,
+SETTLE_EVERY = 20       # 20 seconds apart; the next shift settles what's left
+LOST_AFTER_HOURS = 48   # a queued post Buffer no longer lists is given up
 STATS_FIELDS = ["pulled_on", "username", "followers", "media_count"]
 REEL_FIELDS = ["pulled_on", "ig_media_id", "youtube_id", "views", "reach", "likes", "comments",
                "shares", "saved"]
@@ -79,6 +95,15 @@ def _append(path: Path, fields: list[str], row: dict) -> None:
         if new:
             w.writeheader()
         w.writerow({k: ("" if row.get(k) is None else row.get(k)) for k in fields})
+
+
+def _rewrite(path: Path, fields: list[str], rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        w = csv.DictWriter(f, fieldnames=fields, extrasaction="ignore")
+        w.writeheader()
+        for r in rows:
+            w.writerow({k: ("" if r.get(k) is None else r.get(k)) for k in fields})
 
 
 def load_status() -> dict:
@@ -186,7 +211,7 @@ def handed_over(now: dt.datetime, work: Path) -> list[dict]:
 def to_post(log: list[dict], handed: list[dict]) -> dict | None:
     """The oldest handed-over Short not yet on Instagram, unless it already
     failed MAX_TRIES times."""
-    done = {r.get("youtube_id") for r in log if r.get("status") == "published"}
+    done = {r.get("youtube_id") for r in log if r.get("status") in ("published", "queued")}
     tries = Counter(r.get("youtube_id") for r in log if r.get("status") == "failed")
     for p in handed:
         if p["video_id"] not in done and tries[p["video_id"]] < MAX_TRIES:
@@ -226,10 +251,153 @@ def pull_numbers(token: str, acct: dict, log: list[dict], today: dt.date, st: di
                                      "youtube_id": r.get("youtube_id"), **vals})
 
 
+# ------------------------------------------------------------- through Buffer
+
+def buffer_plain(e: bf.BufferError) -> str:
+    """Buffer's refusal in words the owner reads in the HQ."""
+    if e.key_rejected:
+        return f"Buffer refused the key ({e.message}). Make a new one in Buffer (Settings > API) and update BUFFER_API_KEY."
+    if e.code == "NO_CHANNEL":
+        return "Buffer has no Instagram connected yet. In Buffer, connect the channel's Instagram."
+    if e.code == "DISCONNECTED":
+        return "Buffer's Instagram connection is off or locked. In Buffer, reconnect the channel's Instagram."
+    if e.status == 0:
+        return f"Couldn't reach Buffer: {e.message}."
+    return f"Buffer said: {e.message}"
+
+
+def _drop_hosted(row: dict) -> None:
+    repo = os.environ.get("GITHUB_REPOSITORY", "")
+    if repo and row.get("asset_id"):
+        ig._delete_asset(repo, int(row["asset_id"]))
+        row["asset_id"] = ""
+
+
+def settle(key: str, ch: dict, log: list[dict], now: dt.datetime) -> bool:
+    """Read back every post still queued in Buffer: sent (the Reel's link) or
+    error; then delete its hosted video. True if a row changed."""
+    changed = False
+    for row in log:
+        if row.get("status") != "queued" or not row.get("buffer_id"):
+            continue
+        node = bf.post_state(key, ch["organizationId"], ch["channelId"], row["buffer_id"])
+        if node and node.get("status") == "sent":
+            row.update(status="published", permalink=node.get("externalLink") or "", reason="")
+        elif node and node.get("status") == "error":
+            row.update(status="failed", reason=((node.get("error") or {}).get("message") or "Buffer: error")[:200])
+        elif node is None and row.get("tried_at") and \
+                now - dt.datetime.fromisoformat(row["tried_at"].replace("Z", "+00:00")) > \
+                dt.timedelta(hours=LOST_AFTER_HOURS):
+            row.update(status="failed", reason="Buffer no longer lists the post")
+        else:
+            continue
+        _drop_hosted(row)
+        changed = True
+    return changed
+
+
+def buffer_shift(mode: str, now: dt.datetime, key: str) -> int:
+    today = now.date()
+    st = load_status()
+    st["checked"] = _iso(now)
+    for gone in ("key", "advice"):                      # Meta's key and its advice no longer apply
+        st.pop(gone, None)
+    st["via"] = "buffer"
+    if any(c.isspace() for c in key):
+        st.update(ok=False, ownerAction=True,
+                  problem="The Buffer key in GitHub has line breaks or spaces in it. Paste it again as one line.")
+        save_status(st)
+        print(f"Echo: {st['problem']}")
+        return 0
+    ch = st.get("buffer") or {}
+    if mode == "check" or ch.get("checked") != today.isoformat() or not ch.get("channelId"):
+        try:
+            c = bf.instagram_channel(key)
+        except bf.BufferError as e:
+            st.update(ok=False, problem=buffer_plain(e), ownerAction=e.owners_to_fix)
+            save_status(st)
+            print(f"Echo: {st['problem']}")
+            return 0
+        ch = {"channelId": c["id"], "organizationId": c["organizationId"], "checked": today.isoformat(),
+              "name": c.get("name") or c.get("displayName"), "link": c.get("externalLink")}
+    st.update(ok=True, problem=None, ownerAction=False, buffer=ch,
+              account={"username": ch.get("name"), "accountType": "Instagram, through Buffer",
+                       "followers": None, "mediaCount": None},
+              numbersProblem="Echo posts through Buffer, so Instagram's own numbers (followers, views) "
+                             "aren't pulled. Each Reel's link is kept.")
+
+    failed = False
+    if mode != "check":
+        log = _read(POSTS)
+        try:
+            changed = settle(key, ch, log, now)
+        except bf.BufferError as e:
+            print(f"Echo: couldn't read back Buffer's posts: {e.message}", file=sys.stderr)
+            changed = False
+        with tempfile.TemporaryDirectory() as td:
+            post = to_post(log, handed_over(now, Path(td)))
+            if post:
+                text = post.get("igCaption") or ig.caption(
+                    post.get("hook", ""), post.get("quote", ""), post.get("author", ""),
+                    post.get("citation", ""), post.get("hashtags") or [])
+                row = {"tried_at": _iso(now), "date": post.get("date") or today.isoformat(),
+                       "youtube_id": post["video_id"], "via": "buffer"}
+                try:
+                    # Its own file name: the hosted copy stays until Buffer has
+                    # sent the Reel, and a second "reel.mp4" would replace it.
+                    named = Path(td) / f"{post['video_id']}.mp4"
+                    shutil.copyfile(post["video"], named)
+                    url, _repo, asset = ig._host_via_github_release(named)
+                    row["asset_id"] = asset
+                    made = bf.create_reel(key, ch["channelId"], text, url)
+                    row.update(status="queued", buffer_id=made.get("id"))
+                    print(f"  [echo] Buffer took the Reel (post {made.get('id')}, {made.get('status')}); "
+                          "waiting for it to go out")
+                except bf.BufferError as e:
+                    row.update(status="failed", reason=f"Buffer: {e.message}"[:200])
+                except Exception as e:  # noqa: BLE001
+                    row.update(status="failed", reason=f"{type(e).__name__}: {str(e)[:180]}")
+                log.append(row)
+                changed = True
+                if row["status"] == "failed":
+                    _drop_hosted(row)
+                else:
+                    for _ in range(SETTLE_POLLS):       # it usually goes out within a minute or two
+                        time.sleep(SETTLE_EVERY)
+                        try:
+                            settle(key, ch, log, now)
+                        except bf.BufferError:
+                            break
+                        if row["status"] != "queued":
+                            break
+                failed = row["status"] == "failed"
+                st["lastPost"] = {"at": row["tried_at"], "youtube": post["video_id"],
+                                  "title": post.get("title") or post.get("hook"), "status": row["status"],
+                                  "permalink": row.get("permalink") or None, "reason": row.get("reason") or None}
+                print(f"Echo: {post['video_id']} -> {row['status']}"
+                      + (f" {row['permalink']}" if row.get("permalink") else "")
+                      + (f" ({row['reason']})" if row.get("reason") else ""))
+            else:
+                print("Echo: nothing new to post.")
+        if changed:
+            _rewrite(POSTS, POST_FIELDS, log)
+            lp = st.get("lastPost") or {}
+            last = next((r for r in reversed(log) if r.get("youtube_id") == lp.get("youtube")), None)
+            if lp and last:                             # a Reel settled since: show where it ended up
+                lp.update(status=last["status"], permalink=last.get("permalink") or None,
+                          reason=last.get("reason") or None)
+    save_status(st)
+    print(f"Echo: posting to {ch.get('name')} on Instagram through Buffer")
+    return 1 if failed else 0
+
+
 # ------------------------------------------------------------- the shift
 
 def shift(mode: str = "run", now: dt.datetime | None = None) -> int:
     now = now or dt.datetime.now(dt.timezone.utc)
+    buffer_key = os.environ.get("BUFFER_API_KEY", "").strip()
+    if buffer_key:
+        return buffer_shift(mode, now, buffer_key)
     today = now.date()
     st = load_status()
     st["checked"] = _iso(now)

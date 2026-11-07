@@ -8,10 +8,11 @@
 # the HQ shows. Instagram has its own job so it can never slow down, break or
 # leak into the YouTube one. scripts/echo.py says what each step does.
 #
-# The key: IG_ACCESS_TOKEN, made by the owner in Meta's App Dashboard
-# (Instagram > API setup with Instagram login > Generate token) and pasted
-# into GitHub as ONE line. IG_USER_ID is only needed for an older Facebook
-# Login key.
+# The key: BUFFER_API_KEY since 2026-11-07 (owner: "how can i connect this to
+# insagram withoiut goign though meta developers?"): Echo posts through Buffer,
+# where the owner connected the channel's Instagram (src/buffer_ig.py).
+# Without it, the old path: IG_ACCESS_TOKEN from Meta's App Dashboard
+# (IG_USER_ID only for an older Facebook Login key).
 name: instagram
 on:
   workflow_run:
@@ -48,6 +49,7 @@ jobs:
 
       - name: Echo's shift
         env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
           GITHUB_TOKEN: ${{ github.token }}
