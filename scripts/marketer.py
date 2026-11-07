@@ -418,10 +418,11 @@ def markdown(r: dict) -> str:
         lines.append(f"- No goal picked yet: the options wait in the HQ (asks/{(r.get('goal') or {}).get('ask') or 'goal-2027'}).")
     else:
         lines.append(f"- **{g['title']}** (by {g['deadline']})")
+        per = lambda x: f"{x:,.1f}" if abs(x) < 100 else f"{x:,.0f}"  # noqa: E731
         for t in g["targets"]:
-            pace = (f"; {t['pace']:,.1f} a day now, {t['needed']:,.1f} needed"
+            pace = (f"; {per(t['pace'])} a day now, {per(t['needed'])} needed"
                     if t.get("pace") is not None and t.get("needed") is not None else "")
-            lines.append(f"- {t['label']}: {t['have'] if t['have'] is not None else '–'} of {t['target']:,} "
+            lines.append(f"- {t['label']}: {format(t['have'], ',') if t['have'] is not None else '–'} of {t['target']:,} "
                          f"({t['status']}{pace})")
         if g.get("next"):
             state = {True: "on track", False: "behind", None: "open"}[g.get("onTrack")]

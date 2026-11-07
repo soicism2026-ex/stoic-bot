@@ -1617,3 +1617,17 @@ that story must always be captioned "recorded in the Historia Augusta", never
   `scripts/goals.py` (pace now vs pace needed, quarterly checkpoints), the HQ's
   goal card on the Now tab, and Cicero's read opens with it. When he picks,
   set `chosen` in `data/goals.json` and log the decision here.
+- **2026-11-07 — THE GOAL FOR 2027: a million views and 1,000 subscribers.**
+  Owner, in the HQ, on `asks/goal-2027`: *"A million views and 1,000
+  subscribers in 2027"* (Claude's pick of the four). `data/goals.json`
+  `chosen: "million"`. What it takes: about 2,740 views a day on average
+  through 2027 (the channel did about 407 over the four weeks to 11-07) and
+  about 1.8 new subscribers a day (1.2 then). Checkpoints, each judged on its
+  date: 100,000 views and 450 subscribers by Mar 31; 300,000 and 600 by
+  Jun 30; 600,000 and 800 by Sep 30; 1,000,000 and 1,000 by Dec 31. The HQ's
+  goal card shows the pace against what's needed; Cicero's read opens with it
+  and every test is judged by whether it moves these numbers; Varro restocks
+  with quotes like the ones that bring the most views. Views count from
+  Jan 1, 2027; November and December are the run-up. This replaces "500
+  subs + 3M Shorts views in 90 days" as the working goal (that payout tier
+  is the step after).
