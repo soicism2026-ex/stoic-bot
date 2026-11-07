@@ -1,39 +1,39 @@
 {
- "pulled_on": "2026-11-06",
+ "pulled_on": "2026-11-07",
  "window": [
-  "2026-10-09",
-  "2026-11-06"
+  "2026-10-10",
+  "2026-11-07"
  ],
  "countries": [
   {
    "key": "US",
-   "views": 4394,
-   "share": 0.835
+   "views": 4712,
+   "share": 0.83
   },
   {
    "key": "IN",
-   "views": 551,
-   "share": 0.105
+   "views": 622,
+   "share": 0.11
   },
   {
    "key": "GB",
    "views": 136,
-   "share": 0.026
+   "share": 0.024
   },
   {
    "key": "CA",
-   "views": 101,
-   "share": 0.019
+   "views": 129,
+   "share": 0.023
   },
   {
    "key": "PH",
    "views": 48,
-   "share": 0.009
+   "share": 0.008
   },
   {
    "key": "ZA",
    "views": 30,
-   "share": 0.006
+   "share": 0.005
   },
   {
    "key": "BR",
@@ -49,27 +49,27 @@
  "sources": [
   {
    "key": "SHORTS",
-   "views": 9140,
-   "share": 0.918
+   "views": 9769,
+   "share": 0.921
   },
   {
    "key": "YT_SEARCH",
-   "views": 426,
-   "share": 0.043
+   "views": 445,
+   "share": 0.042
   },
   {
    "key": "YT_OTHER_PAGE",
-   "views": 180,
+   "views": 194,
    "share": 0.018
   },
   {
    "key": "YT_CHANNEL",
-   "views": 166,
-   "share": 0.017
+   "views": 158,
+   "share": 0.015
   },
   {
    "key": "EXT_URL",
-   "views": 29,
+   "views": 30,
    "share": 0.003
   },
   {
@@ -96,13 +96,267 @@
  "subscribed": [
   {
    "key": "UNSUBSCRIBED",
-   "views": 9737,
-   "share": 0.978
+   "views": 10390,
+   "share": 0.979
   },
   {
    "key": "SUBSCRIBED",
-   "views": 219,
+   "views": 221,
+   "share": 0.021
+  }
+ ],
+ "searchTerms": [
+  {
+   "key": "stoicism",
+   "views": 19,
+   "share": 0.192
+  },
+  {
+   "key": "marcus aurelius",
+   "views": 8,
+   "share": 0.081
+  },
+  {
+   "key": "stoic",
+   "views": 7,
+   "share": 0.071
+  },
+  {
+   "key": "stoic reset",
+   "views": 7,
+   "share": 0.071
+  },
+  {
+   "key": "stoicism marcus aurelius",
+   "views": 7,
+   "share": 0.071
+  },
+  {
+   "key": "marcus aurelius meditations",
+   "views": 4,
+   "share": 0.04
+  },
+  {
+   "key": "marcus aurelius quotes",
+   "views": 4,
+   "share": 0.04
+  },
+  {
+   "key": "marcus aurelius stoicism",
+   "views": 4,
+   "share": 0.04
+  },
+  {
+   "key": "stoic ben",
+   "views": 4,
+   "share": 0.04
+  },
+  {
+   "key": "stoicism motivation",
+   "views": 4,
+   "share": 0.04
+  },
+  {
+   "key": "my word is law",
+   "views": 3,
+   "share": 0.03
+  },
+  {
+   "key": "stoic man",
+   "views": 3,
+   "share": 0.03
+  },
+  {
+   "key": "stoic meaning",
+   "views": 3,
+   "share": 0.03
+  },
+  {
+   "key": "stoic motivation",
+   "views": 3,
+   "share": 0.03
+  },
+  {
+   "key": "stoicism philosophy",
+   "views": 3,
+   "share": 0.03
+  },
+  {
+   "key": "epictetus audiobook",
+   "views": 2,
+   "share": 0.02
+  },
+  {
+   "key": "seneca quotes",
+   "views": 2,
+   "share": 0.02
+  },
+  {
+   "key": "stoic dre",
+   "views": 2,
+   "share": 0.02
+  },
+  {
+   "key": "stoic quotes",
+   "views": 2,
+   "share": 0.02
+  },
+  {
+   "key": "stoicism philosophy marcus aurelius",
+   "views": 2,
+   "share": 0.02
+  },
+  {
+   "key": "washing machine coin removal",
+   "views": 2,
+   "share": 0.02
+  },
+  {
+   "key": "abhijeet wanjari",
+   "views": 1,
+   "share": 0.01
+  },
+  {
+   "key": "ahora",
+   "views": 1,
+   "share": 0.01
+  },
+  {
+   "key": "alberto photography",
+   "views": 1,
+   "share": 0.01
+  },
+  {
+   "key": "ardhianzy",
+   "views": 1,
+   "share": 0.01
+  }
+ ],
+ "searchTermsAllTime": [
+  {
+   "key": "stoicism",
+   "views": 52,
+   "share": 0.231
+  },
+  {
+   "key": "stoic",
+   "views": 18,
+   "share": 0.08
+  },
+  {
+   "key": "marcus aurelius",
+   "views": 16,
+   "share": 0.071
+  },
+  {
+   "key": "stoicism marcus aurelius",
+   "views": 16,
+   "share": 0.071
+  },
+  {
+   "key": "epictetus",
+   "views": 11,
+   "share": 0.049
+  },
+  {
+   "key": "stoicism motivation",
+   "views": 11,
+   "share": 0.049
+  },
+  {
+   "key": "stoicism philosophy",
+   "views": 11,
+   "share": 0.049
+  },
+  {
+   "key": "marcus aurelius meditations",
+   "views": 10,
+   "share": 0.044
+  },
+  {
+   "key": "stoic mindset",
+   "views": 8,
+   "share": 0.036
+  },
+  {
+   "key": "stoic wisdom",
+   "views": 8,
+   "share": 0.036
+  },
+  {
+   "key": "stoic reset",
+   "views": 7,
+   "share": 0.031
+  },
+  {
+   "key": "stocism",
+   "views": 6,
+   "share": 0.027
+  },
+  {
+   "key": "marcus aurelius quotes",
+   "views": 5,
    "share": 0.022
+  },
+  {
+   "key": "marcus aurelius stoicism",
+   "views": 5,
+   "share": 0.022
+  },
+  {
+   "key": "stoic man",
+   "views": 5,
+   "share": 0.022
+  },
+  {
+   "key": "carl jung shadow",
+   "views": 4,
+   "share": 0.018
+  },
+  {
+   "key": "eminem dax",
+   "views": 4,
+   "share": 0.018
+  },
+  {
+   "key": "i'm good feeling alright",
+   "views": 4,
+   "share": 0.018
+  },
+  {
+   "key": "stoic ben",
+   "views": 4,
+   "share": 0.018
+  },
+  {
+   "key": "stoic dre",
+   "views": 4,
+   "share": 0.018
+  },
+  {
+   "key": "stoic motivation",
+   "views": 4,
+   "share": 0.018
+  },
+  {
+   "key": "fox news david hearn",
+   "views": 3,
+   "share": 0.013
+  },
+  {
+   "key": "jay shetty",
+   "views": 3,
+   "share": 0.013
+  },
+  {
+   "key": "my word is law",
+   "views": 3,
+   "share": 0.013
+  },
+  {
+   "key": "norm macdonald",
+   "views": 3,
+   "share": 0.013
   }
  ]
 }
