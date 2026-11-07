@@ -192,9 +192,11 @@ def test_the_read_shows_who_watches(tmp_path, monkeypatch):
     monkeypatch.setattr(mk, "DATA", tmp_path)
     (tmp_path / "audience.json").write_text(json.dumps({
         "pulled_on": "2026-11-06", "countries": [{"key": "US", "views": 500, "share": 0.4}],
-        "sources": [{"key": "SHORTS", "views": 1100, "share": 0.9}], "subscribed": []}))
+        "sources": [{"key": "SHORTS", "views": 1100, "share": 0.9}], "subscribed": [],
+        "searchTermsAllTime": [{"key": "stoicism", "views": 30, "share": 0.75}]}))
     md = mk.markdown({**mk.read(today=TODAY), "audience": mk.audience()})
     assert "## Who watches" in md and "US 40%" in md and "SHORTS 90%" in md
+    assert '"stoicism" (30)' in md
 
 
 def test_cicero_measures_his_tests_against_the_owners_goal(tmp_path, monkeypatch):

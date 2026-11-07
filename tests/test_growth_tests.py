@@ -321,6 +321,54 @@ def test_the_audience_pull_shares_and_merges(tmp_path):
     assert rows == ["date,source,views", "2026-11-01,PLAYLIST,0", "2026-11-01,SHORTS,120", "2026-11-02,SHORTS,90"]
 
 
+def test_the_audience_pull_asks_youtube_what_people_searched(tmp_path, monkeypatch):
+    """2026-11-07: "a list of 10 things people might potentially search for"."""
+    asked = []
+
+    class Reports:
+        def query(self, **args):
+            asked.append(args)
+            if args["dimensions"] == "insightTrafficSourceDetail":
+                assert args["filters"] == "insightTrafficSourceType==YT_SEARCH" and args["maxResults"] == 25
+                return _Req({"rows": [["stoicism", 30], ["how to control your emotions", 10]]})
+            if args["dimensions"].startswith("day"):
+                return _Req({"rows": [["2026-11-01", "SHORTS", 100]]})
+            return _Req({"rows": [["US", 80], ["IN", 20]]})
+
+    class YA:
+        def reports(self):
+            return Reports()
+
+    monkeypatch.setattr(audience, "_service", lambda: YA())
+    monkeypatch.setattr(audience, "AUDIENCE", tmp_path / "audience.json")
+    monkeypatch.setattr(audience, "SOURCES", tmp_path / "traffic_sources.csv")
+    assert audience.main() == 0
+    doc = json.loads((tmp_path / "audience.json").read_text())
+    assert doc["searchTerms"][0] == {"key": "stoicism", "views": 30, "share": 0.75}
+    assert doc["searchTermsAllTime"][1]["key"] == "how to control your emotions"
+    alltime = [a for a in asked if a["dimensions"] == "insightTrafficSourceDetail"][1]
+    assert alltime["startDate"] == audience.CHANNEL_START
+
+
+def test_a_failed_search_report_never_costs_the_rest(tmp_path, monkeypatch):
+    class Reports:
+        def query(self, **args):
+            if args["dimensions"] == "insightTrafficSourceDetail":
+                return _Req(RuntimeError("badRequest"))
+            return _Req({"rows": [["US", 1]]} if not args["dimensions"].startswith("day") else {"rows": []})
+
+    class YA:
+        def reports(self):
+            return Reports()
+
+    monkeypatch.setattr(audience, "_service", lambda: YA())
+    monkeypatch.setattr(audience, "AUDIENCE", tmp_path / "audience.json")
+    monkeypatch.setattr(audience, "SOURCES", tmp_path / "traffic_sources.csv")
+    assert audience.main() == 0
+    doc = json.loads((tmp_path / "audience.json").read_text())
+    assert doc["searchTerms"] is None and doc["countries"][0]["key"] == "US"
+
+
 def test_the_jobs_run_the_new_work_and_never_fail_a_post():
     wf = yaml.safe_load((ROOT / ".github" / "workflows" / "pull-analytics.yml").read_text())
     steps = {s.get("name"): s for s in wf["jobs"]["analytics"]["steps"]}

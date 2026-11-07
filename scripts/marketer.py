@@ -412,6 +412,10 @@ def markdown(r: dict) -> str:
                   f"- Countries: {top(a.get('countries') or [], 6)}",
                   f"- How they find the Shorts: {top(a.get('sources') or [])}",
                   f"- Subscribed or not: {top(a.get('subscribed') or [])}"]
+        found = a.get("searchTermsAllTime") or a.get("searchTerms") or []
+        if found:
+            lines.append("- What they typed into YouTube before watching (since June): "
+                         + ", ".join(f"\"{t['key']}\" ({t['views']})" for t in found[:10]))
     lines += ["", "## The goal", ""]
     g = (r.get("goal") or {}).get("progress")
     if not g:

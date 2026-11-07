@@ -12,7 +12,12 @@ the channel page, playlists or subscribers.
 
 Writes:
   data/audience.json        the last 28 days: views by country (top 12), by
-                            traffic source, and from subscribers vs not
+                            traffic source, and from subscribers vs not; and
+                            the YouTube searches that led to our Shorts (top
+                            25), over 28 days and since the channel began
+                            (owner 2026-11-07: "do some research on things that
+                            our audience actually care about ... a list of 10
+                            things people might potentially search for")
   data/traffic_sources.csv  views by day and traffic source, upserted daily
                             (Cicero judges the playlist test on it)
 
@@ -33,6 +38,8 @@ AUDIENCE = ROOT / "data" / "audience.json"
 SOURCES = ROOT / "data" / "traffic_sources.csv"
 SOURCE_FIELDS = ["date", "source", "views"]
 WINDOW_DAYS = 28
+CHANNEL_START = "2026-06-01"     # the first Shorts went up in June 2026
+SEARCH = "insightTrafficSourceType==YT_SEARCH"
 TOKEN_URI = "https://oauth2.googleapis.com/token"
 SCOPES = ["https://www.googleapis.com/auth/youtube.readonly",
           "https://www.googleapis.com/auth/yt-analytics.readonly"]
@@ -47,12 +54,26 @@ def _service():
     return build("youtubeAnalytics", "v2", credentials=creds, cache_discovery=False)
 
 
-def _query(ya, start: dt.date, end: dt.date, dimensions: str, sort: str = "-views", top: int | None = None) -> list:
+def _query(ya, start: dt.date, end: dt.date, dimensions: str, sort: str = "-views", top: int | None = None,
+           filters: str | None = None) -> list:
     args = dict(ids="channel==MINE", startDate=start.isoformat(), endDate=end.isoformat(),
                 metrics="views", dimensions=dimensions, sort=sort)
     if top:
         args["maxResults"] = top
+    if filters:
+        args["filters"] = filters
     return ya.reports().query(**args).execute().get("rows", [])
+
+
+def search_terms(ya, start: dt.date, end: dt.date) -> list[dict] | None:
+    """The words people typed into YouTube search before watching one of our
+    Shorts, most views first (YouTube shows at most 25). None if the report
+    failed: it must never cost the rest of the pull."""
+    try:
+        return shares(_query(ya, start, end, "insightTrafficSourceDetail", top=25, filters=SEARCH))
+    except Exception as e:  # noqa: BLE001
+        print(f"[audience] search terms skipped ({str(e)[:200]})", file=sys.stderr)
+        return None
 
 
 def shares(rows: list) -> list[dict]:
@@ -93,12 +114,15 @@ def main() -> int:
               "scripts/retention.py: if that one fails too, see its message.", file=sys.stderr)
         return 0
     doc = {"pulled_on": today.isoformat(), "window": [start.isoformat(), today.isoformat()],
-           "countries": shares(countries), "sources": shares(sources), "subscribed": shares(subscribed)}
+           "countries": shares(countries), "sources": shares(sources), "subscribed": shares(subscribed),
+           "searchTerms": search_terms(ya, start, today),
+           "searchTermsAllTime": search_terms(ya, dt.date.fromisoformat(CHANNEL_START), today)}
     AUDIENCE.write_text(json.dumps(doc, indent=1) + "\n", encoding="utf-8")
     n = upsert_sources(by_day)
     top = ", ".join(f"{c['key']} {c['share']:.0%}" for c in doc["countries"][:5])
+    terms = ", ".join(f"{t['key']} ({t['views']})" for t in (doc["searchTermsAllTime"] or [])[:8])
     print(f"[audience] {sum(c['views'] for c in doc['countries'])} views in 28 days; top countries: {top}; "
-          f"{n} day-by-source rows")
+          f"{n} day-by-source rows; searches that found us: {terms or 'none reported'}")
     return 0
 
 
