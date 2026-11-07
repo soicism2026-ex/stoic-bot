@@ -95,6 +95,13 @@ def author_of(title: str) -> str | None:
     return next((a for a, words in AUTHORS.items() if any(w in t for w in words)), None)
 
 
+def english(title: str) -> bool:
+    """Mostly Latin letters: our audience is English-speaking (84% US), and a
+    "stoic" search also turns up Shorts in other languages."""
+    letters = [c for c in title if c.isalpha()]
+    return not letters or sum(c.isascii() for c in letters) / len(letters) >= 0.8
+
+
 def search(yt, q: str, after: dt.datetime) -> list[str]:
     resp = yt.search().list(part="id", q=q, type="video", videoDuration="short", order="viewCount",
                             publishedAfter=after.strftime("%Y-%m-%dT%H:%M:%SZ"), regionCode="US",
@@ -131,7 +138,7 @@ def outliers(videos: dict[str, dict], subs: dict[str, int | None]) -> list[dict]
     for v in videos.values():
         n = subs.get(v["channelId"])
         if (v["channelId"] == OUR_CHANNEL or n is None or v["views"] < MIN_VIEWS
-                or not 0 < v["seconds"] <= MAX_SECONDS):
+                or not 0 < v["seconds"] <= MAX_SECONDS or not english(v["title"])):
             continue
         score = v["views"] / max(n, MIN_SUBS)
         if score < MIN_SCORE:

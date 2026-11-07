@@ -36,6 +36,7 @@ class _YT:
             "e": ("Discipline", "small", 5_000, "PT20S"),                     # too few views
             "f": ("Our own Short", scout.OUR_CHANNEL, 90_000, "PT20S"),       # ours: never counted
             "g": ("Hidden subscribers", "hidden", 400_000, "PT40S"),
+            "h": ("무뚝뚝한 아들이 엄마 기분 풀어준 비법", "small", 600_000, "PT40S"),   # not English
         }
         chans = {"big": 5_000_000, "small": 10_000, "tiny": 40, scout.OUR_CHANNEL: 260, "hidden": None}
 
@@ -43,7 +44,7 @@ class _YT:
             def list(self, **k):
                 yt.searched.append(k)
                 assert k["videoDuration"] == "short" and k["order"] == "viewCount" and k["type"] == "video"
-                ids = ["a", "b", "c", "d"] if k["q"] == "stoicism" else ["b", "e", "f", "g"]
+                ids = ["a", "b", "c", "d"] if k["q"] == "stoicism" else ["b", "e", "f", "g", "h"]
                 return _Req({"items": [{"id": {"videoId": i}} for i in ids]})
 
         class Videos:
@@ -86,7 +87,8 @@ def test_outliers_are_shorts_that_reached_far_past_their_channel():
     # Seneca's 300,000 on 10,000: 30x; the 5-million channel's 2 million: its usual (0.4x)
     assert [(o["title"], o["score"]) for o in s["top"]] == [("The calm man always wins", 50.0),
                                                            ("Seneca on wasting time", 30.0)]
-    assert s["videos"] == 7 and s["outliers"] == 2      # no long talk, low views, hidden, ours or usual hit
+    assert s["videos"] == 8 and s["outliers"] == 2      # no long talk, low views, hidden, ours, usual hit
+    assert scout.english("Master Your Emotions 🧠💯") and not scout.english("무뚝뚝한 아들이")      # or other language
 
 
 def test_the_read_groups_the_winners_by_our_themes_and_philosophers():
