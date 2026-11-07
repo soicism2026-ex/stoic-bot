@@ -451,6 +451,17 @@ def shelf_status(now: dt.datetime) -> dict | None:
         return None
 
 
+def goals_status(now: dt.datetime) -> dict | None:
+    """The goal options asked in the HQ and the owner's pick, each measured
+    (scripts/goals.py): the page shows the chosen one the moment he taps it."""
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import goals  # noqa: PLC0415
+        return goals.summary(today=now.date())
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def build(now: dt.datetime | None = None, runs: list[dict] | None = None) -> dict:
     now = now or dt.datetime.now(dt.timezone.utc)
     posts = _rows("posts.csv")
@@ -469,6 +480,7 @@ def build(now: dt.datetime | None = None, runs: list[dict] | None = None) -> dic
         "nextOnAir": next_on_air(posts),
         "shelf": shelf_status(now),
         "channel": channel(now),
+        "goals": goals_status(now),
         "posts": recent_posts(posts),
         "instagram": instagram(now),
         "runsSeen": len(runs),

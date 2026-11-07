@@ -216,6 +216,11 @@ button { font: inherit; color: inherit; }
 .track { height: 8px; border-radius: 999px; background: var(--raised); overflow: hidden; }
 .fill { height: 100%; min-width: 3px; border-radius: 999px; background: var(--gold); }
 .goals { display: flex; flex-direction: column; gap: 10px; }
+.goal-card { display: flex; flex-direction: column; gap: 10px; }
+.goal-title { margin: 0; font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: .02em; line-height: 1.3; text-wrap: balance; }
+.goal-next { margin: 0; font-size: 14px; line-height: 1.5; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+.goal-steps { margin: 0; padding-left: 18px; font-size: 14px; line-height: 1.5; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+.goal-steps .met { color: var(--done); }
 .chart { padding: 14px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); }
 .spark { width: 100%; height: auto; display: block; }
 .spark .grid { stroke: var(--line); stroke-width: 1; }
@@ -310,6 +315,10 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
         <div class="eyebrow-row"><h2 class="eyebrow" id="h-asks">Needs your call</h2><span class="count" id="asks-count"></span></div>
         <div id="asks"><p class="empty">Decisions waiting for you show up here.</p></div>
       </section>
+      <section class="block" id="goal-block" aria-labelledby="h-goal" hidden>
+        <div class="eyebrow-row"><h2 class="eyebrow" id="h-goal">The goal</h2><button class="link-btn" data-go="channel">Details</button></div>
+        <div id="goal"></div>
+      </section>
       <section class="block" aria-labelledby="h-glance">
         <div class="eyebrow-row"><h2 class="eyebrow" id="h-glance">The team right now</h2><button class="link-btn" data-go="team">Whole team</button></div>
         <div id="glance"><p class="empty">Loading the team.</p></div>
@@ -349,7 +358,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       <h1 class="sr" id="h-channel">Channel</h1>
       <div class="kpis" id="kpis"><p class="empty">Channel numbers arrive with the first studio sync.</p></div>
       <section class="block" aria-labelledby="h-goals">
-        <h2 class="eyebrow" id="h-goals">Monetization goals</h2>
+        <h2 class="eyebrow" id="h-goals">Goals</h2>
         <div class="goals" id="goals"></div>
       </section>
       <section class="block" aria-labelledby="h-spark">
@@ -1007,6 +1016,63 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       (g.numbersProblem ? `<p class="sub">${esc(g.numbersProblem)}</p>` : "") + advice;
   }
 
+  // ---------- the goal (owner 2026-11-07: "something we can work towards") ----------
+  // scripts/goals.py measures every option asked in asks/<goals.ask>; the
+  // owner's pick shows the moment he taps it, before any session acts on it.
+  function goalChoice() {
+    const g = S.studio && S.studio.goals;
+    if (!g || !Array.isArray(g.options)) return { g: null, ask: null, goal: null };
+    const ask = S.asks.find((a) => a.id === g.ask) || null;
+    const tapped = ask && ask.status === "answered" && g.options.some((o) => o.id === ask.answer) ? ask.answer : null;
+    return { g, ask, goal: g.options.find((o) => o.id === (tapped || g.chosen)) || null };
+  }
+  const goalNum = (metric, x) => x == null ? "–" : metric === "subscribers" ? nf.format(x) : compact.format(x);
+  const perDay = (x) => x == null ? "–" : x < 100 ? x.toFixed(1) : nf.format(Math.round(x));
+  const goalDate = (d) => new Date(d + "T12:00:00").toLocaleDateString([], { month: "short", day: "numeric", year: "numeric" });
+  const goalUnit = (m) => m === "subscribers" ? "subscribers" : m === "best_short" ? "views on one Short" : m === "views_90d" ? "views in 90 days" : "views";
+  function goalOk(t) {
+    if (t.status === "reached" || t.status === "on track") return true;
+    if (t.status === "behind" || t.status === "missed") return false;
+    if (t.status === "starts") return !!t.onPace;
+    return null;
+  }
+  function paceLine(t, start) {
+    if (t.status === "reached") return "Reached.";
+    if (t.status === "missed") return "Missed.";
+    if (t.status === "open") return "It takes one Short that breaks out: there's no daily pace for that.";
+    const unit = t.metric === "subscribers" ? "new subscribers" : "views";
+    const now = `${perDay(t.pace)} ${unit} a day now, ${perDay(t.needed)} needed`;
+    if (t.status === "starts") return `Counts from ${goalDate(start)}. ${now}.`;
+    return `${t.status === "on track" ? "On track" : "Behind"}: ${now}.`;
+  }
+  function goalBars(o, targets) {
+    return targets.map((t) => {
+      const pct = Math.max(0, Math.min(100, t.pct || 0));
+      return `<div class="goal"><div class="goal-row"><span>${esc(t.label)}</span><b>${esc(goalNum(t.metric, t.have))} of ${esc(goalNum(t.metric, t.target))}</b></div><div class="track" role="progressbar" aria-label="${esc(t.label)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct.toFixed(1)}"><div class="fill" style="width:${pct.toFixed(2)}%"></div></div><div class="sub">${esc(paceLine(t, o.start))}</div></div>`;
+    }).join("");
+  }
+  function nextCheckpoint(cp) {
+    if (!cp) return "";
+    const oks = cp.targets.map(goalOk);
+    const state = oks.includes(false) ? "behind" : oks.includes(null) ? "open" : "on track";
+    const what = cp.targets.map((t) => `${goalNum(t.metric, t.target)} ${goalUnit(t.metric)}`).join(" and ");
+    const pill = state === "on track" ? `<span class="pill s-done">On track</span>` : state === "behind" ? `<span class="pill s-wait">Behind</span>` : `<span class="pill s-idle">Open</span>`;
+    return `<p class="goal-next">${pill}<span>Next checkpoint, ${esc(goalDate(cp.by))}: ${esc(what)}</span></p>`;
+  }
+  function goalDetail(o) {
+    const steps = (o.checkpoints || []).map((cp) => `<li class="${cp.met ? "met" : ""}">${esc(goalDate(cp.by))}: ${esc(cp.targets.map((t) => `${goalNum(t.metric, t.target)} ${goalUnit(t.metric)}`).join(" and "))}${cp.met ? " (done)" : cp.passed ? " (missed)" : ""}</li>`).join("");
+    return `<div class="goal-card"><p class="goal-title">${esc(o.title)}</p>${goalBars(o, o.targets)}${nextCheckpoint(o.next)}${steps ? `<ol class="goal-steps">${steps}</ol>` : ""}</div>`;
+  }
+  function drawGoal() {
+    const block = $("#goal-block"), box = $("#goal");
+    const { g, ask, goal } = goalChoice();
+    if (!g || (!goal && !(ask && ask.status === "open"))) { block.hidden = true; return; }
+    block.hidden = false;
+    box.innerHTML = goal
+      ? `<div class="goal-card"><p class="goal-title">${esc(goal.title)}</p>${goalBars(goal, goal.targets)}${nextCheckpoint(goal.next)}</div>`
+      : `<p class="sub">No goal yet. Pick the channel's goal for 2027 under Needs your call: it shows here with its pace and a checkpoint every three months.</p>`;
+  }
+
   function drawChannel() {
     drawInstagram();
     const c = S.studio && S.studio.channel;
@@ -1023,7 +1089,9 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       const pct = Math.max(0, Math.min(100, (have / need) * 100));
       return `<div class="goal"><div class="goal-row"><span>${esc(label)}</span><b>${esc(fmt(have))} of ${esc(fmt(need))}</b></div><div class="track" role="progressbar" aria-label="${esc(label)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${pct.toFixed(1)}"><div class="fill" style="width:${pct.toFixed(2)}%"></div></div><div class="sub">${pct < 1 ? pct.toFixed(2) : pct.toFixed(0)}% there</div></div>`;
     };
-    $("#goals").innerHTML = goal("Subscribers", c.subs, c.goalSubs || 500, nf.format) + (c.views90d != null ? goal("Shorts views in 90 days", c.views90d, c.goalViews90d || 3000000, (x) => compact.format(x)) : "") +
+    const chosen = goalChoice().goal;
+    $("#goals").innerHTML = (chosen ? goalDetail(chosen) + `<p class="eyebrow">YouTube's payout tiers</p>` : "") +
+      goal("Subscribers", c.subs, c.goalSubs || 500, nf.format) + (c.views90d != null ? goal("Shorts views in 90 days", c.views90d, c.goalViews90d || 3000000, (x) => compact.format(x)) : "") +
       `<p class="sub">YouTube's first payout tier (fan funding) needs both: 500 subscribers and 3 million Shorts views in 90 days.</p>`;
     $("#spark").innerHTML = spark(c.viewsDaily || []);
     const posts = (S.studio && S.studio.posts) || [];
@@ -1110,7 +1178,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     if (raf) return;
     raf = requestAnimationFrame(() => {
       raf = 0;
-      drawLive(); drawHero(); drawAsks(); drawGlance(); drawAlerts(); drawOnAir(); drawTeam(); drawChannel(); drawLog();
+      drawLive(); drawHero(); drawAsks(); drawGoal(); drawGlance(); drawAlerts(); drawOnAir(); drawTeam(); drawChannel(); drawLog();
     });
   }
 

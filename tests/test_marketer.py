@@ -195,3 +195,21 @@ def test_the_read_shows_who_watches(tmp_path, monkeypatch):
         "sources": [{"key": "SHORTS", "views": 1100, "share": 0.9}], "subscribed": []}))
     md = mk.markdown({**mk.read(today=TODAY), "audience": mk.audience()})
     assert "## Who watches" in md and "US 40%" in md and "SHORTS 90%" in md
+
+
+def test_cicero_measures_his_tests_against_the_owners_goal(tmp_path, monkeypatch):
+    """2026-11-07: "something we can work towards instead of aimlessly trying things"."""
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import goals as gl  # noqa: PLC0415
+    r = mk.read(today=TODAY)
+    assert "## The goal" in mk.markdown(r)
+    if r["goal"].get("chosen") is None:
+        assert "No goal picked yet" in mk.markdown(r)
+    picked = {**json.loads((ROOT / "data" / "goals.json").read_text()), "chosen": "million"}
+    (tmp_path / "goals.json").write_text(json.dumps(picked))
+    monkeypatch.setattr(gl, "GOALS", tmp_path / "goals.json")
+    r = mk.read(today=TODAY)
+    md = mk.markdown(r)
+    assert "**A million views and 1,000 subscribers in 2027**" in md and "Views in 2027" in md
+    assert "Next checkpoint 2027-03-31" in md and "goal: " in mk.note(r)
+

@@ -1,0 +1,67 @@
+{
+ "note": "The channel's goal. Owner, 2026-11-07, in the HQ: \"Brainstorm some goal for this channel for the new year i want to makr something we can work towards instead if aimlessly trying things\". These options are asked in the HQ (asks/goal-2027); `chosen` is the id the owner picked (the HQ also shows his pick the moment he taps it). scripts/goals.py measures every option from the numbers the bots already keep; the HQ's goal card shows the chosen one with its pace and the next checkpoint. Numbers at the time of asking (2026-11-06): 257 subscribers (+1.5 a day), about 475 views a day, best Short ever 1,255 views, new-style edits a median of 178.",
+ "ask": "goal-2027",
+ "chosen": null,
+ "options": [
+  {
+   "id": "million",
+   "title": "A million views and 1,000 subscribers in 2027",
+   "start": "2027-01-01",
+   "deadline": "2027-12-31",
+   "targets": [
+    {"metric": "views", "target": 1000000, "label": "Views in 2027"},
+    {"metric": "subscribers", "target": 1000, "label": "Subscribers"}
+   ],
+   "checkpoints": [
+    {"by": "2027-03-31", "targets": [{"metric": "views", "target": 100000}, {"metric": "subscribers", "target": 450}]},
+    {"by": "2027-06-30", "targets": [{"metric": "views", "target": 300000}, {"metric": "subscribers", "target": 600}]},
+    {"by": "2027-09-30", "targets": [{"metric": "views", "target": 600000}, {"metric": "subscribers", "target": 800}]},
+    {"by": "2027-12-31", "targets": [{"metric": "views", "target": 1000000}, {"metric": "subscribers", "target": 1000}]}
+   ]
+  },
+  {
+   "id": "monetized",
+   "title": "Monetized in 2027: YouTube's first payout tier",
+   "start": "2027-01-01",
+   "deadline": "2027-12-31",
+   "targets": [
+    {"metric": "subscribers", "target": 500, "label": "Subscribers"},
+    {"metric": "views_90d", "target": 3000000, "label": "Views in the last 90 days"}
+   ],
+   "checkpoints": [
+    {"by": "2027-03-31", "targets": [{"metric": "subscribers", "target": 500}, {"metric": "views_90d", "target": 250000}]},
+    {"by": "2027-06-30", "targets": [{"metric": "views_90d", "target": 750000}]},
+    {"by": "2027-09-30", "targets": [{"metric": "views_90d", "target": 1500000}]},
+    {"by": "2027-12-31", "targets": [{"metric": "subscribers", "target": 500}, {"metric": "views_90d", "target": 3000000}]}
+   ]
+  },
+  {
+   "id": "viral",
+   "title": "A Short past 100,000 views by March 31",
+   "start": "2026-11-07",
+   "deadline": "2027-03-31",
+   "targets": [
+    {"metric": "best_short", "target": 100000, "label": "Most views on one Short"}
+   ],
+   "checkpoints": [
+    {"by": "2026-12-31", "targets": [{"metric": "best_short", "target": 10000}]},
+    {"by": "2027-03-31", "targets": [{"metric": "best_short", "target": 100000}]}
+   ]
+  },
+  {
+   "id": "thousand",
+   "title": "1,000 subscribers by the end of 2027",
+   "start": "2027-01-01",
+   "deadline": "2027-12-31",
+   "targets": [
+    {"metric": "subscribers", "target": 1000, "label": "Subscribers"}
+   ],
+   "checkpoints": [
+    {"by": "2027-03-31", "targets": [{"metric": "subscribers", "target": 500}]},
+    {"by": "2027-06-30", "targets": [{"metric": "subscribers", "target": 670}]},
+    {"by": "2027-09-30", "targets": [{"metric": "subscribers", "target": 835}]},
+    {"by": "2027-12-31", "targets": [{"metric": "subscribers", "target": 1000}]}
+   ]
+  }
+ ]
+}

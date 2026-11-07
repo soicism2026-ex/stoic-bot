@@ -1597,3 +1597,23 @@ that story must always be captioned "recorded in the Historia Augusta", never
   are kept out and taken out again, so the playlists don't bring back what
   pruning hid. Cicero judges it by the share of views from playlists, 11-06 to
   11-20 against the 14 days before (0% before).
+- **2026-11-07 — A GOAL FOR 2027 (asked, waiting for his pick).** Owner, in
+  the HQ: *"Brainstorm some goal for this channel for the new year i want to
+  makr something we can work towards instead if aimlessly trying things"*.
+  Where the channel stands (2026-11-06): 257 subscribers (+1.0 to 1.5 a day),
+  about 380 views a day over four weeks (475 the last week), best Short ever
+  1,255 views, new-style edits a median of 178, 98% of views from people who
+  don't subscribe. YouTube's first payout tier (500 subscribers + 3M Shorts
+  views in 90 days) needs about 33,000 views a day, 70x today, which is why
+  the old goal bar sat under 1%. Four options went to `asks/goal-2027`:
+  1. **A million views and 1,000 subscribers in 2027** (Claude's pick: about
+     2,700 views a day on average, 6x today; checkpoints 100k / 300k / 600k
+     views by Mar 31 / Jun 30 / Sep 30). October showed the jump is possible:
+     the edits took the channel from about 20 views a day to 475 in four weeks.
+  2. Monetized in 2027 (the payout tier by Dec 31: a moonshot, 70x).
+  3. A Short past 100,000 views by Mar 31 (one breakout first).
+  4. 1,000 subscribers by the end of 2027 (the safe one).
+  Built before his pick so it is live the moment he taps it: `data/goals.json`,
+  `scripts/goals.py` (pace now vs pace needed, quarterly checkpoints), the HQ's
+  goal card on the Now tab, and Cicero's read opens with it. When he picks,
+  set `chosen` in `data/goals.json` and log the decision here.

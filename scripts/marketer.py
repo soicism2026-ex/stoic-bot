@@ -314,6 +314,22 @@ def audience() -> dict | None:
         return None
 
 
+# ---------------------------------------------------------------- the goal
+
+def goal(today: dt.date) -> dict:
+    """The goal the owner picked for 2027 (scripts/goals.py, asked in the HQ),
+    measured today; {"chosen": None} until he picks. Every test is judged by
+    whether it moves these numbers."""
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import goals as goals_mod  # noqa: PLC0415
+        s = goals_mod.summary(today=today)
+    except Exception:  # noqa: BLE001
+        return {"chosen": None}
+    picked = next((o for o in s["options"] if o["id"] == s.get("chosen")), None)
+    return {"chosen": s.get("chosen"), "ask": s.get("ask"), **({"progress": picked} if picked else {})}
+
+
 # ---------------------------------------------------------------- the read
 
 def read(today: dt.date | None = None) -> dict:
@@ -332,6 +348,7 @@ def read(today: dt.date | None = None) -> dict:
         "hours": hour_bands(posts, views),
         "tests": tests,
         "next": ledger.get("next", []),
+        "goal": goal(today),
     }
 
 
@@ -349,6 +366,9 @@ def note(r: dict) -> str:
         bits.append(f"{f['subsPerDay']} new subscribers a day")
     running = [t for t in r["tests"] if t.get("status") == "running"]
     waiting = [t for t in r["tests"] if t.get("status") == "proposed"]
+    g = (r.get("goal") or {}).get("progress")
+    if g and g.get("onTrack") is not None:
+        bits.append("goal: " + ("on track" if g["onTrack"] else "behind"))
     if running:
         bits.append(f"testing: {running[0]['question']}"
                     + (f" (+{len(running) - 1} more)" if len(running) > 1 else ""))
@@ -392,6 +412,21 @@ def markdown(r: dict) -> str:
                   f"- Countries: {top(a.get('countries') or [], 6)}",
                   f"- How they find the Shorts: {top(a.get('sources') or [])}",
                   f"- Subscribed or not: {top(a.get('subscribed') or [])}"]
+    lines += ["", "## The goal", ""]
+    g = (r.get("goal") or {}).get("progress")
+    if not g:
+        lines.append(f"- No goal picked yet: the options wait in the HQ (asks/{(r.get('goal') or {}).get('ask') or 'goal-2027'}).")
+    else:
+        lines.append(f"- **{g['title']}** (by {g['deadline']})")
+        for t in g["targets"]:
+            pace = (f"; {t['pace']:,.1f} a day now, {t['needed']:,.1f} needed"
+                    if t.get("pace") is not None and t.get("needed") is not None else "")
+            lines.append(f"- {t['label']}: {t['have'] if t['have'] is not None else '–'} of {t['target']:,} "
+                         f"({t['status']}{pace})")
+        if g.get("next"):
+            state = {True: "on track", False: "behind", None: "open"}[g.get("onTrack")]
+            lines.append(f"- Next checkpoint {g['next']['by']}: {state}")
+        lines.append("- Every test below is judged by whether it moves these numbers.")
     lines += ["", "## Tests (one change at a time, each only with the owner's yes)", ""]
     for t in r["tests"]:
         lines.append(f"### {t['question']}")
