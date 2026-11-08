@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-08T02:12:10Z",
+ "checked": "2026-11-08T09:47:24Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-08T02:12:10Z",
-  "youtube": "F_3DZlrJx90",
-  "title": "\"Scared you'll never be anyone\" — Epictetus | Stoicism",
-  "status": "published",
-  "permalink": "https://www.instagram.com/reel/Dfdp8YWk0Bs/",
-  "reason": null
+  "at": "2026-11-08T09:47:24Z",
+  "youtube": "eLiH61tJvB4",
+  "title": "\"Think calm makes you soft\" — Marcus Aurelius | Stoicism",
+  "status": "failed",
+  "permalink": null,
+  "reason": "Buffer: Invalid post: Video could not be read from its URL."
  }
 }
