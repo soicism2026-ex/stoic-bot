@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-07T23:10:52Z",
+ "checked": "2026-11-08T02:12:10Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-07",
+  "checked": "2026-11-08",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-07T23:06:24Z",
-  "youtube": "_G4E_gm3Wjg",
-  "title": "\"Snapped over something small\" — Seneca | Stoicism",
+  "at": "2026-11-08T02:12:10Z",
+  "youtube": "F_3DZlrJx90",
+  "title": "\"Scared you'll never be anyone\" — Epictetus | Stoicism",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/DfdUv9PjmuN/",
+  "permalink": "https://www.instagram.com/reel/Dfdp8YWk0Bs/",
   "reason": null
  }
 }
