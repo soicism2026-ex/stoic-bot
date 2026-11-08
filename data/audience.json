@@ -1,34 +1,34 @@
 {
- "pulled_on": "2026-11-07",
+ "pulled_on": "2026-11-08",
  "window": [
-  "2026-10-10",
-  "2026-11-07"
+  "2026-10-11",
+  "2026-11-08"
  ],
  "countries": [
   {
    "key": "US",
-   "views": 4712,
-   "share": 0.83
+   "views": 5160,
+   "share": 0.811
   },
   {
    "key": "IN",
-   "views": 622,
-   "share": 0.11
+   "views": 737,
+   "share": 0.116
+  },
+  {
+   "key": "CA",
+   "views": 171,
+   "share": 0.027
   },
   {
    "key": "GB",
    "views": 136,
-   "share": 0.024
-  },
-  {
-   "key": "CA",
-   "views": 129,
-   "share": 0.023
+   "share": 0.021
   },
   {
    "key": "PH",
-   "views": 48,
-   "share": 0.008
+   "views": 75,
+   "share": 0.012
   },
   {
    "key": "ZA",
@@ -36,12 +36,17 @@
    "share": 0.005
   },
   {
-   "key": "BR",
-   "views": 0,
-   "share": 0.0
+   "key": "DE",
+   "views": 29,
+   "share": 0.005
   },
   {
-   "key": "DE",
+   "key": "PL",
+   "views": 22,
+   "share": 0.003
+  },
+  {
+   "key": "BR",
    "views": 0,
    "share": 0.0
   }
@@ -49,23 +54,23 @@
  "sources": [
   {
    "key": "SHORTS",
-   "views": 9769,
-   "share": 0.921
+   "views": 10774,
+   "share": 0.924
   },
   {
    "key": "YT_SEARCH",
-   "views": 445,
-   "share": 0.042
+   "views": 475,
+   "share": 0.041
   },
   {
    "key": "YT_OTHER_PAGE",
-   "views": 194,
+   "views": 205,
    "share": 0.018
   },
   {
    "key": "YT_CHANNEL",
    "views": 158,
-   "share": 0.015
+   "share": 0.014
   },
   {
    "key": "EXT_URL",
@@ -79,7 +84,7 @@
   },
   {
    "key": "PLAYLIST",
-   "views": 4,
+   "views": 3,
    "share": 0.0
   },
   {
@@ -96,247 +101,247 @@
  "subscribed": [
   {
    "key": "UNSUBSCRIBED",
-   "views": 10390,
-   "share": 0.979
+   "views": 11430,
+   "share": 0.981
   },
   {
    "key": "SUBSCRIBED",
-   "views": 221,
-   "share": 0.021
+   "views": 226,
+   "share": 0.019
   }
  ],
  "searchTerms": [
   {
    "key": "stoicism",
-   "views": 19,
-   "share": 0.192
+   "views": 27,
+   "share": 0.239
+  },
+  {
+   "key": "stoicism motivation",
+   "views": 9,
+   "share": 0.08
   },
   {
    "key": "marcus aurelius",
    "views": 8,
-   "share": 0.081
-  },
-  {
-   "key": "stoic",
-   "views": 7,
-   "share": 0.071
-  },
-  {
-   "key": "stoic reset",
-   "views": 7,
    "share": 0.071
   },
   {
    "key": "stoicism marcus aurelius",
-   "views": 7,
+   "views": 8,
    "share": 0.071
+  },
+  {
+   "key": "stoic",
+   "views": 7,
+   "share": 0.062
+  },
+  {
+   "key": "stoic reset",
+   "views": 7,
+   "share": 0.062
   },
   {
    "key": "marcus aurelius meditations",
    "views": 4,
-   "share": 0.04
+   "share": 0.035
   },
   {
    "key": "marcus aurelius quotes",
    "views": 4,
-   "share": 0.04
+   "share": 0.035
   },
   {
    "key": "marcus aurelius stoicism",
    "views": 4,
-   "share": 0.04
+   "share": 0.035
   },
   {
    "key": "stoic ben",
    "views": 4,
-   "share": 0.04
-  },
-  {
-   "key": "stoicism motivation",
-   "views": 4,
-   "share": 0.04
+   "share": 0.035
   },
   {
    "key": "my word is law",
    "views": 3,
-   "share": 0.03
+   "share": 0.027
   },
   {
    "key": "stoic man",
    "views": 3,
-   "share": 0.03
+   "share": 0.027
   },
   {
    "key": "stoic meaning",
    "views": 3,
-   "share": 0.03
+   "share": 0.027
   },
   {
    "key": "stoic motivation",
    "views": 3,
-   "share": 0.03
+   "share": 0.027
   },
   {
    "key": "stoicism philosophy",
    "views": 3,
-   "share": 0.03
+   "share": 0.027
   },
   {
    "key": "epictetus audiobook",
    "views": 2,
-   "share": 0.02
+   "share": 0.018
   },
   {
    "key": "seneca quotes",
    "views": 2,
-   "share": 0.02
+   "share": 0.018
   },
   {
    "key": "stoic dre",
    "views": 2,
-   "share": 0.02
+   "share": 0.018
   },
   {
    "key": "stoic quotes",
    "views": 2,
-   "share": 0.02
+   "share": 0.018
   },
   {
    "key": "stoicism philosophy marcus aurelius",
    "views": 2,
-   "share": 0.02
+   "share": 0.018
   },
   {
    "key": "washing machine coin removal",
    "views": 2,
-   "share": 0.02
+   "share": 0.018
   },
   {
    "key": "abhijeet wanjari",
    "views": 1,
-   "share": 0.01
+   "share": 0.009
   },
   {
    "key": "ahora",
    "views": 1,
-   "share": 0.01
+   "share": 0.009
   },
   {
    "key": "alberto photography",
    "views": 1,
-   "share": 0.01
+   "share": 0.009
   },
   {
-   "key": "ardhianzy",
+   "key": "amma whatsapp status in tamil",
    "views": 1,
-   "share": 0.01
+   "share": 0.009
   }
  ],
  "searchTermsAllTime": [
   {
    "key": "stoicism",
-   "views": 52,
-   "share": 0.231
+   "views": 60,
+   "share": 0.251
   },
   {
    "key": "stoic",
    "views": 18,
-   "share": 0.08
+   "share": 0.075
+  },
+  {
+   "key": "stoicism marcus aurelius",
+   "views": 17,
+   "share": 0.071
   },
   {
    "key": "marcus aurelius",
    "views": 16,
-   "share": 0.071
+   "share": 0.067
   },
   {
-   "key": "stoicism marcus aurelius",
+   "key": "stoicism motivation",
    "views": 16,
-   "share": 0.071
+   "share": 0.067
   },
   {
    "key": "epictetus",
    "views": 11,
-   "share": 0.049
-  },
-  {
-   "key": "stoicism motivation",
-   "views": 11,
-   "share": 0.049
+   "share": 0.046
   },
   {
    "key": "stoicism philosophy",
    "views": 11,
-   "share": 0.049
+   "share": 0.046
   },
   {
    "key": "marcus aurelius meditations",
    "views": 10,
-   "share": 0.044
+   "share": 0.042
   },
   {
    "key": "stoic mindset",
    "views": 8,
-   "share": 0.036
+   "share": 0.033
   },
   {
    "key": "stoic wisdom",
    "views": 8,
-   "share": 0.036
+   "share": 0.033
   },
   {
    "key": "stoic reset",
    "views": 7,
-   "share": 0.031
+   "share": 0.029
   },
   {
    "key": "stocism",
    "views": 6,
-   "share": 0.027
+   "share": 0.025
   },
   {
    "key": "marcus aurelius quotes",
    "views": 5,
-   "share": 0.022
+   "share": 0.021
   },
   {
    "key": "marcus aurelius stoicism",
    "views": 5,
-   "share": 0.022
+   "share": 0.021
   },
   {
    "key": "stoic man",
    "views": 5,
-   "share": 0.022
+   "share": 0.021
   },
   {
    "key": "carl jung shadow",
    "views": 4,
-   "share": 0.018
+   "share": 0.017
   },
   {
    "key": "eminem dax",
    "views": 4,
-   "share": 0.018
+   "share": 0.017
   },
   {
    "key": "i'm good feeling alright",
    "views": 4,
-   "share": 0.018
+   "share": 0.017
   },
   {
    "key": "stoic ben",
    "views": 4,
-   "share": 0.018
+   "share": 0.017
   },
   {
    "key": "stoic dre",
    "views": 4,
-   "share": 0.018
+   "share": 0.017
   },
   {
    "key": "stoic motivation",
    "views": 4,
-   "share": 0.018
+   "share": 0.017
   },
   {
    "key": "fox news david hearn",
