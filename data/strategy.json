@@ -1,20 +1,20 @@
 {
- "updated": "2026-11-08",
+ "updated": "2026-11-09",
  "by": "Frontinus (scripts/strategist.py, no paid API)",
  "window_days": 28,
- "settled_edits": 43,
- "median_views_day3": 212,
+ "settled_edits": 45,
+ "median_views_day3": 215,
  "median_retention": 95.8,
  "theme_rank": {
   "friendship": 1,
   "anger": 2,
   "desire": 2,
   "adversity": 1,
-  "ego": 1,
   "fear": 1,
+  "ego": 1,
   "mortality": 1,
-  "resilience": 1,
   "discipline": 1,
+  "resilience": 1,
   "time": 1,
   "control": 1
  },
@@ -24,7 +24,7 @@
     "key": "friendship",
     "n": 2,
     "median_views_day3": 429.5,
-    "lift": 2.12,
+    "lift": 2.1,
     "median_retention": 104.2,
     "verdict": "too few"
    },
@@ -32,7 +32,7 @@
     "key": "anger",
     "n": 3,
     "median_views_day3": 365,
-    "lift": 1.88,
+    "lift": 1.78,
     "median_retention": 93.6,
     "verdict": "winner"
    },
@@ -40,8 +40,8 @@
     "key": "desire",
     "n": 4,
     "median_views_day3": 318.0,
-    "lift": 1.56,
-    "median_retention": 119.0,
+    "lift": 1.55,
+    "median_retention": 118.2,
     "verdict": "winner"
    },
    {
@@ -53,19 +53,19 @@
     "verdict": "too few"
    },
    {
-    "key": "ego",
-    "n": 5,
-    "median_views_day3": 215,
-    "lift": 1.11,
-    "median_retention": 89.3,
+    "key": "fear",
+    "n": 6,
+    "median_views_day3": 237.0,
+    "lift": 1.13,
+    "median_retention": 123.6,
     "verdict": "even"
    },
    {
-    "key": "fear",
+    "key": "ego",
     "n": 5,
-    "median_views_day3": 222,
-    "lift": 1.07,
-    "median_retention": 101.9,
+    "median_views_day3": 215,
+    "lift": 1.05,
+    "median_retention": 89.3,
     "verdict": "even"
    },
    {
@@ -73,7 +73,15 @@
     "n": 3,
     "median_views_day3": 216,
     "lift": 1.02,
-    "median_retention": 98.1,
+    "median_retention": 95.5,
+    "verdict": "even"
+   },
+   {
+    "key": "discipline",
+    "n": 9,
+    "median_views_day3": 189,
+    "lift": 0.92,
+    "median_retention": 98.3,
     "verdict": "even"
    },
    {
@@ -82,14 +90,6 @@
     "median_views_day3": 169,
     "lift": 0.78,
     "median_retention": 77.2,
-    "verdict": "even"
-   },
-   {
-    "key": "discipline",
-    "n": 8,
-    "median_views_day3": 159.0,
-    "lift": 0.76,
-    "median_retention": 96.6,
     "verdict": "even"
    },
    {
@@ -112,44 +112,44 @@
   "author": [
    {
     "key": "Marcus Aurelius",
-    "n": 14,
-    "median_views_day3": 215.5,
-    "lift": 1.06,
-    "median_retention": 109.1,
+    "n": 15,
+    "median_views_day3": 216,
+    "lift": 1.05,
+    "median_retention": 116.4,
     "verdict": "even"
    },
    {
     "key": "Seneca",
     "n": 17,
     "median_views_day3": 199,
-    "lift": 0.97,
-    "median_retention": 96.6,
+    "lift": 0.93,
+    "median_retention": 95.5,
     "verdict": "even"
    },
    {
     "key": "Epictetus",
-    "n": 12,
-    "median_views_day3": 192.0,
-    "lift": 0.84,
-    "median_retention": 87.2,
+    "n": 13,
+    "median_views_day3": 202,
+    "lift": 0.86,
+    "median_retention": 87.4,
     "verdict": "even"
    }
   ],
   "hook_form": [
    {
     "key": "question",
-    "n": 2,
-    "median_views_day3": 307.0,
-    "lift": 1.33,
-    "median_retention": 89.3,
-    "verdict": "too few"
+    "n": 3,
+    "median_views_day3": 288,
+    "lift": 1.16,
+    "median_retention": 100.3,
+    "verdict": "even"
    },
    {
     "key": "command",
-    "n": 9,
-    "median_views_day3": 247,
-    "lift": 1.05,
-    "median_retention": 88.3,
+    "n": 10,
+    "median_views_day3": 249.5,
+    "lift": 1.12,
+    "median_retention": 91.0,
     "verdict": "even"
    },
    {
@@ -157,7 +157,7 @@
     "n": 32,
     "median_views_day3": 192.0,
     "lift": 0.86,
-    "median_retention": 98.1,
+    "median_retention": 96.6,
     "verdict": "even"
    }
   ],
@@ -172,17 +172,17 @@
    },
    {
     "key": "medium (5-6)",
-    "n": 16,
-    "median_views_day3": 200.5,
-    "lift": 0.94,
-    "median_retention": 95.4,
+    "n": 18,
+    "median_views_day3": 217.5,
+    "lift": 0.97,
+    "median_retention": 95.5,
     "verdict": "even"
    },
    {
     "key": "short (<=4 words)",
     "n": 10,
     "median_views_day3": 198.5,
-    "lift": 0.94,
+    "lift": 0.93,
     "median_retention": 99.8,
     "verdict": "even"
    }
@@ -198,19 +198,19 @@
    },
    {
     "key": "medium (13-24)",
-    "n": 24,
-    "median_views_day3": 194.0,
-    "lift": 0.89,
-    "median_retention": 96.6,
+    "n": 25,
+    "median_views_day3": 199,
+    "lift": 0.92,
+    "median_retention": 96.2,
     "verdict": "even"
    },
    {
     "key": "short (<=12 words)",
-    "n": 10,
-    "median_views_day3": 153.5,
-    "lift": 0.7,
-    "median_retention": 108.5,
-    "verdict": "loser"
+    "n": 11,
+    "median_views_day3": 169,
+    "lift": 0.76,
+    "median_retention": 108.8,
+    "verdict": "even"
    }
   ],
   "music": [
@@ -226,8 +226,8 @@
     "key": "el3_taiko_distant",
     "n": 2,
     "median_views_day3": 556.5,
-    "lift": 2.69,
-    "median_retention": 90.7,
+    "lift": 2.61,
+    "median_retention": 90.3,
     "verdict": "too few"
    },
    {
@@ -236,6 +236,14 @@
     "median_views_day3": 442.5,
     "lift": 2.06,
     "median_retention": 89.0,
+    "verdict": "too few"
+   },
+   {
+    "key": "el3_heartbeat",
+    "n": 2,
+    "median_views_day3": 414.5,
+    "lift": 2.02,
+    "median_retention": 134.3,
     "verdict": "too few"
    },
    {
@@ -258,7 +266,7 @@
     "key": "el3_more_like_1",
     "n": 2,
     "median_views_day3": 293.5,
-    "lift": 1.42,
+    "lift": 1.37,
     "median_retention": 117.3,
     "verdict": "too few"
    },
@@ -274,7 +282,7 @@
     "key": "el3_felt_cello",
     "n": 2,
     "median_views_day3": 264.5,
-    "lift": 1.32,
+    "lift": 1.27,
     "median_retention": 79.7,
     "verdict": "too few"
    },
@@ -295,11 +303,11 @@
     "verdict": "too few"
    },
    {
-    "key": "el3_grand_braam",
+    "key": "el3_upright_tape",
     "n": 2,
-    "median_views_day3": 219.0,
+    "median_views_day3": 222.5,
     "lift": 1.06,
-    "median_retention": 95.6,
+    "median_retention": 106.3,
     "verdict": "too few"
    },
    {
@@ -311,19 +319,19 @@
     "verdict": "too few"
    },
    {
-    "key": "el3_upright_tape",
-    "n": 1,
-    "median_views_day3": 212,
-    "lift": 0.99,
-    "median_retention": 101.8,
+    "key": "el3_grand_braam",
+    "n": 2,
+    "median_views_day3": 219.0,
+    "lift": 1.04,
+    "median_retention": 99.9,
     "verdict": "too few"
    },
    {
     "key": "el3_choir_braam",
     "n": 2,
     "median_views_day3": 204.0,
-    "lift": 0.98,
-    "median_retention": 103.3,
+    "lift": 0.95,
+    "median_retention": 102.0,
     "verdict": "too few"
    },
    {
@@ -335,27 +343,11 @@
     "verdict": "too few"
    },
    {
-    "key": "el3_heartbeat",
-    "n": 1,
-    "median_views_day3": 189,
-    "lift": 0.92,
-    "median_retention": 116.5,
-    "verdict": "too few"
-   },
-   {
     "key": "el3_minimal_sub",
     "n": 2,
     "median_views_day3": 179.5,
-    "lift": 0.87,
-    "median_retention": 109.7,
-    "verdict": "too few"
-   },
-   {
-    "key": "el_bass_felt_dark",
-    "n": 2,
-    "median_views_day3": 172.0,
     "lift": 0.86,
-    "median_retention": 107.9,
+    "median_retention": 109.7,
     "verdict": "too few"
    },
    {
@@ -364,6 +356,14 @@
     "median_views_day3": 202,
     "lift": 0.86,
     "median_retention": 77.0,
+    "verdict": "too few"
+   },
+   {
+    "key": "el_bass_felt_dark",
+    "n": 2,
+    "median_views_day3": 172.0,
+    "lift": 0.83,
+    "median_retention": 107.9,
     "verdict": "too few"
    },
    {
@@ -402,7 +402,7 @@
     "key": "el3_strings_ostinato",
     "n": 2,
     "median_views_day3": 112.0,
-    "lift": 0.53,
+    "lift": 0.52,
     "median_retention": 161.2,
     "verdict": "too few"
    },
@@ -434,10 +434,10 @@
    },
    {
     "key": "Brian",
-    "n": 30,
-    "median_views_day3": 213.5,
-    "lift": 1.0,
-    "median_retention": 97.3,
+    "n": 32,
+    "median_views_day3": 215.5,
+    "lift": 1.01,
+    "median_retention": 98.3,
     "verdict": "even"
    },
    {
@@ -452,18 +452,18 @@
   "slot": [
    {
     "key": "first of the day",
-    "n": 25,
-    "median_views_day3": 248,
-    "lift": 1.07,
-    "median_retention": 88.3,
+    "n": 26,
+    "median_views_day3": 247.5,
+    "lift": 1.1,
+    "median_retention": 89.3,
     "verdict": "even"
    },
    {
     "key": "second of the day",
-    "n": 18,
-    "median_views_day3": 187.0,
+    "n": 19,
+    "median_views_day3": 189,
     "lift": 0.86,
-    "median_retention": 109.2,
+    "median_retention": 112.8,
     "verdict": "even"
    }
   ],
@@ -473,7 +473,7 @@
     "n": 7,
     "median_views_day3": 270,
     "lift": 1.16,
-    "median_retention": 89.0,
+    "median_retention": 87.7,
     "verdict": "even"
    },
    {
@@ -502,17 +502,17 @@
    },
    {
     "key": "Friday",
-    "n": 5,
-    "median_views_day3": 212,
-    "lift": 0.99,
-    "median_retention": 121.4,
+    "n": 7,
+    "median_views_day3": 233,
+    "lift": 1.01,
+    "median_retention": 126.0,
     "verdict": "even"
    },
    {
     "key": "Saturday",
     "n": 5,
     "median_views_day3": 185,
-    "lift": 0.87,
+    "lift": 0.86,
     "median_retention": 92.4,
     "verdict": "even"
    },
@@ -531,7 +531,7 @@
    "id": "very_little_needed",
    "date": "2026-11-05",
    "views": 865,
-   "retention": 119.0,
+   "retention": 118.2,
    "theme": "desire",
    "author": "Marcus Aurelius",
    "hook": "You need less than you think.",
@@ -542,7 +542,7 @@
    "voice": "Brian",
    "slot": "first of the day",
    "weekday": "Thursday",
-   "rel": 4.209245742092458
+   "rel": 4.051522248243559
   },
   {
    "id": "better_man",
@@ -579,6 +579,23 @@
    "rel": 3.265765765765766
   },
   {
+   "id": "whole_of_thy_life",
+   "date": "2026-11-06",
+   "views": 640,
+   "retention": 152.1,
+   "theme": "fear",
+   "author": "Marcus Aurelius",
+   "hook": "Don't carry your whole life today.",
+   "hook_form": "command",
+   "hook_len": "medium (5-6)",
+   "quote_len": "short (<=12 words)",
+   "music": "el3_heartbeat",
+   "voice": "Brian",
+   "slot": "second of the day",
+   "weekday": "Friday",
+   "rel": 3.1143552311435525
+  },
+  {
    "id": "everywhere_nowhere",
    "date": "2026-10-18",
    "views": 576,
@@ -594,23 +611,6 @@
    "slot": "first of the day",
    "weekday": "Sunday",
    "rel": 2.6666666666666665
-  },
-  {
-   "id": "craves_more",
-   "date": "2026-10-16",
-   "views": 498,
-   "retention": 218.0,
-   "theme": "desire",
-   "author": "Seneca",
-   "hook": "Rich isn't a number.",
-   "hook_form": "statement",
-   "hook_len": "short (<=4 words)",
-   "quote_len": "medium (13-24)",
-   "music": "Ancient Rite",
-   "voice": "Steffan",
-   "slot": "first of the day",
-   "weekday": "Friday",
-   "rel": 2.4653465346534653
   }
  ],
  "bottom": [
@@ -663,7 +663,7 @@
    "voice": "Brian",
    "slot": "first of the day",
    "weekday": "Wednesday",
-   "rel": 0.20103092783505155
+   "rel": 0.1897810218978102
   }
  ]
 }
