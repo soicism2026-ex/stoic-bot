@@ -34,6 +34,7 @@ import publish_instagram                    # noqa: E402
 from logbook import log_post              # noqa: E402
 from experiments import pick_experiment   # noqa: E402
 import render as render_mod               # noqa: E402
+import master as master_mod               # noqa: E402
 import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
 import backgrounds                        # noqa: E402
@@ -265,12 +266,18 @@ def _render_with_env(
 
     try:
         importlib.reload(render_mod)
-        return render_mod.render_reel(
+        rendered = render_mod.render_reel(
             quote=quote, author=author, audio_path=audio_path,
             out_path=out_path, theme=theme, word_timings=word_timings,
             hook=hook, callout_words=callout_words or [],
             music_path=music_path, mission=mission,
         )
+        # Loudness mastering to YouTube's -14 LUFS, measured (src/master.py):
+        # only when the style pack asks (the new look; owner's pick pending).
+        target = master_mod.target_from_env()
+        if target is not None:
+            master_mod.master(rendered, target=target)
+        return rendered
     finally:
         for k, orig in saved.items():
             if orig is None:
