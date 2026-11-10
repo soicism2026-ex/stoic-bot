@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-09T17:23:39Z",
+ "checked": "2026-11-10T01:53:43Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-09",
+  "checked": "2026-11-10",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-09T10:44:38Z",
-  "youtube": "lhwOKbNbb2I",
-  "title": "\"Can't let go of what he did\" — Marcus Aurelius | Stoicism",
+  "at": "2026-11-10T01:53:43Z",
+  "youtube": "gssQC2QwF-c",
+  "title": "\"Money isn't your problem\" — Seneca | Stoicism",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/DfhJdRQlByy/",
+  "permalink": "https://www.instagram.com/reel/Dfixc1xk1Fb/",
   "reason": null
  }
 }
