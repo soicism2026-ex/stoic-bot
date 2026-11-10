@@ -1,0 +1,23 @@
+{
+ "about": "The channel's Instagram profile, written by Claude for the owner to paste (Instagram lets no app change a bio). Owner, HQ 2026-11-10: \"Write a bio for the instagram\". HQ ask instagram-bio holds it with Copy buttons.",
+ "written": "2026-11-10",
+ "name": "Forged in Stoicism | Stoic Quotes",
+ "bio": "One Stoic lesson a day. Strength for the hard weeks.\nReal quotes from Marcus Aurelius, Seneca & Epictetus.\n👇 The Stoic Reset, a 30-day journal",
+ "links": [
+  {
+   "title": "The Stoic Reset journal",
+   "url": "https://soicism.gumroad.com/l/cslosv"
+  },
+  {
+   "title": "YouTube",
+   "url": "https://www.youtube.com/@forged.in.stoicism"
+  }
+ ],
+ "why": {
+  "name": "The name is the only part of a profile Instagram search reads (the handle aside), so \"Stoic Quotes\" puts the account in front of people searching that. Instagram allows two name changes in 14 days.",
+  "bio": "Line 1: what a visitor gets and for whom (doctrine 5: widen the door, the hard weeks). Line 2: why to trust it: every quote is verbatim from the source text (scripts/validate_quotes.py), rare in this niche. Line 3: the product, pointing at the link below the bio. No URL in the text: Instagram doesn't make bio text links tappable.",
+  "links": "The first link shows under the bio, so the journal goes first; YouTube second for people who want more."
+ },
+ "onProfile": false,
+ "reelsPointToBio": false
+}

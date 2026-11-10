@@ -1686,3 +1686,21 @@ that story must always be captioned "recorded in the Historia Augusta", never
   covers it (3 channels, 1 API key). The Meta path (`IG_ACCESS_TOKEN`) stays as
   the fallback when `BUFFER_API_KEY` is not set. Instagram's own numbers
   (followers, views) aren't pulled through Buffer; each Reel's link is.
+- **2026-11-10 — INSTAGRAM BIO.** Owner, in the HQ: *"Write a bio for the
+  instagram"*. No app can change an Instagram bio (neither Buffer nor Meta's
+  API), so it is written for him to paste, with a Copy button per field in the
+  HQ ask `instagram-bio` (asks can now carry `copy: [{label, text}]`). Kept in
+  `data/instagram_profile.json`:
+  * Name: "Forged in Stoicism | Stoic Quotes" (the name is the part of a
+    profile Instagram search reads, besides the handle).
+  * Bio (142 of 150 characters): "One Stoic lesson a day. Strength for the
+    hard weeks. / Real quotes from Marcus Aurelius, Seneca & Epictetus. /
+    👇 The Stoic Reset, a 30-day journal". What a visitor gets, for the hard
+    weeks (doctrine 5: widen the door); why to trust it (every quote verbatim
+    from the source, rare in this niche); the product.
+  * Links: the journal first (it shows under the bio), then YouTube
+    (youtube.com/@forged.in.stoicism).
+  His pick decides whether every Reel's caption also says "The Stoic Reset, a
+  30-day guided journal: link in bio." It airs only when the bio is on the
+  profile AND he said yes (`onProfile`, `reelsPointToBio`): a "link in bio"
+  line with no link there would send people nowhere.

@@ -29,6 +29,7 @@ exception text).
 """
 from __future__ import annotations
 
+import json
 import os
 import sys
 import time
@@ -56,6 +57,13 @@ CAPTION_MAX = 2200
 MAX_HASHTAGS = 5
 YOUTUBE_ONLY_TAGS = {"#shorts", "#short", "#youtubeshorts", "#ytshorts"}
 FOLLOW_LINE = "Follow for a daily dose of Stoic wisdom."
+# The profile the owner pastes into Instagram (HQ 2026-11-10: "Write a bio for
+# the instagram"): name, bio and links in data/instagram_profile.json. Once the
+# bio carries the journal link AND he said the Reels may point to it (HQ ask
+# instagram-bio), every caption also says where the journal is. Captions can't
+# hold a tappable link; a bio can.
+PROFILE = Path(__file__).resolve().parent.parent / "data" / "instagram_profile.json"
+BIO_LINE = "The Stoic Reset, a 30-day guided journal: link in bio."
 
 
 class IGError(RuntimeError):
@@ -137,6 +145,17 @@ def hashtags(tags: list[str] | None) -> list[str]:
     return out[:MAX_HASHTAGS]
 
 
+def points_to_bio(path: Path | None = None) -> bool:
+    """True once the journal link is on the profile and the owner said the
+    Reels may point to it. A "link in bio" line before the link is there
+    would send people nowhere, so both must hold."""
+    try:
+        p = json.loads((path or PROFILE).read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return False
+    return bool(p.get("onProfile") and p.get("reelsPointToBio"))
+
+
 def caption(hook: str, quote: str, author: str, citation: str = "",
             tags: list[str] | None = None, credit: str = "", body: str = "",
             question: str = "") -> str:
@@ -145,13 +164,14 @@ def caption(hook: str, quote: str, author: str, citation: str = "",
     and the hashtags. No links: Instagram doesn't make caption links tappable.
     An edit with the owner's description (2026-11-06: `body`, three short
     paragraphs, and its `question`) opens with those instead of the hook,
-    the same words as on YouTube."""
+    the same words as on YouTube. Once the journal link is in the bio and the
+    owner said yes (points_to_bio), a line after the follow line says so."""
     hook = hook.strip().rstrip(".!? ")
     source = "— " + ", ".join(x for x in (author.strip(), citation.strip()) if x)
     opening = [body.strip(), f"\U0001F4AC Question: {question.strip()} Share your thoughts in the comments."
                if question.strip() else ""] if body.strip() else [f"{hook}." if hook else ""]
     parts = [*opening, f"“{quote.strip()}”\n{source}" if quote.strip() else "",
-             FOLLOW_LINE, credit.strip(), " ".join(hashtags(tags))]
+             FOLLOW_LINE, BIO_LINE if points_to_bio() else "", credit.strip(), " ".join(hashtags(tags))]
     return "\n\n".join(p for p in parts if p)[:CAPTION_MAX]
 
 
