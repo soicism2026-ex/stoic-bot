@@ -119,9 +119,12 @@ def duration(video: Path) -> float:
 
 def master_cut(src: Path, dst: Path) -> Path:
     """Full 1080x1920 for judging the look on a phone, index up front so it
-    starts at once (the rehearsal's 720 px cut is too soft to judge type)."""
+    starts at once (the rehearsal's 720 px cut is too soft to judge type).
+    Capped at ~5 Mb/s: the first lab run's CRF 20 made 18 MB for 11 s, too
+    slow to start on a phone; YouTube itself serves Shorts well under that."""
     subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", str(src),
-                    "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-pix_fmt", "yuv420p",
+                    "-c:v", "libx264", "-preset", "medium", "-crf", "22", "-maxrate", "5M", "-bufsize", "10M",
+                    "-pix_fmt", "yuv420p",
                     "-c:a", "aac", "-b:a", "160k", "-movflags", "+faststart", str(dst)], check=True)
     return dst
 

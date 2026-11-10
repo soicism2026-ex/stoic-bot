@@ -31,3 +31,4 @@ backups/*.loud.m4a
 data/frames/
 preview*/
 data/posted/
+.claude/worktrees/
