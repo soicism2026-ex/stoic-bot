@@ -1,45 +1,45 @@
 {
  "audience": {
-  "pulled_on": "2026-11-08",
+  "pulled_on": "2026-11-10",
   "window": [
-   "2026-10-11",
-   "2026-11-08"
+   "2026-10-13",
+   "2026-11-10"
   ],
   "countries": [
    {
     "key": "US",
-    "views": 5160,
-    "share": 0.811
+    "views": 5691,
+    "share": 0.787
    },
    {
     "key": "IN",
-    "views": 737,
-    "share": 0.116
+    "views": 859,
+    "share": 0.119
    },
    {
     "key": "CA",
-    "views": 171,
-    "share": 0.027
+    "views": 230,
+    "share": 0.032
    },
    {
     "key": "GB",
-    "views": 136,
-    "share": 0.021
+    "views": 193,
+    "share": 0.027
+   },
+   {
+    "key": "DE",
+    "views": 94,
+    "share": 0.013
    },
    {
     "key": "PH",
     "views": 75,
-    "share": 0.012
+    "share": 0.01
    },
    {
     "key": "ZA",
-    "views": 30,
-    "share": 0.005
-   },
-   {
-    "key": "DE",
-    "views": 29,
-    "share": 0.005
+    "views": 63,
+    "share": 0.009
    },
    {
     "key": "PL",
@@ -55,32 +55,32 @@
   "sources": [
    {
     "key": "SHORTS",
-    "views": 10774,
-    "share": 0.924
+    "views": 12015,
+    "share": 0.926
    },
    {
     "key": "YT_SEARCH",
-    "views": 475,
-    "share": 0.041
+    "views": 512,
+    "share": 0.039
    },
    {
     "key": "YT_OTHER_PAGE",
-    "views": 205,
+    "views": 235,
     "share": 0.018
    },
    {
     "key": "YT_CHANNEL",
-    "views": 158,
-    "share": 0.014
+    "views": 167,
+    "share": 0.013
    },
    {
     "key": "EXT_URL",
     "views": 30,
-    "share": 0.003
+    "share": 0.002
    },
    {
     "key": "SUBSCRIBER",
-    "views": 10,
+    "views": 11,
     "share": 0.001
    },
    {
@@ -102,147 +102,147 @@
   "subscribed": [
    {
     "key": "UNSUBSCRIBED",
-    "views": 11430,
-    "share": 0.981
+    "views": 12744,
+    "share": 0.982
    },
    {
     "key": "SUBSCRIBED",
-    "views": 226,
-    "share": 0.019
+    "views": 230,
+    "share": 0.018
    }
   ],
   "searchTerms": [
    {
     "key": "stoicism",
     "views": 27,
-    "share": 0.239
+    "share": 0.229
    },
    {
     "key": "stoicism motivation",
     "views": 9,
-    "share": 0.08
+    "share": 0.076
    },
    {
     "key": "marcus aurelius",
     "views": 8,
-    "share": 0.071
+    "share": 0.068
    },
    {
     "key": "stoicism marcus aurelius",
     "views": 8,
-    "share": 0.071
+    "share": 0.068
    },
    {
     "key": "stoic",
     "views": 7,
-    "share": 0.062
+    "share": 0.059
    },
    {
     "key": "stoic reset",
     "views": 7,
-    "share": 0.062
+    "share": 0.059
+   },
+   {
+    "key": "blue lotus",
+    "views": 5,
+    "share": 0.042
    },
    {
     "key": "marcus aurelius meditations",
     "views": 4,
-    "share": 0.035
+    "share": 0.034
    },
    {
     "key": "marcus aurelius quotes",
     "views": 4,
-    "share": 0.035
+    "share": 0.034
    },
    {
     "key": "marcus aurelius stoicism",
     "views": 4,
-    "share": 0.035
+    "share": 0.034
    },
    {
     "key": "stoic ben",
     "views": 4,
-    "share": 0.035
+    "share": 0.034
    },
    {
     "key": "my word is law",
     "views": 3,
-    "share": 0.027
+    "share": 0.025
    },
    {
     "key": "stoic man",
     "views": 3,
-    "share": 0.027
+    "share": 0.025
    },
    {
     "key": "stoic meaning",
     "views": 3,
-    "share": 0.027
+    "share": 0.025
    },
    {
     "key": "stoic motivation",
     "views": 3,
-    "share": 0.027
+    "share": 0.025
    },
    {
     "key": "stoicism philosophy",
     "views": 3,
-    "share": 0.027
+    "share": 0.025
    },
    {
     "key": "epictetus audiobook",
     "views": 2,
-    "share": 0.018
+    "share": 0.017
+   },
+   {
+    "key": "modern love david bowie",
+    "views": 2,
+    "share": 0.017
    },
    {
     "key": "seneca quotes",
     "views": 2,
-    "share": 0.018
+    "share": 0.017
    },
    {
     "key": "stoic dre",
     "views": 2,
-    "share": 0.018
+    "share": 0.017
    },
    {
     "key": "stoic quotes",
     "views": 2,
-    "share": 0.018
+    "share": 0.017
    },
    {
     "key": "stoicism philosophy marcus aurelius",
     "views": 2,
-    "share": 0.018
+    "share": 0.017
    },
    {
     "key": "washing machine coin removal",
     "views": 2,
-    "share": 0.018
+    "share": 0.017
+   },
+   {
+    "key": "747 crash",
+    "views": 1,
+    "share": 0.008
    },
    {
     "key": "abhijeet wanjari",
     "views": 1,
-    "share": 0.009
-   },
-   {
-    "key": "ahora",
-    "views": 1,
-    "share": 0.009
-   },
-   {
-    "key": "alberto photography",
-    "views": 1,
-    "share": 0.009
-   },
-   {
-    "key": "amma whatsapp status in tamil",
-    "views": 1,
-    "share": 0.009
+    "share": 0.008
    }
   ],
   "searchTermsAllTime": [
    {
     "key": "stoicism",
     "views": 60,
-    "share": 0.251
+    "share": 0.249
    },
    {
     "key": "stoic",
@@ -257,12 +257,12 @@
    {
     "key": "marcus aurelius",
     "views": 16,
-    "share": 0.067
+    "share": 0.066
    },
    {
     "key": "stoicism motivation",
     "views": 16,
-    "share": 0.067
+    "share": 0.066
    },
    {
     "key": "epictetus",
@@ -277,7 +277,7 @@
    {
     "key": "marcus aurelius meditations",
     "views": 10,
-    "share": 0.042
+    "share": 0.041
    },
    {
     "key": "stoic mindset",
@@ -298,6 +298,11 @@
     "key": "stocism",
     "views": 6,
     "share": 0.025
+   },
+   {
+    "key": "blue lotus",
+    "views": 5,
+    "share": 0.021
    },
    {
     "key": "marcus aurelius quotes",
@@ -347,42 +352,37 @@
    {
     "key": "fox news david hearn",
     "views": 3,
-    "share": 0.013
+    "share": 0.012
    },
    {
     "key": "jay shetty",
     "views": 3,
-    "share": 0.013
+    "share": 0.012
    },
    {
     "key": "my word is law",
     "views": 3,
-    "share": 0.013
-   },
-   {
-    "key": "norm macdonald",
-    "views": 3,
-    "share": 0.013
+    "share": 0.012
    }
   ]
  },
- "updated": "2026-11-09",
+ "updated": "2026-11-10",
  "source": "scripts/marketer.py (Cicero, free)",
  "funnel": {
-  "asOf": "2026-11-09",
-  "subscribers": 270,
-  "viewsPerDay": 902,
-  "viewsPerDayBefore": 373,
-  "subsPerDay": 2.6,
+  "asOf": "2026-11-10",
+  "subscribers": 273,
+  "viewsPerDay": 1036,
+  "viewsPerDayBefore": 388,
+  "subsPerDay": 2.7,
   "subsPerDayBefore": 1.6,
-  "subsPer1kViews": 2.8,
-  "likesPer100Views": 3.7,
-  "viewsChange": 1.42
+  "subsPer1kViews": 2.6,
+  "likesPer100Views": 3.6,
+  "viewsChange": 1.67
  },
  "hours": [
   {
    "band": "00-03",
-   "posts": 85,
+   "posts": 86,
    "lift": 1.23,
    "stalled": 13
   },
@@ -394,8 +394,8 @@
   },
   {
    "band": "08-11",
-   "posts": 68,
-   "lift": 1.07,
+   "posts": 69,
+   "lift": 1.14,
    "stalled": 11
   },
   {
@@ -436,8 +436,8 @@
     "median": 0.61
    },
    "during": {
-    "days": 3,
-    "median": 0.71,
+    "days": 4,
+    "median": 1.02,
     "ends": "2026-11-20"
    }
   },
@@ -455,7 +455,7 @@
    "approved": "2026-11-06: owner, in the HQ, on this test's card: a viral Short's description, \"use it as inspiration for pur next shorts\"",
    "before": {
     "shorts": 28,
-    "views": 6489,
+    "views": 6492,
     "comments": 5,
     "likes": 288,
     "per1k": 0.77,
@@ -465,19 +465,19 @@
     "arms": {
      "old style": {
       "shorts": 28,
-      "views": 6489,
+      "views": 6492,
       "comments": 5,
       "likes": 288,
       "per1k": 0.77,
       "likesPer100": 4.4
      },
      "new style": {
-      "shorts": 6,
-      "views": 3871,
+      "shorts": 8,
+      "views": 5108,
       "comments": 1,
-      "likes": 94,
-      "per1k": 0.26,
-      "likesPer100": 2.4
+      "likes": 118,
+      "per1k": 0.2,
+      "likesPer100": 2.3
      }
     },
     "ends": "2026-11-20"
@@ -498,12 +498,12 @@
    "approved": "2026-11-06: owner, in the HQ: \"Yes, make the playlists\"",
    "before": {
     "views": 1,
-    "of": 6377,
+    "of": 6369,
     "share": 0.0002
    },
    "during": {
     "views": 0,
-    "of": 1050,
+    "of": 2414,
     "share": 0.0,
     "ends": "2026-11-20"
    }
@@ -523,9 +523,9 @@
    "use": "descriptions",
    "approved": "2026-11-07: owner, in the HQ: \"Yes: descriptions, hashtags and tags\" (titles stay as they are)",
    "before": {
-    "views": 323,
-    "of": 6727,
-    "share": 0.048
+    "views": 362,
+    "of": 8083,
+    "share": 0.0448
    },
    "during": {
     "views": 0,
@@ -554,14 +554,14 @@
    "start": "2027-01-01",
    "deadline": "2027-12-31",
    "started": false,
-   "daysLeft": 417,
+   "daysLeft": 416,
    "targets": [
     {
      "metric": "views",
      "target": 1000000,
      "have": 0,
      "pct": 0.0,
-     "pace": 513.8,
+     "pace": 563.3,
      "needed": 2739.7,
      "status": "starts",
      "onPace": false,
@@ -570,10 +570,10 @@
     {
      "metric": "subscribers",
      "target": 1000,
-     "have": 270,
-     "pct": 27.0,
-     "pace": 1.5,
-     "needed": 1.8,
+     "have": 273,
+     "pct": 27.3,
+     "pace": 1.6,
+     "needed": 1.7,
      "status": "behind",
      "label": "Subscribers"
     }
@@ -587,7 +587,7 @@
        "target": 100000,
        "have": 0,
        "pct": 0.0,
-       "pace": 513.8,
+       "pace": 563.3,
        "needed": 1111.1,
        "status": "starts",
        "onPace": false,
@@ -596,9 +596,9 @@
       {
        "metric": "subscribers",
        "target": 450,
-       "have": 270,
-       "pct": 60.0,
-       "pace": 1.5,
+       "have": 273,
+       "pct": 60.67,
+       "pace": 1.6,
        "needed": 1.3,
        "status": "on track",
        "label": "Subscribers"
@@ -615,7 +615,7 @@
        "target": 300000,
        "have": 0,
        "pct": 0.0,
-       "pace": 513.8,
+       "pace": 563.3,
        "needed": 1657.5,
        "status": "starts",
        "onPace": false,
@@ -624,9 +624,9 @@
       {
        "metric": "subscribers",
        "target": 600,
-       "have": 270,
-       "pct": 45.0,
-       "pace": 1.5,
+       "have": 273,
+       "pct": 45.5,
+       "pace": 1.6,
        "needed": 1.4,
        "status": "on track",
        "label": "Subscribers"
@@ -643,7 +643,7 @@
        "target": 600000,
        "have": 0,
        "pct": 0.0,
-       "pace": 513.8,
+       "pace": 563.3,
        "needed": 2197.8,
        "status": "starts",
        "onPace": false,
@@ -652,9 +652,9 @@
       {
        "metric": "subscribers",
        "target": 800,
-       "have": 270,
-       "pct": 33.75,
-       "pace": 1.5,
+       "have": 273,
+       "pct": 34.12,
+       "pace": 1.6,
        "needed": 1.6,
        "status": "behind",
        "label": "Subscribers"
@@ -671,7 +671,7 @@
        "target": 1000000,
        "have": 0,
        "pct": 0.0,
-       "pace": 513.8,
+       "pace": 563.3,
        "needed": 2739.7,
        "status": "starts",
        "onPace": false,
@@ -680,10 +680,10 @@
       {
        "metric": "subscribers",
        "target": 1000,
-       "have": 270,
-       "pct": 27.0,
-       "pace": 1.5,
-       "needed": 1.8,
+       "have": 273,
+       "pct": 27.3,
+       "pace": 1.6,
+       "needed": 1.7,
        "status": "behind",
        "label": "Subscribers"
       }
@@ -700,7 +700,7 @@
       "target": 100000,
       "have": 0,
       "pct": 0.0,
-      "pace": 513.8,
+      "pace": 563.3,
       "needed": 1111.1,
       "status": "starts",
       "onPace": false,
@@ -709,9 +709,9 @@
      {
       "metric": "subscribers",
       "target": 450,
-      "have": 270,
-      "pct": 60.0,
-      "pace": 1.5,
+      "have": 273,
+      "pct": 60.67,
+      "pace": 1.6,
       "needed": 1.3,
       "status": "on track",
       "label": "Subscribers"
@@ -723,5 +723,5 @@
    "onTrack": false
   }
  },
- "note": "902 views a day (+142% on last week) · 2.6 new subscribers a day · goal: behind · testing: Does the second Short reach more people in the morning than in the afternoon? (+3 more)"
+ "note": "1,036 views a day (+167% on last week) · 2.7 new subscribers a day · goal: behind · testing: Does the second Short reach more people in the morning than in the afternoon? (+3 more)"
 }

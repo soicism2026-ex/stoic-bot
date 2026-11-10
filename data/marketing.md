@@ -1,13 +1,13 @@
 # Marketing: how the channel reaches people
 
-_Updated 2026-11-09 by Cicero (scripts/marketer.py, free, no paid API)._
+_Updated 2026-11-10 by Cicero (scripts/marketer.py, free, no paid API)._
 
 ## The funnel
 
-- Views a day, last 7 days: **902** (the 7 before: 373, +142%)
-- New subscribers a day: **2.6** (the 7 before: 1.6); 270 in all
-- Subscribers per 1,000 views: 2.8
-- Likes per 100 views (Shorts of the last 14 days): 3.7
+- Views a day, last 7 days: **1036** (the 7 before: 388, +167%)
+- New subscribers a day: **2.7** (the 7 before: 1.6); 273 in all
+- Subscribers per 1,000 views: 2.6
+- Likes per 100 views (Shorts of the last 14 days): 3.6
 
 ## Reach by upload hour (UTC)
 
@@ -15,25 +15,25 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 
 | Hour (UTC) | Shorts | Reach vs its week | Stalled (<0.4x) |
 |---|---|---|---|
-| 00-03 | 85 | 1.23x | 13 |
+| 00-03 | 86 | 1.23x | 13 |
 | 04-07 | 29 | 1.01x | 5 |
-| 08-11 | 68 | 1.07x | 11 |
+| 08-11 | 69 | 1.14x | 11 |
 | 12-15 | 31 | 0.69x | 6 |
 | 16-19 | 53 | 0.74x | 9 |
 | 20-23 | 42 | 0.74x | 9 |
 
-## Who watches (last 28 days, pulled 2026-11-08)
+## Who watches (last 28 days, pulled 2026-11-10)
 
-- Countries: US 81%, IN 12%, CA 3%, GB 2%, PH 1%, ZA 0%
-- How they find the Shorts: SHORTS 92%, YT_SEARCH 4%, YT_OTHER_PAGE 2%, YT_CHANNEL 1%, EXT_URL 0%
+- Countries: US 79%, IN 12%, CA 3%, GB 3%, DE 1%, PH 1%
+- How they find the Shorts: SHORTS 93%, YT_SEARCH 4%, YT_OTHER_PAGE 2%, YT_CHANNEL 1%, EXT_URL 0%
 - Subscribed or not: UNSUBSCRIBED 98%, SUBSCRIBED 2%
 - What they typed into YouTube before watching (since June): "stoicism" (60), "stoic" (18), "stoicism marcus aurelius" (17), "marcus aurelius" (16), "stoicism motivation" (16), "epictetus" (11), "stoicism philosophy" (11), "marcus aurelius meditations" (10), "stoic mindset" (8), "stoic wisdom" (8)
 
 ## The goal
 
 - **A million views and 1,000 subscribers in 2027** (by 2027-12-31)
-- Views in 2027: 0 of 1,000,000 (starts; 514 a day now, 2,740 needed)
-- Subscribers: 270 of 1,000 (behind; 1.5 a day now, 1.8 needed)
+- Views in 2027: 0 of 1,000,000 (starts; 563 a day now, 2,740 needed)
+- Subscribers: 273 of 1,000 (behind; 1.6 a day now, 1.7 needed)
 - Next checkpoint 2027-03-31: behind
 - Every test below is judged by whether it moves these numbers.
 
@@ -46,7 +46,7 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 - Why: Across 294 Shorts, each against its own week: 00-03 UTC 1.15x, 04-11 UTC 1.0x, 12-19 UTC 0.75x. Since October 19 the afternoon Short got a median 0.63x of the same day's evening Short, and six of them stalled under 90 views.
 - Judged by: The second Short's day-1 views divided by the same day's first Short's, for 14 days, against the median before.
 - Before: median 0.61x over 18 days
-- During: median 0.71x over 3 days (ends 2026-11-20)
+- During: median 1.02x over 4 days (ends 2026-11-20)
 
 ### Do a real description and a question under each Short get viewers talking?
 
@@ -55,7 +55,7 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 - Why: Through November 5, viewers left 5 comments on 51 edits (0.48 per 1,000 views). Comments are one of the signals YouTube ranks on, and a question about the viewer's own life is easier to answer than one about the video.
 - Judged by: Comments from viewers per 1,000 views on the Shorts in the new style (14 days from the start) against the Shorts of the 14 days before; likes per 100 views alongside.
 - Old style: 5 viewer comments on 28 Shorts (0.77 per 1,000 views; 4.4 likes per 100 views)
-- New style: 1 viewer comments on 6 Shorts (0.26 per 1,000 views; 2.4 likes per 100 views)
+- New style: 1 viewer comments on 8 Shorts (0.2 per 1,000 views; 2.3 likes per 100 views)
 
 ### Do playlists per philosopher bring in extra views?
 
@@ -71,7 +71,7 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 - Change: Each Short's description opens with the YouTube search its quote answers ("How to stop overthinking: Epictetus's answer."), a matching hashtag joins #stoicism, and the search goes into the tags. Ten searches, picked from YouTube's own suggestions (data/search_phrases.json, data/search_research.md). The title carries it too only if the owner picks titles.
 - Why: Since June, YouTube search brought 225 views, all from broad words (stoicism, marcus aurelius). Searches like "how to stop overthinking" are among YouTube's most popular, and brought us none: our Shorts never use those words.
 - Judged by: The share of views from YouTube search, the 14 days after against the 14 before.
-- Share of views: 0.048 before
+- Share of views: 0.0448 before
 
 ## Next ideas (each is proposed in the HQ first)
 
