@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-10T01:53:43Z",
+ "checked": "2026-11-10T10:41:39Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-10T01:53:43Z",
-  "youtube": "gssQC2QwF-c",
-  "title": "\"Money isn't your problem\" — Seneca | Stoicism",
-  "status": "published",
-  "permalink": "https://www.instagram.com/reel/Dfixc1xk1Fb/",
+  "at": "2026-11-10T10:41:39Z",
+  "youtube": "BID_xsZz3Kk",
+  "title": "\"About to snap? Give it a minute\" — Epictetus | Stoicism",
+  "status": "queued",
+  "permalink": null,
   "reason": null
  }
 }
