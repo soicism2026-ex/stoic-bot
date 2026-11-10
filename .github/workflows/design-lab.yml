@@ -1,0 +1,121 @@
+# The design lab: one Short rendered in each look, for the owner to compare.
+#
+# Owner, in the HQ, 2026-11-10: "Deploy agents to design higher quality
+# videos". The crew builds each change behind a switch that is OFF on the live
+# channel; this renders a chosen quote in every look through the full real
+# pipeline (Brian, the approved music and sounds, stock, free Cloudflare FLUX
+# stills), DRY_RUN: nothing uploaded to YouTube, nothing logged. The videos go
+# to the `design-lab` release (outside git), where the chief picks them up for
+# the HQ. Looks: scripts/design_lab.py LOOKS ("current" = the live channel).
+# Manual only: it never runs on a schedule and never touches a live post.
+name: design-lab
+on:
+  workflow_dispatch:
+    inputs:
+      looks:
+        description: Comma-separated looks (scripts/design_lab.py LOOKS), e.g. current,painted
+        required: false
+        default: current,painted
+      edits:
+        description: Comma-separated quote ids from data/edit_quotes.json (empty = the next to air)
+        required: false
+        default: ''
+permissions:
+  contents: write
+  actions: read
+concurrency:
+  group: design-lab
+  cancel-in-progress: false
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matrix: ${{ steps.m.outputs.matrix }}
+      day: ${{ steps.m.outputs.day }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: The renders to make
+      id: m
+      env:
+        LOOKS: ${{ inputs.looks }}
+        EDITS: ${{ inputs.edits }}
+      run: |
+        python3 scripts/design_lab.py matrix >> "$GITHUB_OUTPUT"
+        # Every look renders for the same air day, so the day-keyed picks
+        # (music shuffle, the day's impact sound) match and only the look differs.
+        echo "day=$(python3 src/airday.py --next)" >> "$GITHUB_OUTPUT"
+        cat "$GITHUB_OUTPUT"
+  render:
+    needs: plan
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix: ${{ fromJson(needs.plan.outputs.matrix) }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Install ffmpeg + fonts
+      timeout-minutes: 20
+      run: bash scripts/ci_install_ffmpeg.sh
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Install deps
+      run: pip install -r requirements.txt
+    - name: Stills already painted for this quote (free Cloudflare budget)
+      uses: actions/cache@v4
+      with:
+        path: data/still_cache
+        key: stills-lab-${{ matrix.edit }}-${{ matrix.look }}-${{ github.run_id }}
+        restore-keys: |
+          stills-lab-${{ matrix.edit }}-
+          stills-${{ matrix.edit }}-
+    - name: The look
+      run: |
+        python3 scripts/design_lab.py env "${{ matrix.look }}" | tee -a "$GITHUB_ENV"
+        echo "REEL_TODAY=${{ needs.plan.outputs.day }}" >> "$GITHUB_ENV"
+    - name: 'Render (DRY_RUN: no upload, no log)'
+      env:
+        MAX_POSTS_PER_DAY: '99'
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        MUSIC_KEY: ${{ secrets.MUSIC_KEY }}
+        YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+        YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+        YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+        PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        PROMO_ENABLED: '1'
+        PROMO_PRODUCT_NAME: The Stoic Reset
+        PROMO_URL: https://soicism.gumroad.com/l/cslosv
+        PROMO_COMMENT: '0'
+        REEL_IMAGE_BG: '1'
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        REEL_STILL_CACHE: data/still_cache
+        DRY_RUN: '1'
+        # Plays exactly what a live post would: approved music and sounds only.
+        REEL_REHEARSAL: '1'
+        REEL_FORMAT: edit
+        REEL_EDIT_ID: ${{ matrix.edit }}
+        REEL_EDIT_SFX: '1'
+        REEL_KLING_BG: '0'
+      run: |
+        # Brian reads, as on every live post; nothing ahead of ElevenLabs may
+        # speak, and the live once-a-day allocation must not block the lab.
+        export ELEVENLABS_POSTS_PER_DAY=99 CHATTERBOX_LOCAL=0 REPLICATE_API_TOKEN=
+        python scripts/daily_post.py
+    - name: Put it in the design-lab release
+      env:
+        GH_TOKEN: ${{ github.token }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: python3 scripts/design_lab.py publish data/preview "${{ matrix.edit }}" "${{ matrix.look }}"
+    - uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: lab-${{ matrix.edit }}-${{ matrix.look }}
+        path: data/preview/
+        if-no-files-found: ignore

@@ -534,6 +534,13 @@ def main():
     # switches back to the story bank. When the edit bank runs out, the story
     # bank is the fallback, then the generator.
     edit = edits.pick(post_rows) if os.environ.get("REEL_FORMAT", "edit") == "edit" else None
+    # The design lab (design-lab.yml; owner 2026-11-10: "Deploy agents to
+    # design higher quality videos") renders one chosen quote in each look.
+    # Honoured only in DRY_RUN: a live run always airs the shelf's own pick.
+    forced = os.environ.get("REEL_EDIT_ID", "").strip()
+    if forced and DRY_RUN and os.environ.get("REEL_FORMAT", "edit") == "edit":
+        edit = next((q for q in edits.load() if q["id"] == forced), None) or edit
+        print(f"  [lab] REEL_EDIT_ID={forced}: rendering {edit['id'] if edit else 'nothing'}")
     story = None if edit else stories.pick(post_rows)
     if edit is not None:
         content = edits.as_content(edit)
