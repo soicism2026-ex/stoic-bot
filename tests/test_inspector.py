@@ -164,3 +164,25 @@ def test_alternate_seeds_are_stable_and_distinct():
     seeds = [painter._alt_seed(410170, n) for n in range(1, 4)]
     assert seeds == [painter._alt_seed(410170, n) for n in range(1, 4)]       # the live run repeats the rehearsal
     assert len(set(seeds + [410170])) == 4
+
+
+def test_a_live_post_logs_what_the_inspector_saw(tmp_path, monkeypatch):
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import csv
+    import daily_post
+    log = tmp_path / "inspector.csv"
+    monkeypatch.setattr(daily_post, "INSPECTOR_LOG", log)
+    monkeypatch.setattr(painter, "SLOTS", {
+        0: {"ok": True, "tries": 1, "seed": 410170, "scene": "{man} at a feast", "inspect": {"ok": True, "problems": []}},
+        1: {"ok": True, "tries": 2, "seed": 9, "scene": "rain over a boulder",
+            "inspect": {"ok": False, "problems": ["a face in the rock"]}},
+        2: {"ok": False, "scene": "a street at night"}})
+    daily_post._log_inspection("2026-11-12", {"format": "edit", "_edit_id": "fly"}, {"video_id": "abc"})
+    rows = list(csv.DictReader(open(log, encoding="utf-8")))
+    assert [r["verdict"] for r in rows] == ["pass", "flagged", "stock"]
+    assert rows[1]["problems"] == "a face in the rock" and rows[1]["tries"] == "2" and rows[0]["video_id"] == "abc"
+    daily_post._log_inspection("2026-11-12", {"format": "story"}, {})          # other formats: nothing
+    assert len(list(csv.DictReader(open(log, encoding="utf-8")))) == 3
+    wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text(encoding="utf-8")
+    assert "git add data/inspector.csv" in wf
+    assert "data/inspector.csv merge=union" in (ROOT / ".gitattributes").read_text(encoding="utf-8")

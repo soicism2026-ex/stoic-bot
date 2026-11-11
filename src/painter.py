@@ -1091,10 +1091,24 @@ def frame_fill_failures(video: Path, bounds: list[float]) -> list[dict]:
     if os.environ.get("REEL_FRAME_CHECK", "1").strip() in ("0", "false", "False"):
         return []
     hits = check_frame_fill(Path(video), bounds)
-    if hits:
-        slots = {h["slot"] for h in hits if h.get("slot") is not None}
-        BANNED_SLOTS.update(slots)
-        print(f"  [painter] FRAME FILL: bars in slots {sorted(slots)}: {hits[:3]}", flush=True)
-    else:
+    if not hits:
         print("  [painter] frame fill: no letterbox or pillarbox bars", flush=True)
-    return hits
+        return []
+    # Only a PAINTED slot can fail the render: banning it gives the retry a
+    # real alternative (stock). A slot that is already stock (painting failed,
+    # Cloudflare's free day ran out, or it was banned before) would come back
+    # as the same clip, so failing on it only burns every attempt: on
+    # 2026-11-11 a dark "lightning strike" stock clip in slot 0 read as bars
+    # five times running and the rehearsal produced nothing. It airs instead.
+    slots = {h["slot"] for h in hits if h.get("slot") is not None}
+    painted = {i for i in slots if i not in BANNED_SLOTS and (SLOTS.get(i) or {}).get("ok")}
+    stock = sorted(slots - painted)
+    if stock:
+        print(f"  [painter] frame fill: stock in slots {stock} looks barred or very dark; "
+              f"airing it (a retry would bring back the same clip)", flush=True)
+    if not painted:
+        return []
+    BANNED_SLOTS.update(painted)
+    actionable = [h for h in hits if h.get("slot") in painted]
+    print(f"  [painter] FRAME FILL: bars in painted slots {sorted(painted)}: {actionable[:3]}", flush=True)
+    return actionable

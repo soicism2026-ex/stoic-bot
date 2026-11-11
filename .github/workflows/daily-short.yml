@@ -416,6 +416,7 @@ jobs:
             -delete 2>/dev/null || true
           git add data/posts.csv data/analytics.csv data/channel_stats.csv data/replied_comments.csv data/retention.csv data/retention_curves.csv data/story_blocks.csv data/edit_blocks.csv QA_LOG.md backups/
           if [ -f data/playlists.json ]; then git add data/playlists.json; fi
+          if [ -f data/inspector.csv ]; then git add data/inspector.csv; fi
           git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
           # The 4 daily slots race on pushing to main — rebase-retry instead of
           # failing the run (a lost push means a lost posts.csv row).

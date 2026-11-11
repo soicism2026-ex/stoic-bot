@@ -298,6 +298,7 @@ def test_frame_fill_failures_ban_the_slot_for_the_retry(tmp_path, monkeypatch):
     monkeypatch.setattr(painter, "check_frame_fill",
                         lambda v, b: [{"t": 1.0, "side": "top", "px": 200, "slot": 4}])
     painter.BANNED_SLOTS.clear()
+    monkeypatch.setattr(painter, "SLOTS", {4: {"ok": True}})          # slot 4 was painted
     assert painter.frame_fill_failures(tmp_path / "v.mp4", [0, 1, 2])
     assert painter.BANNED_SLOTS == {4}
     assert painter.fetch_slot(4, tmp_path / "x.mp4") is None
@@ -402,3 +403,24 @@ def test_a_shot_with_nobody_in_it_is_not_told_about_people():
     assert "five fingers" in person and "skin" in person
     assert painter.has_person("Close-up of a heavy gold ring turning between two fingers")
     assert not painter.has_person("A heap of broken pottery on a workshop floor in afternoon sun")
+
+
+def test_frame_fill_only_fails_a_render_it_can_fix(monkeypatch):
+    """2026-11-11: Cloudflare's free day ran out, every slot fell back to stock,
+    and a dark "lightning strike" clip in slot 0 read as bars on all five
+    attempts: banning a stock slot brings back the same clip, so the check
+    produced nothing but a lost rehearsal. Only a painted slot can fail it."""
+    import painter
+    hits = [{"t": 0.25, "side": "top", "px": 728, "slot": 0}, {"t": 0.25, "side": "bottom", "px": 464, "slot": 0},
+            {"t": 4.0, "side": "top", "px": 200, "slot": 3}]
+    monkeypatch.setattr(painter, "check_frame_fill", lambda video, bounds=None, fps=4.0: list(hits))
+    monkeypatch.delenv("REEL_FRAME_CHECK", raising=False)
+    monkeypatch.setattr(painter, "BANNED_SLOTS", set())
+    monkeypatch.setattr(painter, "SLOTS", {0: {"ok": False}, 3: {"ok": True}})     # 0 is stock, 3 painted
+    got = painter.frame_fill_failures(painter.Path("x.mp4"), [0, 1.3, 2.6, 3.9, 5.2])
+    assert {h["slot"] for h in got} == {3} and painter.BANNED_SLOTS == {3}
+    # the retry: 3 is stock now too, so nothing can fail the render any more
+    assert painter.frame_fill_failures(painter.Path("x.mp4"), [0, 1.3, 2.6, 3.9, 5.2]) == []
+    monkeypatch.setattr(painter, "SLOTS", {})                                         # no painting at all
+    monkeypatch.setattr(painter, "BANNED_SLOTS", set())
+    assert painter.frame_fill_failures(painter.Path("x.mp4"), None) == []

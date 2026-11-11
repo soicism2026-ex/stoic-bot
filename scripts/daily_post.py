@@ -281,6 +281,37 @@ def _type_edit(pack: dict, content: dict, fmt: str) -> None:
         pack.update(edit_type.style_env(content))
 
 
+INSPECTOR_LOG = ROOT / "data" / "inspector.csv"
+
+
+def _log_inspection(date: str, content: dict, upload_result) -> None:
+    """One row per painted shot of a LIVE post: what the inspector
+    (src/inspector.py) saw and did. The weekly crew review learns from it
+    (owner 2026-11-11: "continuously improve the shorts utilizing the agents
+    specific tasks"). Never raises: a log line must never cost a post."""
+    try:
+        import csv
+        import painter
+        slots = dict(painter.SLOTS)
+        if not slots or content.get("format") != "edit":
+            return
+        new = not INSPECTOR_LOG.exists()
+        with open(INSPECTOR_LOG, "a", newline="", encoding="utf-8") as fh:
+            w = csv.writer(fh)
+            if new:
+                w.writerow(["date", "edit", "video_id", "slot", "tries", "verdict", "problems", "seed", "scene"])
+            for i in sorted(slots):
+                sl = slots[i]
+                v = sl.get("inspect") or {}
+                verdict = ("stock" if not sl.get("ok") else
+                           {True: "pass", False: "flagged"}.get(v.get("ok"), "unseen"))
+                w.writerow([date, content.get("_edit_id", ""), (upload_result or {}).get("video_id", ""),
+                            i, sl.get("tries", 1), verdict, "; ".join(v.get("problems") or []),
+                            sl.get("seed", ""), (sl.get("scene") or "")[:160]])
+    except Exception as e:  # noqa: BLE001
+        print(f"  [inspector] could not log this post's shots: {e}", flush=True)
+
+
 def _apply_corrections(env: dict, issues: list, attempt: int) -> dict:
     """Return updated env-var dict based on QA issues for the next render."""
     env = dict(env)
@@ -1285,6 +1316,7 @@ def main():
                 bg_source=backgrounds.LAST_BG_SOURCE or "",
                 reviewed=preflight_verdict,
             )
+            _log_inspection(today, content, upload_result)
             print("  logged. done.")
             break
 
