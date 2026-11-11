@@ -284,6 +284,24 @@ def _type_edit(pack: dict, content: dict, fmt: str) -> None:
 INSPECTOR_LOG = ROOT / "data" / "inspector.csv"
 
 
+def _shots_summary() -> list[dict]:
+    """The painted look's shots in this render: scene, seed, paintings tried
+    and the inspector's verdict ([] for the old look or on any error)."""
+    try:
+        import painter
+        out = []
+        for i in sorted(painter.SLOTS):
+            sl = painter.SLOTS[i]
+            v = sl.get("inspect") or {}
+            out.append({"slot": i, "painted": bool(sl.get("ok")), "scene": (sl.get("scene") or "")[:160],
+                        "seed": sl.get("seed"), "tries": sl.get("tries", 1),
+                        "inspector": {True: "pass", False: "flagged"}.get(v.get("ok"), "unseen"),
+                        "problems": v.get("problems") or []})
+        return out
+    except Exception:  # noqa: BLE001
+        return []
+
+
 def _log_inspection(date: str, content: dict, upload_result) -> None:
     """One row per painted shot of a LIVE post: what the inspector
     (src/inspector.py) saw and did. The weekly crew review learns from it
@@ -1227,6 +1245,9 @@ def main():
                                   if q["id"] == content.get("_edit_id")), ""),
                 "airDay": today, "voice": spoke, "title": title,
                 "music": music_track.get("name", "") if isinstance(music_track, dict) else "",
+                # Each painted shot and what the inspector did with it, for
+                # Longinus's review of the rehearsal (src/inspector.py).
+                "shots": _shots_summary(),
             }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
             print(f"  [preview] DRY_RUN — saved {out.name}/{exp_name.replace(':', '_')}.mp4, "
                   f"voice {spoke}, NOT uploaded, NOT logged")

@@ -593,6 +593,23 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       scheduled: "I carry the bots' news to HQ. Next run {next}.",
       failed: "Tripped on my last run. Back {next}.",
       paused: "Grounded. Someone paused me." } },
+    // The video crew's standing jobs (owner 2026-11-11: "continuously improve
+    // the shorts utilizing the agents specific tasks"), mapped to their
+    // scheduled tasks in hq/config.crewTriggers.
+    inspector: { name: "Longinus", title: "Inspector", sprite: "scholar",
+      role: "Checks every painted shot before it airs: a free vision model looks at each one and bad ones are repainted. Twice a day he also looks at the next Short himself and rewrites any shot that still looks off.",
+      lines: {
+      working: "Looking over the next Short, shot by shot.",
+      scheduled: "I look at the next Short before it airs. Next look {next}.",
+      failed: "My last look didn't finish. Back {next}.",
+      paused: "Paused. Nobody checks the next Short by eye." } },
+    review: { name: "The crew", title: "Weekly review", sprite: "painter",
+      role: "Every Thursday, Zeuxis (picture), Plutarch (scenes) and Callimachus (type) each make one improvement from the week's evidence: what the inspector flagged, what Longinus rewrote, and the views. Changes to the look itself come to you first.",
+      lines: {
+      working: "Each of us is fixing one thing from this week's Shorts.",
+      scheduled: "Zeuxis, Plutarch and Callimachus improve one thing each, every week. Next review {next}.",
+      failed: "Our last review didn't finish. Back {next}.",
+      paused: "Paused. The weekly improvements are off." } },
     researcher: { name: "Pliny", title: "Researcher", sprite: "scholar", lines: {
       working: "Reading everything so you don't have to.",
       done: "Done reading. Claude has my findings." } },
@@ -777,11 +794,14 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       const failed = /FAILED/.test(lr.status || "");
       const status = !t.enabled ? "paused" : failed ? "failed" : "scheduled";
       const hermes = S.config && S.config.syncTrigger === t.id;
-      const crew = hermes ? "sync" : "herald";
+      const named = !hermes && S.config && S.config.crewTriggers ? S.config.crewTriggers[t.id] : null;
+      const who = named && CREW[named] ? CREW[named] : null;
+      const crew = hermes ? "sync" : who ? named : "herald";
       return {
-        key: "t:" + t.id, crew, status, name: hermes ? CREW.sync.name : (t.name || "Scheduled task"),
-        title: hermes ? CREW.sync.title : "Scheduled agent",
-        role: hermes ? "Brings the bots' status and the channel numbers to this app, 6 times a day." : (t.name || "") + ": runs on its own schedule.",
+        key: "t:" + t.id, crew, status, named: !!who,
+        name: hermes ? CREW.sync.name : who ? who.name : (t.name || "Scheduled task"),
+        title: hermes ? CREW.sync.title : who ? who.title : "Scheduled agent",
+        role: hermes ? "Brings the bots' status and the channel numbers to this app, 6 times a day." : who ? who.role : (t.name || "") + ": runs on its own schedule.",
         say: say(crew, status, { next: nextText(t.next_run_at) }),
         facts: lr.fired_at ? (failed ? "Last run failed " : "Last ran ") + ago(lr.finished_at || lr.fired_at) : "Has not run yet",
         next: t.enabled ? t.next_run_at : null, updated: null,
@@ -883,7 +903,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const sess = projectSessions();
     const chiefSess = sess && S.config ? sess.find((x) => x.id === S.config.chief) : null;
     const others = (sess || []).filter((x) => !(S.config && S.config.chief === x.id)).map(sessionAgent);
-    const hermes = triggerAgents().filter((a) => a.crew === "sync");
+    const hermes = triggerAgents().filter((a) => a.crew === "sync" || a.named);
     const lib = librarianAgent();
     return [chiefAgent(chiefSess), ...others, ...helperAgents(), ...botAgents(), ...(lib ? [lib] : []), ...hermes];
   }

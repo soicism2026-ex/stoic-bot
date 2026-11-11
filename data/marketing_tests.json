@@ -55,6 +55,20 @@
    "started": "2026-11-08",
    "use": "descriptions",
    "approved": "2026-11-07: owner, in the HQ: \"Yes: descriptions, hashtags and tags\" (titles stay as they are)"
+  },
+  {
+   "id": "new-look",
+   "kind": "views_before_after",
+   "age": 3,
+   "question": "Does the crew's new look (painted shots, a hook readable on the first frame, YouTube-level sound) bring more views?",
+   "change": "Every Short from 2026-11-12: each shot a colour painting from the free FLUX.2 model (inspected before it airs), the v2 type with gold key words, sound mastered to -14 LUFS.",
+   "why": "This month's top Stoicism Shorts are painted, colourful and readable on frame one; ours were washed-out black-and-white stock with a grey first frame and quieter sound.",
+   "measure": "The median edit's views at 3 days old, the 14 days after against the 14 before.",
+   "ask": "new-look",
+   "status": "running",
+   "proposed": "2026-11-11",
+   "started": "2026-11-12",
+   "approved": "2026-11-11: owner, in the HQ: \"Switch to the new look\""
   }
  ],
  "next": [

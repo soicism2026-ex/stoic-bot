@@ -215,3 +215,28 @@ def test_cicero_measures_his_tests_against_the_owners_goal(tmp_path, monkeypatch
     assert "**A million views and 1,000 subscribers in 2027**" in md and "Views in 2027" in md
     assert "Next checkpoint 2027-03-31" in md and "goal: " in mk.note(r)
 
+
+
+def test_the_new_look_is_judged_by_age_matched_views_before_and_after():
+    """Test 5 (owner 2026-11-11: "Switch to the new look"): every Short carries
+    it, so the 14 days before are the control, each Short at 3 days old."""
+    rows, posts = [], []
+    for i in range(14):
+        day = dt.date(2026, 10, 29) + dt.timedelta(days=i)                    # before: 200 views at 3 days
+        rows.append((f"b{i}", f"{day}T03:00", [(0, 5, 0), (3, 200, 5)]))
+        posts.append({"date": day.isoformat(), "video_id": f"b{i}", "experiment": "edit:x"})
+    for i in range(14):
+        day = dt.date(2026, 11, 12) + dt.timedelta(days=i)                    # after: 300
+        rows.append((f"a{i}", f"{day}T03:00", [(0, 5, 0), (3, 300, 9)]))
+        posts.append({"date": day.isoformat(), "video_id": f"a{i}", "experiment": "edit:x"})
+    posts.append({"date": "2026-11-13", "video_id": "s1", "experiment": "story:y"})   # not an edit: ignored
+    views = mk.Views(_analytics(rows))
+    test = {"id": "new-look", "kind": "views_before_after", "age": 3, "status": "running", "started": "2026-11-12"}
+    got = mk.judge(test, posts, views, dt.date(2026, 11, 29))
+    assert got["before"] == {"shorts": 14, "median": 200}
+    assert got["during"]["shorts"] == 14 and got["change"] == 1.5 and got["verdict"] == "win"
+    early = mk.judge(test, posts, views, dt.date(2026, 11, 20))
+    assert "verdict" not in early and early["during"]["median"] == 300
+    ledger = json.loads((ROOT / "data" / "marketing_tests.json").read_text(encoding="utf-8"))
+    t = next(t for t in ledger["tests"] if t["id"] == "new-look")
+    assert t["kind"] == "views_before_after" and t["status"] == "running" and t["started"] == "2026-11-12"

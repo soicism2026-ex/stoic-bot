@@ -186,3 +186,18 @@ def test_a_live_post_logs_what_the_inspector_saw(tmp_path, monkeypatch):
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text(encoding="utf-8")
     assert "git add data/inspector.csv" in wf
     assert "data/inspector.csv merge=union" in (ROOT / ".gitattributes").read_text(encoding="utf-8")
+
+
+def test_a_rehearsal_lists_its_shots_and_the_inspectors_verdicts(monkeypatch):
+    sys.path.insert(0, str(ROOT / "scripts"))
+    import daily_post
+    monkeypatch.setattr(painter, "SLOTS", {
+        1: {"ok": True, "tries": 2, "seed": 9, "scene": "rain over a boulder",
+            "inspect": {"ok": False, "problems": ["a face in the rock"]}},
+        0: {"ok": True, "tries": 1, "seed": 410170, "scene": "{man} at a feast", "inspect": {"ok": True, "problems": []}}})
+    shots = daily_post._shots_summary()
+    assert [s["slot"] for s in shots] == [0, 1]
+    assert shots[1] == {"slot": 1, "painted": True, "scene": "rain over a boulder", "seed": 9, "tries": 2,
+                        "inspector": "flagged", "problems": ["a face in the rock"]}
+    src = (ROOT / "scripts" / "daily_post.py").read_text(encoding="utf-8")
+    assert '"shots": _shots_summary(),' in src

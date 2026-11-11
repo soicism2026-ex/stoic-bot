@@ -1755,4 +1755,30 @@ that story must always be captioned "recorded in the Historia Augusta", never
   6 has the wording lessons. Varro now writes `scenes` and gold words for every
   new quote; the rest of the shelf gets scenes from Plutarch. `""` brings the
   old look back; changing the look again needs his say-so (a test guards it).
+- **2026-11-11 — "THE IMAGES SOMETIMES LOOK OFF": THE CREW KEEPS IMPROVING
+  THEM.** Owner, in the HQ, right after switching: *"New look is better but
+  the generated images sometimes look off continuously improve the shorts
+  utilizing the agents specific tasks"*. Built:
+  * Longinus in the pipeline (`src/inspector.py`): every painted shot is
+    judged by a free vision model before it airs, and a flagged shot is
+    repainted with a new seed (up to 2 times); the verdicts are cached with
+    the still so the live post repeats the rehearsal.
+  * Longinus's review (scheduled, 04:41 and 08:41 UTC): looks at the next
+    Short's rehearsal by eye and rewrites any shot that still looks off,
+    then re-rehearses it. His fixes go in `data/longinus.csv`.
+  * The weekly crew review (scheduled, Thursdays 20:23 UTC): Zeuxis
+    (picture), Plutarch (scenes), Callimachus (type) each make one
+    improvement from the week's evidence (`data/inspector.csv`,
+    `data/longinus.csv`, Cicero's numbers).
+  * Cicero's test 5, `new-look`: the median edit's views at 3 days, the 14
+    days from 2026-11-12 against the 14 before (median 241).
+  Rule: defect fixes ship directly; anything that changes the LOOK itself
+  (fonts, colours, layout, motion style, music) goes to the owner first as
+  an HQ card with a before/after video.
+  Found and fixed the same day: the lab had used up Cloudflare's free 10,000
+  neurons, the first new-look rehearsal fell back to stock, and the
+  frame-fill check read a dark stock clip as bars on all five attempts (it
+  would have blocked a live post the same way). Only a painted slot can
+  fail that check now. The lab never runs before the day's posts have
+  painted (it shares the free allowance).
 

@@ -183,6 +183,27 @@ def second_vs_first(posts: list[dict], views: Views, since: dt.date, until: dt.d
     return out
 
 
+def views_by_age(posts: list[dict], views: Views, since: dt.date, until: dt.date,
+                 days: int = 3) -> dict:
+    """The edits aired in [since, until) that are at least `days` old: how
+    many, and their median views at that age (age-matched, so a Short from
+    yesterday is not compared with one from last week)."""
+    vals = []
+    for r in posts:
+        v = r.get("video_id")
+        if not v or not (r.get("experiment") or "").startswith("edit:"):
+            continue
+        try:
+            if not since <= _day(r["date"]) < until:
+                continue
+        except (KeyError, ValueError):
+            continue
+        n = views.at_age(v, days)
+        if n is not None:
+            vals.append(n)
+    return {"shorts": len(vals), "median": int(st.median(vals)) if vals else None}
+
+
 # ---------------------------------------------------------------- the tests
 
 def load_tests() -> dict:
@@ -253,7 +274,9 @@ def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
     time, against the day's other Short), `pinned_question` (the owner's
     description style with its question, viewer comments per 1,000 views on
     the edits of the 14 days before against those after, each Short sorted by
-    its own description) and `traffic_source` (a source's share of views,
+    its own description), `traffic_source` (a source's share of views,
+    the 14 days before against the 14 after) and `views_before_after` (a
+    change every Short carries: the edits' median views at the same age,
     the 14 days before against the 14 after)."""
     out = {"id": test["id"], "status": test.get("status")}
     start = _day(test["started"]) if test.get("started") else today
@@ -285,6 +308,21 @@ def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
             if today >= end and out["during"]["share"] is not None:
                 b = out["before"]["share"] or 0
                 out["verdict"] = ("win" if out["during"]["share"] >= max(0.01, 2 * b) else "no clear change")
+        return out
+    if test.get("kind") == "views_before_after":
+        # A change every Short carries (the new look, 2026-11-12): the edits of
+        # the 14 days before are the control, each judged at the same age.
+        age = int(test.get("age", 3))
+        out["before"] = views_by_age(posts, views, start - dt.timedelta(days=TEST_DAYS), start, age)
+        if running:
+            during = views_by_age(posts, views, start, min(end, today), age)
+            out["during"] = {**during, "ends": end.isoformat()}
+            b, d = out["before"]["median"], during["median"]
+            if b and d is not None:
+                out["change"] = round(d / b, 2)
+                if today >= end and during["shorts"] >= MIN_TEST_DAYS:
+                    out["verdict"] = ("win" if out["change"] >= WIN else "loss" if out["change"] <= LOSE
+                                      else "no clear change")
         return out
     if test.get("kind") != "second_vs_first":
         return out
@@ -444,11 +482,19 @@ def markdown(r: dict) -> str:
         if b.get("comments") is not None and not _arms(t):
             lines.append(f"- Before: {b['comments']} viewer comments on {b['shorts']} Shorts "
                          f"({b['per1k']} per 1,000 views)")
-        if b.get("median") is not None:
-            lines.append(f"- Before: median {b['median']}x over {b['days']} days")
         d = t.get("during") or {}
-        if d.get("median") is not None:
-            lines.append(f"- During: median {d['median']}x over {d['days']} days (ends {d['ends']})")
+        if t.get("kind") == "views_before_after":
+            age = t.get("age", 3)
+            if b.get("median") is not None:
+                lines.append(f"- Before: median {b['median']:,} views at {age} days over {b['shorts']} Shorts")
+            if d.get("median") is not None:
+                lines.append(f"- During: median {d['median']:,} views at {age} days over {d['shorts']} Shorts "
+                             f"(ends {d['ends']})")
+        else:
+            if b.get("median") is not None:
+                lines.append(f"- Before: median {b['median']}x over {b['days']} days")
+            if d.get("median") is not None:
+                lines.append(f"- During: median {d['median']}x over {d['days']} days (ends {d['ends']})")
         for name, arm in (d.get("arms") or {}).items():
             lines.append(f"- {name.capitalize()}: {arm['comments']} viewer comments on {arm['shorts']} Shorts "
                          f"({arm['per1k']} per 1,000 views; {arm.get('likesPer100')} likes per 100 views)")
