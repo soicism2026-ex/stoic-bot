@@ -100,5 +100,10 @@ effort ends up.
    the quote or hook.
 5. Lamps: write "oil lamp"; the painter turns it into a small terracotta Roman lamp
    with an open flame (a bare "oil lamp" painted as a glass hurricane lantern).
+6. Words the model takes literally (first real renders, 2026-11-11): "the face of a
+   boulder" painted a giant stone head, so describe an object by its shape and
+   surface ("a jagged, moss-flecked grey boulder"). A light named next to a held
+   object merges with it (a wine cup with a candle burning inside): put the light
+   elsewhere in the room ("firelight from a hearth behind him").
 4. Review before `add`: would a shot still make sense if the quote were swapped for
    another? Then it is atmosphere, not a shot; rewrite it.
