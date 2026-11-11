@@ -947,6 +947,15 @@
    "chess",
    "clock",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} standing in a crowded Roman market at midday, pulled in three directions by shouting vendors, a hand on each side tugging his cloak, hard noon sun",
+   "Close-up of a chisel striking a single deep line into a pale marble slab, stone dust drifting in a shaft of window light",
+   "{seneca} seated in a quiet study with a bronze oil lamp at his elbow, one finger resting on a wax tablet, calm and certain",
+   "Close-up of {man}'s hands gripping a taut rope as he steadies a small wooden boat, spray on his knuckles, grey overcast sky",
+   "Wide shot of a straight white road cut across green hills toward a far city, {man} a small figure walking it, low morning sun",
+   "{man} at a wooden workbench shaping a bronze nail with a hammer, steady and focused, glowing forge fire beside him",
+   "{man} standing on a hillside at sunrise with arms relaxed at his sides, a clear and settled expression, warm gold light on his face"
   ]
  },
  {
@@ -967,6 +976,15 @@
    "man weightlifting",
    "mountain climber",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} at dawn in a cold stone courtyard, bare-chested and shivering, standing over a bronze basin of water with a stubborn scowl, grey pre-dawn light",
+   "Close-up of {man}'s feet planted on cold flagstones, toes gripping, frost on the ground, pale dawn light",
+   "{man} pouring a jug of cold water over his head, mouth open in a gasp, droplets flying in the first dawn sun",
+   "{seneca} watching from a colonnade with arms folded, a knowing half smile, soft dawn light",
+   "Wide shot of a sandy training ground at sunrise, {man} sprinting toward a far wooden post, dust rising behind him, long shadows",
+   "Close-up of {man}'s hand lifting a heavy round stone to his shoulder, veins standing in his forearm, hard noon sun",
+   "{man} standing tall on a hill road at sunrise, breath steaming, chest open and eyes bright, gold sun on his face"
   ]
  },
  {
@@ -987,6 +1005,15 @@
    "clouds timelapse",
    "lighthouse",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} on a rocky shore at dusk, holding a rope at full stretch as a fishing boat tosses far out on a grey storm sea, flickering torchlight from the harbour wall behind him",
+   "Close-up of {man}'s knuckles whitening around a coil of rope, rain streaming down his wrist, overcast storm light",
+   "Wide shot of a broad grey sea with towering waves crashing against black rocks, a small figure on the shore, heavy dark clouds with one break of sun",
+   "{epictetus} seated on a plain stool in a simple stone room, one hand open and palm up, the other resting on his knee, soft window light",
+   "Close-up of {man}'s open hand releasing the rope, fingers uncurling as the tension leaves them, soft dawn light",
+   "{man} kneeling at a water trough rinsing his face and neck with both hands, steady breaths, warm morning sun",
+   "{man} walking up a stone stair toward his house door, shoulders level and gaze ahead, orange sunset behind him"
   ]
  },
  {
@@ -1045,6 +1072,15 @@
    "ocean waves",
    "man running dawn",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} in a dark stone cell, gripping iron bars with both hands and staring out, a single torch burning in an iron bracket in the passage",
+   "Close-up of {man}'s fingers loosening from the cold bars, a thin beam of dawn light falling across his knuckles",
+   "{epictetus} sitting on a plain bench in a doorway, an iron chain at his ankle and a calm bright smile, golden morning light on his face",
+   "Close-up of a hand opening the latch of a wooden gate, sunlight spilling through the widening gap",
+   "Wide shot of a long road winding over green hills toward the sea, {man} small in the foreground stepping onto it, clear morning sun",
+   "A hawk lifting from a cliff edge over a bright sea, wings spread wide, hard noon sun",
+   "{man} on a cliff above the sea with arms open to the wind, cloak streaming, golden sunrise on his face"
   ]
  },
  {
@@ -1251,6 +1287,15 @@
    "park bench",
    "men campfire",
    "handshake"
+  ],
+  "scenes": [
+   "{man} leaning across a wooden table toward an older friend who is mid-sentence, {man} cutting in with a raised finger and a restless look, warm oil lamp light from a shelf behind them",
+   "Close-up of {man}'s mouth pressed shut and his throat tight as he holds back a reply, soft window light from one side",
+   "Close-up of the friend's weathered hands trembling slightly as he speaks, a cup of watered wine between them, firelight from a hearth beyond",
+   "Wide shot of a stone courtyard at afternoon sun, {man} and {marcus} seated on a bench facing each other, heads inclined, olive trees around them",
+   "{man} listening with his chin on his fist, eyes soft and steady on the speaker, golden hour light across his cheek",
+   "The friend's shoulders loosening as his story pours out freely, his eyes wet and grateful, warm oil lamp light on his face",
+   "{man} and the friend walking side by side along a colonnade at dusk, {man} with a hand on the friend's shoulder, amber sunset light between the columns"
   ]
  },
  {
@@ -1271,6 +1316,15 @@
    "men fishing",
    "man reading",
    "men campfire"
+  ],
+  "scenes": [
+   "{man} slumped on the edge of a bed in a dim room, head in hands after a heavy day, one small oil lamp on a shelf across the room",
+   "Close-up of a friend's broad hand tearing a round loaf of bread and holding out half, warm oil lamp light from the table",
+   "{marcus} in a stone doorway watching a household at table, his expression gentle and appreciating, soft evening window light",
+   "A long wooden table where an old woman ladles stew into a bowl, a young man laughing beside her, a child reaching for bread, firelight from a hearth behind them",
+   "Close-up of {man}'s eyes lifting, a first small smile forming, warm lamplight on his cheek",
+   "Wide shot of a lamplit family table in a vaulted stone room, six people leaning in together over bread and olives, golden torchlight on the walls",
+   "{man} laughing with his arm around a friend's shoulders at the table, glowing oil lamp light on both faces"
   ]
  },
  {
@@ -1291,6 +1345,15 @@
    "man walking alone",
    "open road",
    "men hiking"
+  ],
+  "scenes": [
+   "{man} raising a wine cup at a feast table beside a smiling guest in a purple cloak, whose gaze slides to the purse at {man}'s belt, flickering torchlight",
+   "Close-up of the guest's smiling lips and cold eyes, a gold ring on the hand that holds his cup, warm firelight from a hearth beyond",
+   "A grey wolf padding between sheep at dusk, amber eyes fixed on the flock, low orange sunset",
+   "{marcus} seated at an oak desk with a bronze oil lamp, looking up with a steady and watchful gaze",
+   "Close-up of {man}'s hand setting down his cup and turning it over, a decisive gesture, soft window light",
+   "{man} walking out through a stone archway into the cool evening, back straight, a warm loaf in his hand, lit by the last gold of sunset",
+   "{man} sharing bread with an old friend on a doorstep, both laughing, warm oil lamp light from the open doorway behind them"
   ]
  },
  {
@@ -1311,6 +1374,15 @@
    "zipper",
    "compass",
    "empty road"
+  ],
+  "scenes": [
+   "{man} in a dim storeroom at night, a heavy sack of coins on a table and his hand hovering over it, tempted, a flickering torch on the wall",
+   "Close-up of {man}'s throat tightening as his mouth opens to speak, his eyes uncertain, warm firelight from one side",
+   "{marcus} standing in a stone doorway, one hand raised palm outward in calm refusal, steady gaze, soft dawn light behind him",
+   "Close-up of a merchant's hand sliding a crooked brass weight onto a scale, the pan tilting, lamplight from a shelf behind",
+   "Close-up of {man}'s hand pushing the coin sack gently away across the table, steady and sure, soft window light",
+   "Wide shot of a bright marketplace, {man} meeting a customer's eye over a fair set of scales, open stalls, clear morning sun",
+   "{man} stepping out into a sunlit street with a light easy stride, head up, golden morning light on his face"
   ]
  },
  {
@@ -1331,6 +1403,15 @@
    "man walking city",
    "eagle",
    "lion walking"
+  ],
+  "scenes": [
+   "A merchant in a rich red cloak pressing a heavy bag of gold into {man}'s hands in a dim room, a flickering torch casting long shadows",
+   "Close-up of the gold coins spilling across a table, glittering, torchlight dancing on them",
+   "Close-up of {man}'s eyes pulled between the coins and a worn clay token on a cord round his neck, his promise, firelight from a hearth beyond",
+   "{marcus} standing in a stone hall with a hand on his heart, firm and quiet, soft window light",
+   "Close-up of {man}'s hand pushing the gold bag back across the table, steady and unhurried, torchlight on his knuckles",
+   "{man} walking out into the morning street, lighter in his step, head high, golden sunrise on the stone walls",
+   "Wide shot of {man} standing on a hilltop at dawn with open arms, the city glowing below, warm gold light across his chest"
   ]
  },
  {
@@ -1351,6 +1432,15 @@
    "coffee steam",
    "man walking rain",
    "sunrise"
+  ],
+  "scenes": [
+   "A Roman sentry in a heavy wool cloak standing guard on a stone wall at dawn, snow settling on his shoulders and his breath steaming, pale blue morning light",
+   "Close-up of the sentry's gloved fingers wrapped around a spear shaft, frost glittering on the wood, pale dawn light",
+   "{marcus} at a campaign tent entrance pulling his cloak tight, bleary-eyed yet firm, a brazier glowing orange behind him",
+   "Close-up of {man}'s bare feet stepping from a warm bed onto a cold stone floor, grey window light",
+   "{man} striding along a snowy path with his chin up, cloak flapping, low sun breaking through the cloud",
+   "Wide shot of a frosty field at sunrise where {man} works a plough behind an ox, steam rising from both, gold light on the furrows",
+   "{man} resting a hand on the ox's neck at the field's edge, a tired and proud smile, warm sunrise on his face"
   ]
  },
  {
@@ -1371,6 +1461,15 @@
    "men rowing",
    "birds flock",
    "flowers field"
+  ],
+  "scenes": [
+   "A single honeybee landing on a white flower in an orchard, golden pollen on its legs, warm morning sun",
+   "Close-up of a bee crawling into a honeycomb cell, hundreds of other bees working together around it, golden afternoon sun",
+   "{marcus} standing among beehives in a sunlit orchard, a hand lifted toward the humming air, thoughtful and gentle",
+   "Wide shot of a Roman village with every household at work, bakers, weavers, farmers, bright midday sun",
+   "{man} at a crossroads between a gold coin pouch and a neighbour's cart stuck in mud, torn, soft overcast light",
+   "{man} setting his shoulder to the stuck cart beside the neighbour, both pushing, golden afternoon sun",
+   "{man} and the neighbour sharing a jar of honey on a doorstep, smiling, warm sunset light on both faces"
   ]
  },
  {
@@ -1391,6 +1490,15 @@
    "man walking rain",
    "waves rocks",
    "rainbow"
+  ],
+  "scenes": [
+   "{man} on a rain-soaked road at dusk, his cart wheel broken in a rut and his supplies scattered in the mud, fists clenched, overcast storm light",
+   "Close-up of {man}'s hand pressed hard against his forehead, rain dripping from his fingers, overcast storm light",
+   "{marcus} in a plain cloak walking steadily through heavy rain beside a loaded mule, a torch glowing at his hip",
+   "Close-up of {man}'s fingers closing round the splintered axle and straining to lift it, mud on his forearms, overcast storm light",
+   "Wide shot of two men lifting a cart out of a muddy road, golden afternoon sun breaking through the clouds onto the hill",
+   "{man} laughing with rain on his face as the wheel turns again, warm sun breaking through behind him",
+   "{man} standing proud on a hilltop at sunrise, his cloak steaming and his head high, gold light spilling across wet fields"
   ]
  },
  {
@@ -1411,6 +1519,15 @@
    "galaxy",
    "man walking forest",
    "sun rays forest"
+  ],
+  "scenes": [
+   "{man} at a rough table biting into a green cucumber and wincing at the bitterness, a dim kitchen, firelight from a hearth behind him",
+   "Close-up of a hand flicking a bitter cucumber aside into a clay bowl, easy and unbothered, warm window light",
+   "{marcus} walking a dusty road and stepping lightly around a thorn bush, with an easy stride, golden morning sun",
+   "Close-up of {man}'s sandal planted on the road past the thorns, long shadows of the branches across the dust, low morning sun",
+   "Wide shot of a country road winding through thornbushes toward green hills, {man} a small figure walking on, clear morning sun",
+   "{man} reaching up to pick a ripe fig from a branch, smiling, dappled sun through the leaves",
+   "{man} sitting on a wall at sunset with a ripe fig in hand and the road ahead of him, warm orange light on his face"
   ]
  },
  {
@@ -1431,6 +1548,15 @@
    "man rock climbing",
    "mountain summit",
    "mountain flag"
+  ],
+  "scenes": [
+   "{man} straining with both hands against a huge boulder on a hillside, feet slipping on loose gravel, sweat on his neck, hard noon sun",
+   "Close-up of {man}'s fingers white against the grey rock, a bead of sweat sliding down his temple, overcast noon light",
+   "Wide shot of Roman builders hauling a giant stone column upright with ropes and wooden levers, dust rising in a shaft of afternoon sun",
+   "{marcus} watching the builders from a stone terrace with folded arms and a quiet smile, warm afternoon sun",
+   "Close-up of a teamwork pulley rope taut in a dozen hands, wood creaking, golden sun slanting across",
+   "{man} bracing his shoulder under a lever beside the others, teeth bared in effort, the stone starting to lift, dust glowing in sunlight",
+   "The column standing upright against a blue sky as the builders cheer, {man} among them with raised arms, gold sunset light on the marble"
   ]
  },
  {
@@ -1809,6 +1935,15 @@
    "rope bridge",
    "steam rising",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} alone on a stone bench at night, shoulders hunched and hands clenched between his knees, a single torch burning in a bracket on the wall behind",
+   "Close-up of {man}'s jaw working and his eyes glistening as he holds his worries in, faint firelight from one side",
+   "A friend's broad hand reaching out and settling on {man}'s forearm, warm oil lamp light from a table nearby",
+   "Wide shot of two men sitting close at a campfire on a hillside at night, one speaking and the other listening, orange flames and a sky full of stars",
+   "{seneca} leaning forward by firelight with a gentle, steady gaze, hands open on his knees",
+   "Close-up of {man}'s face as the tension drains from his brow and his eyes close in relief, glowing firelight on his skin",
+   "{man} and his friend laughing together as the fire burns low, the first grey light of dawn on the hills behind"
   ]
  },
  {
@@ -1829,6 +1964,15 @@
    "man walking rain",
    "street lamp",
    "sunrise"
+  ],
+  "scenes": [
+   "A crowded banquet hall full of laughing guests clinking cups around {man}, who sits at the head of the table in a fine cloak, torches burning along the walls",
+   "Close-up of a guest's smile as his eyes slide to {man}'s gold ring, warm lamplight on his cheek",
+   "The same hall seen in cold dawn light, chairs overturned and cups scattered across the table, {man} sitting alone with his head low",
+   "{seneca} seated on a stone bench in a quiet garden, an olive tree behind him, an open and sympathetic gaze, soft overcast light",
+   "Close-up of a worn hand knocking on a wooden door, one old friend standing on the step in the grey morning, soft dawn light",
+   "{man} and the old friend sharing a plain meal of bread and olives at a rough table, warm oil lamp light between them",
+   "Wide shot of {man} and the friend walking an olive-lined road at sunrise, shoulders touching, gold light spilling across the hills"
   ]
  },
  {
@@ -1849,6 +1993,15 @@
    "campfire night",
    "fireworks",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} standing alone in the middle of a vast stone arena at dusk, a laurel wreath on his head and his arms hanging, empty tiers around him, last orange sun",
+   "Close-up of the laurel wreath resting in {man}'s hands, his thumb turning a single leaf, soft dusk light",
+   "A long banquet table laid with fruit and roast meat, one chair filled and every other chair bare, torches burning on the wall",
+   "{seneca} at an open window overlooking the city rooftops, gazing out with a thoughtful expression, golden evening sun",
+   "{man} running through a city street toward a doorway, wreath held high, a grin breaking out, warm lamplight spilling from the door",
+   "Wide shot of a lamplit courtyard full of friends crowding around {man}, arms raised and laughing, torches in brackets on the walls",
+   "Close-up of {man} laughing with his head thrown back, a friend's hand on his shoulder, glowing torchlight on his face"
   ]
  },
  {
@@ -1869,6 +2022,15 @@
    "car open road",
    "sunset timelapse",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} on a hillside road at dusk watching a friend's cart roll away down the valley, his hand lifted in farewell, amber sunset light",
+   "Close-up of two forearms clasped across a city gate, knuckles tight, warm sunset light on the skin",
+   "A water jar tipping and a thin stream of water running onto the ground, drops catching a shaft of sun",
+   "{seneca} sitting at a long table among laughing friends, savouring a cup, warm oil lamp light and a joyful look",
+   "Close-up of a friend's hand tearing bread and passing it across the table, laughter in the blurred background, firelight from a hearth",
+   "Wide shot of a lamplit courtyard feast, {man} in the centre toasting with friends on every side, torches burning along the walls",
+   "{man} with his arms around two friends watching the sunset from a rooftop terrace, gold light on all three faces"
   ]
  },
  {
@@ -1889,6 +2051,15 @@
    "waves rocks",
    "calm lake",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} on a harbour wall at dusk, a dark wall of storm cloud rolling in over the sea, his cloak whipping, a torch burning in a bracket behind him",
+   "Close-up of {man}'s eyes closed and his chest rising in one slow deep breath, sea wind in his hair, overcast storm light",
+   "A heavy wave crashing against dark rocks, white spray flung high, a gap of sun burning through the clouds",
+   "{seneca} standing at a stone window high above a harbour, both hands resting on the sill, calm eyes on the storm, grey overcast light",
+   "Close-up of a fist loosening into an open palm, rain beading on the skin, soft overcast light",
+   "Wide shot of a lone sailor steering a small boat over rolling swells, sail taut, a shaft of sun on the water ahead",
+   "{man} standing straight on the shore after the storm, hair wet and a quiet smile, golden sunset on a calm sea behind him"
   ]
  },
  {
@@ -1909,6 +2080,15 @@
    "man climbing",
    "rain storm",
    "sunrise"
+  ],
+  "scenes": [
+   "Roman soldiers at the bank of a fast brown river at midday, the far shore a long way off, one soldier hesitating with a heavy pack, hard noon sun",
+   "Close-up of {man}'s boot stepping into the cold swirling water, ripples spreading, glittering sunlight",
+   "{seneca} standing on the riverbank with an open hand pointing across the water, calm and encouraging, overcast soft light",
+   "Wide shot of {man} wading across the river chest deep, holding his pack overhead, spray flying, afternoon sun breaking over the far hills",
+   "Close-up of {man}'s hands gripping a rope strung between two trees, knuckles tight, hard noon sun through the spray",
+   "{man} hauling himself up the far muddy bank, soaked and grinning, golden afternoon sun on his face",
+   "{man} standing on the far shore in the sunshine, water dripping from his cloak, looking back at the river he has crossed, golden afternoon sun"
   ]
  },
  {
@@ -1929,6 +2109,15 @@
    "geese flying",
    "man climbing",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} straining alone against a fallen oak across a mountain path, his shoulder pressed to the trunk and his boots sliding, hard noon sun",
+   "Close-up of {man}'s hands gripping the rough bark, knuckles white, sweat on his wrist, overcast noon light",
+   "A column of ants carrying a crumb across a stone, many tiny shapes lined up together, bright morning sun",
+   "{seneca} on the path behind him, hand raised, calling to workers in the distance, kind and practical, golden afternoon sun",
+   "Close-up of three strong hands joining on the trunk beside {man}'s, the grips tightening together, warm sun",
+   "Wide shot of eight men heaving the oak off the path with ropes and levers, dust rising in sunlight",
+   "{man} laughing with the helpers as they walk on, arms across each other's shoulders, golden sunset light along the mountain road"
   ]
  },
  {
@@ -2381,6 +2570,15 @@
    "men talking",
    "campfire night",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} standing still in a packed noisy Roman forum at midday, people streaming past him on both sides, his gaze distant and weary, hard noon sun",
+   "Close-up of {man}'s eyes drifting across a blur of strangers' backs, his expression hollow, overcast noon light",
+   "Wide shot of a lamplit feast hall full of laughing figures, {man} sitting at the edge of the long table with an untouched cup, torches burning on the walls",
+   "{epictetus} leaning on his staff at the corner of a quiet street, his steady eyes meeting {man}'s, golden hour",
+   "Close-up of two hands clasping forearms in a firm greeting, warm firelight from a hearth behind them",
+   "{man} and a faithful friend walking along a narrow olive-lined road, heads close in quiet talk, golden hour sun",
+   "Two figures sharing a bench beneath a fig tree at sunset, relaxed and laughing, warm orange light across their faces"
   ]
  },
  {
@@ -2401,6 +2599,15 @@
    "men handshake",
    "campfire night",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} sitting alone at a table piled with gold coins, rubbing his temple with a blank stare, a single oil lamp on the table edge",
+   "Close-up of a heap of gold coins and one empty wooden chair beyond them, torchlight reflecting on the metal",
+   "{epictetus} sitting at a rough wooden table, one hand pointing at an open chair across from him, kind and direct, warm lamplight",
+   "Close-up of two hands sharing a loaf of bread over a plain table, warm oil lamp light",
+   "{man} pushing back the coins and reaching toward a friend in the doorway, a smile starting, soft evening light",
+   "Wide shot of {man} and a friend at a table by an open window, laughing over bread and olives, golden sunset streaming in",
+   "Two silhouettes walking along an olive road at sunset with shoulders touching, warm orange sky"
   ]
  },
  {
@@ -2421,6 +2628,15 @@
    "man running dawn",
    "open road",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} at a crowded tavern table with a wine cup in his hand as friends hoot and bang on the wood, his gaze heavy, flickering torchlight",
+   "Close-up of {man}'s thumb tracing the rim of the cup, the red wine trembling, firelight from a hearth behind him",
+   "{epictetus} seated across from him with calm eyes, one hand resting on a plain water jug, warm oil lamp light",
+   "Close-up of a friend's laughing face shifting into annoyance as {man} sets the cup down, torchlight flickering",
+   "Wide shot of {man} walking out of the tavern door into the blue dawn street, friends watching behind him, a warm glow at the door",
+   "Close-up of {man} drinking a clear cup of water at a fountain, eyes bright, morning sun glittering on the stream",
+   "{man} jogging along a sunrise road, breath steady and stride free, golden light on the hills ahead"
   ]
  },
  {
@@ -2461,6 +2677,15 @@
    "man laying bricks",
    "man welding",
    "sunrise city"
+  ],
+  "scenes": [
+   "{man} in a workshop frozen with an overloaded basket of tools, jars, and rolled cloth, surrounded by too many tasks, hard noon sun through the doorway",
+   "Close-up of {man}'s hands gripping the basket handles with white knuckles, dust motes in a shaft of window light",
+   "{epictetus} standing by a leather-maker's bench with a calm smile, one hand resting lightly on a pair of finished sandals, soft window light",
+   "Close-up of a sandal-maker's hands drawing a stitch tight through leather, steady and unhurried, warm oil lamp light",
+   "{man} setting the basket down and picking up a single mallet, his shoulders dropping with relief, golden afternoon sun",
+   "Wide shot of a lively street of craftsmen each at their own bench, a smith, a potter, a weaver, bright morning sun",
+   "{man} hanging a finished tunic on a line and wiping his hands with a pleased smile, warm sunset light across his workshop doorway"
   ]
  },
  {
@@ -2481,6 +2706,15 @@
    "compass",
    "calm lake",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} in a stone courtyard at dawn, clenching a rolled cloak as his brother walks off across the flagstones, jaw set, cold blue light",
+   "Close-up of {man}'s fist tightening, his knuckles pale, soft dawn light on his hand",
+   "{epictetus} standing at a stone gate with one finger lifted, patient and kind, pointing back at {man}, warm morning sun",
+   "Close-up of {man}'s own two feet planted firmly on a worn stone threshold, steady, long dawn shadows",
+   "Close-up of {man}'s hand loosening and opening, palm up, golden sunrise across his skin",
+   "Wide shot of a courtyard with a fig tree where {man} sweeps the flagstones calmly while his brother watches from the far side, bright morning sun",
+   "{man} holding out a cup of water to his brother, who takes it with a small smile, soft golden sunrise between them"
   ]
  },
  {
@@ -2501,6 +2735,15 @@
    "compass",
    "lantern night",
    "sunrise road"
+  ],
+  "scenes": [
+   "A lost traveller in a grey wool cloak stumbling off the path into dark brush at dusk, glancing around in confusion, last faint sunset glow",
+   "Two travellers on the road looking on, one pointing and laughing at the lost man, low sunset",
+   "{epictetus} stepping off the road toward the lost traveller with a burning torch held high, kind and patient eyes, firelight on his beard",
+   "Close-up of {epictetus}'s hand clasping the traveller's wrist and pulling him up, firm and warm, torchlight from above",
+   "Wide shot of a dusk road across hills, {epictetus} walking beside the traveller toward the glow of a distant village, a star appearing",
+   "Close-up of the traveller's face as relief spreads, tears of gratitude on his cheek, soft torchlight",
+   "{epictetus} pointing along a clear stone road toward a lit village gate, the traveller smiling beside him, warm dawn light on the road"
   ]
  },
  {
@@ -2521,6 +2764,15 @@
    "man breathing",
    "calm lake",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} in a small courtyard at dawn, a neighbour's goat bleating over the wall and a pile of rubbish tipped at his gate, jaw tight, cold morning light",
+   "Close-up of {man}'s fist tightening around the handle of a broom, grey dawn light",
+   "{epictetus} leaning on his staff at the gate with a warm smile, pointing a finger at {man}'s chest, soft sunrise behind him",
+   "Close-up of {man}'s eyes closing and a slow breath leaving his lips, golden sunrise on his face",
+   "Wide shot of a sunlit gymnasium where a wrestler holds his ground against a larger opponent, sand dusting up, bright noon light",
+   "Close-up of {man} setting the neighbour's fallen basket upright with a steady hand, warm morning sun",
+   "{man} and the neighbour exchanging a nod across the garden wall, {man} calm and the neighbour surprised, golden morning sun between them"
   ]
  },
  {
