@@ -122,6 +122,18 @@ jobs:
           npx -y @elevenlabs/cli@latest onboard check --env-path "$RUNNER_TEMP/el.env" || true
           rm -f "$RUNNER_TEMP/el.env"
         fi
+    # The painted look's stills (src/painter.py, Cloudflare's free FLUX):
+    # restore what the rehearsal (edit-preview) already painted, so the live
+    # post airs the very pictures the owner saw and spends no budget twice.
+    # Empty and unused while REEL_EDIT_LOOK is off.
+    - name: Stills already painted (the rehearsal's)
+      uses: actions/cache@v4
+      with:
+        path: data/still_cache
+        key: stills-${{ github.run_id }}
+        restore-keys: |
+          stills-
+
     - name: The day the next post airs
       run: |
         day=$(python src/airday.py --next)
@@ -160,6 +172,12 @@ jobs:
         # only); an audition may try unapproved ones.
         REEL_REHEARSAL: ${{ env.UP_NEXT }}
         REEL_FORMAT: edit
+        # THE NEW LOOK (owner 2026-11-10: "Deploy agents to design higher
+        # quality videos"): "painted" = colour paintings of each shot, the v2
+        # type, mastering to -14 LUFS (daily_post._paint_edit/_type_edit).
+        # Off ("") until the owner picks it in the HQ (asks/new-look).
+        REEL_EDIT_LOOK: ""
+        REEL_STILL_CACHE: data/still_cache
         REEL_EDIT_MUSIC: ${{ inputs.music }}
         REEL_EDIT_SFX: ${{ (inputs.sfx || 'on') == 'on' && '1' || '0' }}
       run: |
