@@ -71,6 +71,16 @@ def _story_timings():
             for i, w in enumerate(words)]
 
 
+@pytest.fixture(autouse=True)
+def _render_reset(monkeypatch):
+    """Put the environment back and reload render, so the edit pack's module
+    constants loaded here never leak into the next test file."""
+    yield
+    monkeypatch.undo()
+    import render
+    importlib.reload(render)
+
+
 def _clean_env(monkeypatch):
     for k in list(os.environ):
         if k.startswith("REEL_") or k in ("MUSIC_VOLUME", "IMAGE_BG", "DRY_RUN"):

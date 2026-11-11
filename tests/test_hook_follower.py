@@ -93,7 +93,8 @@ def test_layout_is_left_to_libass_not_hand_computed():
 def test_the_card_and_the_follower_are_never_both_drawn():
     """Two copies of the same words stacked on each other."""
     src = (ROOT / "src" / "render.py").read_text()
-    assert "if hook and HOOK_TEXT_ON and not hook_starts:" in src
+    # (REEL_TYPE=v2 adds "and not TYPE_V2": its own ASS hook replaces the card)
+    assert "if hook and HOOK_TEXT_ON and not hook_starts" in src
 
 
 def test_hook_line_and_captions_never_share_the_screen(tmp_path, monkeypatch):
