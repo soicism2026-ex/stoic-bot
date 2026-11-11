@@ -30,6 +30,9 @@ standing rule):
     Short's description he sent "as inspiration for our next shorts"): 2-3
     short paragraphs that speak to the viewer about his own life, and one
     question for the comments; no links, hashtags or shame
+  * optional scene fields (Plutarch, docs/scene_writing.md): `scenes` (6-8
+    paintable shots), `emphasis` (gold words from the quote), `hook_emphasis`;
+    all three or none, validated by scene_problems()
 """
 from __future__ import annotations
 
@@ -46,6 +49,7 @@ sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
 import airday  # noqa: E402
 import edits  # noqa: E402
+import prompt_lint  # noqa: E402
 import validate_quotes as vq  # noqa: E402
 
 TARGET_DAYS = 30      # the Librarian tops the shelf up to this
@@ -61,6 +65,9 @@ CITATION = {
                             r"trans\. George Long$"),
 }
 KEYS = ["id", "author", "citation", "quote", "hook", "theme", "description", "question", "visuals"]
+# Plutarch's scene-writer fields (docs/scene_writing.md): optional, in this order
+# after KEYS. Older quotes have none; the painter and the typographer read them.
+SCENE_KEYS = ["scenes", "emphasis", "hook_emphasis"]
 # The same words tests/test_edits.py checks: these return women's fitness
 # footage unless the query names a man.
 PEOPLE = {"boxer", "boxing", "training", "weight", "weightlifting", "lifting",
@@ -144,11 +151,104 @@ def description_problems(q: dict) -> list[str]:
     return out
 
 
+# --- scene fields (docs/scene_writing.md) -----------------------------------
+CAST = {"marcus", "seneca", "epictetus", "man"}
+SCENE_COUNT = (6, 8)
+SCENE_WORDS = (8, 45)
+EMPHASIS_COUNT = (1, 3)
+# The code adds the look (colour, cinematic, painterly); a shot that names one fights it.
+STYLE_WORDS = re.compile(
+    r"\b(cinematic|4k|8k|hdr|photo-?realistic|hyper-?realistic|painting|painterly|"
+    r"illustration|artstation|render(ed|ing)?|film grain|grainy|black and white|monochrome|"
+    r"sepia|bokeh|lens flare|masterpiece|highly detailed|style of)\b", re.I)
+# "not red" renders red: a shot says what is there, never what is not.
+NEGATION = re.compile(r"\b(no|not|without|never|nor|none|nothing|nobody|neither|\w+n't)\b", re.I)
+# The shot must name a physical light source (doctrine §6; the painter needs one).
+LIGHT = re.compile(
+    r"\b(lamps?|lamplight|lamplit|torch(es|light|lit)?|golden hour|moonlit|candles?|candlelight|firelight|fire|brazier|hearth|"
+    r"embers|flames?|moonlight|sun|sunrise|sunset|sunlight|sunlit|dawn|dusk|daylight|noon|"
+    r"overcast|window|doorway|skylight|lightning)\b", re.I)
+STATUE_OPENER = re.compile(r"\b(statue|bust|sculpture|monument)\b", re.I)
+TOKEN = re.compile(r"\{(\w+)\}")
+
+
+def _contains(hay: str, needle: str) -> bool:
+    return needle.lower() in hay.lower()
+
+
+def scene_problems(q: dict) -> list[str]:
+    """Rules for scenes / emphasis / hook_emphasis when present (all optional)."""
+    out = []
+    if not any(k in q for k in SCENE_KEYS):
+        return out
+    for k in SCENE_KEYS:
+        if k not in q:
+            out.append(f"{k}: a quote with scene fields needs all three ({SCENE_KEYS})")
+    sc = q.get("scenes")
+    if sc is not None:
+        if not isinstance(sc, list) or not all(isinstance(s, str) for s in sc):
+            out.append("scenes: a list of strings")
+        else:
+            lo, hi = SCENE_COUNT
+            if not lo <= len(sc) <= hi:
+                out.append(f"scenes: {lo}-{hi} shots, got {len(sc)}")
+            if len({s.strip().lower() for s in sc}) != len(sc):
+                out.append("scenes: two shots are identical")
+            for i, s in enumerate(sc, 1):
+                tag = f"scene {i}"
+                n = len(s.split())
+                if not SCENE_WORDS[0] <= n <= SCENE_WORDS[1]:
+                    out.append(f"{tag}: {n} words; one paintable shot is {SCENE_WORDS[0]}-{SCENE_WORDS[1]}")
+                toks = TOKEN.findall(s)
+                bad = sorted({t for t in toks if t not in CAST})
+                if bad:
+                    out.append(f"{tag}: unknown cast token {bad}; use {sorted('{' + c + '}' for c in CAST)}")
+                if len(toks) > 2:
+                    out.append(f"{tag}: more than two people ({len(toks)}) in one shot")
+                plain = TOKEN.sub(" ", s)
+                if re.search(r"[{}]", plain):
+                    out.append(f"{tag}: stray brace")
+                m = STYLE_WORDS.search(plain)
+                if m:
+                    out.append(f"{tag}: style word '{m.group(0)}': the code adds the look")
+                m = NEGATION.search(plain)
+                if m:
+                    out.append(f"{tag}: negation '{m.group(0)}': say what is there, not what is not")
+                if prompt_lint._has(prompt_lint.TEXT_ASK, plain):
+                    out.append(f"{tag}: asks for writing, signs or words: image models garble letters")
+                for a in prompt_lint.ANACHRONISMS:
+                    if re.search(r"\b" + re.escape(a) + r"\b", plain, re.I):
+                        out.append(f"{tag}: '{a}' did not exist in the ancient world")
+                if not LIGHT.search(plain):
+                    out.append(f"{tag}: name a physical light source (oil lamp, torchlight, dawn, overcast noon...)")
+                if i == 1 and STATUE_OPENER.search(plain):
+                    out.append("scene 1: the stopper is a person in a situation, never a statue")
+    em = q.get("emphasis")
+    if em is not None:
+        if not isinstance(em, list) or not all(isinstance(e, str) and e.strip() for e in em):
+            out.append("emphasis: a list of words copied from the quote")
+        else:
+            if not EMPHASIS_COUNT[0] <= len(em) <= EMPHASIS_COUNT[1]:
+                out.append(f"emphasis: {EMPHASIS_COUNT[0]}-{EMPHASIS_COUNT[1]} phrases, got {len(em)}")
+            for e in em:
+                if not _contains(q.get("quote", ""), e):
+                    out.append(f"emphasis '{e}' is not word for word in the quote")
+            if len({e.lower() for e in em}) != len(em):
+                out.append("emphasis: a phrase is listed twice")
+    he = q.get("hook_emphasis")
+    if he is not None:
+        if not isinstance(he, str) or not he.strip():
+            out.append("hook_emphasis: one word or phrase from the hook")
+        elif not _contains(q.get("hook", ""), he):
+            out.append(f"hook_emphasis '{he}' is not word for word in the hook")
+    return out
+
+
 def problems(q: dict, bank: list[dict], rows: list[dict], batch_ids: set | None = None) -> list[str]:
     """Every rule this candidate breaks; an empty list means it may go on the shelf."""
     out = []
-    if list(q.keys()) != KEYS:
-        out.append(f"keys must be exactly {KEYS} in that order")
+    if list(q.keys()) != KEYS + [k for k in SCENE_KEYS if k in q]:
+        out.append(f"keys must be exactly {KEYS} in that order (then optionally {SCENE_KEYS})")
         if not all(k in q for k in KEYS):
             return out
     qid = q["id"]
@@ -188,6 +288,7 @@ def problems(q: dict, bank: list[dict], rows: list[dict], batch_ids: set | None 
     if q["theme"] not in THEMES:
         out.append(f"theme must be one of {sorted(THEMES)}")
     out += description_problems(q)
+    out += scene_problems(q)
     vis = q["visuals"]
     if not isinstance(vis, list) or not 6 <= len(vis) <= 10:
         out.append("visuals: 6-10 shots")

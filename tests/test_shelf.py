@@ -153,3 +153,83 @@ def test_the_hq_warns_and_the_librarian_aims_at_the_same_numbers():
     assert shelf.WARN_DAYS < shelf.TARGET_DAYS
     page = (ROOT / "hq" / "forged-hq.html").read_text(encoding="utf-8")
     assert "sh && sh.low" in page and "librarian:" in page
+
+
+# --- scene fields (docs/scene_writing.md): scenes, emphasis, hook_emphasis ------
+
+SCENED = [q for q in BANK if "scenes" in q]
+
+
+def _scene(**change):
+    q = {"quote": "Nothing need provoke one’s anger if one does not add to one’s pile of troubles by getting angry.",
+         "hook": "Angry about it? Now it's two problems.",
+         "scenes": _six("{man} staring at a shattered clay jar on a courtyard floor, fists clenched, hard noon sun"),
+         "emphasis": ["pile of troubles"], "hook_emphasis": "two problems"}
+    q.update(change)
+    return " | ".join(shelf.scene_problems(q))
+
+
+def _six(first):
+    return [first] + ["{man} walking on a hill road at dawn, shot %d" % i for i in range(5)]
+
+
+def test_scene_fields_are_optional_and_old_quotes_pass():
+    assert shelf.scene_problems({"quote": "x", "hook": "y"}) == []
+    assert _why() == ""                       # GOOD has no scene fields
+
+
+def test_the_twelve_scened_quotes_exist_and_every_scened_quote_passes():
+    assert len(SCENED) >= 12
+    for q in SCENED:
+        assert shelf.scene_problems(q) == [], q["id"]
+        assert list(q.keys())[-3:] == shelf.SCENE_KEYS, q["id"]
+        assert 6 <= len(q["scenes"]) <= 8
+
+
+def test_a_good_scene_set_passes_and_all_three_fields_travel_together():
+    assert _scene() == ""
+    only = {"quote": "x y z", "hook": "a b", "scenes": ["a"] * 6}
+    assert "emphasis: a quote with scene fields needs all three" in " | ".join(shelf.scene_problems(only))
+
+
+def test_scene_count_length_and_duplicates():
+    assert "scenes: 6-8 shots, got 5" in _scene(scenes=_six("{man} walking at dawn on a hill road alone")[:5])
+    assert "two shots are identical" in _scene(scenes=["{man} walking at dawn on a hill road alone, wide"] * 6)
+    assert "words; one paintable shot" in _scene(scenes=_six("{man} at dawn"))
+
+
+def test_cast_tokens_are_known_and_at_most_two_per_shot():
+    assert "unknown cast token ['caesar']" in _scene(scenes=_six("{caesar} walking in a torchlit hall alone"))
+    assert "more than two people" in _scene(scenes=_six("{man} {marcus} {seneca} talking by an oil lamp at night"))
+    assert _scene(scenes=_six("{marcus} and {man} talking by an oil lamp at night")) == ""
+
+
+def test_style_negation_text_anachronism_and_light_rules():
+    assert "style word 'cinematic'" in _scene(scenes=_six("{man} walking in a cinematic dawn on a hill road"))
+    assert "style word '4k'" in _scene(scenes=_six("{man} walking in dawn light, 4k, on a hill road"))
+    assert "negation 'without'" in _scene(scenes=_six("{man} walking on a hill road at dawn without a cloak"))
+    assert "negation 'not'" in _scene(scenes=_six("{man} walking on a hill road at dawn, not smiling"))
+    assert "asks for writing" in _scene(scenes=_six("{man} reading a sign on a hill road at dawn"))
+    assert "asks for writing" in _scene(scenes=_six("{man} holding a tablet with words on it in dawn light"))
+    assert "'lantern' did not exist" in _scene(scenes=_six("{man} carrying a lantern along a hill road at night"))
+    assert "'book' did not exist" in _scene(scenes=_six("{man} holding a book in oil lamp glow at his desk"))
+    assert "name a physical light source" in _scene(scenes=_six("{man} walking along a hill road, a calm look on his face"))
+    assert "never a statue" in _scene(scenes=_six("a marble statue of a philosopher in dawn light, close up"))
+
+
+def test_emphasis_must_be_verbatim_in_the_quote_and_hook():
+    assert "emphasis 'pile of woes' is not word for word" in _scene(emphasis=["pile of woes"])
+    assert "emphasis: 1-3 phrases, got 0" in _scene(emphasis=[])
+    assert "emphasis: 1-3 phrases, got 4" in _scene(emphasis=["anger", "pile", "troubles", "getting"])
+    assert _scene(emphasis=["PILE OF TROUBLES"]) == ""                  # case-insensitive
+    assert "hook_emphasis 'three problems' is not word for word" in _scene(hook_emphasis="three problems")
+    assert "phrase is listed twice" in _scene(emphasis=["anger", "Anger"])
+
+
+def test_problems_accepts_scene_keys_after_the_base_keys_only():
+    q = copy.deepcopy(GOOD)
+    q.update({"scenes": _six("{man} walking on a hill road at dawn, first"),
+              "emphasis": [GOOD["quote"].split()[0]], "hook_emphasis": GOOD["hook"].split()[0]})
+    assert shelf.problems(q, OTHERS, []) == []
+    bad = {"scenes": q["scenes"], **{k: v for k, v in q.items() if k != "scenes"}}
+    assert "keys must be exactly" in " | ".join(shelf.problems(bad, OTHERS, []))

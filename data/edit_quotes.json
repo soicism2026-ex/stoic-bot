@@ -683,7 +683,21 @@
    "clouds timelapse",
    "waves",
    "sunrise"
-  ]
+  ],
+  "scenes": [
+   "{man} on a harbor quay in driving rain watching a ship sail off toward the horizon, fists tight, one break of golden sun in the storm clouds",
+   "Close-up of {man}'s hand gripping a wet stone mooring post, knuckles pale, overcast light",
+   "{epictetus} on a plain stool in a doorway, watching the rain fall, one hand open on his knee, overcast daylight",
+   "Close-up of raindrops landing on an open palm, overcast light",
+   "Wide shot of a river flowing smoothly around a boulder, sun through the mist",
+   "{man} with rain on his face, eyes closing, shoulders dropping, a faint smile, soft overcast light",
+   "{man} on the quay as the rain stops, a ray of sun breaking through the clouds onto the sea, looking up with relief"
+  ],
+  "emphasis": [
+   "as they are",
+   "tranquil flow of life"
+  ],
+  "hook_emphasis": "went differently"
  },
  {
   "id": "eat_as_you_ought",
@@ -813,7 +827,21 @@
    "city skyline night",
    "bread",
    "sunrise"
-  ]
+  ],
+  "scenes": [
+   "A ragged old fisherman laughing as he tears a loaf in his hands at a driftwood fire on the shore, orange firelight",
+   "Close-up of hands tearing a round loaf, steam rising, firelight",
+   "Wide shot of a heavy-set rich Roman in a gold-trimmed robe alone at a huge table heaped with fruit, tired face, torches in iron brackets",
+   "Close-up of his hand pushing a gold plate away, face turned aside, torchlight",
+   "{man} sharing bread with the old fisherman by the fire, both laughing, firelight on their faces",
+   "Wide shot of a small stone hut by the sea at sunset, smoke curling up, nets drying, orange sun",
+   "{man} lying back on warm sand with hands behind his head, content smile, sunset sky"
+  ],
+  "emphasis": [
+   "poor and sated",
+   "rich and hungry"
+  ],
+  "hook_emphasis": "rich and starving"
  },
  {
   "id": "begin_to_live_late",
@@ -871,7 +899,21 @@
    "sunset",
    "hourglass",
    "night sky"
-  ]
+  ],
+  "scenes": [
+   "{man} at a clifftop edge facing the sea, his long shadow stretching far back across the rock behind him, low orange sun",
+   "Close-up of a stone sundial, the shadow almost at the far edge of the dial, low sun",
+   "Close-up of water dripping from a bronze spout into a basin, a droplet mid-fall, oil lamp glow",
+   "{seneca}, older and grey-bearded, in a garden at dusk looking back over his shoulder along a path of cypress trees, soft sunset",
+   "Wide shot of a long road winding down a golden valley, {man} at the top looking down at the path he has walked, sunset",
+   "Close-up of {man}'s cupped hands catching a beam of low sun, fingers open",
+   "{man} at the cliff edge turning to face the camera with a small smile, arms loose, last gold sun on his face"
+  ],
+  "emphasis": [
+   "already passed",
+   "look forward to death"
+  ],
+  "hook_emphasis": "ahead of you"
  },
  {
   "id": "beginning_in_our_power",
@@ -891,7 +933,21 @@
    "lighthouse",
    "waves rocks",
    "sunrise"
-  ]
+  ],
+  "scenes": [
+   "{man} crouched at a marble start line in a stadium at dawn, fingertips in the sand, eyes locked ahead, low sun",
+   "Close-up of fingertips pressing into cool sand, dawn light",
+   "Close-up of two dice tumbling through the air above a wooden table, torchlight, a hand blurred behind them",
+   "{seneca} sitting upright with his chin lifted, resolute, a faint smile, oil lamp glow",
+   "Wide shot of a small ship with a taut sail cutting out of a harbor on rough waves, sun breaking through the clouds",
+   "{man} sprinting out of the start, sand kicked up behind him, mid-stride, sun flare",
+   "{man} on the track slowing with hands on his hips, chest heaving, head high and smiling, dawn light"
+  ],
+  "emphasis": [
+   "beginning is in our own power",
+   "fortune decides the issue"
+  ],
+  "hook_emphasis": "the start"
  },
  {
   "id": "single_norm",
@@ -1157,7 +1213,20 @@
    "calm lake",
    "man walking forest",
    "sunrise"
-  ]
+  ],
+  "scenes": [
+   "{man} sitting overwhelmed at the center of a Roman room piled with scrolls, bowls, cloaks and figurines, dust floating in oil lamp glow",
+   "Close-up of {marcus} in his study, hand at his chin, a thoughtful brow, oil lamp light",
+   "Close-up of hands lifting a heavy bronze ornament off a crowded shelf, lamp glow",
+   "{man} carrying an armful of jars and cloaks out through a doorway into bright daylight",
+   "Wide shot of the same room with bare plaster walls, one stool and one lamp, bars of morning sun through the window across a swept floor",
+   "A single clay cup of water on a bare wooden table, a bar of morning sun across it",
+   "{man} stretching in the sunlit room, shoulders dropped, a deep easy breath and a smile"
+  ],
+  "emphasis": [
+   "unnecessary things"
+  ],
+  "hook_emphasis": "before you scroll"
  },
  {
   "id": "be_helped",
@@ -1177,7 +1246,21 @@
    "men hiking",
    "mountain summit",
    "flag waving"
-  ]
+  ],
+  "scenes": [
+   "A Roman soldier on a battlement wall reaches down and grips another soldier's forearm, hauling him up, amber sunset sky, dust drifting",
+   "Close-up of two clasped forearms, fingers gripping, sunlit dust in the air",
+   "{man} sitting on stone steps with his head down and elbows on his knees, tired, overcast dusk",
+   "A friend's broad hand resting on {man}'s shoulder as he looks up, warm oil lamp glow",
+   "Two men carrying a long wooden beam between them across a sunlit courtyard, one at each end",
+   "Close-up of {man} and a friend clasping forearms, both smiling, morning sun",
+   "{man} and a friend walking side by side along a sunlit colonnade, easy and laughing"
+  ],
+  "emphasis": [
+   "ashamed to be helped",
+   "like a soldier"
+  ],
+  "hook_emphasis": "Needing help"
  },
  {
   "id": "speakers_mind",
@@ -1697,7 +1780,21 @@
    "balloon",
    "leaves falling",
    "sunset"
-  ]
+  ],
+  "scenes": [
+   "{man} laughing in a laurel wreath at a victory feast, a raised cup spilling wine over his fist, golden torchlight on his face, blurred celebrants behind",
+   "Close-up of a hand slowly opening, gold coins sliding off the fingers onto a marble floor, warm oil lamp glow",
+   "{marcus} in a purple-edged toga on a palace balcony above the rooftops of Rome, the last orange sun on his face",
+   "Close-up of a heavy gold ring turning between two fingers, lit by a single clay oil lamp",
+   "Wide shot of a long banquet table heaped with fruit, lamps along the walls, {man} small at the far end watching quietly",
+   "{man} setting a laurel wreath down on a stone bench in a sunlit courtyard, relaxed, a slight smile",
+   "{man} walking out through an open stone archway into sunrise, hands loose at his sides, easy stride, warm dawn light"
+  ],
+  "emphasis": [
+   "without arrogance",
+   "let it go"
+  ],
+  "hook_emphasis": "Hold it loosely"
  },
  {
   "id": "shall_i_repent",
@@ -1717,7 +1814,20 @@
    "stop sign",
    "man walking street",
    "man sleeping"
-  ]
+  ],
+  "scenes": [
+   "Close-up of {man}'s clenched fist raised beside his shoulder, knuckles white, a torchlit alley, a stranger blurred in front of him",
+   "Close-up of {man}'s eyes, breath caught, torch flame flickering",
+   "{marcus} at a desk with his chin on his fist, deep in thought, oil lamp glow",
+   "Close-up of a fist slowly uncurling, fingers opening, lamplight",
+   "Wide shot of a still pond at dusk, one stone dropped, rings spreading across the water, last sun on the surface",
+   "{man} exhaling with shoulders dropping and his head tilted back, torchlight softening on his face",
+   "{man} turning from the alley toward his own doorway, a warm oil lamp glowing in the window"
+  ],
+  "emphasis": [
+   "Shall I repent of it"
+  ],
+  "hook_emphasis": "you'll regret"
  },
  {
   "id": "share_your_worries",
@@ -2095,7 +2205,21 @@
    "dirty dishes",
    "calm lake",
    "bread"
-  ]
+  ],
+  "scenes": [
+   "A clay amphora shattered on a stone courtyard, red wine spreading, {man} staring down with clenched fists, hard noon sun",
+   "Close-up of {man}'s face, jaw tight and eyes hot, torchlight flickering from one side",
+   "A heap of broken pottery on a workshop floor, a second jar toppled onto it, dust rising in a shaft of afternoon sun through a doorway",
+   "{seneca} on a stone garden bench at golden hour, hands folded, a cypress behind him, a calm and knowing look",
+   "Close-up of {man} with eyes closed taking one slow breath, soft window light across his cheek",
+   "{man} kneeling to gather the shards into a wicker basket with steady hands, morning sun in the courtyard",
+   "{man} carrying the basket out through a stone archway, shoulders level, warm dawn behind him"
+  ],
+  "emphasis": [
+   "pile of troubles",
+   "getting angry"
+  ],
+  "hook_emphasis": "two problems"
  },
  {
   "id": "golden_bit",
@@ -2271,7 +2395,21 @@
    "man running dawn",
    "man climbing",
    "sunrise"
-  ]
+  ],
+  "scenes": [
+   "Close-up of {man}'s face dripping with sweat, jaw set, frustration turning into resolve, hard noon sun",
+   "Close-up of calloused hands gripping a wooden practice sword, blistered knuckles, noon sun",
+   "{man} swinging at a wooden post and missing, dust rising, harsh noon sun",
+   "{epictetus} seated in a shaded portico watching, nodding slowly, soft daylight",
+   "Close-up of a chisel tip chipping marble, dust falling, a small clean line appearing, oil lamp glow",
+   "{man} at the post again, the strike landing cleanly, dust bursting off the wood mid-swing, afternoon sun",
+   "{man} in a training yard at sunset with a towel over his shoulders, tired and proud, grinning"
+  ],
+  "emphasis": [
+   "naturally dull",
+   "take no pains"
+  ],
+  "hook_emphasis": "Not naturally gifted"
  },
  {
   "id": "lonely_in_a_crowd",
@@ -2611,7 +2749,21 @@
    "man scrolling phone",
    "mountain trail",
    "sunrise"
-  ]
+  ],
+  "scenes": [
+   "{man} at a feast table, a gold pitcher pouring wine into a cup at the frame edge, his eyes locked on it, sweat on his brow, flickering torchlight",
+   "Close-up of {man}'s trembling hand an inch from a wine cup, oil lamp glow",
+   "Wide shot of a lively street under hanging oil lamps, a tavern doorway glowing orange, {man} small in the foreground turning away",
+   "{man} striding down a narrow stone alley away from a glowing tavern doorway, back to the camera, deep blue dusk",
+   "{epictetus} with his walking staff on a hilltop road at dawn, looking back toward a distant city",
+   "Close-up of {man}'s sandals on a dirt road, long shadows from the low morning sun",
+   "{man} on a hilltop road at sunrise, the city small and far behind him, chest open, gold sun on his face"
+  ],
+  "emphasis": [
+   "fly far",
+   "stronger than yourself"
+  ],
+  "hook_emphasis": "Don't stand near it"
  },
  {
   "id": "gain_time",
@@ -2651,7 +2803,21 @@
    "rock in sea",
    "mountain",
    "sunrise"
-  ]
+  ],
+  "scenes": [
+   "A red-faced man shouting inches from {man}'s face in a torchlit street, spit flying, {man} calm with level eyes",
+   "Close-up of {man}'s steady eyes, the shouting man's blurred face at the frame edge, torchlight",
+   "{epictetus} standing beside a huge grey boulder in an olive grove, one hand resting on it, overcast noon",
+   "Close-up of rain running down the face of a grey boulder, overcast light",
+   "The red-faced man bent over with hands on his knees, out of breath and giving up, torchlight",
+   "{man} walking away down the torchlit street, unhurried, cloak swaying, back to the camera",
+   "{man} seated on a sunlit stone step with eyes closed and a faint smile, golden morning sun"
+  ],
+  "emphasis": [
+   "listens like a stone",
+   "what will you gain"
+  ],
+  "hook_emphasis": "get a rise out of you"
  },
  {
   "id": "first_ridiculed",
