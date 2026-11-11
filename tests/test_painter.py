@@ -371,3 +371,18 @@ def test_the_grade_is_colour_warm_and_light_handed(monkeypatch):
     assert angle < math.pi / 5                    # lighter than ffmpeg's default vignette
     assert "c1_expr=A:c2_expr=A" in e             # bloom is luma-only: it never tints
     assert "noise=alls=3:allf=t" in e             # fine grain
+
+
+def test_lamps_are_painted_as_roman_lamps():
+    """The first real FLUX.2 renders (2026-11-11) drew "oil lamp" as a glass
+    hurricane lantern twice: the scene names the Roman object instead."""
+    import painter
+    p = painter.period_objects
+    assert p("warm oil lamp glow") == "warm glow of a small terracotta Roman oil lamp's open flame"
+    assert p("lit by a single clay oil lamp") == "lit by a single small terracotta Roman oil lamp with an open flame"
+    assert p("lamps along the walls") == "small terracotta Roman oil lamps with open flames along the walls"
+    assert p("soft lamplight, a lamplit room") == "soft lamplight, a lamplit room"     # left alone
+    once = p("a lamp beside him")
+    assert p(once) == once                                                       # never rewritten twice
+    assert p("a small terracotta oil lamp") == "a small terracotta Roman oil lamp with an open flame"
+    assert "terracotta Roman oil lamp" in painter.build_prompt("{man} reading by an oil lamp at night")

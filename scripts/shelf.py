@@ -30,9 +30,9 @@ standing rule):
     Short's description he sent "as inspiration for our next shorts"): 2-3
     short paragraphs that speak to the viewer about his own life, and one
     question for the comments; no links, hashtags or shame
-  * optional scene fields (Plutarch, docs/scene_writing.md): `scenes` (6-8
-    paintable shots), `emphasis` (gold words from the quote), `hook_emphasis`;
-    all three or none, validated by scene_problems()
+  * optional `scenes` (Plutarch, docs/scene_writing.md): 6-8 paintable shots,
+    validated by scene_problems(). The gold words for the type live in ONE
+    place, data/edit_type.json (Callimachus; tests/test_edit_type.py)
 """
 from __future__ import annotations
 
@@ -67,7 +67,7 @@ CITATION = {
 KEYS = ["id", "author", "citation", "quote", "hook", "theme", "description", "question", "visuals"]
 # Plutarch's scene-writer fields (docs/scene_writing.md): optional, in this order
 # after KEYS. Older quotes have none; the painter and the typographer read them.
-SCENE_KEYS = ["scenes", "emphasis", "hook_emphasis"]
+SCENE_KEYS = ["scenes"]
 # The same words tests/test_edits.py checks: these return women's fitness
 # footage unless the query names a man.
 PEOPLE = {"boxer", "boxing", "training", "weight", "weightlifting", "lifting",
@@ -155,7 +155,6 @@ def description_problems(q: dict) -> list[str]:
 CAST = {"marcus", "seneca", "epictetus", "man"}
 SCENE_COUNT = (6, 8)
 SCENE_WORDS = (8, 45)
-EMPHASIS_COUNT = (1, 3)
 # The code adds the look (colour, cinematic, painterly); a shot that names one fights it.
 STYLE_WORDS = re.compile(
     r"\b(cinematic|4k|8k|hdr|photo-?realistic|hyper-?realistic|painting|painterly|"
@@ -172,18 +171,11 @@ STATUE_OPENER = re.compile(r"\b(statue|bust|sculpture|monument)\b", re.I)
 TOKEN = re.compile(r"\{(\w+)\}")
 
 
-def _contains(hay: str, needle: str) -> bool:
-    return needle.lower() in hay.lower()
-
-
 def scene_problems(q: dict) -> list[str]:
-    """Rules for scenes / emphasis / hook_emphasis when present (all optional)."""
+    """Rules for `scenes` when present (optional: older quotes have none)."""
     out = []
-    if not any(k in q for k in SCENE_KEYS):
+    if "scenes" not in q:
         return out
-    for k in SCENE_KEYS:
-        if k not in q:
-            out.append(f"{k}: a quote with scene fields needs all three ({SCENE_KEYS})")
     sc = q.get("scenes")
     if sc is not None:
         if not isinstance(sc, list) or not all(isinstance(s, str) for s in sc):
@@ -223,24 +215,6 @@ def scene_problems(q: dict) -> list[str]:
                     out.append(f"{tag}: name a physical light source (oil lamp, torchlight, dawn, overcast noon...)")
                 if i == 1 and STATUE_OPENER.search(plain):
                     out.append("scene 1: the stopper is a person in a situation, never a statue")
-    em = q.get("emphasis")
-    if em is not None:
-        if not isinstance(em, list) or not all(isinstance(e, str) and e.strip() for e in em):
-            out.append("emphasis: a list of words copied from the quote")
-        else:
-            if not EMPHASIS_COUNT[0] <= len(em) <= EMPHASIS_COUNT[1]:
-                out.append(f"emphasis: {EMPHASIS_COUNT[0]}-{EMPHASIS_COUNT[1]} phrases, got {len(em)}")
-            for e in em:
-                if not _contains(q.get("quote", ""), e):
-                    out.append(f"emphasis '{e}' is not word for word in the quote")
-            if len({e.lower() for e in em}) != len(em):
-                out.append("emphasis: a phrase is listed twice")
-    he = q.get("hook_emphasis")
-    if he is not None:
-        if not isinstance(he, str) or not he.strip():
-            out.append("hook_emphasis: one word or phrase from the hook")
-        elif not _contains(q.get("hook", ""), he):
-            out.append(f"hook_emphasis '{he}' is not word for word in the hook")
     return out
 
 

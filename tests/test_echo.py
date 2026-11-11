@@ -173,7 +173,10 @@ def test_the_instagram_caption():
     lines = text.split("\n\n")
     assert lines[0] == "Stop worrying about problems you don't have yet."
     assert lines[1] == "“Let not future things disturb thee.”\n— Marcus Aurelius, Meditations VII.8"
-    assert lines[2] == ig.FOLLOW_LINE and lines[3].startswith("Music:")
+    assert lines[2] == ig.FOLLOW_LINE
+    if ig.points_to_bio():              # the owner's "Done, and point every Reel to it" (2026-11-11)
+        assert lines.pop(3) == ig.BIO_LINE
+    assert lines[3].startswith("Music:")
     tags = lines[4].split()
     assert tags == ["#stoicism", "#motivation", "#discipline", "#stoic", "#marcusaurelius"]  # 5, no #shorts
     assert "http" not in text and len(text) <= 2200

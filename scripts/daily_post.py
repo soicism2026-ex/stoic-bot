@@ -35,6 +35,7 @@ from logbook import log_post              # noqa: E402
 from experiments import pick_experiment   # noqa: E402
 import render as render_mod               # noqa: E402
 import master as master_mod               # noqa: E402
+import edit_type                          # noqa: E402
 import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
 import backgrounds                        # noqa: E402
@@ -239,9 +240,8 @@ def _paint_edit(pack: dict, content: dict, fmt: str, broll: list, n_flavors: int
     The shot list: the quote's `scenes` (the scene writer's 6-8 shots, in
     order) when it has them, every slot painted from one, with the stock
     keyword at the same position kept as that slot's fallback; otherwise the
-    stock keywords, which src/painter.py turns into painted scenes. Emphasis
-    goes to the type only with the whole look, and only words that really are
-    in the quote / hook (case-insensitive, as the scene writer wrote them)."""
+    stock keywords, which src/painter.py turns into painted scenes. The type
+    that goes with the whole look is set by _type_edit (below)."""
     if fmt != "edit":
         return
     look = os.environ.get("REEL_EDIT_LOOK", "").strip().lower()
@@ -267,14 +267,18 @@ def _paint_edit(pack: dict, content: dict, fmt: str, broll: list, n_flavors: int
     if look != "painted":
         return
     pack.update(PAINTED_LOOK)
-    quote, hook = content.get("quote", ""), content.get("hook", "")
-    emph = [e.strip() for e in (content.get("_emphasis") or [])
-            if isinstance(e, str) and e.strip() and e.strip().lower() in quote.lower()]
-    if emph:
-        pack["REEL_QUOTE_EMPHASIS"] = "|".join(emph)
-    he = (content.get("_hook_emphasis") or "").strip()
-    if he and he.lower() in hook.lower():
-        pack["REEL_HOOK_EMPHASIS"] = he
+
+
+def _type_edit(pack: dict, content: dict, fmt: str) -> None:
+    """Callimachus's type (src/edit_type.py, REEL_TYPE=v2) with its gold words
+    (data/edit_type.json, the one place they live) and the source line under
+    the author: with the whole new look (REEL_EDIT_LOOK=painted), or alone
+    (REEL_EDIT_TYPE=v2: the design lab's "type" look). Off otherwise."""
+    if fmt != "edit":
+        return
+    look = os.environ.get("REEL_EDIT_LOOK", "").strip().lower()
+    if look == "painted" or edit_type.enabled(os.environ.get("REEL_EDIT_TYPE")):
+        pack.update(edit_type.style_env(content))
 
 
 def _apply_corrections(env: dict, issues: list, attempt: int) -> dict:
@@ -958,6 +962,7 @@ def main():
     # character every day instead of a different bust. Harmless when empty.
     pack["REEL_GUIDE_SLOTS"] = "" if no_guide else f"0,{len(flavors) - 1}"
     _paint_edit(pack, content, fmt, broll, len(flavors))
+    _type_edit(pack, content, fmt)
 
     # ---- STORYBOARD: generated shots for stories with an approved board ------
     # Owner, 2026-09-24, on the first rendered storyboard: "the story board

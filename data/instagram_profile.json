@@ -18,6 +18,8 @@
   "bio": "Line 1: what a visitor gets and for whom (doctrine 5: widen the door, the hard weeks). Line 2: why to trust it: every quote is verbatim from the source text (scripts/validate_quotes.py), rare in this niche. Line 3: the product, pointing at the link below the bio. No URL in the text: Instagram doesn't make bio text links tappable.",
   "links": "The first link shows under the bio, so the journal goes first; YouTube second for people who want more."
  },
- "onProfile": false,
- "reelsPointToBio": false
+ "onProfile": true,
+ "reelsPointToBio": true,
+ "onProfileSince": "2026-11-11",
+ "decided": "Owner, HQ 2026-11-11 10:21 UTC: \"Done, and point every Reel to it\""
 }

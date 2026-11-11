@@ -12,14 +12,15 @@ sys.path.insert(0, str(ROOT / "scripts"))
 
 import daily_post  # noqa: E402
 import edits  # noqa: E402
+import edit_type  # noqa: E402
 
 BANK = json.loads((ROOT / "data" / "edit_quotes.json").read_text(encoding="utf-8"))
 WITH = next(q for q in BANK if q.get("scenes"))
 WITHOUT = next(q for q in BANK if not q.get("scenes"))
 
 
-def _pack(q, monkeypatch, look="", picture=""):
-    for k, v in (("REEL_EDIT_LOOK", look), ("REEL_PICTURE", picture)):
+def _pack(q, monkeypatch, look="", picture="", type_=""):
+    for k, v in (("REEL_EDIT_LOOK", look), ("REEL_PICTURE", picture), ("REEL_EDIT_TYPE", type_)):
         if v:
             monkeypatch.setenv(k, v)
         else:
@@ -30,16 +31,13 @@ def _pack(q, monkeypatch, look="", picture=""):
     for i, v in enumerate(broll):
         pack[f"REEL_BG_FLAVOR{i if i else ''}"] = v
     daily_post._paint_edit(pack, content, "edit", broll, len(broll))
+    daily_post._type_edit(pack, content, "edit")
     return pack, content
 
 
-def test_as_content_carries_the_scene_writers_fields():
-    c = edits.as_content(WITH)
-    assert c["_scenes"] == WITH["scenes"]
-    assert c["_emphasis"] == WITH.get("emphasis", [])
-    assert c["_hook_emphasis"] == WITH.get("hook_emphasis", "")
-    c = edits.as_content(WITHOUT)
-    assert c["_scenes"] == [] and c["_emphasis"] == [] and c["_hook_emphasis"] == ""
+def test_as_content_carries_the_scene_writers_shots():
+    assert edits.as_content(WITH)["_scenes"] == WITH["scenes"]
+    assert edits.as_content(WITHOUT)["_scenes"] == []
 
 
 def test_nothing_changes_unless_the_look_is_asked_for(monkeypatch):
@@ -64,19 +62,18 @@ def test_the_whole_look(monkeypatch):
         assert pack[f"REEL_PAINT_SCENE{sfx}"] == s
         assert pack[f"REEL_BG_FLAVOR{sfx}"] == WITH["visuals"][i % len(WITH["visuals"])]
     assert f"REEL_BG_FLAVOR{n}" not in pack            # no stale slot past the last shot
-    # emphasis: only words that are in the quote / hook, matched case-insensitively
-    emph = pack.get("REEL_QUOTE_EMPHASIS", "").split("|")
-    assert emph and all(e.lower() in content["quote"].lower() for e in emph)
-    if WITH.get("hook_emphasis"):
-        assert pack["REEL_HOOK_EMPHASIS"].lower() in content["hook"].lower()
+    # the type: Callimachus's gold words for this quote (data/edit_type.json) and its source line
+    hook_e, quote_e = edit_type.emphasis_for(WITH["id"])
+    assert pack["REEL_QUOTE_EMPHASIS"] == quote_e and pack["REEL_HOOK_EMPHASIS"] == hook_e
+    assert quote_e and hook_e                      # every quote to air has its gold words
+    assert pack["REEL_QUOTE_SOURCE"] == edit_type.source_line(WITH["citation"])
 
 
-def test_emphasis_that_is_not_in_the_text_is_dropped(monkeypatch):
-    q = dict(WITH, emphasis=["NOT IN THE QUOTE", WITH["quote"].split()[1].upper()],
-             hook_emphasis="nowhere")
-    pack, _ = _pack(q, monkeypatch, look="painted")
-    assert pack["REEL_QUOTE_EMPHASIS"] == WITH["quote"].split()[1].upper()
-    assert "REEL_HOOK_EMPHASIS" not in pack
+def test_type_only_is_the_new_type_on_todays_picture(monkeypatch):
+    """The design lab's "type" look: REEL_EDIT_TYPE=v2 from the environment."""
+    pack, _ = _pack(WITH, monkeypatch, type_="v2")
+    assert pack["REEL_TYPE"] == "v2" and pack["REEL_QUOTE_EMPHASIS"]
+    assert pack["REEL_MONO"] == "1" and "REEL_PICTURE" not in pack and "REEL_MASTER_LUFS" not in pack
 
 
 def test_picture_only_keeps_todays_type(monkeypatch):
@@ -98,6 +95,7 @@ def test_other_formats_are_never_painted(monkeypatch):
     monkeypatch.setenv("REEL_EDIT_LOOK", "painted")
     pack = {"REEL_MONO": "0"}
     daily_post._paint_edit(pack, {"quote": "q", "hook": "h"}, "story", [], 0)
+    daily_post._type_edit(pack, {"quote": "q", "hook": "h"}, "story")
     assert pack == {"REEL_MONO": "0"}
 
 
@@ -106,6 +104,7 @@ def test_the_edit_pack_still_defaults_to_todays_look():
     edit = src[src.index('"edit": {'):src.index('"truestory": {')]
     assert '"REEL_MONO": "1"' in edit
     assert "_paint_edit(pack, content, fmt, broll, len(flavors))" in src
+    assert "_type_edit(pack, content, fmt)" in src
 
 
 @pytest.mark.parametrize("q", [q for q in BANK if q.get("scenes")], ids=lambda q: q["id"])

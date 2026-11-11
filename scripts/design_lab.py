@@ -42,8 +42,8 @@ BANK = ROOT / "data" / "edit_quotes.json"
 LOOKS: dict[str, dict[str, str]] = {
     "current": {},
     "painted": {"REEL_EDIT_LOOK": "painted"},          # the crew's whole new look
-    "type": {"REEL_TYPE": "v2"},                        # the new type on today's picture
-    "picture": {"REEL_PICTURE": "painted", "REEL_MONO": "0"},   # the new picture, today's type
+    "type": {"REEL_EDIT_TYPE": "v2"},                   # the new type (and its gold words) on today's picture
+    "picture": {"REEL_PICTURE": "painted"},             # the new picture, today's type
 }
 LABELS = {"current": "Today's look", "painted": "The new look", "type": "New type only",
           "picture": "New picture only"}

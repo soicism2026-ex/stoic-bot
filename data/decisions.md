@@ -1704,3 +1704,41 @@ that story must always be captioned "recorded in the Historia Augusta", never
   30-day guided journal: link in bio." It airs only when the bio is on the
   profile AND he said yes (`onProfile`, `reelsPointToBio`): a "link in bio"
   line with no link there would send people nowhere.
+- **2026-11-10 — VIDEO QUALITY: A CREW REDESIGNS THE VIDEOS (nothing live
+  until the owner picks).** Owner, in the HQ: *"Deploy agents to design higher
+  quality videos"*. The audit (the next Short frame by frame against this
+  month's top Stoicism Shorts, data/scout.md): theirs are full colour,
+  painterly scenes of Roman figures living the line, premium type with gold key
+  words; ours were washed-out black-and-white stock (a toaster under "Angry
+  about it?"), the hook drawn at 40% opacity on frame 0 (grey on grey, where
+  the swipe is decided), a letterboxed stock clip, an empty ending, and sound at
+  -17.3 LUFS (YouTube plays at -14 and never turns a quiet Short up). Built,
+  all behind switches that are OFF on the live channel:
+  * Zeuxis, the painter (`src/painter.py`, `REEL_PICTURE=painted`): every shot
+    a free FLUX.2 [klein] still on Cloudflare (~208 neurons each, inside the
+    free 10k/day), a recurring cast ({man}, {marcus}, {seneca}, {epictetus}:
+    fixed look + seed; the first real renders kept one face across all shots),
+    per-shot exposure, a warm grade, sub-pixel motion (measured: no judder; the
+    owner's 2026-10-01 "no shaking" rule), bars found and cropped.
+  * Plutarch, the scene writer: 7 shots for each of the next 12 quotes
+    (`scenes`, docs/scene_writing.md, validated by `shelf.scene_problems`).
+  * Callimachus, the typographer (`src/edit_type.py`, `REEL_TYPE=v2`): Anton
+    hook readable on frame 0, Cormorant Garamond quote with gold italics,
+    Cinzel author + source, the @handle, text held to the last frame. Gold
+    words live only in `data/edit_type.json` (the scene writer's duplicate
+    fields were folded into it: one source).
+  * Loudness mastering to -14 LUFS (`src/master.py`, `REEL_MASTER_LUFS`).
+  * The design lab (`design-lab.yml`, `scripts/design_lab.py`): one quote in
+    each look, DRY_RUN, for the owner's side-by-side pick.
+  `REEL_EDIT_LOOK=painted` turns the whole look on (daily_post `_paint_edit`,
+  `_type_edit`). The 5-hour Claude usage limit stopped three agents at once on
+  11-10 23:10 UTC (reset 00:40): run at most two crew agents together, prefer
+  Sonnet for writing jobs, downscale frames before reading them.
+- **2026-11-11 — INSTAGRAM BIO IS UP; EVERY REEL POINTS TO IT.** Owner, in
+  the HQ, on the bio card: *"Done, and point every Reel to it"*. His profile
+  carries the name, bio and links from `data/instagram_profile.json`
+  (`onProfile` true), and every Reel's caption now ends its follow line with
+  "The Stoic Reset, a 30-day guided journal: link in bio." (`reelsPointToBio`
+  true; `publish_instagram.points_to_bio`). The caption is built when the
+  Short renders, so it starts with the next posting run.
+

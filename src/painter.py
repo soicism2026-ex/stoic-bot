@@ -380,12 +380,37 @@ def refused(scene: str) -> str:
     return next((m for lvl, m in scene_problems(scene) if lvl == "ERROR"), "")
 
 
+# Objects whose everyday word paints the wrong century. Seen on the first real
+# FLUX.2 [klein] renders (design lab, 2026-11-11): "oil lamp" came out twice as
+# a glass hurricane lantern on a brass stand, though the style already says
+# "clay and bronze oil lamps": the scene's own words outweigh the style's. So
+# the scene itself names the Roman object. "lamplight"/"lamplit" are left alone.
+LAMP = re.compile(r"\b(?:(?:small|clay|bronze|terracotta) )*(?:oil[- ])?lamp(s)?\b"
+                  r"(?:\s+(glow|light|glowing)\b)?", re.I)
+
+
+def _roman_lamp(m: re.Match) -> str:
+    if m.group(2):
+        return "glow of a small terracotta Roman oil lamp's open flame"
+    return ("small terracotta Roman oil lamps with open flames" if m.group(1)
+            else "small terracotta Roman oil lamp with an open flame")
+
+
+def period_objects(text: str) -> str:
+    """The scene with its lamps written as the Roman objects they are. One
+    pass; a scene that already names a Roman oil lamp is left as written."""
+    if "roman oil lamp" in (text or "").lower():
+        return text or ""
+    return LAMP.sub(_roman_lamp, text or "")
+
+
 def build_prompt(scene: str) -> str:
-    """The final prompt: the scene with its cast written out, the look, the
-    period, and the anatomy/no-lettering guard (positive phrasing only)."""
+    """The final prompt: the scene with its cast written out, its objects in
+    their period form, the look, the period, and the anatomy/no-lettering
+    guard (positive phrasing only)."""
     import prompt_lint as lint
     expanded, _ = expand_cast(scene)
-    expanded = _clean(expanded)
+    expanded = _clean(period_objects(expanded))
     return f"{expanded}. {style_for(expanded)}. {ERA}. {lint.SAFE_POSITIVE}."
 
 
