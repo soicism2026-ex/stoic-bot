@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-10T15:31:50Z",
+ "checked": "2026-11-11T02:41:07Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-10",
+  "checked": "2026-11-11",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-10T10:41:39Z",
-  "youtube": "BID_xsZz3Kk",
-  "title": "\"About to snap? Give it a minute\" — Epictetus | Stoicism",
+  "at": "2026-11-11T02:41:07Z",
+  "youtube": "R3EIoZhoSd8",
+  "title": "\"Winning right now? Hold it loosely\" — Marcus Aurelius | Stoicism",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/Dfjt1fkHBFc/",
+  "permalink": "https://www.instagram.com/reel/DflbosFjUJb/",
   "reason": null
  }
 }
