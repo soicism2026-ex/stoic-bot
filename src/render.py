@@ -812,6 +812,23 @@ def _hook_karaoke_events(hook: str, word_starts: list, hold: float) -> str:
 # the viewer actually sees.
 HOOK_MARGIN = int(os.environ.get("REEL_HOOK_MARGIN", "160"))
 HOOK_FROM_START = os.environ.get("REEL_HOOK_FROM_START", "0") not in ("0", "", "false", "False")
+# THE TYPE. REEL_TYPE "" or "classic" = the type above, byte for byte
+# (tests/test_type_classic_golden.py); "v2" = Callimachus's type for edits
+# (src/edit_type.py, owner 2026-11-10 "Deploy agents to design higher quality
+# videos"): Anton hook legible on frame 0 with the spoken word turning gold,
+# a Cormorant Garamond quote sized to its length, the author in Cinzel
+# capitals, a watermark, text to the last frame. Its knobs, read only in v2:
+# REEL_HOOK_EMPHASIS (words gold from frame 0), REEL_QUOTE_EMPHASIS
+# ("arrogance|let it go": gold italic), REEL_QUOTE_SOURCE ("Meditations 8.33"
+# under the author), REEL_WATERMARK (unset = "@forged.in.stoicism", "" = off).
+TYPE_V2 = os.environ.get("REEL_TYPE", "").strip().lower() == "v2"
+HOOK_EMPHASIS = os.environ.get("REEL_HOOK_EMPHASIS", "")
+QUOTE_EMPHASIS = os.environ.get("REEL_QUOTE_EMPHASIS", "")
+QUOTE_SOURCE = os.environ.get("REEL_QUOTE_SOURCE", "").strip()
+WATERMARK = os.environ.get("REEL_WATERMARK")
+# The thumbnail is made after the render, once daily_post has put the style
+# pack's env back; v2 matches the video's black-and-white look from here.
+MONO_AT_LOAD = os.environ.get("REEL_MONO", "0") not in ("0", "", "false", "False")
 # Spoken-quote line: the quote card's serif, top-anchored about a third of the
 # way down where the static card used to sit.
 # Music ducking under the voice (see the music mix). ratio 1 disables it.
@@ -838,7 +855,8 @@ def _build_ass(word_timings: list, out_path: Path,
                hook: str = "", hook_starts: list = None,
                hook_hold: float = 0.0, captions_from: float = 0.0,
                quote: str = "", author: str = "", quote_times: list = None,
-               quote_hide: float = 0.0) -> Path:
+               quote_hide: float = 0.0, quote_from: float = None,
+               video_end: float = 0.0, band_plan: list = None) -> Path:
     """Write a .ass subtitle file with impactful 2-word karaoke captions.
 
     2 words at a time gives a natural reading rhythm without the chaotic
@@ -926,6 +944,18 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
             f"Karaoke,,0,0,0,,{anim}{text}"
         )
 
+    if TYPE_V2:
+        # Callimachus's type: hook, quote, author, source, watermark and the
+        # soft bands behind them, from src/edit_type.py. Captions (other
+        # formats) keep the Karaoke style above.
+        import edit_type
+        header = header.replace(
+            "\n\n[Events]", "\n" + "\n".join(edit_type.ass_styles()) + "\n\n[Events]", 1)
+        events += _type_v2_events(hook, hook_starts or [], hook_hold, quote, author,
+                                  quote_times or [], quote_hide, quote_from, video_end,
+                                  band_plan)
+        out_path.write_text(header + "\n".join(events) + "\n", encoding="utf-8")
+        return out_path
     if hook and hook_starts:
         # REEL_HOOK_CAPS applied only to the old drawtext hook; the karaoke
         # hook ignored it, so the edit's "big caps hook" rendered lower-case.
@@ -942,6 +972,85 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return out_path
 
 
+def _v2_band_plan(bg_clips: list, dur: float, n_bg: int) -> list:
+    """[(start, end, band strength)] per shot, from how bright each picture
+    is under the text (edit_type.band_strength): the full band on a bright
+    sky, none on a night shot, so the type never darkens a frame that does
+    not need it (preflight fails frames under 45/255)."""
+    import edit_type
+    plan, t = [], 0.0
+    for clip, d in zip(bg_clips, _segment_durations(dur, n_bg)):
+        skip = 0.0
+        try:
+            if CLIP_LEAD_SKIP > 0 and _audio_duration(Path(clip)) > CLIP_LEAD_SKIP + 3.0:
+                skip = CLIP_LEAD_SKIP
+        except Exception:  # noqa: BLE001
+            pass
+        plan.append((t, t + d, edit_type.band_strength(edit_type.picture_luma(clip, skip + d / 2))))
+        t += d
+    print("  type v2: band per shot " + " ".join(f"{k:.2f}" for _, _, k in plan))
+    return plan
+
+
+def _type_v2_events(hook: str, hook_starts: list, hook_hold: float, quote: str,
+                    author: str, quote_times: list, quote_hide: float,
+                    quote_from, video_end: float, band_plan: list = None) -> list:
+    """REEL_TYPE=v2: every on-screen letter of an edit as ASS events.
+
+    The hook shows from frame 0 (REEL_HOOK_FROM_START) fully drawn, its words
+    turning gold as they are spoken, until `hook_hold`. The quote fills word
+    by word from 0.3 s before its first word (or, when its words were not
+    found in the narration, appears whole at `quote_from`) and stays, with
+    the author and source, to the last frame. One soft band sits behind the
+    text and reshapes from the hook to the quote, so the picture never
+    flashes brighter at the hand-over. The watermark runs the whole video."""
+    import edit_type
+    events, hook_span, quote_span = [], None, None
+    hook_block = quote_block = None
+    if hook:
+        hook_block = edit_type.layout_hook(hook, HOOK_EMPHASIS, caps=HOOK_CAPS)
+        start = 0.0 if (HOOK_FROM_START or not hook_starts) else max(0.0, hook_starts[0] - 0.25)
+        fade_in = 0 if start == 0.0 else 180
+        events += edit_type.hook_events(hook_block, hook_starts, start, hook_hold, fade_in, 320)
+        hook_span = (start, hook_hold, fade_in)
+    if quote and (quote_times or quote_from is not None):
+        quote_block = edit_type.layout_quote(quote, author, QUOTE_EMPHASIS, QUOTE_SOURCE)
+        q_start = max(0.0, quote_times[0][0] - 0.3) if quote_times else max(0.0, quote_from)
+        q_end = max(quote_hide, video_end) if quote_hide > q_start else max(video_end, q_start + 6.0)
+        events += edit_type.quote_events(quote_block, quote_times, q_start, q_end, 220)
+        quote_span = (q_start, q_end)
+    bands = edit_type.bands(hook_block, hook_span, quote_block, quote_span, band_plan)
+    ends = [s[1] for s in (hook_span, quote_span) if s]
+    events += edit_type.watermark_events(edit_type.watermark_text(WATERMARK), 0.0,
+                                         video_end or (max(ends) if ends else 0.0))
+    return bands + events
+
+
+def _thumbnail_v2(hook: str, author: str, bg_path: Path, out_path: Path) -> Path:
+    """REEL_TYPE=v2 thumbnail: the video's first frame, as a poster. The same
+    hook (face, size, line breaks, gold emphasis) and band, the author in gold
+    under a short rule, on the opening shot graded like the video."""
+    import edit_type
+    ass = Path(out_path).with_suffix(".thumb.ass")
+    ass.write_text(edit_type.thumbnail_document(hook, author, HOOK_EMPHASIS, HOOK_CAPS),
+                   encoding="utf-8")
+    vf = [f"scale={W}:{H}:force_original_aspect_ratio=increase", f"crop={W}:{H}"]
+    if ENHANCE_ON:
+        vf.append(ENH_SHARPEN)
+    if MONO_AT_LOAD:
+        vf.append("hue=s=0,eq=contrast=1.15")
+    vf += ["eq=brightness=-0.05:contrast=1.06", "vignette=PI/4.6",
+           f"ass='{_escape_filter_path(ass)}':fontsdir='{_escape_filter_path(edit_type.FONTS_DIR)}'"]
+    cmd = ["ffmpeg", "-y", "-ss", "1.5", "-i", str(bg_path), "-vframes", "1",
+           "-vf", ",".join(vf), "-q:v", "3", str(out_path)]
+    try:
+        proc.run(cmd, check=True, capture_output=True)
+        return out_path
+    except Exception as e:  # noqa: BLE001
+        print(f"  [thumbnail] v2 generation failed: {e}", file=__import__("sys").stderr)
+        return None
+
+
 def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) -> Path:
     """Generate a 1080x1920 JPEG thumbnail.
 
@@ -952,6 +1061,8 @@ def generate_thumbnail(hook: str, author: str, bg_path: Path, out_path: Path) ->
       - Author credit in small muted white at the bottom
       - Gold corner brackets as brand mark
     """
+    if TYPE_V2:
+        return _thumbnail_v2(hook, author, bg_path, out_path)
     HOOK_FS     = 130          # larger than before — fills the frame at grid size
     HOOK_LINE_H = HOOK_FS + 18
     hook_lines  = textwrap.wrap(hook.upper(), width=10) or [hook.upper()]
@@ -1338,11 +1449,15 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             q_end = quote_times[-1][1]
             nxt = [float(w[1]) for w in word_timings if float(w[1]) > q_end + 0.02]
             quote_hide = max(q_end + 0.35, nxt[0]) if nxt else q_end + 1.0
+            if TYPE_V2:
+                # No empty ending: the quote, author and source stay to the
+                # last frame (the classic line left ~2 s of bare picture).
+                quote_hide = dur
             print(f"  spoken quote: {quote_times[0][0]:.1f}s -> {quote_hide:.1f}s")
         else:
             print("  spoken quote: words not found in narration — static card")
 
-    if show_quote and not quote_times:
+    if show_quote and not quote_times and not TYPE_V2:
         # Fade the quote in as the hook fades out so only one primary text is
         # on screen at a time. If no hook is shown, appear from the start.
         # THREE-ACT TIMING. QUOTE_APPEAR is set by daily_post to the moment the
@@ -1431,7 +1546,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # sits on top during those first seconds.
     # The karaoke follower IS the hook when narration timings are available;
     # drawing the static card as well would stack two copies of the same words.
-    if hook and HOOK_TEXT_ON and not hook_starts:
+    if hook and HOOK_TEXT_ON and not hook_starts and not TYPE_V2:
         # Wrap short and auto-fit the fontsize so the longest line stays inside
         # the phone-fullscreen safe band. DejaVu Sans Bold averages ~0.62em per
         # char; without this a 15-char hook at 94px was cropped on iPhones.
@@ -1496,7 +1611,11 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
 
     # burn in karaoke captions last so they sit on top
     ass_path = None
-    if caption_band or quote_times:
+    # v2 draws every letter in the ASS pass, including a hook with no
+    # narration match and the quote card when its words were not found.
+    v2_hook = TYPE_V2 and bool(hook) and HOOK_TEXT_ON
+    v2_static_quote = TYPE_V2 and show_quote and bool(quote) and not quote_times
+    if caption_band or quote_times or v2_hook or v2_static_quote:
         # The hook is SPOKEN first, and its words are already on screen as the
         # big hook card — captioning them too made the intro read as doubled
         # text with off-looking timing (and in caption_only style the centred
@@ -1505,20 +1624,35 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         cap_timings = word_timings
         # The hook's words are carried by the karaoke line (or the drawtext
         # card); captioning them a second time reads as doubled text.
-        if hook and (hook_starts or HOOK_TEXT_ON):
+        if hook and (hook_starts or HOOK_TEXT_ON) and word_timings:
             n_hook = len(hook.split())
             if len(word_timings) > n_hook + 2:
                 cap_timings = word_timings[n_hook:]
         ass_path = Path(out_path).with_suffix(".captions.ass")
+        v2_args = {}
+        if TYPE_V2:
+            # The static quote appears where the classic card faded in, and
+            # never under the hook.
+            hook_end = hook_hold if v2_hook else 0.0
+            v2_args = {"video_end": dur,
+                       "quote_from": (max(QUOTE_APPEAR, hook_end) if v2_static_quote else None),
+                       "band_plan": _v2_band_plan(bg_clips, dur, n_bg)}
         # Pass the hook through so libass draws the word-by-word follower in
         # the same subtitle pass — proportional layout and centring for free.
         _build_ass(cap_timings if caption_band else [], ass_path,
-                   hook=hook if hook_starts else "",
+                   hook=hook if (hook_starts or v2_hook) else "",
                    hook_starts=hook_starts, hook_hold=hook_hold,
                    captions_from=caption_from,
-                   quote=quote if quote_times else "", author=author,
-                   quote_times=quote_times, quote_hide=quote_hide)
-        vf_parts.append(f"ass='{_escape_filter_path(ass_path)}'")
+                   quote=quote if (quote_times or v2_static_quote) else "", author=author,
+                   quote_times=quote_times, quote_hide=quote_hide, **v2_args)
+        if TYPE_V2:
+            # The fonts travel with the repo (assets/fonts/ttf): the runner
+            # only has DejaVu and Liberation.
+            import edit_type
+            vf_parts.append(f"ass='{_escape_filter_path(ass_path)}'"
+                            f":fontsdir='{_escape_filter_path(edit_type.FONTS_DIR)}'")
+        else:
+            vf_parts.append(f"ass='{_escape_filter_path(ass_path)}'")
 
     # Thin gold frame + corner brackets, drawn on top of everything.
     vf_parts.extend(_frame_overlays())
