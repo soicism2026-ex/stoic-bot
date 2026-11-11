@@ -1741,4 +1741,18 @@ that story must always be captioned "recorded in the Historia Augusta", never
   "The Stoic Reset, a 30-day guided journal: link in bio." (`reelsPointToBio`
   true; `publish_instagram.points_to_bio`). The caption is built when the
   Short renders, so it starts with the next posting run.
+- **2026-11-11 — THE NEW LOOK IS LIVE.** Owner, in the HQ (asks/new-look),
+  after watching two Shorts each played as today's look then the new one:
+  *"Switch to the new look"*. `REEL_EDIT_LOOK: "painted"` in daily-short.yml
+  and edit-preview.yml (the rehearsal under Next on air is exactly what airs):
+  colour paintings of every shot (free FLUX.2 [klein]; the quote's `scenes`,
+  else a template from its stock keywords), the v2 type with gold words, sound
+  mastered to -14 LUFS. First live post: the 2026-11-12 03:00 UTC run
+  (fly_from_the_stronger). Before he saw it, every frame of the lab renders
+  was checked and the weak ones were repainted: the painter keeps people-words
+  out of empty shots (a boulder grew hands), lamp light is light rather than a
+  lamp object (a lamp took a wine cup's place), and docs/scene_writing.md rule
+  6 has the wording lessons. Varro now writes `scenes` and gold words for every
+  new quote; the rest of the shelf gets scenes from Plutarch. `""` brings the
+  old look back; changing the look again needs his say-so (a test guards it).
 

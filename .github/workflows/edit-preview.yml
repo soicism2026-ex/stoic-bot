@@ -125,7 +125,7 @@ jobs:
     # The painted look's stills (src/painter.py, Cloudflare's free FLUX):
     # restore what the rehearsal (edit-preview) already painted, so the live
     # post airs the very pictures the owner saw and spends no budget twice.
-    # Empty and unused while REEL_EDIT_LOOK is off.
+    # The new look is live since 2026-11-11 (REEL_EDIT_LOOK below).
     - name: Stills already painted (the rehearsal's)
       uses: actions/cache@v4
       with:
@@ -175,8 +175,9 @@ jobs:
         # THE NEW LOOK (owner 2026-11-10: "Deploy agents to design higher
         # quality videos"): "painted" = colour paintings of each shot, the v2
         # type, mastering to -14 LUFS (daily_post._paint_edit/_type_edit).
-        # Off ("") until the owner picks it in the HQ (asks/new-look).
-        REEL_EDIT_LOOK: ""
+        # LIVE since 2026-11-11: the owner picked "Switch to the new look" in the
+        # HQ (asks/new-look). "" brings back the old black-and-white look.
+        REEL_EDIT_LOOK: "painted"
         REEL_STILL_CACHE: data/still_cache
         REEL_EDIT_MUSIC: ${{ inputs.music }}
         REEL_EDIT_SFX: ${{ (inputs.sfx || 'on') == 'on' && '1' || '0' }}

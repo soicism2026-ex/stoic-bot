@@ -33,7 +33,7 @@ def test_a_typo_fails_before_anything_renders():
     with pytest.raises(SystemExit, match="no quote with id"):
         lab.matrix("current", "pile_of_troubels", ids=IDS)
     with pytest.raises(SystemExit, match="at most"):
-        lab.matrix(",".join(lab.LOOKS), ",".join(IDS), ids=IDS)   # 4 looks x 3 quotes = 12
+        lab.matrix(",".join(lab.LOOKS), ",".join(IDS), ids=IDS)   # 5 looks x 3 quotes = 15
 
 
 def test_no_quote_named_means_the_next_to_air(monkeypatch):
@@ -50,8 +50,13 @@ def test_every_real_quote_id_is_a_safe_asset_name():
 
 
 def test_the_current_look_is_the_live_channel():
-    assert lab.LOOKS["current"] == {}
-    assert lab.env_lines("current") == ["REEL_LAB_LOOK=current"]
+    import yaml
+    wf = yaml.safe_load((ROOT / ".github" / "workflows" / "daily-short.yml").read_text(encoding="utf-8"))
+    live = next(st["env"]["REEL_EDIT_LOOK"] for job in wf["jobs"].values() for st in job.get("steps", [])
+                if "REEL_EDIT_LOOK" in (st.get("env") or {}))
+    assert lab.LOOKS["current"] == {"REEL_EDIT_LOOK": live}
+    assert lab.LOOKS["old"] == {"REEL_EDIT_LOOK": ""}
+    assert lab.env_lines("old") == ["REEL_EDIT_LOOK=", "REEL_LAB_LOOK=old"]
     assert "REEL_EDIT_LOOK=painted" in lab.env_lines("painted")
     assert set(lab.LABELS) == set(lab.LOOKS)
     with pytest.raises(SystemExit):

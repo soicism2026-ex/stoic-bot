@@ -40,13 +40,15 @@ BANK = ROOT / "data" / "edit_quotes.json"
 # Each look is the environment the render runs with, on top of the edit
 # format's own style pack. "current" is exactly the live channel.
 LOOKS: dict[str, dict[str, str]] = {
-    "current": {},
+    # The live channel airs the painted look since 2026-11-11 (owner's pick).
+    "current": {"REEL_EDIT_LOOK": "painted"},
+    "old": {"REEL_EDIT_LOOK": ""},                     # black-and-white stock, before 2026-11-11
     "painted": {"REEL_EDIT_LOOK": "painted"},          # the crew's whole new look
     "type": {"REEL_EDIT_TYPE": "v2"},                   # the new type (and its gold words) on today's picture
     "picture": {"REEL_PICTURE": "painted"},             # the new picture, today's type
 }
-LABELS = {"current": "Today's look", "painted": "The new look", "type": "New type only",
-          "picture": "New picture only"}
+LABELS = {"current": "Today's look", "old": "The old look", "painted": "The new look",
+          "type": "New type only", "picture": "New picture only"}
 MAX_JOBS = 8
 NAME = re.compile(r"^[a-z0-9_]+$")
 # Moments the sheet samples: the first frame (the swipe decision), the hook

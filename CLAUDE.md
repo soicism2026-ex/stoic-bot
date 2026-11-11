@@ -12,6 +12,7 @@ Faceless Stoicism YouTube Shorts channel. Fully automated: content → voiceover
 
 **Channel:** forged.in.stoicism  
 **Posting cadence:** 2 videos/day since 2026-10-18 (owner: "push it more"; `MAX_POSTS_PER_DAY` defaults to 2 in daily-short.yml). `POST_SLOT_HOURS="0,7"` makes the second post wait for 07:00 UTC (and `MIN_GAP_HOURS` 5), so the two are spread: since 2026-11-03, because 12-19 UTC posts got 0.75x the reach of their week (04-11 UTC 1.0x, 00-03 UTC 1.15x); edits rotate authors (`edits.pick`). Six cron slots (03/07/11/15/19/23 UTC) are over-provisioned because GitHub silently drops scheduled runs. Every edit quote AND its citation is checked against the source text (`scripts/validate_quotes.py`, tests). **Goal for 2027 (owner's pick, 2026-11-07): a million views and 1,000 subscribers in 2027**, about 2,700 views a day on average (6x Nov 2026), checkpoints 100k / 300k / 600k views by Mar 31 / Jun 30 / Sep 30 (`data/goals.json`, `scripts/goals.py`, the HQ's goal card; every test and restock is judged by whether it moves it). YouTube's first payout tier (500 subs + 3M Shorts views/90d) is the step after.  
+**Look (owner's pick in the HQ, 2026-11-11: "Switch to the new look"):** `REEL_EDIT_LOOK: "painted"` in daily-short.yml AND edit-preview.yml. Every shot a colour painting from the free FLUX.2 [klein] on Cloudflare (`src/painter.py`, the quote's `scenes` or its stock keywords through a template; the stills cache `data/still_cache` lets the live post air the rehearsal's paintings), the v2 type (`src/edit_type.py`: a hook readable on frame 0, gold words from `data/edit_type.json`), mastering to -14 LUFS (`src/master.py`). `""` brings back the old black-and-white stock look; the design lab's `old` look renders it.  
 **Product:** The Stoic Reset, a 30-day guided journal: C$5.99 since 2026-11-01 (it was free) — https://soicism.gumroad.com/l/cslosv. Every description ends with the owner's own line (`src/promo.py`); a backup airs with the current line (`promo.refresh`).
 
 ---
@@ -192,6 +193,8 @@ Never commit secrets. They exist only in GitHub Actions secrets.
 ---
 
 ## Video structure (render.py)
+
+_Since 2026-11-11 the edits air the painted look (see "Look" at the top: `src/painter.py`, `src/edit_type.py`, `src/master.py`). The structure below is the classic look's, kept for the other formats and the `old` look._
 
 ```
 [0:00–0:02] Hook text fades in (top of frame, large white caps)

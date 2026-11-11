@@ -113,15 +113,16 @@ def test_every_quote_with_scenes_fills_six_to_eight_slots(q, monkeypatch):
     assert 6 <= int(pack["REEL_BG_CLIPS"]) <= 8
 
 
-def test_the_live_workflows_keep_the_new_look_off_until_the_owner_picks():
-    """The owner's rule: nothing ships until he approves it. Going live is
-    REEL_EDIT_LOOK: "painted" in BOTH daily-short.yml and edit-preview.yml (so
-    the rehearsal shows exactly what airs) after his pick in asks/new-look:
-    change this test in the same commit, with the decision in decisions.md."""
+def test_the_live_workflows_air_the_look_the_owner_picked():
+    """The owner picked "Switch to the new look" in the HQ (asks/new-look,
+    2026-11-11; decisions.md). It is on in BOTH daily-short.yml and
+    edit-preview.yml, so the rehearsal under Next on air is exactly what airs.
+    Changing the look again needs his say-so: change this test with the
+    decision in decisions.md."""
     import yaml
     for wf in ("daily-short.yml", "edit-preview.yml"):
         w = yaml.safe_load((ROOT / ".github" / "workflows" / wf).read_text(encoding="utf-8"))
         envs = [st.get("env") or {} for job in w["jobs"].values() for st in job.get("steps", [])]
         looks = [e["REEL_EDIT_LOOK"] for e in envs if "REEL_EDIT_LOOK" in e]
-        assert looks == [""], (wf, looks)
+        assert looks == ["painted"], (wf, looks)
         assert any(e.get("REEL_STILL_CACHE") == "data/still_cache" for e in envs), wf
