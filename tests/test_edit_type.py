@@ -132,6 +132,35 @@ def test_emphasised_punctuation_stays_roman():
     assert "{\\i1\\1c" in ev and "}arrogance{\\i0" in ev and "{\\i0\\1c&HD8EAF4&\\2c&HD8EAF4&};" in ev
 
 
+def test_every_emphasis_on_file_is_in_its_quote_and_hook():
+    """data/edit_type.json: a phrase that drifts from its text would silently
+    lose its gold, so each one must be found where it is meant to be."""
+    data = json.loads(T.TYPE_DATA.read_text(encoding="utf-8"))["emphasis"]
+    by_id = {e["id"]: e for e in SHELF}
+    assert len(data) >= 80
+    for eid, emph in data.items():
+        assert eid in by_id, eid
+        assert T.emphasis_unmatched(by_id[eid]["hook"], emph["hook"]) == [], eid
+        assert T.emphasis_unmatched(by_id[eid]["quote"], emph["quote"]) == [], eid
+        hook_gold = sum(T.emphasis_mask(by_id[eid]["hook"].split(), emph["hook"]))
+        assert 1 <= hook_gold <= 4, f"{eid}: one punch per hook, not a gold wall"
+        # with its gold italic the quote still fits
+        b = T.layout_quote(by_id[eid]["quote"], by_id[eid]["author"], emph["quote"],
+                           T.source_line(by_id[eid]["citation"]))
+        assert b.bottom <= T.TEXT_BOTTOM and any(b.emph), eid
+
+
+def test_style_env_is_the_whole_wiring_for_an_edit():
+    import edits
+    content = edits.as_content(next(e for e in SHELF if e["id"] == "receive_without_arrogance"))
+    env = T.style_env(content)
+    assert env == {"REEL_TYPE": "v2", "REEL_HOOK_EMPHASIS": "loosely",
+                   "REEL_QUOTE_EMPHASIS": "arrogance|let it go",
+                   "REEL_QUOTE_SOURCE": T.source_line(content["_citation"])}
+    assert env["REEL_QUOTE_SOURCE"] and "trans." not in env["REEL_QUOTE_SOURCE"]
+    assert T.style_env({"_edit_id": "no_such_edit"})["REEL_HOOK_EMPHASIS"] == ""
+
+
 # --- layout: every hook and quote on the shelf fits ------------------------
 
 def _line_w(block, k, roman, italic=None):
@@ -233,6 +262,37 @@ def test_one_band_reshapes_from_hook_to_quote():
     assert all(e.startswith("Dialogue: 0,0:00:00.00,0:00:11.00,") for e in ev)
 
 
+def test_the_band_is_only_as_dark_as_each_picture_needs():
+    """The band darkens what is behind the words. On a night shot that only
+    costs light (preflight fails frames under 45/255, and the owner has called
+    frames too dark before), so each shot gets the band its own brightness
+    asks for, and the strength changes on the cut."""
+    assert T.band_strength(None) == 1.0
+    assert T.band_strength(40) == 0.0 and T.band_strength(T.BAND_LUMA_NONE) == 0.0
+    assert T.band_strength(250) == 1.0
+    assert abs(T.band_strength((T.BAND_LUMA_NONE + T.BAND_LUMA_FULL) / 2) - 0.5) < 1e-9
+    h, q = T.layout_hook(HOOK), T.layout_quote(QUOTE, AUTHOR)
+    plan = [(0.0, 1.4, 0.0), (1.4, 2.8, 0.5), (2.8, 4.2, 1.0), (4.2, 11.0, 1.0)]
+    ev = T.bands(h, (0.0, 3.4, 0), q, (3.7, 11.0), plan)
+    assert len(ev) == 3 * len(T.BAND_LAYERS), "no band at all on the dark first shot"
+    half = [e for e in ev if e.startswith("Dialogue: 0,0:00:01.40,")]
+    outer = 255 - round((255 - T.BAND_LAYERS[0][1]) * 0.5)
+    assert any(f"\\1a&H{outer:02X}&" in e for e in half), "half strength, half the darkness"
+    morph = [e for e in ev if e.startswith("Dialogue: 0,0:00:02.80,")]
+    assert all("\\move(" in e for e in morph), "the hand-over shot reshapes the band"
+    last = [e for e in ev if e.startswith("Dialogue: 0,0:00:04.20,")]
+    assert all("\\pos(-300," in e and "\\move" not in e for e in last), "the quote's band after"
+
+
+@pytest.mark.skipif(not shutil.which("ffmpeg"), reason="needs ffmpeg")
+def test_picture_luma_reads_the_frame_under_the_text(tmp_path):
+    clip = tmp_path / "grey.mp4"
+    subprocess.run(["ffmpeg", "-v", "error", "-f", "lavfi", "-i", "color=0xC8C8C8:s=1080x1920:d=1",
+                    "-pix_fmt", "yuv420p", str(clip)], check=True)
+    assert abs(T.picture_luma(clip, 0.5) - 200) < 6
+    assert T.picture_luma(tmp_path / "missing.mp4") is None
+
+
 # --- render.py integration --------------------------------------------------
 
 EDIT_PACK = {
@@ -299,6 +359,9 @@ def test_v2_render_uses_the_shipped_fonts_and_no_drawtext_cards(v2_render):
     assert f":fontsdir='{T.FONTS_DIR}'" in graph
     assert "drawtext" not in graph, "every letter is drawn by the ASS pass"
     assert "Style: TypeHook,Anton," in ass and "Style: TypeQuote,Cormorant Garamond Bold," in ass
+    # one band piece per shot and layer (unmeasurable test clips: full band)
+    bands = [l for l in ass.splitlines() if l.startswith("Dialogue: 0,") and "\\p1" in l]
+    assert len(bands) == 8 * len(T.BAND_LAYERS)
 
 
 def test_v2_text_stays_to_the_last_frame(v2_render):

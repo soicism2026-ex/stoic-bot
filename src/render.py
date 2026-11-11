@@ -856,7 +856,7 @@ def _build_ass(word_timings: list, out_path: Path,
                hook_hold: float = 0.0, captions_from: float = 0.0,
                quote: str = "", author: str = "", quote_times: list = None,
                quote_hide: float = 0.0, quote_from: float = None,
-               video_end: float = 0.0) -> Path:
+               video_end: float = 0.0, band_plan: list = None) -> Path:
     """Write a .ass subtitle file with impactful 2-word karaoke captions.
 
     2 words at a time gives a natural reading rhythm without the chaotic
@@ -952,7 +952,8 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
         header = header.replace(
             "\n\n[Events]", "\n" + "\n".join(edit_type.ass_styles()) + "\n\n[Events]", 1)
         events += _type_v2_events(hook, hook_starts or [], hook_hold, quote, author,
-                                  quote_times or [], quote_hide, quote_from, video_end)
+                                  quote_times or [], quote_hide, quote_from, video_end,
+                                  band_plan)
         out_path.write_text(header + "\n".join(events) + "\n", encoding="utf-8")
         return out_path
     if hook and hook_starts:
@@ -971,9 +972,29 @@ Format: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text
     return out_path
 
 
+def _v2_band_plan(bg_clips: list, dur: float, n_bg: int) -> list:
+    """[(start, end, band strength)] per shot, from how bright each picture
+    is under the text (edit_type.band_strength): the full band on a bright
+    sky, none on a night shot, so the type never darkens a frame that does
+    not need it (preflight fails frames under 45/255)."""
+    import edit_type
+    plan, t = [], 0.0
+    for clip, d in zip(bg_clips, _segment_durations(dur, n_bg)):
+        skip = 0.0
+        try:
+            if CLIP_LEAD_SKIP > 0 and _audio_duration(Path(clip)) > CLIP_LEAD_SKIP + 3.0:
+                skip = CLIP_LEAD_SKIP
+        except Exception:  # noqa: BLE001
+            pass
+        plan.append((t, t + d, edit_type.band_strength(edit_type.picture_luma(clip, skip + d / 2))))
+        t += d
+    print("  type v2: band per shot " + " ".join(f"{k:.2f}" for _, _, k in plan))
+    return plan
+
+
 def _type_v2_events(hook: str, hook_starts: list, hook_hold: float, quote: str,
                     author: str, quote_times: list, quote_hide: float,
-                    quote_from, video_end: float) -> list:
+                    quote_from, video_end: float, band_plan: list = None) -> list:
     """REEL_TYPE=v2: every on-screen letter of an edit as ASS events.
 
     The hook shows from frame 0 (REEL_HOOK_FROM_START) fully drawn, its words
@@ -998,7 +1019,7 @@ def _type_v2_events(hook: str, hook_starts: list, hook_hold: float, quote: str,
         q_end = max(quote_hide, video_end) if quote_hide > q_start else max(video_end, q_start + 6.0)
         events += edit_type.quote_events(quote_block, quote_times, q_start, q_end, 220)
         quote_span = (q_start, q_end)
-    bands = edit_type.bands(hook_block, hook_span, quote_block, quote_span)
+    bands = edit_type.bands(hook_block, hook_span, quote_block, quote_span, band_plan)
     ends = [s[1] for s in (hook_span, quote_span) if s]
     events += edit_type.watermark_events(edit_type.watermark_text(WATERMARK), 0.0,
                                          video_end or (max(ends) if ends else 0.0))
@@ -1601,7 +1622,8 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             # never under the hook.
             hook_end = hook_hold if v2_hook else 0.0
             v2_args = {"video_end": dur,
-                       "quote_from": (max(QUOTE_APPEAR, hook_end) if v2_static_quote else None)}
+                       "quote_from": (max(QUOTE_APPEAR, hook_end) if v2_static_quote else None),
+                       "band_plan": _v2_band_plan(bg_clips, dur, n_bg)}
         # Pass the hook through so libass draws the word-by-word follower in
         # the same subtitle pass — proportional layout and centring for free.
         _build_ass(cap_timings if caption_band else [], ass_path,

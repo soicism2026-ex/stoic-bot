@@ -232,6 +232,31 @@ def enabled(value) -> bool:
     return str(value or "").strip().lower() == "v2"
 
 
+TYPE_DATA = ROOT / "data" / "edit_type.json"
+
+
+def emphasis_for(edit_id: str) -> tuple:
+    """(hook emphasis, quote emphasis) for an edit from data/edit_type.json;
+    ("", "") when it has no entry or the file cannot be read."""
+    try:
+        import json
+        e = json.loads(TYPE_DATA.read_text(encoding="utf-8"))["emphasis"].get(edit_id or "", {})
+    except Exception:  # noqa: BLE001  no data never stops a render
+        return "", ""
+    return e.get("hook", ""), e.get("quote", "")
+
+
+def style_env(content: dict) -> dict:
+    """What the edit style pack adds to air this edit in v2 type: the flag,
+    its emphasis and the source under the author. `content` is
+    edits.as_content(): it carries _edit_id and _citation. The watermark is
+    left to its default (the channel's handle)."""
+    hook_e, quote_e = emphasis_for(content.get("_edit_id", ""))
+    return {"REEL_TYPE": "v2", "REEL_HOOK_EMPHASIS": hook_e,
+            "REEL_QUOTE_EMPHASIS": quote_e,
+            "REEL_QUOTE_SOURCE": source_line(content.get("_citation", ""))}
+
+
 def watermark_text(value) -> str:
     """REEL_WATERMARK: unset = the channel's handle; an empty string = off."""
     if value is None:
@@ -596,33 +621,87 @@ def band_events(top: float, bottom: float, start: float, end: float, fade: str =
     return out
 
 
-def bands(hook_block, hook_span, quote_block, quote_span) -> list:
+# How much band a picture needs, from its brightness under the text (mean
+# luma 0-255): none on a dark shot (the soft shadows carry the words, and the
+# frame keeps its light: the preflight gate fails a frame under 45, and the
+# owner has called frames too dark before), the full band on a bright sky.
+BAND_LUMA_NONE, BAND_LUMA_FULL = 80, 170
+
+
+def band_strength(luma) -> float:
+    """0..1 band for a shot whose text region has mean luma `luma`; a shot
+    that could not be measured gets the full band (legibility first)."""
+    if luma is None:
+        return 1.0
+    return max(0.0, min(1.0, (luma - BAND_LUMA_NONE) / (BAND_LUMA_FULL - BAND_LUMA_NONE)))
+
+
+def picture_luma(path, at: float = 0.5):
+    """Mean luma (0-255) of the region the text sits on (the phone-visible
+    width, TEXT_TOP..TEXT_BOTTOM) in one frame of a clip, or None."""
+    import proc
+    vf = (f"scale={W}:{H}:force_original_aspect_ratio=increase,crop={W}:{H},"
+          f"crop={CROP_R - CROP_L}:{TEXT_BOTTOM - TEXT_TOP}:{CROP_L}:{TEXT_TOP},"
+          "scale=42:54,format=gray")
+    try:
+        r = proc.run(["ffmpeg", "-v", "error", "-ss", f"{max(0.0, at):.2f}", "-i", str(path),
+                      "-frames:v", "1", "-vf", vf, "-f", "rawvideo", "-"],
+                     capture_output=True, timeout=60)
+        data = r.stdout or b""
+    except Exception:  # noqa: BLE001
+        return None
+    return sum(data) / len(data) if len(data) == 42 * 54 else None
+
+
+def bands(hook_block, hook_span, quote_block, quote_span, plan=None) -> list:
     """The band behind the hook and then the quote. With both, it is ONE band
     that moves and reshapes from the hook's extent to the quote's while one
     hands over to the other (\\move + \\t on its height), so the picture never
     brightens for a beat between them. hook_span = (start, end, fade_in_ms),
-    quote_span = (start, end)."""
-    if hook_block and quote_block:
-        h0, h1, fade_in = hook_span
-        q0, q1 = quote_span
-        t1 = max(0, int(round((h1 - 0.32 - h0) * 1000)))
-        t2 = max(t1 + 120, int(round((q0 + 0.22 - h0) * 1000)))
-        out = []
-        for pad, alpha, blur in BAND_LAYERS:
-            y_h, hh = int(hook_block.top - pad), int(hook_block.bottom - hook_block.top + 2 * pad)
-            y_q, hq = int(quote_block.top - pad), int(quote_block.bottom - quote_block.top + 2 * pad)
-            out.append(_dialogue(0, h0, q1, "TypeShade",
-                                 f"{{\\an7\\move(-300,{y_h},-300,{y_q},{t1},{t2})\\p1\\bord0\\shad0"
-                                 f"\\blur{blur}\\1c&H000000&\\1a&H{alpha:02X}&\\fad({fade_in},0)"
-                                 f"\\t({t1},{t2},\\fscy{100 * hq / hh:.2f})}}" + _band_shape(hh)))
-        return out
-    if hook_block:
-        return band_events(hook_block.top, hook_block.bottom, hook_span[0], hook_span[1],
-                           f"\\fad({hook_span[2]},320)")
-    if quote_block:
-        return band_events(quote_block.top, quote_block.bottom, quote_span[0], quote_span[1],
-                           "\\fad(220,0)")
-    return []
+    quote_span = (start, end). `plan` = [(start, end, strength)] per shot
+    (band_strength of its picture): each shot gets the band it needs, and a
+    change of strength lands on a cut, where the picture changes anyway."""
+    if not (hook_block or quote_block):
+        return []
+    start = hook_span[0] if hook_block else quote_span[0]
+    end = quote_span[1] if quote_block else hook_span[1]
+    out = []
+    for s0, s1, k in (plan or [(start, end, 1.0)]):
+        a, b = max(s0, start), min(s1, end)
+        if b - a >= 0.01 and k > 0.02:
+            out += _band_piece(hook_block, hook_span, quote_block, quote_span, a, b, k)
+    return out
+
+
+def _band_piece(hook_block, hook_span, quote_block, quote_span, a, b, k) -> list:
+    def geo(block, pad):
+        return int(block.top - pad), int(block.bottom - block.top + 2 * pad)
+    fade_in = hook_span[2] if hook_block else 220
+    first = abs(a - (hook_span[0] if hook_block else quote_span[0])) < 0.005
+    fade = f"\\fad({fade_in if first else 0},{320 if (hook_block and not quote_block and abs(b - hook_span[1]) < 0.005) else 0})"
+    out = []
+    for pad, alpha, blur in BAND_LAYERS:
+        a_k = 255 - int(round((255 - alpha) * k))
+        head = f"\\p1\\bord0\\shad0\\blur{blur}\\1c&H000000&\\1a&H{a_k:02X}&{fade}"
+        if hook_block and quote_block:
+            (y_h, hh), (y_q, hq) = geo(hook_block, pad), geo(quote_block, pad)
+            r1 = int(round((hook_span[1] - 0.32 - a) * 1000))
+            r2 = max(r1 + 120, int(round((quote_span[0] + 0.22 - a) * 1000)))
+            if r2 <= 0:                       # the quote's band
+                tags = f"\\an7\\pos(-300,{y_q})"
+                h = hq
+            elif r1 >= (b - a) * 1000:        # the hook's band
+                tags = f"\\an7\\pos(-300,{y_h})"
+                h = hh
+            else:                             # reshaping during this shot
+                tags = (f"\\an7\\move(-300,{y_h},-300,{y_q},{r1},{r2})"
+                        f"\\t({r1},{r2},\\fscy{100 * hq / hh:.2f})")
+                h = hh
+        else:
+            y, h = geo(hook_block or quote_block, pad)
+            tags = f"\\an7\\pos(-300,{y})"
+        out.append(_dialogue(0, a, b, "TypeShade", "{" + tags + head + "}" + _band_shape(h)))
+    return out
 
 
 def hook_events(block: Block, word_starts: list, start: float, end: float,
