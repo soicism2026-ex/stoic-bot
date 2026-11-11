@@ -267,4 +267,12 @@ def as_content(q: dict) -> dict:
         "_question": q.get("question", ""),
         "_search": found,
         "_searchUse": use if found else None,
+        # The painted look (REEL_EDIT_LOOK=painted): the scene writer's shots
+        # (6-8, in order; src/painter.py paints them) and the words the type
+        # sets in gold (the quote's, then the hook's). Empty when the quote
+        # has none: the painter's template and the plain type take over.
+        "_scenes": [s for s in (q.get("scenes") or []) if isinstance(s, str) and s.strip()],
+        "_emphasis": [e for e in (q.get("emphasis") or []) if isinstance(e, str) and e.strip()],
+        "_hook_emphasis": (q.get("hook_emphasis") or "").strip()
+        if isinstance(q.get("hook_emphasis"), str) else "",
     }

@@ -1309,6 +1309,19 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     if os.environ.get("REEL_MONO", "0") not in ("0", "", "false", "False"):
         pre_parts.append("hue=s=0,eq=contrast=1.15")
 
+    # PAINTED picture (REEL_PICTURE=painted, src/painter.py): its own colour
+    # grade replaces everything after the geometry (the date-rotated grade,
+    # the cinematic teal-orange, the grade experiment); a single clip moves
+    # sub-pixel like the rest. Black-and-white stays the last colour step if
+    # it is asked for explicitly.
+    import painter
+    painted = painter.enabled()
+    if painted:
+        _mono = os.environ.get("REEL_MONO", "0") not in ("0", "", "false", "False")
+        pre_parts = (pre_parts[:2] + [painter.motion_filter(0, total_frames)]
+                     + painter.grade_parts(BRIGHTNESS_LIFT, EXTRA_DARKEN)
+                     + (["hue=s=0,eq=contrast=1.15"] if _mono else []))
+
     # Overlay filters (quote, hook, captions, frame) drawn on top, after the
     # enhancement chain has finished grading the footage.
     vf_parts: list = []
@@ -1531,13 +1544,26 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         # whole video. Trim first, then move, so the move is timed to the
         # segment's own length.
         seg_frames = max(1, int(seg_dur * 30))
-        bg_segs = [
-            f"[{_i}:v]{geo},trim=0:end={seg_durs[_i]:.3f},setpts=PTS-STARTPTS"
-            + (f",{_motion(_i, max(1, int(seg_durs[_i] * 30)))}"
-               if MOTION_ON and not _generated_backgrounds_active() else "")
-            + f"[bgseg{_i}]"
-            for _i in range(n_bg)
-        ]
+        if painted:
+            # PAINTED (src/painter.py): bars baked into a stock fallback clip
+            # are cropped before the frame is filled, and every shot moves by
+            # a sub-pixel perspective move instead of zoompan's whole pixels.
+            bar_crops = painter.source_crops(bg_clips)
+            bg_segs = [
+                f"[{_i}:v]{bar_crops[_i]}{geo},trim=0:end={seg_durs[_i]:.3f},"
+                f"setpts=PTS-STARTPTS,"
+                f"{painter.motion_filter(_i, max(2, int(round(seg_durs[_i] * 30))))}"
+                f"[bgseg{_i}]"
+                for _i in range(n_bg)
+            ]
+        else:
+            bg_segs = [
+                f"[{_i}:v]{geo},trim=0:end={seg_durs[_i]:.3f},setpts=PTS-STARTPTS"
+                + (f",{_motion(_i, max(1, int(seg_durs[_i] * 30)))}"
+                   if MOTION_ON and not _generated_backgrounds_active() else "")
+                + f"[bgseg{_i}]"
+                for _i in range(n_bg)
+            ]
         refs = "".join(f"[bgseg{_i}]" for _i in range(n_bg))
         bg_segs.append(f"{refs}concat=n={n_bg}:v=1[rawbg]")
         # pre_parts[:3] = scale+crop+zoompan. The first two ran per-clip above
@@ -1551,7 +1577,8 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         segs = [f"[0:v]{','.join(pre_parts)}[graded]"]
 
     if ENHANCE_ON:
-        segs.append(_enhance_graph("graded", "enh"))
+        segs.append(painter.enhance_graph("graded", "enh") if painted
+                    else _enhance_graph("graded", "enh"))
         last = "enh"
     else:
         last = "graded"
@@ -1667,4 +1694,15 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # every run from 2026-09-18 onward.
     proc.run(cmd, check=True, capture_output=True,
              timeout=proc.RENDER_TIMEOUT)
+    if painted:
+        # No frame may show letterbox or pillarbox bars. A slot that does is
+        # banned for the retry (filled from stock), and "black frame" makes
+        # daily_post's retry move the stock picks too.
+        bounds = [0.0]
+        for _d in (seg_durs if n_bg > 1 else [dur]):
+            bounds.append(bounds[-1] + _d)
+        bad = painter.frame_fill_failures(Path(out_path), bounds)
+        if bad:
+            raise RuntimeError(f"frame fill: black frame bars in slots "
+                               f"{sorted({b['slot'] for b in bad})}: {bad[:3]}")
     return out_path

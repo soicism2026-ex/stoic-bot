@@ -32,3 +32,5 @@ data/frames/
 preview*/
 data/posted/
 .claude/worktrees/
+# Painted stills (REEL_STILL_CACHE; the workflows back it with actions/cache, never git)
+data/still_cache/

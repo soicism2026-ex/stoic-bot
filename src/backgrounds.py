@@ -484,6 +484,28 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
               f"slot={clip_idx} file={out_path.name}", flush=True)
         return out_path
 
+    # PAINTED (REEL_PICTURE=painted, src/painter.py). Every slot is a painted
+    # still (FLUX.2 [klein] via imagegen.generate_still, cached), its scene
+    # from the quote's `scenes` or the template from its stock keyword. The
+    # first slot asks for all of them at once. A slot that cannot be painted
+    # falls through to the stock chain below for its own keyword; Kling and
+    # the old still path are skipped.
+    painted = False
+    try:
+        import painter
+        painted = painter.enabled()
+        if painted:
+            if clip_idx == 0:
+                painter.SLOTS.clear()
+                painter.prefetch(int(os.environ.get("REEL_BG_CLIPS", "1") or 1), theme)
+            got = painter.fetch_slot(clip_idx, out_path, theme)
+            if got is not None:
+                print(f"[background] SOURCE={_note_source('PAINTED')} slot={clip_idx} "
+                      f"file={Path(got).name}", flush=True)
+                return Path(got)
+    except Exception as e:  # noqa: BLE001
+        print(f"[background] painter skipped: {e}", file=sys.stderr, flush=True)
+
     query = _search_term(theme, clip_idx=clip_idx)
     # EDITS tag the shots meant for a free AI still with "still:" (statues,
     # the ancient world — things stock video can't show). With
@@ -515,6 +537,8 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     # push is the thing being replaced. Returns None when off or on any
     # failure, so the chain below is untouched.
     try:
+        if painted:
+            raise RuntimeError("painted picture: stock fallback only")
         import kling
         k = kling.fetch_clip(query, out_path)
         if k is not None:
@@ -530,6 +554,8 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     # if anything fails, so it can never break a render.
     try:
         import imagegen
+        if painted:
+            raise RuntimeError("painted picture: the painter already tried this slot")
         if tagged_only and not wants_still:
             raise RuntimeError("stock video slot (edit) — no still")
         # The guide bookends get a FIXED seed, so FLUX returns the same statue

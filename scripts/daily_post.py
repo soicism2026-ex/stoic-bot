@@ -203,6 +203,80 @@ def background_flavors(scene: list, guide: str, no_guide: bool,
     return ([guide] + scene + [guide]) if scene else [guide, guide]
 
 
+# ---------------------------------------------------------------------------
+# THE PAINTED LOOK. Owner, 2026-11-10, in the HQ: "Deploy agents to design
+# higher quality videos." OFF until he picks: nothing here runs unless
+# REEL_EDIT_LOOK=painted (the crew's whole new look) or REEL_PICTURE=painted
+# (the new picture with today's type: the design lab's "picture" look).
+# ---------------------------------------------------------------------------
+# The picture's values (src/painter.py): colour (no black-and-white), its own
+# grade, no drifting haze (the paintings carry their own atmosphere), and the
+# stills cached so a retry repaints nothing.
+PAINTED_PICTURE = {
+    "REEL_PICTURE": "painted",
+    "REEL_MONO": "0",
+    "REEL_ATMOSPHERE": "0",
+    "REEL_PAINT_SAT": "1.08",        # rich but restrained
+    "REEL_PAINT_WARM": "0.05",       # warm mids and highlights
+    "REEL_PAINT_BLOOM": "0.16",      # a soft highlight bloom
+    "REEL_PAINT_GRAIN": "3",         # fine film grain
+    "REEL_PAINT_VIGNETTE": "0.30",   # light (ffmpeg's default is 0.63)
+    "REEL_PAINT_ZOOM": "0.08",       # push / pull travel per shot
+    "REEL_PAINT_HOOK_ZOOM": "0.10",  # the first shot's push
+    "REEL_PAINT_DRIFT": "0.05",      # drift travel per shot (of the frame)
+}
+# The whole look adds the typographer's type (Callimachus reads REEL_TYPE)
+# and loudness mastering to YouTube's -14 LUFS (src/master.py).
+PAINTED_LOOK = {"REEL_TYPE": "v2", "REEL_MASTER_LUFS": "-14"}
+# A quote's own shots drive the cut when it has at least this many.
+MIN_SCENES = 4
+MAX_SCENES = 8
+
+
+def _paint_edit(pack: dict, content: dict, fmt: str, broll: list, n_flavors: int) -> None:
+    """Turn an edit's style pack into the painted look when it is asked for.
+
+    The shot list: the quote's `scenes` (the scene writer's 6-8 shots, in
+    order) when it has them, every slot painted from one, with the stock
+    keyword at the same position kept as that slot's fallback; otherwise the
+    stock keywords, which src/painter.py turns into painted scenes. Emphasis
+    goes to the type only with the whole look, and only words that really are
+    in the quote / hook (case-insensitive, as the scene writer wrote them)."""
+    if fmt != "edit":
+        return
+    look = os.environ.get("REEL_EDIT_LOOK", "").strip().lower()
+    picture = os.environ.get("REEL_PICTURE", "").strip().lower()
+    if look != "painted" and picture != "painted":
+        return
+    pack.update(PAINTED_PICTURE)
+    pack["REEL_PAINT_KEY"] = content.get("_edit_id") or ""
+    shots = [s for s in (content.get("_scenes") or []) if isinstance(s, str) and s.strip()]
+    if len(shots) >= MIN_SCENES:
+        shots = shots[:MAX_SCENES]
+        fallback = list(broll) or [pack.get("REEL_BG_FLAVOR", "")]
+        for i in range(max(n_flavors, len(shots))):
+            pack.pop(f"REEL_BG_FLAVOR{i if i else ''}", None)
+            pack.pop(f"REEL_PAINT_SCENE{i if i else ''}", None)
+        pack["REEL_BG_CLIPS"] = str(len(shots))
+        for i, s in enumerate(shots):
+            pack[f"REEL_PAINT_SCENE{i if i else ''}"] = s.strip()
+            pack[f"REEL_BG_FLAVOR{i if i else ''}"] = fallback[i % len(fallback)]
+    print(f"  [painter] painted picture: "
+          f"{len(shots) if len(shots) >= MIN_SCENES else 0} written shots, "
+          f"{pack.get('REEL_BG_CLIPS')} slots")
+    if look != "painted":
+        return
+    pack.update(PAINTED_LOOK)
+    quote, hook = content.get("quote", ""), content.get("hook", "")
+    emph = [e.strip() for e in (content.get("_emphasis") or [])
+            if isinstance(e, str) and e.strip() and e.strip().lower() in quote.lower()]
+    if emph:
+        pack["REEL_QUOTE_EMPHASIS"] = "|".join(emph)
+    he = (content.get("_hook_emphasis") or "").strip()
+    if he and he.lower() in hook.lower():
+        pack["REEL_HOOK_EMPHASIS"] = he
+
+
 def _apply_corrections(env: dict, issues: list, attempt: int) -> dict:
     """Return updated env-var dict based on QA issues for the next render."""
     env = dict(env)
@@ -883,6 +957,7 @@ def main():
     # library (assets/guide/) can serve them instead of stock search — same
     # character every day instead of a different bust. Harmless when empty.
     pack["REEL_GUIDE_SLOTS"] = "" if no_guide else f"0,{len(flavors) - 1}"
+    _paint_edit(pack, content, fmt, broll, len(flavors))
 
     # ---- STORYBOARD: generated shots for stories with an approved board ------
     # Owner, 2026-09-24, on the first rendered storyboard: "the story board
