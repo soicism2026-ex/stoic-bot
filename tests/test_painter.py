@@ -378,7 +378,8 @@ def test_lamps_are_painted_as_roman_lamps():
     hurricane lantern twice: the scene names the Roman object instead."""
     import painter
     p = painter.period_objects
-    assert p("warm oil lamp glow") == "warm glow of a small terracotta Roman oil lamp's open flame"
+    assert p("warm oil lamp glow") == "warm warm lamplight"                          # light, not a lamp object
+    assert p("a wine cup, oil lamp glow") == "a wine cup, warm lamplight"
     assert p("lit by a single clay oil lamp") == "lit by a single small terracotta Roman oil lamp with an open flame"
     assert p("lamps along the walls") == "small terracotta Roman oil lamps with open flames along the walls"
     assert p("soft lamplight, a lamplit room") == "soft lamplight, a lamplit room"     # left alone
@@ -386,3 +387,18 @@ def test_lamps_are_painted_as_roman_lamps():
     assert p(once) == once                                                       # never rewritten twice
     assert p("a small terracotta oil lamp") == "a small terracotta Roman oil lamp with an open flame"
     assert "terracotta Roman oil lamp" in painter.build_prompt("{man} reading by an oil lamp at night")
+
+
+def test_a_shot_with_nobody_in_it_is_not_told_about_people():
+    """2026-11-11: "rain running down the face of a grey boulder" grew hands and
+    a robe because the prompt's light/era/anatomy lines described a person."""
+    import painter
+    empty = painter.build_prompt("Close-up of rain running down the face of a grey boulder, overcast light")
+    import re
+    added = empty.split("boulder", 1)[1]                 # what the code added after the scene
+    for word in ("skin", "cloth", "clothing", "hands", "fingers", "face"):
+        assert not re.search(r"\b" + word + r"\b", added), word
+    person = painter.build_prompt("{man} kneeling by a clay jar at dawn, steady hands")
+    assert "five fingers" in person and "skin" in person
+    assert painter.has_person("Close-up of a heavy gold ring turning between two fingers")
+    assert not painter.has_person("A heap of broken pottery on a workshop floor in afternoon sun")

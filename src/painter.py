@@ -166,6 +166,17 @@ STYLE = (
 # 2026-08-07); a scene that already names its light keeps it as the only one.
 DEFAULT_LIGHT = "lit by warm, low golden sunlight"
 OWN_LIGHT = "its warm physical light glowing on skin, cloth and stone"
+# A shot with nobody in it must not be told about skin, clothing, hands or a
+# face: the first real renders (design lab, 2026-11-11) grew a pair of hands
+# and a robe out of "rain running down the face of a grey boulder", because the
+# prompt's own light and anatomy lines described a person.
+OWN_LIGHT_EMPTY = "its warm physical light glowing on stone, wood and water"
+PERSON = re.compile(
+    r"\{(?:man|marcus|seneca|epictetus)\}|\b(?:man|men|woman|women|boy|girl|figure|person|"
+    r"people|crowd|soldiers?|fisherman|friends?|celebrants|guests|emperor|philosopher|"
+    r"servants?|slaves?|merchants?|guards?|farmers?|sailors?|child|children|hands?|"
+    r"fingers?|fists?|arms?|eyes|shoulders?|feet|sandals|he|his|him|she|her|they|their)\b"
+    r"|\bface\b(?! of)", re.I)
 LIGHT_WORDS = re.compile(
     r"\b(light|lights|lit|lamp|lamps|torch|torches|torchlight|candle|candles|"
     r"candlelight|fire|firelight|flame|flames|sun|sunlight|sunrise|sunset|dawn|"
@@ -173,6 +184,10 @@ LIGHT_WORDS = re.compile(
 # Period, stated as physical things (prompt_lint's lesson: name what IS there).
 ERA = ("period-accurate antiquity: stone, marble, plaster, terracotta and "
        "timber, wool and linen clothing, clay and bronze oil lamps")
+# The same period for a shot with nobody in it: things, not clothing or hands.
+ERA_EMPTY = ("period-accurate antiquity: stone, marble, plaster, terracotta, "
+             "timber and bronze")
+SAFE_EMPTY = "only the objects and the place described, natural proportions, plain unmarked surfaces"
 
 # "not red" renders red. Any negated colour in a scene or in the style is a bug.
 _COLOURS = (r"red|orange|yellow|green|blue|purple|violet|magenta|pink|cyan|teal|"
@@ -196,8 +211,14 @@ def negates_colour(text: str) -> bool:
     return NEGATED_COLOUR.search(text or "") is not None
 
 
+def has_person(scene: str) -> bool:
+    """Is anyone (or any part of anyone) in this shot?"""
+    return PERSON.search(scene or "") is not None
+
+
 def style_for(scene: str) -> str:
-    light = OWN_LIGHT if LIGHT_WORDS.search(scene or "") else DEFAULT_LIGHT
+    own = OWN_LIGHT if has_person(scene) else OWN_LIGHT_EMPTY
+    light = own if LIGHT_WORDS.search(scene or "") else DEFAULT_LIGHT
     return STYLE.format(light=light)
 
 
@@ -391,7 +412,9 @@ LAMP = re.compile(r"\b(?:(?:small|clay|bronze|terracotta) )*(?:oil[- ])?lamp(s)?
 
 def _roman_lamp(m: re.Match) -> str:
     if m.group(2):
-        return "glow of a small terracotta Roman oil lamp's open flame"
+        # "oil lamp glow" describes LIGHT: naming the lamp made it the subject
+        # (it took the wine cup's place in a close-up, 2026-11-11).
+        return "warm lamplight"
     return ("small terracotta Roman oil lamps with open flames" if m.group(1)
             else "small terracotta Roman oil lamp with an open flame")
 
@@ -411,7 +434,9 @@ def build_prompt(scene: str) -> str:
     import prompt_lint as lint
     expanded, _ = expand_cast(scene)
     expanded = _clean(period_objects(expanded))
-    return f"{expanded}. {style_for(expanded)}. {ERA}. {lint.SAFE_POSITIVE}."
+    if has_person(scene) or has_person(expanded):
+        return f"{expanded}. {style_for(expanded)}. {ERA}. {lint.SAFE_POSITIVE}."
+    return f"{expanded}. {style_for(expanded)}. {ERA_EMPTY}. {SAFE_EMPTY}."
 
 
 def seed_for(scene: str, key: str = "", slot: int = 0, handwritten: bool = True) -> int:
