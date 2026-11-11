@@ -794,6 +794,50 @@ BANNED_SLOTS: set[int] = set()
 PAINTED_CLIPS: set[str] = set()
 
 
+# The inspector's choice per (prompt, seed): the still that airs and its
+# verdict, so prefetch and fetch_slot agree and nothing is judged twice.
+_CHOSEN: dict = {}
+
+
+def _alt_seed(seed, n: int) -> int:
+    """The n-th repaint's seed: far from the first, the same every run (so the
+    live post repeats the rehearsal's choice from the cache)."""
+    return (int(seed or 0) + 7919 * n) % 2_147_483_647
+
+
+def painted_still(prompt: str, seed, scene: str = "") -> dict | None:
+    """imagegen.generate_still, then the inspector (src/inspector.py). A still
+    with a clear defect is repainted with a new seed, up to
+    REEL_INSPECT_RETRIES (2) times; the first that passes airs, else the one
+    with the fewest problems. Inspector spending goes in the day's ledger.
+    Returns generate_still's dict plus `seed_used`, `tries`, `inspect`."""
+    import imagegen
+    import inspector
+    memo = (prompt, seed)
+    if memo in _CHOSEN:
+        return _CHOSEN[memo]
+    retries = max(0, int(_f("REEL_INSPECT_RETRIES", 2)))
+    best = None
+    for n in range(retries + 1):
+        s = seed if n == 0 else _alt_seed(seed, n)
+        got = imagegen.generate_still(prompt, s)
+        if not got:
+            break                          # no paint left (budget, failure): keep the best so far
+        v = inspector.judge(Path(got["path"]), scene)
+        if v.neurons:
+            imagegen._ledger_add(imagegen.still_cache_dir(), v.neurons)
+        got = dict(got, seed_used=s, tries=n + 1, inspect=v.as_dict())
+        if v.ok is not False:
+            best = got
+            break
+        print(f"  [inspector] seed {s}: {'; '.join(v.problems)[:160]}"
+              f"{' (repainting)' if n < retries else ''}", flush=True)
+        if best is None or len(v.problems) < len(best["inspect"]["problems"]):
+            best = got
+    _CHOSEN[memo] = best
+    return best
+
+
 def _slot_request(slot: int, theme: str) -> tuple[str, int, str, bool, str]:
     scene, handwritten, why = slot_scene(slot, theme)
     key = os.environ.get("REEL_PAINT_KEY", "").strip()
@@ -805,18 +849,17 @@ def _slot_request(slot: int, theme: str) -> tuple[str, int, str, bool, str]:
 def prefetch(n_slots: int, theme: str = "") -> None:
     """Ask for every slot's still at once (the requests are independent and
     I/O bound), so a Short's eight stills cost the wall-clock of about two.
-    Results land in imagegen's in-process memo; fetch_slot reads them."""
-    import imagegen
+    Each is inspected (painted_still); fetch_slot reads the choices."""
     from concurrent.futures import ThreadPoolExecutor
     reqs = []
     for i in range(max(0, n_slots)):
         if i in BANNED_SLOTS:
             continue
-        _, seed, prompt, _, _ = _slot_request(i, theme)
-        reqs.append((prompt, seed))
+        scene, seed, prompt, _, _ = _slot_request(i, theme)
+        reqs.append((prompt, seed, scene))
     workers = max(1, int(_f("REEL_PAINT_WORKERS", 4)))
     with ThreadPoolExecutor(max_workers=workers) as pool:
-        list(pool.map(lambda r: imagegen.generate_still(r[0], r[1]), reqs))
+        list(pool.map(lambda r: painted_still(r[0], r[1], r[2]), reqs))
 
 
 def fetch_slot(slot: int, out_path: Path, theme: str = "") -> Path | None:
@@ -830,7 +873,7 @@ def fetch_slot(slot: int, out_path: Path, theme: str = "") -> Path | None:
     scene, seed, prompt, handwritten, why = _slot_request(slot, theme)
     if why:
         print(f"  [painter] slot {slot}: {why}", flush=True)
-    got = imagegen.generate_still(prompt, seed)
+    got = painted_still(prompt, seed, scene)
     out_path = Path(out_path)
     PAINTED_CLIPS.discard(str(out_path))
     if not got:
@@ -841,13 +884,18 @@ def fetch_slot(slot: int, out_path: Path, theme: str = "") -> Path | None:
         SLOTS[slot] = {"scene": scene, "ok": False}
         return None
     PAINTED_CLIPS.add(str(out_path))
-    SLOTS[slot] = {"scene": scene, "seed": seed, "handwritten": handwritten, "ok": True,
+    SLOTS[slot] = {"scene": scene, "seed": got.get("seed_used", seed), "handwritten": handwritten, "ok": True,
+                   "tries": got.get("tries", 1), "inspect": got.get("inspect"),
                    "model": got.get("model"), "cached": got.get("cached"),
                    "neurons": got.get("neurons", 0), "luma": prep["luma"],
                    "exposure": prep["k"], "luma_after": prep["luma_after"],
                    "crop": prep["crop"]}
+    verdict = got.get("inspect") or {}
+    looked = ("passed" if verdict.get("ok") else "kept the best of " + str(got.get("tries", 1))
+              if verdict.get("ok") is False else "not looked at")
     print(f"  [painter] slot {slot}: {got.get('model', '?').split('/')[-1]}"
-          f"{' (cache)' if got.get('cached') else ''} seed={seed} luma "
+          f"{' (cache)' if got.get('cached') else ''} seed={got.get('seed_used', seed)} "
+          f"inspector {looked}{' after ' + str(got.get('tries')) + ' paintings' if got.get('tries', 1) > 1 and verdict.get('ok') else ''} luma "
           f"{(prep['luma'] or 0):.0%}->{(prep['luma_after'] or 0):.0%}"
           f"{' ' + prep['crop'] if prep['crop'] else ''} | {scene[:60]}", flush=True)
     return prep["clip"]
