@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-11T02:41:07Z",
+ "checked": "2026-11-11T10:07:44Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-11T02:41:07Z",
-  "youtube": "R3EIoZhoSd8",
-  "title": "\"Winning right now? Hold it loosely\" — Marcus Aurelius | Stoicism",
-  "status": "published",
-  "permalink": "https://www.instagram.com/reel/DflbosFjUJb/",
+  "at": "2026-11-11T10:07:44Z",
+  "youtube": "oe7-4w86Eek",
+  "title": "\"Angry about it? Now it's two problems\" — Seneca | Stoicism",
+  "status": "queued",
+  "permalink": null,
   "reason": null
  }
 }
