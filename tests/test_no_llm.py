@@ -26,6 +26,8 @@ import llm  # noqa: E402
 def _no_key(monkeypatch):
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.delenv("LLM_DISABLED", raising=False)
+    monkeypatch.delenv("CLOUDFLARE_ACCOUNT_ID", raising=False)
+    monkeypatch.delenv("CLOUDFLARE_API_TOKEN", raising=False)
 
 
 # ------------------------------------------------------------ the switch
@@ -139,8 +141,8 @@ def test_comment_replies_exit_without_posting_anything():
     worse than none — the screen exists so a real answer meets a real comment."""
     src = (ROOT / "scripts" / "reply_to_comments.py").read_text()
     body = src[src.index("def main():"):]
-    assert "llm.available()" in body[:900]
-    assert body.index("llm.available()") < body.index("_yt_service()")
+    assert 'llm.available("replies")' in body[:900]
+    assert body.index('llm.available("replies")') < body.index("_yt_service()")
 
 
 def test_the_strategy_file_is_left_alone_rather_than_emptied():

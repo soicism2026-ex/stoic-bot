@@ -131,6 +131,17 @@ button { font: inherit; color: inherit; }
 .ask h3 { margin: 0; font-size: 17px; line-height: 1.3; }
 .ask p { margin: 0; color: var(--muted); }
 .ask .q { white-space: pre-line; }
+/* Ideas (owner 2026-11-11: "brainstorm more ideas so i can review the work"): one row each, Go / Not now */
+.idea { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border-radius: var(--r); background: var(--surface); border: 1px solid var(--line); }
+.idea-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.idea h3 { margin: 0; font-size: 16px; line-height: 1.3; }
+.idea .pitch { margin: 0; color: var(--muted); font-size: 14.5px; }
+.idea .why { margin: 0; color: var(--faint); font-size: 13px; white-space: pre-line; }
+.idea-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.idea-foot { display: flex; align-items: center; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+.idea-foot .btn { min-height: 36px; padding: 6px 14px; font-size: 13.5px; }
+.idea.running { border-color: color-mix(in srgb, var(--gold) 45%, var(--line)); }
+.idea .state { font-size: 13px; color: var(--muted); }
 .copy { display: flex; flex-direction: column; gap: 6px; padding: 10px 12px; border-radius: 11px; border: 1px solid var(--line); background: var(--raised); }
 .copy-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .copy-label { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
@@ -320,6 +331,11 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       <section class="block" aria-labelledby="h-asks">
         <div class="eyebrow-row"><h2 class="eyebrow" id="h-asks">Needs your call</h2><span class="count" id="asks-count"></span></div>
         <div id="asks"><p class="empty">Decisions waiting for you show up here.</p></div>
+      </section>
+      <section class="block" id="ideas-block" aria-labelledby="h-ideas">
+        <div class="eyebrow-row"><h2 class="eyebrow" id="h-ideas">Ideas to review</h2><span class="count" id="ideas-count"></span></div>
+        <p class="sub" id="ideas-sub">The crew's proposals, best first. Go starts one; Not now shelves it. What's running shows its numbers as they come in.</p>
+        <div id="ideas"><p class="empty">No ideas waiting.</p></div>
       </section>
       <section class="block" id="goal-block" aria-labelledby="h-goal" hidden>
         <div class="eyebrow-row"><h2 class="eyebrow" id="h-goal">The goal</h2><button class="link-btn" data-go="channel">Details</button></div>
@@ -869,9 +885,39 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       : "").join("");
   }
 
+  const isIdea = (a) => a && a.kind === "idea";
+
+  let ideasSig = "";
+  function drawIdeas() {
+    const all = S.asks.filter(isIdea);
+    const open = all.filter((a) => a.status === "open").sort((x, y) => (x.order ?? 99) - (y.order ?? 99));
+    // Picked up ("go") and not yet closed by Claude: running. Closed: outcome set.
+    const live = all.filter((a) => a.status !== "open" && a.answer === "go" && !a.closed)
+      .sort((x, y) => String(y.answeredAt || "").localeCompare(String(x.answeredAt || "")));
+    const sig = JSON.stringify([open, live]);
+    $("#ideas-count").textContent = open.length ? `${open.length} to review` : live.length ? `${live.length} running` : "";
+    if (sig === ideasSig) return;
+    ideasSig = sig;
+    const box = $("#ideas");
+    if (!open.length && !live.length) { box.innerHTML = `<p class="empty">No ideas waiting.</p>`; return; }
+    const tag = (t, cls) => t ? `<span class="pill ${cls || "s-idle"}">${esc(t)}</span>` : "";
+    const card = (a, running) => `<article class="idea ${running ? "running" : ""}" id="ask-${esc(a.id)}">
+        <div class="idea-head"><h3>${esc(a.title)}</h3>${running ? `<span class="pill s-work">Running</span>` : a.impact ? tag(a.impact + " impact", a.impact === "high" ? "s-done" : "s-idle") : ""}</div>
+        ${a.pitch ? `<p class="pitch">${esc(a.pitch)}</p>` : ""}
+        ${a.why ? `<p class="why">${esc(a.why)}</p>` : ""}
+        <div class="idea-tags">${tag(a.crew ? crewName(a.crew) : "", "s-idle")}${tag(a.cost, "s-idle")}${tag(a.needsYou ? "Needs you: " + a.needsYou : "", "s-wait")}</div>
+        ${running ? `<p class="state">${esc(a.outcome || "Started. Numbers as they come in.")}</p>` : ""}
+        <div class="idea-foot">${running
+          ? `<button class="btn" type="button" data-discuss="${esc(a.id)}">Ask about it</button><button class="btn" type="button" data-idea="${esc(a.id)}" data-opt="stop">Stop it</button>`
+          : `<button class="btn" type="button" data-discuss="${esc(a.id)}">Ask</button><button class="btn" type="button" data-idea="${esc(a.id)}" data-opt="no">Not now</button><button class="btn primary" type="button" data-idea="${esc(a.id)}" data-opt="go">Go</button>`}</div>
+      </article>`;
+    box.innerHTML = open.map((a) => card(a, false)).join("") + live.map((a) => card(a, true)).join("");
+  }
+  function crewName(key) { const c = CREW[key]; return c && c.name ? c.name : key; }
+
   let asksSig = "";
   function drawAsks() {
-    const open = S.asks.filter((a) => a.status === "open").sort((x, y) => (x.order ?? 99) - (y.order ?? 99) || String(x.created || "").localeCompare(String(y.created || "")));
+    const open = S.asks.filter((a) => a.status === "open" && !isIdea(a)).sort((x, y) => (x.order ?? 99) - (y.order ?? 99) || String(x.created || "").localeCompare(String(y.created || "")));
     const sig = JSON.stringify(open);
     $("#asks-count").textContent = open.length ? String(open.length) : "";
     const badge = $("#badge");
@@ -1169,7 +1215,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
         : n.sent ? `<span class="pill s-work">Sent to Claude</span>` : `<span class="pill s-wait">Waiting for Claude</span>`;
       return `<div class="note"><div class="a-meta">${tAgo(n.created)}${n.about ? `<span>about ${esc(n.about)}</span>` : ""}</div><div class="txt">${esc(n.text)}</div>${n.reply ? `<div class="reply">${esc(n.reply)}</div>` : ""}<div>${state}</div></div>`;
     }).join("")}</div>` : `<p class="empty">Messages you send from here are kept here, with Claude's answer.</p>`;
-    const decided = S.asks.filter((a) => a.status !== "open").sort((a, b) => String(b.answeredAt || "").localeCompare(String(a.answeredAt || ""))).slice(0, 10);
+    const decided = S.asks.filter((a) => a.status !== "open" && !(isIdea(a) && a.answer === "go" && !a.closed)).sort((a, b) => String(b.answeredAt || "").localeCompare(String(a.answeredAt || ""))).slice(0, 10);
     $("#decided").innerHTML = decided.length ? `<div class="list">${decided.map((a) => {
       const opt = (a.options || []).find((o) => o.id === a.answer);
       return `<div class="note"><div class="a-meta">${tAgo(a.answeredAt)}</div><div class="txt"><b>${esc(a.title)}</b>: ${esc(opt ? opt.label : a.answer || "closed")}</div>${a.outcome ? `<div class="reply">${esc(a.outcome)}</div>` : ""}</div>`;
@@ -1212,7 +1258,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     if (raf) return;
     raf = requestAnimationFrame(() => {
       raf = 0;
-      drawLive(); drawHero(); drawAsks(); drawGoal(); drawGlance(); drawAlerts(); drawOnAir(); drawTeam(); drawChannel(); drawLog();
+      drawLive(); drawHero(); drawAsks(); drawIdeas(); drawGoal(); drawGlance(); drawAlerts(); drawOnAir(); drawTeam(); drawChannel(); drawLog();
     });
   }
 
@@ -1326,13 +1372,18 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     const pick = S.picks[id];
     if (!a || !pick) return;
     const opt = (a.options || []).find((o) => o.id === pick) || { label: pick };
+    const was = btn.textContent;
     btn.disabled = true; btn.textContent = "Sending";
-    const r = await tellClaude(`[HQ decision] ${a.title}: ${opt.label}`, $("#ask-" + CSS.escape(id)), a.title);
+    const kind = isIdea(a) ? "idea" : "decision";
+    const r = await tellClaude(`[HQ ${kind}] ${a.title}: ${opt.label}`, $("#ask-" + CSS.escape(id)), a.title);
     try {
-      await caps.db.doc("asks/" + id).update({ status: "answered", answer: pick, answeredAt: new Date().toISOString(), answeredBy: S.meId });
+      const patch = { answer: pick, answeredAt: new Date().toISOString(), answeredBy: S.meId };
+      // An idea stays "answered" while it runs; "stop" closes it.
+      if (pick === "stop") patch.closed = true; else patch.status = "answered";
+      await caps.db.doc("asks/" + id).update(patch);
       toast(r.sent ? `Sent: ${opt.label}. Claude takes it from here.` : `Saved: ${opt.label}. Claude acts on it at its next check-in.`);
     } catch (e) {
-      btn.disabled = false; btn.textContent = "Send my decision";
+      btn.disabled = false; btn.textContent = was;
       toast("Couldn't save the decision. Try again.");
     }
   }
@@ -1451,7 +1502,8 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
     if (t.id === "live-on" || t.id === "live-on-2") { turnOnLive(t); return; }
     if (t.id === "perm-btn") { caps.permissions && caps.permissions.manage().then(() => location.reload()).catch(() => toast("Open the page's Permissions menu in Claude.")); return; }
     if (t.id === "sync-btn") { syncNow(t); return; }
-    if (t.dataset.opt) {
+    if (t.dataset.idea) { S.picks[t.dataset.idea] = t.dataset.opt; decide(t.dataset.idea, t); return; }
+    if (t.dataset.opt && t.dataset.ask) {
       const id = t.dataset.ask;
       S.picks[id] = t.dataset.opt;
       const card = $("#ask-" + CSS.escape(id));

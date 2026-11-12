@@ -332,7 +332,8 @@ def score_video(
         )
         raw = response.content[0].text.strip()
     except Exception as e:
-        print(f"  [visual_qa] API call failed: {e}", file=sys.stderr)
+        llm.note_failure(e)           # an empty key: later callers skip instead of failing again
+        print(f"  [visual_qa] API call failed: {str(e)[:160]}", file=sys.stderr)
         return VisualQAResult(
             verdict=UNREVIEWED,
             scores={},

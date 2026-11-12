@@ -442,3 +442,21 @@ def test_libass_draws_anton_from_the_fontsdir_at_the_measured_width(tmp_path):
     cap = b.fs * T.font(T.HOOK_FONT).cap_height / T.font(T.HOOK_FONT).cell
     assert abs((bottom - top) - cap) / cap < 0.06, "cap height as laid out"
     assert abs(bottom - b.baselines[0]) <= 3, "baseline where the layout put it"
+
+
+def test_the_v2_thumbnail_seeks_inside_a_short_opening_clip(tmp_path, monkeypatch):
+    """The first live painted post (2026-11-12) went out without its poster:
+    the opening shot is a ~1.3 s clip and the thumbnail sought to 1.5 s, so
+    ffmpeg encoded nothing (exit 234)."""
+    import shutil
+    import subprocess
+    if not shutil.which("ffmpeg"):
+        pytest.skip("ffmpeg not installed")
+    import render
+    clip = tmp_path / "bg.mp4"
+    subprocess.run(["ffmpeg", "-y", "-v", "error", "-f", "lavfi", "-i", "color=c=orange:s=1080x1920:d=1.2:r=30",
+                    "-c:v", "libx264", "-pix_fmt", "yuv420p", str(clip)], check=True)
+    monkeypatch.setattr(render, "TYPE_V2", True, raising=False)
+    out = render._thumbnail_v2("Can't resist it yet? Don't stand near it.", "Epictetus", clip, tmp_path / "t.thumb.jpg")
+    assert out is not None and out.exists() and out.stat().st_size > 10_000
+    assert not (tmp_path / "t.thumb.thumb.ass").exists()                  # no doubled suffix

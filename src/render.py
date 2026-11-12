@@ -1031,9 +1031,18 @@ def _thumbnail_v2(hook: str, author: str, bg_path: Path, out_path: Path) -> Path
     hook (face, size, line breaks, gold emphasis) and band, the author in gold
     under a short rule, on the opening shot graded like the video."""
     import edit_type
-    ass = Path(out_path).with_suffix(".thumb.ass")
+    stem = Path(out_path).stem
+    stem = stem[:-6] if stem.endswith(".thumb") else stem          # never t.thumb.thumb.ass
+    ass = Path(out_path).with_name(stem + ".thumb.ass")
     ass.write_text(edit_type.thumbnail_document(hook, author, HOOK_EMPHASIS, HOOK_CAPS),
                    encoding="utf-8")
+    # The opening shot of a painted edit is a clip of about 1.3 s: seeking to
+    # 1.5 s left ffmpeg nothing to encode (exit 234 on the first live post,
+    # 2026-11-12, so the Short went out without its poster). Seek inside it.
+    try:
+        seek = min(1.5, max(0.0, _audio_duration(Path(bg_path)) - 0.15))
+    except Exception:  # noqa: BLE001  unreadable clip: let ffmpeg say so below
+        seek = 0.5
     vf = [f"scale={W}:{H}:force_original_aspect_ratio=increase", f"crop={W}:{H}"]
     if ENHANCE_ON:
         vf.append(ENH_SHARPEN)
@@ -1041,13 +1050,15 @@ def _thumbnail_v2(hook: str, author: str, bg_path: Path, out_path: Path) -> Path
         vf.append("hue=s=0,eq=contrast=1.15")
     vf += ["eq=brightness=-0.05:contrast=1.06", "vignette=PI/4.6",
            f"ass='{_escape_filter_path(ass)}':fontsdir='{_escape_filter_path(edit_type.FONTS_DIR)}'"]
-    cmd = ["ffmpeg", "-y", "-ss", "1.5", "-i", str(bg_path), "-vframes", "1",
+    cmd = ["ffmpeg", "-y", "-ss", f"{seek:.2f}", "-i", str(bg_path), "-vframes", "1",
            "-vf", ",".join(vf), "-q:v", "3", str(out_path)]
     try:
         proc.run(cmd, check=True, capture_output=True)
         return out_path
     except Exception as e:  # noqa: BLE001
-        print(f"  [thumbnail] v2 generation failed: {e}", file=__import__("sys").stderr)
+        err = getattr(e, "stderr", b"") or b""
+        err = err.decode("utf-8", "replace") if isinstance(err, (bytes, bytearray)) else str(err)
+        print(f"  [thumbnail] v2 generation failed: {e}\n{err[-400:]}", file=__import__("sys").stderr)
         return None
 
 

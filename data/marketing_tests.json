@@ -69,13 +69,22 @@
    "proposed": "2026-11-11",
    "started": "2026-11-12",
    "approved": "2026-11-11: owner, in the HQ: \"Switch to the new look\""
+  },
+  {
+   "id": "follow-line",
+   "kind": "subs_per_1k",
+   "question": "Does a follow line at the end of every description turn more viewers into subscribers?",
+   "change": "The last line of every edit's description, before the hashtags: \"One Stoic line a day. Follow for tomorrow's.\"",
+   "why": "98% of views come from people who don't follow the channel (Glaux, 28 days to 11-06); it gains about 1.5 subscribers a day and 1,000 by the end of 2027 needs 1.8. The cheapest ask there is.",
+   "measure": "New subscribers per 1,000 views, the 14 days after against the 14 before (channel_stats.csv).",
+   "ask": "idea-follow-line",
+   "status": "queued",
+   "proposed": "2026-11-12",
+   "start": "2026-11-21",
+   "approved": "2026-11-12: within the autonomy rule (words only, reversible); on the owner's Ideas board as idea-follow-line"
   }
  ],
  "next": [
-  {
-   "id": "follow-line",
-   "idea": "Subscribers: 98% of views come from people who don't follow the channel (Glaux, 28 days to 11-06), and it gains about 1.5 subscribers a day toward the 500 it needs. Test a short, calm follow line at the end of each Short (\"One Stoic line a day. Follow for tomorrow's.\"), judged by subscribers per 1,000 views."
-  },
   {
    "id": "third-short",
    "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."

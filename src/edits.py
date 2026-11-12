@@ -199,6 +199,29 @@ def search_use() -> str | None:
     return None
 
 
+# Cicero's test 6 (2026-11-12): a follow line as the description's last line
+# before the hashtags, on while the ledger's "follow-line" test is running
+# or adopted (data/marketing_tests.json; the owner's Ideas board card
+# idea-follow-line). Measured in subscribers per 1,000 views.
+FOLLOW_LINE = "One Stoic line a day. Follow for tomorrow's."
+
+
+def _ledger_test(test_id: str) -> dict | None:
+    try:
+        tests = json.loads(MARKETING_TESTS.read_text(encoding="utf-8")).get("tests", [])
+        return next((t for t in tests if t.get("id") == test_id), None)
+    except Exception:  # noqa: BLE001  no ledger: nothing changes
+        return None
+
+
+def follow_line() -> str:
+    """FOLLOW_LINE while the test runs or stays adopted, else ""."""
+    t = _ledger_test("follow-line")
+    if t and (t.get("status") == "running" or t.get("adopted")):
+        return FOLLOW_LINE
+    return ""
+
+
 def search_lead(content: dict) -> str:
     """The description's first line when the search is on, in plain words,
     e.g. How to stop overthinking: Epictetus's answer."""
@@ -231,6 +254,7 @@ def description(content: dict) -> str:
         parts = [body, QUESTION_LINE.format(question=ask) if ask else "",
                  f"\u201c{content['quote'].strip()}\u201d\n{source}"]
     parts.insert(0, search_lead(content))            # only once the owner said yes
+    parts.append(follow_line())                       # Cicero's test 6, while it runs
     parts.append(" ".join(content["hashtags"]))
     return "\n\n".join(p for p in parts if p)
 

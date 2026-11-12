@@ -142,7 +142,8 @@ def run_qa(video_path, intended_quote: str) -> dict:
         )
         raw = response.content[0].text.strip()
     except Exception as e:
-        return {"pass": True, "issues": [f"QA API error: {e}"], "severity": "low"}
+        llm.note_failure(e)           # an empty key: later callers skip instead of failing again
+        return {"pass": True, "issues": [f"QA API error: {str(e)[:160]}"], "severity": "low"}
 
     # Strip markdown fences defensively
     if raw.startswith("```"):

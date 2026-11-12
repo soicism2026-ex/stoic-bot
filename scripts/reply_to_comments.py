@@ -263,11 +263,7 @@ def _is_receptive(comment_text: str) -> bool:
     if _is_dismissive(comment_text):
         return False
     try:
-        import anthropic
-        client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-        msg = client.messages.create(
-            model="claude-haiku-4-5-20251001",
-            max_tokens=5,
+        verdict = llm.chat(
             system=(
                 "You screen YouTube comments for a Stoic philosophy channel. Reply "
                 "ONLY to viewers who genuinely connect with the message. Answer with "
@@ -277,11 +273,10 @@ def _is_receptive(comment_text: str) -> bool:
                 "that shows they take the ideas seriously.\n"
                 "SKIP — mockery, trolling, sarcasm, bad-faith argument, dismissal, "
                 "hostility, insults, or hollow one-word noise.\n"
-                "When unsure, answer SKIP."
+                "When unsure, answer SKIP. Answer with the one word only."
             ),
-            messages=[{"role": "user", "content": f'Comment: "{comment_text}"'}],
-        )
-        verdict = msg.content[0].text.strip().upper()
+            user=f'Comment: "{comment_text}"', max_tokens=5, feature="replies",
+        ).strip().upper()
         return verdict.startswith("ENGAGE")
     except Exception as e:
         print(f"  [comments] receptivity check failed ({e}) — skipping to be safe")
@@ -320,11 +315,8 @@ _dehumanize_guard = _strip_bot_tells
 
 
 def _generate_reply(comment_text: str, video_title: str) -> str:
-    """Ask Claude to write a short, on-brand Stoic reply."""
-    import anthropic
-
-    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
-
+    """Ask the model (Claude Haiku, or the free Llama on Cloudflare: src/llm.py)
+    to write a short, on-brand Stoic reply."""
     system = (
         "You are a real person who runs a small Stoicism channel, replying to "
         "someone who took the time to comment. Not a brand account. Not a "
@@ -363,13 +355,7 @@ def _generate_reply(comment_text: str, video_title: str) -> str:
         "Reply the way you'd actually type it on your phone."
     )
 
-    msg = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=200,
-        messages=[{"role": "user", "content": user}],
-        system=system,
-    )
-    reply = msg.content[0].text.strip().strip('"')
+    reply = llm.chat(system=system, user=user, max_tokens=200, feature="replies").strip().strip('"')
     return _dehumanize_guard(reply)
 
 
@@ -384,7 +370,7 @@ def main():
     # screen and the reply itself. With calls off there is nothing to do, and
     # posting a canned reply would be worse than posting none — the whole
     # point of the screen is that a real person answers a real comment.
-    if not llm.available():
+    if not llm.available("replies"):
         print(llm.skip_note("replies"))
         print("  Nothing posted. No comment is marked as replied, so the "
               "backlog is intact whenever calls come back.")

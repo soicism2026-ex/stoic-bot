@@ -136,6 +136,13 @@ def check_rule_numbers(rows: list[dict], first_recent: int,
               f"in this window")
 
 
+# Columns where ONE value is the owner's standing choice, not a stuck rotation:
+# every post is an edit (2026-10-02, "switch the format") read by Brian
+# (2026-10-21, the owner's pick by ear). Warning on them every run taught the
+# log to be ignored.
+DELIBERATE = {"format": {"edit"}, "voice_name": {"Brian"}}
+
+
 def check_dominance(rows: list[dict], column: str, label: str,
                     issues: list[str]) -> None:
     """One value swamping a column means that rotation has stopped."""
@@ -146,6 +153,9 @@ def check_dominance(rows: list[dict], column: str, label: str,
         return
     top, n = Counter(vals).most_common(1)[0]
     share = n / len(vals)
+    if top in DELIBERATE.get(column, set()):
+        print(f"  [{OK}] {label}: '{top}' on {n}/{len(vals)} recent posts, the owner's standing choice")
+        return
     if share > DOMINANCE and len(set(vals)) > 0:
         issues.append(f"{label}: '{top}' on {n}/{len(vals)} recent posts "
                       f"({share:.0%}) — rotation is not varying")

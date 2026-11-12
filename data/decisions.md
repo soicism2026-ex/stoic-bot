@@ -1781,4 +1781,47 @@ that story must always be captioned "recorded in the Historia Augusta", never
   would have blocked a live post the same way). Only a painted slot can
   fail that check now. The lab never runs before the day's posts have
   painted (it shares the free allowance).
+- **2026-11-11 — AUTONOMY: THE CREW WORKS ON ITS OWN; THE OWNER REVIEWS THE
+  WORK.** Owner, in chat: *"improve the stoics channel by getting agents to do
+  their work autonomously, an dbarinstorm more ideas so i can review the
+  work."* The rule from here on:
+  * A change that is reversible and touches only WORDS and TIMING
+    (descriptions, titles, tags, hashtags, the comment under a Short, the
+    posting time inside the owner's two-a-day cadence, playlists, replies to
+    viewers) may start without asking. It appears on the HQ's Ideas board as a
+    running card the owner can stop, with its numbers as they come in.
+  * Anything that changes the LOOK (type, colours, layout, motion), the voice,
+    the music, the number of posts a day, the product or its price, or that
+    costs money, is proposed as an open idea card and waits for his Go.
+  * Defect fixes ship directly (the 11-11 rule stands).
+  Built: the Ideas board (`asks/*` with `kind: "idea"`, Go / Not now / Stop,
+  running cards with outcomes; `hq/forged-hq.html` drawIdeas), nine ideas
+  ranked by expected effect on the 2027 goal (TikTok through Buffer, a third
+  Short a day, a weekly compilation video, a follow line, channel name and
+  About for search, the search in titles, an on-video follow line, a Spanish
+  twin channel later, Gumroad sales in the HQ), and three running (replies
+  back on a free model, question hooks in Varro's rules, the wallpaper packs
+  the owner asked for on 11-12). Cicero's shift (scheduled,
+  `trig_01JAMtZAfVzZxRCADuaCBNjU`, Fridays 10:53 UTC) judges finished tests,
+  starts queued ones within the rule, proposes at most one new idea a week.
+- **2026-11-12 — REPLIES ON A FREE MODEL; THE PAID KEY'S REFUSALS NO LONGER
+  REPEAT.** Comment replies had been off since the Anthropic credit emptied
+  (the 11-12 01:11 run printed the "credit balance is too low" refusal four
+  times and replied to nobody). `src/llm.py` now has a second provider,
+  Cloudflare Workers AI's Llama 3.3 70B (free, inside the 10,000 neurons a day
+  the paintings share; under 1% of it for a day's replies), allowed ONLY for
+  `FREE_OK` features (replies): the generator and the reviewer stay
+  paid-key-only, because no model is trusted to write a verbatim quote. The
+  first credit refusal in a run marks Anthropic down for the rest of it. Test
+  6, `follow-line` (kind `subs_per_1k`), is queued to start 2026-11-21 under
+  the autonomy rule; Varro writes two of three new hooks as questions while
+  Frontinus's read says questions win (1.49x).
+- **2026-11-12 — THE FIRST NEW-LOOK SHORT AIRED (youtube.com/shorts/Pp3mrJFcdeg,
+  01:13 UTC).** Every shot painted; the inspector flagged a glass cup in shot 2
+  and had it repainted before it aired; -14.2 LUFS; the Reel followed with the
+  link-in-bio line. Two slips found in its log and fixed: the v2 poster did
+  not render (the opening clip is ~1.3 s and the poster sought to 1.5 s; it
+  now seeks inside the clip) and `variety_check` warned every run that the
+  format and the voice don't vary (they are the owner's standing choices, now
+  exempt).
 

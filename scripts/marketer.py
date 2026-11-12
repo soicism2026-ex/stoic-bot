@@ -204,6 +204,25 @@ def views_by_age(posts: list[dict], views: Views, since: dt.date, until: dt.date
     return {"shorts": len(vals), "median": int(st.median(vals)) if vals else None}
 
 
+def subs_per_1k(stats: list[dict], since: dt.date, until: dt.date) -> dict:
+    """Subscribers gained per 1,000 views gained in [since, until), from the
+    daily channel totals (the first and last snapshot inside the window)."""
+    by_day: dict[str, tuple[int, int]] = {}
+    for r in stats:
+        try:
+            if since <= _day(r["pulled_on"]) < until:
+                by_day[r["pulled_on"]] = (int(r.get("subscribers") or 0), int(r.get("total_views") or 0))
+        except (KeyError, ValueError):
+            continue
+    days = sorted(by_day)
+    if len(days) < 2:
+        return {"days": len(days), "subs": None, "views": None, "per1k": None}
+    a, b = by_day[days[0]], by_day[days[-1]]
+    subs, views = b[0] - a[0], b[1] - a[1]
+    return {"days": len(days), "subs": subs, "views": views,
+            "per1k": round(1000 * subs / views, 2) if views > 0 else None}
+
+
 # ---------------------------------------------------------------- the tests
 
 def load_tests() -> dict:
@@ -269,15 +288,17 @@ def source_share(rows: list[dict], source: str, since: dt.date, until: dt.date) 
 
 
 def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
-          analytics: list[dict] | None = None, sources: list[dict] | None = None) -> dict:
+          analytics: list[dict] | None = None, sources: list[dict] | None = None,
+          stats: list[dict] | None = None) -> dict:
     """Where a test stands, in numbers. Kinds: `second_vs_first` (a posting
     time, against the day's other Short), `pinned_question` (the owner's
     description style with its question, viewer comments per 1,000 views on
     the edits of the 14 days before against those after, each Short sorted by
     its own description), `traffic_source` (a source's share of views,
-    the 14 days before against the 14 after) and `views_before_after` (a
+    the 14 days before against the 14 after), `views_before_after` (a
     change every Short carries: the edits' median views at the same age,
-    the 14 days before against the 14 after)."""
+    the 14 days before against the 14 after) and `subs_per_1k` (subscribers
+    gained per 1,000 views, the 14 days before against the 14 after)."""
     out = {"id": test["id"], "status": test.get("status")}
     start = _day(test["started"]) if test.get("started") else today
     end = start + dt.timedelta(days=TEST_DAYS)
@@ -308,6 +329,19 @@ def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
             if today >= end and out["during"]["share"] is not None:
                 b = out["before"]["share"] or 0
                 out["verdict"] = ("win" if out["during"]["share"] >= max(0.01, 2 * b) else "no clear change")
+        return out
+    if test.get("kind") == "subs_per_1k":
+        stats = stats if stats is not None else _rows("channel_stats.csv")
+        out["before"] = subs_per_1k(stats, start - dt.timedelta(days=TEST_DAYS), start)
+        if running:
+            during = subs_per_1k(stats, start, min(end, today) + dt.timedelta(days=1))
+            out["during"] = {**during, "ends": end.isoformat()}
+            b, d = out["before"]["per1k"], during["per1k"]
+            if b and d is not None:
+                out["change"] = round(d / b, 2)
+                if today >= end and during["days"] >= MIN_TEST_DAYS:
+                    out["verdict"] = ("win" if out["change"] >= WIN else "loss" if out["change"] <= LOSE
+                                      else "no clear change")
         return out
     if test.get("kind") == "views_before_after":
         # A change every Short carries (the new look, 2026-11-12): the edits of
