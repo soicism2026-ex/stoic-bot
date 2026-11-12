@@ -6,3 +6,10 @@ date,edit,video_id,slot,tries,verdict,problems,seed,scene
 2026-11-12,fly_from_the_stronger,Pp3mrJFcdeg,4,1,pass,,410173,"{epictetus} with his walking staff on a hilltop road at dawn, looking back toward a distant city"
 2026-11-12,fly_from_the_stronger,Pp3mrJFcdeg,5,1,pass,,410170,"Close-up of {man}'s sandals on a dirt road, long shadows from the low morning sun"
 2026-11-12,fly_from_the_stronger,Pp3mrJFcdeg,6,1,pass,,410170,"{man} on a hilltop road at sunrise, the city small and far behind him, chest open, gold sun on his face"
+2026-11-12,unnecessary_things,d8Ag2473mss,0,1,pass,,410170,"{man} sitting overwhelmed at the center of a Roman room piled with scrolls, bowls, cloaks and figurines, dust floating in oil lamp glow"
+2026-11-12,unnecessary_things,d8Ag2473mss,1,1,pass,,410171,"Close-up of {marcus} in his study, hand at his chin, a thoughtful brow, oil lamp light"
+2026-11-12,unnecessary_things,d8Ag2473mss,2,2,pass,,513584255,"Close-up of hands lifting a heavy bronze ornament off a crowded shelf, lamp glow"
+2026-11-12,unnecessary_things,d8Ag2473mss,3,1,pass,,410170,{man} carrying an armful of jars and cloaks out through a doorway into bright daylight
+2026-11-12,unnecessary_things,d8Ag2473mss,4,1,pass,,246128176,"Wide shot of the same room with bare plaster walls, one stool and one lamp, bars of morning sun through the window across a swept floor"
+2026-11-12,unnecessary_things,d8Ag2473mss,5,1,pass,,168315640,"A single clay cup of water on a bare wooden table, a bar of morning sun across it"
+2026-11-12,unnecessary_things,d8Ag2473mss,6,1,flagged,glass lanterns,410170,"{man} stretching in the sunlit room, shoulders dropped, a deep easy breath and a smile"
