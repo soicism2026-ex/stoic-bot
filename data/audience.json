@@ -7,58 +7,58 @@
  "countries": [
   {
    "key": "US",
-   "views": 6819,
-   "share": 0.712
+   "views": 7473,
+   "share": 0.687
   },
   {
    "key": "IN",
-   "views": 1147,
-   "share": 0.12
-  },
-  {
-   "key": "CA",
-   "views": 435,
-   "share": 0.045
+   "views": 1332,
+   "share": 0.122
   },
   {
    "key": "GB",
-   "views": 369,
-   "share": 0.039
+   "views": 482,
+   "share": 0.044
+  },
+  {
+   "key": "CA",
+   "views": 474,
+   "share": 0.044
   },
   {
    "key": "DE",
-   "views": 232,
-   "share": 0.024
+   "views": 303,
+   "share": 0.028
   },
   {
    "key": "PH",
-   "views": 161,
-   "share": 0.017
+   "views": 201,
+   "share": 0.018
   },
   {
    "key": "ZA",
-   "views": 159,
-   "share": 0.017
+   "views": 199,
+   "share": 0.018
   },
   {
    "key": "AU",
-   "views": 80,
+   "views": 131,
+   "share": 0.012
+  },
+  {
+   "key": "NL",
+   "views": 92,
+   "share": 0.008
+  },
+  {
+   "key": "IT",
+   "views": 84,
    "share": 0.008
   },
   {
    "key": "PL",
-   "views": 52,
-   "share": 0.005
-  },
-  {
-   "key": "IT",
-   "views": 46,
-   "share": 0.005
-  },
-  {
-   "key": "NL",
-   "views": 42,
-   "share": 0.004
+   "views": 81,
+   "share": 0.007
   },
   {
    "key": "SE",
@@ -69,23 +69,23 @@
  "sources": [
   {
    "key": "SHORTS",
-   "views": 14958,
-   "share": 0.927
+   "views": 16652,
+   "share": 0.93
   },
   {
    "key": "YT_SEARCH",
-   "views": 561,
-   "share": 0.035
+   "views": 584,
+   "share": 0.033
   },
   {
    "key": "YT_OTHER_PAGE",
-   "views": 352,
+   "views": 402,
    "share": 0.022
   },
   {
    "key": "YT_CHANNEL",
    "views": 213,
-   "share": 0.013
+   "share": 0.012
   },
   {
    "key": "EXT_URL",
@@ -103,6 +103,11 @@
    "share": 0.0
   },
   {
+   "key": "NOTIFICATION",
+   "views": 2,
+   "share": 0.0
+  },
+  {
    "key": "NO_LINK_OTHER",
    "views": 1,
    "share": 0.0
@@ -111,25 +116,30 @@
  "subscribed": [
   {
    "key": "UNSUBSCRIBED",
-   "views": 15823,
-   "share": 0.98
+   "views": 17581,
+   "share": 0.982
   },
   {
    "key": "SUBSCRIBED",
-   "views": 317,
-   "share": 0.02
+   "views": 328,
+   "share": 0.018
   }
  ],
  "searchTerms": [
   {
    "key": "stoicism",
    "views": 27,
-   "share": 0.227
+   "share": 0.225
+  },
+  {
+   "key": "stoicism marcus aurelius",
+   "views": 9,
+   "share": 0.075
   },
   {
    "key": "stoicism motivation",
    "views": 9,
-   "share": 0.076
+   "share": 0.075
   },
   {
    "key": "marcus aurelius",
@@ -137,14 +147,9 @@
    "share": 0.067
   },
   {
-   "key": "stoicism marcus aurelius",
-   "views": 8,
-   "share": 0.067
-  },
-  {
    "key": "stoic reset",
    "views": 7,
-   "share": 0.059
+   "share": 0.058
   },
   {
    "key": "blue lotus",
@@ -164,17 +169,17 @@
   {
    "key": "marcus aurelius meditations",
    "views": 4,
-   "share": 0.034
+   "share": 0.033
   },
   {
    "key": "marcus aurelius quotes",
    "views": 4,
-   "share": 0.034
+   "share": 0.033
   },
   {
    "key": "stoic ben",
    "views": 4,
-   "share": 0.034
+   "share": 0.033
   },
   {
    "key": "my word is law",
@@ -251,7 +256,7 @@
   {
    "key": "stoicism",
    "views": 60,
-   "share": 0.247
+   "share": 0.246
   },
   {
    "key": "stoic",
@@ -260,8 +265,8 @@
   },
   {
    "key": "stoicism marcus aurelius",
-   "views": 17,
-   "share": 0.07
+   "views": 18,
+   "share": 0.074
   },
   {
    "key": "stoicism motivation",
@@ -316,17 +321,17 @@
   {
    "key": "blue lotus",
    "views": 5,
-   "share": 0.021
+   "share": 0.02
   },
   {
    "key": "marcus aurelius quotes",
    "views": 5,
-   "share": 0.021
+   "share": 0.02
   },
   {
    "key": "stoic man",
    "views": 5,
-   "share": 0.021
+   "share": 0.02
   },
   {
    "key": "carl jung shadow",
