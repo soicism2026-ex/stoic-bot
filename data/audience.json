@@ -1,49 +1,54 @@
 {
- "pulled_on": "2026-11-10",
+ "pulled_on": "2026-11-12",
  "window": [
-  "2026-10-13",
-  "2026-11-10"
+  "2026-10-15",
+  "2026-11-12"
  ],
  "countries": [
   {
    "key": "US",
-   "views": 6316,
-   "share": 0.729
+   "views": 6819,
+   "share": 0.712
   },
   {
    "key": "IN",
-   "views": 1061,
-   "share": 0.122
+   "views": 1147,
+   "share": 0.12
   },
   {
    "key": "CA",
-   "views": 374,
-   "share": 0.043
+   "views": 435,
+   "share": 0.045
   },
   {
    "key": "GB",
-   "views": 303,
-   "share": 0.035
+   "views": 369,
+   "share": 0.039
   },
   {
    "key": "DE",
-   "views": 189,
-   "share": 0.022
+   "views": 232,
+   "share": 0.024
   },
   {
    "key": "PH",
-   "views": 116,
-   "share": 0.013
+   "views": 161,
+   "share": 0.017
   },
   {
    "key": "ZA",
-   "views": 110,
-   "share": 0.013
+   "views": 159,
+   "share": 0.017
   },
   {
    "key": "AU",
-   "views": 50,
-   "share": 0.006
+   "views": 80,
+   "share": 0.008
+  },
+  {
+   "key": "PL",
+   "views": 52,
+   "share": 0.005
   },
   {
    "key": "IT",
@@ -53,48 +58,43 @@
   {
    "key": "NL",
    "views": 42,
-   "share": 0.005
+   "share": 0.004
   },
   {
    "key": "SE",
    "views": 31,
-   "share": 0.004
-  },
-  {
-   "key": "RU",
-   "views": 27,
    "share": 0.003
   }
  ],
  "sources": [
   {
    "key": "SHORTS",
-   "views": 13865,
-   "share": 0.926
+   "views": 14958,
+   "share": 0.927
   },
   {
    "key": "YT_SEARCH",
-   "views": 542,
-   "share": 0.036
+   "views": 561,
+   "share": 0.035
   },
   {
    "key": "YT_OTHER_PAGE",
-   "views": 315,
-   "share": 0.021
+   "views": 352,
+   "share": 0.022
   },
   {
    "key": "YT_CHANNEL",
-   "views": 205,
-   "share": 0.014
+   "views": 213,
+   "share": 0.013
   },
   {
    "key": "EXT_URL",
-   "views": 32,
+   "views": 36,
    "share": 0.002
   },
   {
    "key": "SUBSCRIBER",
-   "views": 14,
+   "views": 16,
    "share": 0.001
   },
   {
@@ -106,22 +106,17 @@
    "key": "NO_LINK_OTHER",
    "views": 1,
    "share": 0.0
-  },
-  {
-   "key": "NOTIFICATION",
-   "views": 1,
-   "share": 0.0
   }
  ],
  "subscribed": [
   {
    "key": "UNSUBSCRIBED",
-   "views": 14685,
+   "views": 15823,
    "share": 0.98
   },
   {
    "key": "SUBSCRIBED",
-   "views": 293,
+   "views": 317,
    "share": 0.02
   }
  ],
@@ -147,11 +142,6 @@
    "share": 0.067
   },
   {
-   "key": "stoic",
-   "views": 7,
-   "share": 0.059
-  },
-  {
    "key": "stoic reset",
    "views": 7,
    "share": 0.059
@@ -162,17 +152,22 @@
    "share": 0.042
   },
   {
+   "key": "marcus aurelius stoicism",
+   "views": 5,
+   "share": 0.042
+  },
+  {
+   "key": "stoic",
+   "views": 5,
+   "share": 0.042
+  },
+  {
    "key": "marcus aurelius meditations",
    "views": 4,
    "share": 0.034
   },
   {
    "key": "marcus aurelius quotes",
-   "views": 4,
-   "share": 0.034
-  },
-  {
-   "key": "marcus aurelius stoicism",
    "views": 4,
    "share": 0.034
   },
@@ -212,6 +207,11 @@
    "share": 0.017
   },
   {
+   "key": "everything you're scared to lose was never yours",
+   "views": 2,
+   "share": 0.017
+  },
+  {
    "key": "modern love david bowie",
    "views": 2,
    "share": 0.017
@@ -245,28 +245,28 @@
    "key": "washing machine coin removal",
    "views": 2,
    "share": 0.017
-  },
-  {
-   "key": "500 euro",
-   "views": 1,
-   "share": 0.008
   }
  ],
  "searchTermsAllTime": [
   {
    "key": "stoicism",
    "views": 60,
-   "share": 0.249
+   "share": 0.247
   },
   {
    "key": "stoic",
    "views": 18,
-   "share": 0.075
+   "share": 0.074
   },
   {
    "key": "stoicism marcus aurelius",
    "views": 17,
-   "share": 0.071
+   "share": 0.07
+  },
+  {
+   "key": "stoicism motivation",
+   "views": 17,
+   "share": 0.07
   },
   {
    "key": "marcus aurelius",
@@ -274,19 +274,14 @@
    "share": 0.066
   },
   {
-   "key": "stoicism motivation",
-   "views": 16,
-   "share": 0.066
-  },
-  {
    "key": "epictetus",
    "views": 11,
-   "share": 0.046
+   "share": 0.045
   },
   {
    "key": "stoicism philosophy",
    "views": 11,
-   "share": 0.046
+   "share": 0.045
   },
   {
    "key": "marcus aurelius meditations",
@@ -309,6 +304,11 @@
    "share": 0.029
   },
   {
+   "key": "marcus aurelius stoicism",
+   "views": 6,
+   "share": 0.025
+  },
+  {
    "key": "stocism",
    "views": 6,
    "share": 0.025
@@ -324,11 +324,6 @@
    "share": 0.021
   },
   {
-   "key": "marcus aurelius stoicism",
-   "views": 5,
-   "share": 0.021
-  },
-  {
    "key": "stoic man",
    "views": 5,
    "share": 0.021
@@ -336,32 +331,32 @@
   {
    "key": "carl jung shadow",
    "views": 4,
-   "share": 0.017
+   "share": 0.016
   },
   {
    "key": "eminem dax",
    "views": 4,
-   "share": 0.017
+   "share": 0.016
   },
   {
    "key": "i'm good feeling alright",
    "views": 4,
-   "share": 0.017
+   "share": 0.016
   },
   {
    "key": "stoic ben",
    "views": 4,
-   "share": 0.017
+   "share": 0.016
   },
   {
    "key": "stoic dre",
    "views": 4,
-   "share": 0.017
+   "share": 0.016
   },
   {
    "key": "stoic motivation",
    "views": 4,
-   "share": 0.017
+   "share": 0.016
   },
   {
    "key": "fox news david hearn",
