@@ -172,8 +172,8 @@ def test_second_daily_post_waits_for_its_slot():
     assert daily_post.slot_open(2, 3, slots)          # beyond: cap decides
     assert daily_post.slot_open(1, 3, [])             # no slots = no gating
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
-    assert "MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '2' }}" in wf
-    assert 'POST_SLOT_HOURS: "0,7"' in wf
+    assert "MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '3' }}" in wf
+    assert 'POST_SLOT_HOURS: "0,7,19"' in wf
 
 
 def test_edits_rotate_authors():

@@ -82,12 +82,21 @@
    "proposed": "2026-11-12",
    "start": "2026-11-21",
    "approved": "2026-11-12: within the autonomy rule (words only, reversible); on the owner's Ideas board as idea-follow-line"
-  }
- ],
- "next": [
+  },
   {
    "id": "third-short",
-   "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."
+   "kind": "views_before_after",
+   "age": 3,
+   "question": "Does a third Short a day, in the evening window, add views a day without starving each Short?",
+   "change": "From 2026-11-13: three posts a day (MAX_POSTS_PER_DAY 3); the third waits for 19:00 UTC (POST_SLOT_HOURS 0,7,19; the 19:00 and 23:00 crons post it), at least 5 hours apart.",
+   "why": "The 2027 goal needs about 2,740 views a day; two Shorts make about 1,200. Each Short reaches 600 to 950 people in its first days whatever the slot, and the evening slot got 1.15x the reach of its week, so a third post should add roughly 40%.",
+   "measure": "Views a day (Cicero's funnel, the 14 days after against the 14 before) and the median Short's views at 3 days old, so a third post that only splits the same views shows up.",
+   "ask": "idea-third-short",
+   "status": "running",
+   "proposed": "2026-11-12",
+   "started": "2026-11-13",
+   "approved": "2026-11-13: owner, in the HQ: \"A third Short a day, in the evening: Go\""
   }
- ]
+ ],
+ "next": []
 }

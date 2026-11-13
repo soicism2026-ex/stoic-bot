@@ -156,7 +156,7 @@ jobs:
           # numeric-looking value is the null-casts-to-0 trap that silently
           # disabled the voice steps on 2026-08-07.
           # 2/day since 2026-10-18 (owner: "push it more", chose 2 over 3).
-          MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '2' }}
+          MAX_POSTS_PER_DAY: ${{ inputs.max_posts || '3' }}
           # Second post from 07:00 UTC (2026-11-03, owner-approved; was 15:00).
           # Across 294 Shorts, each against its own week: 00-03 UTC posts got
           # 1.15x, 04-11 UTC 1.0x, 12-19 UTC 0.75x, and since October the
@@ -164,7 +164,7 @@ jobs:
           # first post still goes out around 01:00-02:30 (the 23:00 cron, late);
           # the second comes from the 07:00 cron, 6+ hours later
           # (daily_post.POST_SLOT_HOURS).
-          POST_SLOT_HOURS: "0,7"
+          POST_SLOT_HOURS: "0,7,19"
           # ...and never within 5 hours of the previous video (6 until
           # 2026-11-03: a first post at 02:30 then blocked the 07:00 run, which
           # GitHub often starts by 08:00, pushing the second post into the
@@ -192,7 +192,7 @@ jobs:
           # same day, so one narrator holds. Steffan speaks only if ElevenLabs
           # fails or the month's characters run out (tts.py's credit guard;
           # about 8k of 40k a month at 2 posts a day).
-          ELEVENLABS_POSTS_PER_DAY: "4"
+          ELEVENLABS_POSTS_PER_DAY: "5"
           # The owner's own cloned voice reads a post if Brian fails (Brian is a
           # Voice Library voice its creator can withdraw). Empty until the owner
           # records the clone in ElevenLabs; then set its voice id here.

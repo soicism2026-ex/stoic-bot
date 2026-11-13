@@ -1837,3 +1837,9 @@ The limit is the Claude plan's usage window, spent by context size times turns. 
 ## 2026-11-13: Wallpaper packs (owner 2026-11-12, chat: "create some Desktop & Mobile Wallpaper Packs I can sell on gumbee aswell for the channel")
 
 Built as scripts/wallpapers.py + wallpapers.yml (dispatch only): one pack (an author) in one size (phone 1170x2532 or desktop 3840x2160) per run, painted by the channel's painter from the quotes' scenes with the v2 type over a soft band, zipped with a cover and README into the `wallpapers` release. Painting shares Cloudflare's free allowance with the posts, so a pack paints only after 20:00 UTC (about 2,100 neurons a phone pack, 3,100 desktop). Listing copy and prices (C$4.99 a pack, C$9.99 the bundle of three) in docs/wallpapers.md. A product and its price wait for the owner's Go (autonomy rule): nothing is listed on Gumroad until he says so.
+
+## 2026-11-13: A third Short a day (owner, HQ idea card: "A third Short a day, in the evening: Go")
+
+- daily-short.yml: `MAX_POSTS_PER_DAY` 3, `POST_SLOT_HOURS` "0,7,19" (the third post waits for 19:00 UTC; the 19:00 and 23:00 crons post it), `ELEVENLABS_POSTS_PER_DAY` 5. Reverses his Oct 18 choice of two over three, on the goal's arithmetic (about 2,740 views a day needed; about 1,200 from two).
+- Watch: ElevenLabs (about 6 Brian reads a day with the rehearsals, about 24k of 40k characters a month); Cloudflare's free painting (three rehearsals about 6,600 neurons, the nightly wallpaper pack 2,100: the pack paints only what is left and retries the next night); the shelf drains 1.5x faster (about 27 days now; Varro restocks Mondays).
+- Cicero's test `third-short` judges it after 14 days by views a day and views per Short. A loss (fewer views a day, or each Short starved) goes back to the owner as an ask; never a silent revert of his cadence call.

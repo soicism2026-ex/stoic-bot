@@ -30,8 +30,8 @@ def test_next_cron_daily_weekly_and_weekday_ranges():
 def test_producer_schedule_is_read_from_the_live_workflow():
     assert sorted(hq.crons("daily-short.yml")) == sorted(
         ["0 3 * * *", "0 7 * * *", "0 11 * * *", "0 15 * * *", "0 19 * * *", "0 23 * * *"])
-    assert hq._env_value("daily-short.yml", "MAX_POSTS_PER_DAY", "x") == "2"
-    assert hq._env_value("daily-short.yml", "POST_SLOT_HOURS", "x") == "0,7"
+    assert hq._env_value("daily-short.yml", "MAX_POSTS_PER_DAY", "x") == "3"
+    assert hq._env_value("daily-short.yml", "POST_SLOT_HOURS", "x") == "0,7,19"
     assert hq._env_value("daily-short.yml", "MIN_GAP_HOURS", "x") == "5"
 
 
