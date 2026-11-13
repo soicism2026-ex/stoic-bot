@@ -93,7 +93,7 @@ def test_the_ledger_proposes_before_it_ships():
             assert t[k], (t["id"], k)
     assert {t["id"] for t in ledger["tests"]} >= {"pinned-question", "playlists"}   # ideas became tests
     # the third Short became a running test on 2026-11-13 (the owner's Go): it left the ideas list
-    assert any(t["id"] == "third-short" and t["status"] == "running" for t in L["tests"])
+    assert any(t["id"] == "third-short" and t["status"] == "running" for t in ledger["tests"])
 
 
 def test_the_read_is_written_for_people_and_for_the_hq(tmp_path, monkeypatch):
