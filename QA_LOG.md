@@ -6600,3 +6600,19 @@ for any recurring defects.
 - severity: low
 - issues:
   - QA API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go to Plans & Billing to upgrade or purchase credits.'}, 'request_id': 'req_011Cgxt3g34597zbdrgxgkov'}
+
+## Visual QA — 2026-11-13 03:19 UTC
+**File:** `2026-11-13_reel.mp4` | **Verdict:** `UNREVIEWED`
+**Hook:** Poor and full, or rich and starving?
+**Scores:** NOT REVIEWED — no scores were produced
+**Reasoning:** Not reviewed — language model calls are off (the Anthropic key has no credit or was refused).
+**Issues:**
+- llm_disabled: the Anthropic key has no credit or was refused
+**Flagged dims:** not_reviewed, llm_disabled
+
+
+## 2026-11-13 — attempt 1
+- uploaded: True
+- severity: low
+- issues:
+  - QA API error: Error code: 400 - {'type': 'error', 'error': {'type': 'invalid_request_error', 'message': 'Your credit balance is too low to access the Anthropic API. Please go

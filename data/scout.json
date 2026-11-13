@@ -10,102 +10,102 @@
   "epictetus"
  ],
  "videos": 265,
- "outliers": 105,
+ "outliers": 113,
  "themes": [
   {
    "key": "(none of ours)",
-   "outliers": 74,
-   "medianViews": 78540,
-   "medianScore": 9.8
+   "outliers": 79,
+   "medianViews": 65380,
+   "medianScore": 8.2
   },
   {
    "key": "anger",
    "outliers": 9,
-   "medianViews": 93048,
-   "medianScore": 20.5
+   "medianViews": 96018,
+   "medianScore": 21.0
   },
   {
    "key": "ego",
-   "outliers": 6,
-   "medianViews": 66277,
-   "medianScore": 13.3
+   "outliers": 7,
+   "medianViews": 40132,
+   "medianScore": 23.4
   },
   {
    "key": "resilience",
-   "outliers": 6,
-   "medianViews": 64997,
-   "medianScore": 18.8
+   "outliers": 7,
+   "medianViews": 33359,
+   "medianScore": 16.7
   },
   {
    "key": "discipline",
-   "outliers": 5,
-   "medianViews": 92318,
-   "medianScore": 21.9
+   "outliers": 6,
+   "medianViews": 66685,
+   "medianScore": 21.3
   },
   {
    "key": "friendship",
    "outliers": 4,
-   "medianViews": 90204,
-   "medianScore": 8.3
+   "medianViews": 90595,
+   "medianScore": 8.8
   },
   {
    "key": "control",
-   "outliers": 3,
-   "medianViews": 87836,
-   "medianScore": 76.4
+   "outliers": 4,
+   "medianViews": 78585,
+   "medianScore": 71.9
   },
   {
    "key": "desire",
-   "outliers": 3,
-   "medianViews": 74938,
-   "medianScore": 40.1
+   "outliers": 4,
+   "medianViews": 57538,
+   "medianScore": 21.7
   },
   {
    "key": "fear",
    "outliers": 2,
-   "medianViews": 89187,
+   "medianViews": 89597,
    "medianScore": 16.9
   },
   {
    "key": "adversity",
    "outliers": 1,
-   "medianViews": 200770,
-   "medianScore": 200.8
+   "medianViews": 231874,
+   "medianScore": 231.9
   },
   {
    "key": "duty",
    "outliers": 1,
-   "medianViews": 108182,
+   "medianViews": 108227,
    "medianScore": 88.7
   }
  ],
  "authors": [
   {
    "key": "Marcus Aurelius",
-   "outliers": 26,
-   "medianViews": 32221,
-   "medianScore": 12.6
+   "outliers": 27,
+   "medianViews": 34105,
+   "medianScore": 12.8
+  },
+  {
+   "key": "Seneca",
+   "outliers": 6,
+   "medianViews": 41005,
+   "medianScore": 8.9
   },
   {
    "key": "Epictetus",
    "outliers": 5,
-   "medianViews": 46846,
-   "medianScore": 14.8
-  },
-  {
-   "key": "Seneca",
-   "outliers": 5,
-   "medianViews": 41016,
-   "medianScore": 10.3
+   "medianViews": 46857,
+   "medianScore": 14.6
   }
  ],
  "top": [
   {
    "title": "Two Philosophers, One Truth About Pain#Motivation #Mindset #Suffering #Stoic",
    "channel": "Stoicaz",
-   "views": 200770,
-   "subscribers": 653,
-   "score": 200.8,
+   "views": 231874,
+   "subscribers": 757,
+   "score": 231.9,
    "published": "2026-11-08",
    "seconds": 7,
    "themes": [
@@ -116,11 +116,23 @@
    "url": "https://youtube.com/shorts/y9cpLhSZH98"
   },
   {
+   "title": "Never change your nature just to become acceptable to everyone. #lifelessons #stoicmindset #shorts",
+   "channel": "hiddenverses ",
+   "views": 219075,
+   "subscribers": 1180,
+   "score": 185.7,
+   "published": "2026-11-02",
+   "seconds": 7,
+   "themes": [],
+   "author": null,
+   "url": "https://youtube.com/shorts/BYSru-uOm2k"
+  },
+  {
    "title": "The Power of Emotional Control 🧠💯| Stoic Wisdom by Marcus Aurelius #philosophy #shorts",
    "channel": "NXT - ASHIK",
-   "views": 941849,
-   "subscribers": 6970,
-   "score": 135.1,
+   "views": 976129,
+   "subscribers": 7170,
+   "score": 136.1,
    "published": "2026-10-16",
    "seconds": 44,
    "themes": [
@@ -133,9 +145,9 @@
   {
    "title": "You've Mistaken Comfort for Peace. 🏛️ | Marcus Aurelius",
    "channel": "Midnight Quotes",
-   "views": 123246,
-   "subscribers": 647,
-   "score": 123.2,
+   "views": 130919,
+   "subscribers": 751,
+   "score": 130.9,
    "published": "2026-11-08",
    "seconds": 7,
    "themes": [],
@@ -145,7 +157,7 @@
   {
    "title": "Two Philosophers on Purpose & Inner Strength | Nietzsche & Marcus Aurelius",
    "channel": "Zenthink",
-   "views": 108182,
+   "views": 108227,
    "subscribers": 1220,
    "score": 88.7,
    "published": "2026-10-14",
@@ -160,9 +172,9 @@
   {
    "title": "Unstoppable Mindset Rules from History's Greatest Leaders 🗿🔥",
    "channel": "RiseZenX ",
-   "views": 755680,
-   "subscribers": 9260,
-   "score": 81.6,
+   "views": 768677,
+   "subscribers": 9320,
+   "score": 82.5,
    "published": "2026-10-20",
    "seconds": 27,
    "themes": [],
@@ -170,25 +182,11 @@
    "url": "https://youtube.com/shorts/rmAgacUlIgs"
   },
   {
-   "title": "Discipline can fix 80% of your problems #masteringdiscipline #dailymotivation #stoicism #stayhard",
-   "channel": "Focus more",
-   "views": 133581,
-   "subscribers": 1660,
-   "score": 80.5,
-   "published": "2026-11-03",
-   "seconds": 17,
-   "themes": [
-    "discipline"
-   ],
-   "author": null,
-   "url": "https://youtube.com/shorts/7tYudA4PF_Y"
-  },
-  {
    "title": "The Only Way to Win Against Disrespect #stoic #socrates #philosophy",
    "channel": "Everyday Truths",
-   "views": 691095,
-   "subscribers": 8680,
-   "score": 79.6,
+   "views": 696205,
+   "subscribers": 8710,
+   "score": 79.9,
    "published": "2026-10-14",
    "seconds": 88,
    "themes": [
@@ -198,11 +196,35 @@
    "url": "https://youtube.com/shorts/XgTOcuGH-uY"
   },
   {
+   "title": "Alexander the Great: Leave Nothing Behind. ⚔️ | Powerful Wisdom",
+   "channel": "Midnight Quotes",
+   "views": 79327,
+   "subscribers": 751,
+   "score": 79.3,
+   "published": "2026-11-11",
+   "seconds": 7,
+   "themes": [],
+   "author": null,
+   "url": "https://youtube.com/shorts/6GFI-6ttgcE"
+  },
+  {
+   "title": "Are We Living for Ourselves or Just Fulfilling Expectations?#shortsfeed  #Shorts#philosophy",
+   "channel": "The Stoic Scroll",
+   "views": 758710,
+   "subscribers": 9590,
+   "score": 79.1,
+   "published": "2026-10-13",
+   "seconds": 8,
+   "themes": [],
+   "author": null,
+   "url": "https://youtube.com/shorts/r7h-rXf_MBg"
+  },
+  {
    "title": "You become free the moment your desires stop controlling you. 🖤 #lifelessons #stoicmindset #shorts",
    "channel": "hiddenverses ",
-   "views": 87836,
-   "subscribers": 1150,
-   "score": 76.4,
+   "views": 87890,
+   "subscribers": 1180,
+   "score": 74.5,
    "published": "2026-10-22",
    "seconds": 7,
    "themes": [
@@ -215,9 +237,9 @@
   {
    "title": "Cutting the string won't make you fly. 🌪️ #shorts #motivation #philosophy",
    "channel": "mindunblind",
-   "views": 277270,
-   "subscribers": 3880,
-   "score": 71.5,
+   "views": 378671,
+   "subscribers": 5120,
+   "score": 74.0,
    "published": "2026-11-05",
    "seconds": 47,
    "themes": [],
@@ -227,9 +249,9 @@
   {
    "title": "Stop Worrying About What You Cannot Control | Epictetus #shorts",
    "channel": "Daily life quotes",
-   "views": 68722,
-   "subscribers": 599,
-   "score": 68.7,
+   "views": 69281,
+   "subscribers": 644,
+   "score": 69.3,
    "published": "2026-11-06",
    "seconds": 6,
    "themes": [
@@ -241,9 +263,9 @@
   {
    "title": "Your Life Is Passing Quietly Through Your Hands | Seneca #stoicism #shorts",
    "channel": "Quotenza",
-   "views": 316281,
-   "subscribers": 4710,
-   "score": 67.2,
+   "views": 316716,
+   "subscribers": 4720,
+   "score": 67.1,
    "published": "2026-10-15",
    "seconds": 6,
    "themes": [],
@@ -253,9 +275,9 @@
   {
    "title": "The Coldest Rule of Marcus Aurelius👑. #shorts",
    "channel": "PRISAT",
-   "views": 107841,
-   "subscribers": 2160,
-   "score": 49.9,
+   "views": 132852,
+   "subscribers": 2340,
+   "score": 56.8,
    "published": "2026-11-07",
    "seconds": 31,
    "themes": [],
@@ -265,9 +287,9 @@
   {
    "title": "Habit build excellence #quotes #philosophy #aristotle #psycology",
    "channel": "Deep Words",
-   "views": 92318,
+   "views": 92866,
    "subscribers": 2290,
-   "score": 40.3,
+   "score": 40.6,
    "published": "2026-10-21",
    "seconds": 4,
    "themes": [
@@ -275,35 +297,6 @@
    ],
    "author": null,
    "url": "https://youtube.com/shorts/pQ5tujnDJZg"
-  },
-  {
-   "title": "The Secret to Inner Peace Is Having No Desire for Validation | Epictetus #shorts",
-   "channel": "Daily life quotes",
-   "views": 40054,
-   "subscribers": 599,
-   "score": 40.1,
-   "published": "2026-11-06",
-   "seconds": 6,
-   "themes": [
-    "ego",
-    "desire"
-   ],
-   "author": "Epictetus",
-   "url": "https://youtube.com/shorts/nBmoftq9kIA"
-  },
-  {
-   "title": "7 Ways to Stay Calm When Life Tests You #stoicism #personalgrowth #innerpeace",
-   "channel": "Dark Mind Files",
-   "views": 271836,
-   "subscribers": 6820,
-   "score": 39.9,
-   "published": "2026-10-23",
-   "seconds": 168,
-   "themes": [
-    "anger"
-   ],
-   "author": null,
-   "url": "https://youtube.com/shorts/6nYIFtOj9JU"
   }
  ]
 }

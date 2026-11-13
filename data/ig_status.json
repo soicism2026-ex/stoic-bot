@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-12T15:56:55Z",
+ "checked": "2026-11-13T03:20:17Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-12",
+  "checked": "2026-11-13",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-12T10:32:39Z",
-  "youtube": "d8Ag2473mss",
-  "title": "\"Ask this before you scroll\" — Marcus Aurelius | Stoicism",
-  "status": "published",
-  "permalink": "https://www.instagram.com/reel/Dfo2eADmNVl/",
+  "at": "2026-11-13T03:20:17Z",
+  "youtube": "9fgQziG22q0",
+  "title": "\"Poor and full, or rich and starving\" — Seneca | Stoicism",
+  "status": "queued",
+  "permalink": null,
   "reason": null
  }
 }
