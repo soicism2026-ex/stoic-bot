@@ -1327,6 +1327,10 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
         if (S.canSend === "available") {
           const r = await cm.sendToClaude({ anchor, text });
           note.sent = true; note.thread = r.threadId;
+          // Since 2026-11-13 a message also wakes a small fresh session (the HQ inbox task) instead of the big chief chat.
+          if (caps.mcp && S.config && S.config.inboxTrigger) {
+            try { await caps.mcp.callTool(REMOTE, "fire_trigger", { trigger_id: S.config.inboxTrigger, text: "The owner wrote in the HQ: " + text.slice(0, 300) }); } catch (e) {}
+          }
         } else {
           const r = await cm.create({ anchor, text });
           note.thread = r.threadId;
