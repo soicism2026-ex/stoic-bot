@@ -342,10 +342,29 @@ def instagram(now: dt.datetime) -> dict | None:
 # Channel
 # ---------------------------------------------------------------------------
 
+def crew_outbox(now: dt.datetime) -> dict:
+    """The crew's HQ reporting through git (scripts/hq_outbox.py): the small
+    crew sessions have no HQ tools, so their log lines, idea-card outcomes and
+    message replies ride in hq/studio and the page merges them."""
+    try:
+        sys.path.insert(0, str(ROOT / "scripts"))
+        import hq_outbox  # noqa: PLC0415
+        return hq_outbox.fold(hq_outbox.recent(now=now))
+    except Exception as e:  # noqa: BLE001
+        return {"crewLog": [], "askUpdates": {}, "noteUpdates": {}, "outboxProblem": str(e)[:120]}
+
+
 def wallpapers() -> list[dict]:
     """The finished wallpaper packs (owner 2026-11-12: packs to sell on Gumroad):
     each cover and manifest in the public `wallpapers` release; the zip itself
     is a private workflow artifact, linked through the manifest's run URL."""
+    try:                                   # the record the workflow commits (the sync session has no API access)
+        items = json.loads((ROOT / "data" / "wallpapers.json").read_text(encoding="utf-8"))
+        if items:
+            return [{"pack": i.get("pack"), "size": i.get("size"), "cover": i.get("cover", ""), "updated": i.get("updated", ""),
+                     "count": int(i.get("count") or 0), "run": i.get("run", "")} for i in items]
+    except (OSError, ValueError):
+        pass
     rel = _get_json(f"https://api.github.com/repos/{REPO}/releases/tags/wallpapers") or {}
     assets = {a.get("name", ""): a for a in rel.get("assets") or []}
     out = []
@@ -503,6 +522,7 @@ def build(now: dt.datetime | None = None, runs: list[dict] | None = None) -> dic
         "posts": recent_posts(posts),
         "instagram": instagram(now),
         "wallpapers": wallpapers(),
+        **crew_outbox(now),
         "runsSeen": len(runs),
         "runsSource": source,
     }

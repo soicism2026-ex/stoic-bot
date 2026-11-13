@@ -450,3 +450,123 @@ def test_a_junk_ig_user_id_is_flagged_for_deletion(data, monkeypatch):
         ig.account("EAAB123", "e\nd")
     assert echo.plain(e.value).startswith("The Instagram key in GitHub is the old kind")
 
+
+
+# ------------------------------------------------------------- TikTok through Buffer (owner 2026-11-13)
+
+def _tt_env(tmp_path, monkeypatch):
+    for name in ("STATUS", "POSTS", "STATS", "REELS"):
+        monkeypatch.setattr(echo, name, tmp_path / Path(getattr(echo, name)).name)
+    monkeypatch.setattr(echo, "TIKTOK_POSTS", tmp_path / "tiktok_posts.csv")
+    monkeypatch.setenv("BUFFER_API_KEY", "bufkey_SECRET_123")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "me/repo")
+    monkeypatch.setattr(echo.time, "sleep", lambda s: None)
+    video = tmp_path / "reel.mp4"
+    video.write_bytes(b"mp4")
+    return [{"video_id": "yt1", "date": "2026-11-13", "igCaption": "the caption #stoic", "video": str(video),
+             "hook": "Stay calm", "quote": "q", "author": "Seneca"}]
+
+
+_IG_CH = {"id": "ch_ig", "name": "forged", "service": "instagram", "organizationId": "org1"}
+_TT_CH = {"id": "ch_tt", "name": "forged.tt", "service": "tiktok", "organizationId": "org1"}
+
+
+def test_a_shift_with_tiktok_connected_posts_once_and_records_it(tmp_path, monkeypatch):
+    handed = _tt_env(tmp_path, monkeypatch)
+    hosted, deleted = [], []
+    states = {"p_ig": {"id": "p_ig", "status": "sent", "externalLink": "https://instagram.com/reel/A"},
+              "p_tt": {"id": "p_tt", "status": "sent", "externalLink": "https://tiktok.com/@f/video/1"}}
+    with patch.object(echo.bf, "instagram_channel", return_value=_IG_CH), \
+         patch.object(echo.bf, "tiktok_channel", return_value=_TT_CH), \
+         patch.object(echo, "handed_over", return_value=handed), \
+         patch.object(echo.ig, "_host_via_github_release",
+                      side_effect=lambda p: hosted.append(p.name) or (f"https://gh/{p.name}", "me/repo", len(hosted))), \
+         patch.object(echo.ig, "_delete_asset", side_effect=lambda repo, a: deleted.append(a)), \
+         patch.object(echo.bf, "create_reel", return_value={"id": "p_ig", "status": "sending"}), \
+         patch.object(echo.bf, "create_tiktok", return_value={"id": "p_tt", "status": "sending"}) as made, \
+         patch.object(echo.bf, "post_state", side_effect=lambda k, o, c, pid: states[pid]):
+        assert echo.shift(now=NOW) == 0
+        assert echo.shift(now=NOW + dt.timedelta(minutes=30)) == 0            # nothing is posted twice
+    assert made.call_count == 1
+    assert made.call_args[0][:3] == ("bufkey_SECRET_123", "ch_tt", "https://gh/yt1-tiktok.mp4")
+    cap = made.call_args[0][3]
+    assert "Stay calm." in cap and "Follow for one Stoic line a day." in cap and "#stoic" in cap
+    assert hosted == ["yt1.mp4", "yt1-tiktok.mp4"] and sorted(deleted) == [1, 2]
+    rows = echo._read(echo.TIKTOK_POSTS)
+    assert len(rows) == 1 and (rows[0]["youtube_id"], rows[0]["buffer_post_id"], rows[0]["status"],
+                               rows[0]["link"], rows[0]["date"]) == \
+        ("yt1", "p_tt", "published", "https://tiktok.com/@f/video/1", "2026-11-13")
+    text = echo.STATUS.read_text()
+    tk = json.loads(text)["tiktok"]
+    assert tk == {"connected": True, "posted": 1, "username": "forged.tt", "lastLink": "https://tiktok.com/@f/video/1"}
+    assert "bufkey_SECRET_123" not in text and "bufkey_SECRET_123" not in echo.TIKTOK_POSTS.read_text()
+
+
+def test_tiktok_not_connected_is_one_plain_status_line_and_exit_zero(tmp_path, monkeypatch, capsys):
+    handed = _tt_env(tmp_path, monkeypatch)
+    with patch.object(echo.bf, "instagram_channel", return_value=_IG_CH), \
+         patch.object(echo.bf, "tiktok_channel", side_effect=echo.bf.BufferError(200, "none", "NO_CHANNEL")), \
+         patch.object(echo, "handed_over", return_value=handed), \
+         patch.object(echo.ig, "_host_via_github_release", return_value=("https://gh/v.mp4", "me/repo", 5)), \
+         patch.object(echo.ig, "_delete_asset"), \
+         patch.object(echo.bf, "create_reel", return_value={"id": "p_ig", "status": "sending"}), \
+         patch.object(echo.bf, "create_tiktok") as made, \
+         patch.object(echo.bf, "post_state", return_value={"id": "p_ig", "status": "sent", "externalLink": "L"}):
+        assert echo.shift(now=NOW) == 0
+    assert not made.called and not echo.TIKTOK_POSTS.exists()
+    st = json.loads(echo.STATUS.read_text())
+    assert st["tiktok"]["connected"] is False and st["ok"] is True
+    assert st["tiktok"]["problem"] == "TikTok: not connected in Buffer yet (Channels > Connect > TikTok)"
+    assert st["tiktok"]["problem"] in capsys.readouterr().out
+    assert echo._read(echo.POSTS)[0]["status"] == "published"            # Instagram is untouched
+
+
+def test_the_tiktok_copy_stays_hosted_until_buffer_has_sent_it(tmp_path, monkeypatch):
+    handed = _tt_env(tmp_path, monkeypatch)
+    deleted, calls = [], {"tt": "sending"}
+
+    def state(k, o, c, pid):
+        return ({"id": pid, "status": "sent", "externalLink": "I"} if pid == "p_ig"
+                else {"id": pid, "status": calls["tt"], "externalLink": "https://tiktok.com/v/1"})
+    hosted = iter([("https://gh/yt1.mp4", "me/repo", 11), ("https://gh/yt1-tiktok.mp4", "me/repo", 22)])
+    common = [patch.object(echo.bf, "instagram_channel", return_value=_IG_CH),
+              patch.object(echo.bf, "tiktok_channel", return_value=_TT_CH),
+              patch.object(echo, "handed_over", return_value=handed),
+              patch.object(echo.ig, "_delete_asset", side_effect=lambda repo, a: deleted.append(a)),
+              patch.object(echo.bf, "post_state", side_effect=state)]
+    for c in common:
+        c.start()
+    try:
+        with patch.object(echo.ig, "_host_via_github_release", side_effect=lambda p: next(hosted)), \
+             patch.object(echo.bf, "create_reel", return_value={"id": "p_ig", "status": "sending"}), \
+             patch.object(echo.bf, "create_tiktok", return_value={"id": "p_tt", "status": "sending"}):
+            assert echo.shift(now=NOW) == 0
+        assert deleted == [11]                                   # Instagram's sent; TikTok's still going out
+        assert echo._read(echo.TIKTOK_POSTS)[0]["status"] == "queued" and echo._read(echo.TIKTOK_POSTS)[0]["asset_id"] == "22"
+        calls["tt"] = "sent"
+        with patch.object(echo.bf, "create_tiktok") as again:
+            assert echo.shift("settle", now=NOW + dt.timedelta(minutes=20)) == 0
+        assert not again.called and deleted == [11, 22]
+        assert echo._read(echo.TIKTOK_POSTS)[0]["status"] == "published"
+        assert json.loads(echo.STATUS.read_text())["tiktok"]["posted"] == 1
+    finally:
+        for c in common:
+            c.stop()
+
+
+def test_a_tiktok_buffer_refuses_is_cleaned_up_retried_and_given_up_after_three(tmp_path, monkeypatch):
+    handed = _tt_env(tmp_path, monkeypatch)
+    deleted = []
+    with patch.object(echo.bf, "instagram_channel", return_value=_IG_CH), \
+         patch.object(echo.bf, "tiktok_channel", return_value=_TT_CH), \
+         patch.object(echo, "handed_over", return_value=handed), \
+         patch.object(echo.ig, "_host_via_github_release", return_value=("https://gh/v.mp4", "me/repo", 9)), \
+         patch.object(echo.ig, "_delete_asset", side_effect=lambda repo, a: deleted.append(a)), \
+         patch.object(echo.bf, "create_reel", return_value={"id": "p_ig", "status": "sending"}), \
+         patch.object(echo.bf, "create_tiktok", side_effect=echo.bf.BufferError(200, "TikTok said no", "MUTATION")) as made, \
+         patch.object(echo.bf, "post_state", return_value={"id": "p_ig", "status": "sent", "externalLink": "I"}):
+        codes = [echo.shift(now=NOW + dt.timedelta(minutes=i)) for i in range(4)]
+    assert codes[0] == 1 and made.call_count == 3              # the fourth shift doesn't try again
+    rows = echo._read(echo.TIKTOK_POSTS)
+    assert [r["status"] for r in rows] == ["failed"] * 3 and rows[0]["reason"] == "Buffer: TikTok said no"
+    assert json.loads(echo.STATUS.read_text())["tiktok"]["problem"].startswith("TikTok: the last post failed")

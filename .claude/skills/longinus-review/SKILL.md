@@ -7,7 +7,7 @@ description: Longinus's review of the NEXT Short before it airs (owner 2026-11-1
 The automatic inspector (`src/inspector.py`, a free vision model) checks every painted shot and repaints a flagged one;
 you are the human-eye pass on what slipped through. Budget: ONE image read, no agents, no design lab.
 
-1. Load `hq-protocol`; run the `hq-inbox` steps first if anything waits (it usually doesn't).
+1. The HQ is written through the outbox in this session (`scripts/hq_outbox.py`; see `hq-protocol`'s first note).
 2. `git fetch origin main && git merge --ff-only origin/main` (fresh sessions already have main).
    `python3 scripts/up_next.py fetch /tmp/upnext` prints the rehearsal's JSON: `edit`, `hook`, `airDay`, `renderedAt`,
    `shots` (each painted shot's scene, seed, tries, inspector verdict, problems). If `ok` is false, or `renderedAt` is
@@ -27,8 +27,9 @@ you are the human-eye pass on what slipped through. Budget: ONE image read, no a
    `data/longinus.csv`. Commit `scenes: <edit> shot N rewritten (Longinus)` and push to main (merge origin/main first, never
    force). The push itself re-rehearses the Short (edit-preview runs on pushes to data/edit_quotes.json and sees the
    scenes changed): only the changed shot is repainted, the rest comes from the stills cache. No dispatch needed.
-6. HQ: one `hq/log` line, who "Longinus", kind "done": "Checked <hook>: clean" or "Rewrote shot N of <hook>: <problem
-   in plain words>". Real current time. Reply with that line and stop.
+6. Report: `python3 scripts/hq_outbox.py log --who Longinus --kind done --text "Checked <hook>: clean"` (or
+   "Rewrote shot N of <hook>: <problem in plain words>"), commit it ("longinus: <hook> checked") and push to main even
+   when nothing else changed. Reply with that line and stop.
 
 Never change the look itself (fonts, colours, layout: that is an `asks/` card for the owner), never run the design lab
 (it shares the free painting allowance with the posts), and message the owner only if something needs his call.

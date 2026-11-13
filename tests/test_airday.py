@@ -28,7 +28,7 @@ def test_next_post_airs_today_until_the_cap_then_tomorrow():
 
 def test_the_cap_comes_from_the_live_workflow_not_the_preview_env(monkeypatch):
     monkeypatch.setenv("MAX_POSTS_PER_DAY", "99")
-    assert airday.live_cap() == 2
+    assert airday.live_cap() == 3
 
 
 def test_every_day_keyed_choice_goes_through_airday():

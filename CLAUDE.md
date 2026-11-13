@@ -24,7 +24,7 @@ Every turn re-reads the whole context, so the cost of a session is its context s
 - Batch shell work into one Bash call; never cat a file you can grep; never re-read a file you just edited.
 - Images cost the most: at most ONE small frame sheet (≤ 1,100 px wide) per job, and only when the inspector flagged a shot or a number looks wrong.
 - One helper agent at a time, on Sonnet, with a brief that names the files and the tests; never an agent to check an agent.
-- Recurring crew work runs in SMALL standing sessions on Sonnet (one per crew member, created by the chief with the repo and push access; their scheduled tasks fire into them; ids in the HQ's `hq/config`), never in a long chat. The owner's HQ messages wake the small inbox session. The chief chat is for the owner's own requests.
+- Recurring crew work runs in SMALL standing sessions on Sonnet (one per crew member, created by the chief with the repo and push access but without HQ tools; their scheduled tasks fire into them; ids in the HQ's `hq/config`), never in a long chat. They report into the HQ through `scripts/hq_outbox.py` (committed; the HQ sync carries it). The owner's HQ messages wake the chief chat, which answers them and hands building to one Sonnet agent.
 - No design-lab runs, re-rehearsals, WebSearch or new scheduled tasks unless the task needs them. Finish with one short report; no narration between steps.
 
 ## Skills (`.claude/skills/`)
@@ -32,7 +32,7 @@ Every turn re-reads the whole context, so the cost of a session is its context s
 | Skill | Use when |
 |-------|----------|
 | `hq-protocol` | Before any HQ write or read: the documents, their shapes, pinned writes, the Ideas board, the autonomy rule |
-| `hq-inbox` | An "[HQ …]" message or decision from the owner (fresh sessions fired by the HQ inbox task; also step 1 of every shift) |
+| `hq-inbox` | An "[HQ …]" message or decision from the owner arrives in the chief chat: pick it up, act, answer in its thread |
 | `longinus-review` | Daily 04:41 / 08:41 UTC: look at the next Short's rehearsal, rewrite a shot that still looks off, re-rehearse |
 | `crew-review` | Thursdays 20:23 UTC: Zeuxis, Plutarch and Callimachus each fix one thing from the week's evidence |
 | `cicero-shift` | Fridays 10:53 UTC: judge, start and propose growth tests; report the goal's pace |

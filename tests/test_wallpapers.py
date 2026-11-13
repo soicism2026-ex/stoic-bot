@@ -219,7 +219,7 @@ def test_workflow_paints_one_queued_pack_a_night_and_keeps_the_zip_private():
     art = next(s for s in steps if "upload-artifact" in s.get("uses", ""))
     assert art["with"]["path"].endswith(".zip") and art["with"]["retention-days"] == 90
     pop = next(s for s in steps if "queue --pop" in s.get("run", ""))
-    assert "steps.paint.outputs.complete == '1'" in pop["if"]
+    assert pop["env"]["COMPLETE"] == "${{ steps.paint.outputs.complete }}" and "data/wallpapers.json" in pop["run"]
     queue = json.loads((ROOT / "data" / "wallpapers_queue.json").read_text(encoding="utf-8"))
     assert [(q["pack"], q["size"]) for q in queue][:3] == [("marcus", "phone"), ("seneca", "phone"), ("epictetus", "phone")]
 
@@ -243,3 +243,13 @@ def test_the_release_carries_only_the_cover_and_the_manifest(tmp_path, monkeypat
     assert names == ["marcus-phone-cover.jpg", "marcus-phone-manifest.json"]
     uploaded = next(a for a in calls if a[:2] == ("release", "upload"))
     assert not any(x.endswith(".zip") for x in uploaded)
+
+def test_a_published_pack_is_recorded_for_the_hq(tmp_path, monkeypatch):
+    out = tmp_path / "out"; out.mkdir()
+    (out / "marcus-phone-manifest.json").write_text(json.dumps({"count": 10, "run": "https://x/runs/1"}))
+    rec = tmp_path / "wallpapers.json"
+    items = wp.record("marcus", "phone", out, rec)
+    assert items[0]["cover"].endswith("/releases/download/wallpapers/marcus-phone-cover.jpg") and items[0]["count"] == 10
+    (out / "marcus-phone-manifest.json").write_text(json.dumps({"count": 9, "run": "https://x/runs/2"}))
+    items = wp.record("marcus", "phone", out, rec)
+    assert len(items) == 1 and items[0]["run"] == "https://x/runs/2"               # upserted, not doubled

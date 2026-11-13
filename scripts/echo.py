@@ -55,12 +55,14 @@ sys.path.insert(0, str(ROOT / "src"))
 import buffer_ig as bf  # noqa: E402
 import ig_key  # noqa: E402
 import publish_instagram as ig  # noqa: E402
+import tiktok_caption as tt  # noqa: E402
 
 DATA = ROOT / "data"
 STATUS = DATA / "ig_status.json"
 POSTS = DATA / "ig_posts.csv"
 STATS = DATA / "ig_stats.csv"
 REELS = DATA / "ig_reels.csv"
+TIKTOK_POSTS = DATA / "tiktok_posts.csv"
 API = "https://api.github.com"
 ARTIFACT = "posted-short"
 WINDOW_HOURS = 36       # how far back a Short still goes to Instagram
@@ -72,6 +74,8 @@ POST_FIELDS = ["tried_at", "date", "youtube_id", "ig_media_id", "permalink", "st
 SETTLE_POLLS = 6        # Buffer, right after a post: read it back up to 6 times,
 SETTLE_EVERY = 20       # 20 seconds apart; the next shift settles what's left
 LOST_AFTER_HOURS = 48   # a queued post Buffer no longer lists is given up
+TT_FIELDS = ["youtube_id", "buffer_post_id", "status", "link", "date", "tried_at", "reason", "asset_id"]
+NO_TIKTOK = "TikTok: not connected in Buffer yet (Channels > Connect > TikTok)"
 STATS_FIELDS = ["pulled_on", "username", "followers", "media_count"]
 REEL_FIELDS = ["pulled_on", "ig_media_id", "youtube_id", "views", "reach", "likes", "comments",
                "shares", "saved"]
@@ -336,7 +340,8 @@ def buffer_shift(mode: str, now: dt.datetime, key: str) -> int:
             print(f"Echo: couldn't read back Buffer's posts: {e.message}", file=sys.stderr)
             changed = False
         with tempfile.TemporaryDirectory() as td:
-            post = to_post(log, handed_over(now, Path(td))) if mode != "settle" else None
+            handed = handed_over(now, Path(td)) if mode != "settle" else []
+            post = to_post(log, handed) if mode != "settle" else None
             if post:
                 text = post.get("igCaption") or ig.caption(
                     post.get("hook", ""), post.get("quote", ""), post.get("author", ""),
@@ -380,6 +385,7 @@ def buffer_shift(mode: str, now: dt.datetime, key: str) -> int:
                       + (f" ({row['reason']})" if row.get("reason") else ""))
             elif mode != "settle":
                 print("Echo: nothing new to post.")
+            failed = tiktok_step(mode, now, key, st, handed, Path(td)) or failed
         for r in log:
             if r.get("via") == "buffer" and r.get("buffer_id") and r.get("tried_at", "") >= _iso(now - dt.timedelta(days=3)):
                 print(f"Echo: {r.get('youtube_id')} is {r.get('status')}"
@@ -392,9 +398,109 @@ def buffer_shift(mode: str, now: dt.datetime, key: str) -> int:
             if lp and last:                             # a Reel settled since: show where it ended up
                 lp.update(status=last["status"], permalink=last.get("permalink") or None,
                           reason=last.get("reason") or None)
+    if mode == "check":
+        tiktok_step(mode, now, key, st, [], None)
     save_status(st)
     print(f"Echo: posting to {ch.get('name')} on Instagram through Buffer")
     return 1 if failed else 0
+
+
+# ------------------------------------------------------------- TikTok, through Buffer
+
+def settle_tiktok(key: str, ch: dict, log: list[dict], now: dt.datetime) -> bool:
+    """Read back every TikTok post still queued in Buffer: sent (its link) or
+    error; then delete its hosted video. True if a row changed."""
+    changed = False
+    for row in log:
+        if row.get("status") != "queued" or not row.get("buffer_post_id"):
+            continue
+        node = bf.post_state(key, ch["organizationId"], ch["id"], row["buffer_post_id"])
+        if node and node.get("status") == "sent":
+            row.update(status="published", link=node.get("externalLink") or "", reason="")
+        elif node and node.get("status") == "error":
+            row.update(status="failed", reason=((node.get("error") or {}).get("message") or "Buffer: error")[:200])
+        elif node is None and row.get("tried_at") and \
+                now - dt.datetime.fromisoformat(row["tried_at"].replace("Z", "+00:00")) > \
+                dt.timedelta(hours=LOST_AFTER_HOURS):
+            row.update(status="failed", reason="Buffer no longer lists the post")
+        else:
+            continue
+        _drop_hosted(row)
+        changed = True
+    return changed
+
+
+def tiktok_step(mode: str, now: dt.datetime, key: str, st: dict, handed: list[dict], td: Path | None) -> bool:
+    """Echo's TikTok step, after Instagram's, with the same rules: one post per
+    shift, MAX_TRIES tries, the oldest unposted Short of the last WINDOW_HOURS.
+    Fills st["tiktok"] (never the key). Never raises; True if the post failed
+    with a working key. Its hosted copy has its own file name and is deleted
+    once Buffer has sent that post or refused it."""
+    log = _read(TIKTOK_POSTS)
+    block = {"connected": False, "posted": sum(1 for r in log if r.get("status") == "published")}
+    try:
+        ch = bf.tiktok_channel(key)
+    except bf.BufferError as e:
+        block["problem"] = NO_TIKTOK if e.code == "NO_CHANNEL" else (
+            "TikTok: Buffer's TikTok connection is off or locked. In Buffer, reconnect TikTok."
+            if e.code == "DISCONNECTED" else "TikTok: " + buffer_plain(e))
+        st["tiktok"] = block
+        print(f"Echo: {block['problem']}")
+        return False
+    block.update(connected=True, username=ch.get("name") or ch.get("displayName"))
+    failed = False
+    if mode != "check":
+        try:
+            changed = settle_tiktok(key, ch, log, now)
+        except bf.BufferError as e:
+            print(f"Echo: couldn't read back Buffer's TikTok posts: {e.message}", file=sys.stderr)
+            changed = False
+        post = to_post(log, handed) if mode != "settle" and td is not None else None
+        if post:
+            row = {"youtube_id": post["video_id"], "date": post.get("date") or now.date().isoformat(),
+                   "tried_at": _iso(now)}
+            try:
+                named = td / f"{post['video_id']}-tiktok.mp4"      # not the Reel's name: one release, unique names
+                shutil.copyfile(post["video"], named)
+                url, _repo, asset = ig._host_via_github_release(named)
+                row["asset_id"] = asset
+                made = bf.create_tiktok(key, ch["id"], url, post.get("tiktokCaption") or tt.tiktok_caption(post))
+                row.update(status="queued", buffer_post_id=made.get("id"))
+                print(f"  [echo] Buffer took the TikTok (post {made.get('id')}, {made.get('status')})")
+            except bf.BufferError as e:
+                row.update(status="failed", reason=f"Buffer: {e.message}"[:200])
+            except Exception as e:  # noqa: BLE001
+                row.update(status="failed", reason=f"{type(e).__name__}: {str(e)[:180]}")
+            log.append(row)
+            changed = True
+            if row["status"] == "failed":
+                _drop_hosted(row)
+            else:
+                for _ in range(SETTLE_POLLS):
+                    time.sleep(SETTLE_EVERY)
+                    try:
+                        settle_tiktok(key, ch, log, now)
+                    except bf.BufferError:
+                        break
+                    if row["status"] != "queued":
+                        break
+            failed = row["status"] == "failed"
+            print(f"Echo: TikTok {post['video_id']} -> {row['status']}"
+                  + (f" {row['link']}" if row.get("link") else "")
+                  + (f" ({row['reason']})" if row.get("reason") else ""))
+        elif mode != "settle":
+            print("Echo: nothing new for TikTok.")
+        if changed:
+            _rewrite(TIKTOK_POSTS, TT_FIELDS, log)
+    done = [r for r in log if r.get("status") == "published"]
+    block["posted"] = len(done)
+    if done and done[-1].get("link"):
+        block["lastLink"] = done[-1]["link"]
+    bad = next((r for r in reversed(log) if r.get("status") == "failed"), None)
+    if bad and (not done or (bad.get("tried_at") or "") > (done[-1].get("tried_at") or "")):
+        block["problem"] = f"TikTok: the last post failed ({bad.get('reason') or 'unknown'})"
+    st["tiktok"] = block
+    return failed
 
 
 # ------------------------------------------------------------- the shift

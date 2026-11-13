@@ -87,8 +87,8 @@ def test_the_ledger_proposes_before_it_ships():
     assert first["id"] == "second-post-morning" and first["kind"] == "second_vs_first"
     assert first["ask"] == "post-times"                              # the HQ question it waits on
     for t in ledger["tests"]:
-        assert t["status"] in ("proposed", "running", "done", "declined")
-        assert t.get("started") or t["status"] in ("proposed", "declined"), t["id"]
+        assert t["status"] in ("proposed", "queued", "running", "done", "declined")
+        assert t.get("started") or t["status"] in ("proposed", "queued", "declined"), t["id"]
         for k in ("question", "change", "why", "measure"):
             assert t[k], (t["id"], k)
     assert {t["id"] for t in ledger["tests"]} >= {"pinned-question", "playlists"}   # ideas became tests

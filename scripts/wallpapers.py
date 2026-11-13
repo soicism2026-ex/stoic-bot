@@ -581,8 +581,34 @@ def publish(pack: str, kind: str, out: Path) -> list[str]:
                        "The packs themselves are workflow artifacts of wallpapers.yml (private). "
                        "Auto-managed: do not delete.")
     _gh("release", "upload", TAG, *[str(p) for p in paths], "--clobber")   # --clobber = replace same name
+    record(pack, kind, out)
     print(f"[wallpapers] published {', '.join(names)} to release {TAG}")
     return names
+
+
+RECORD = ROOT / "data" / "wallpapers.json"
+RELEASE_URL = f"https://github.com/{REPO}/releases/download/{TAG}/"
+
+
+def record(pack: str, kind: str, out: Path, path: Path | None = None) -> list[dict]:
+    """data/wallpapers.json: every finished pack (the HQ shows the covers from
+    it; the HQ sync session cannot reach GitHub's API). Upserted per pack+size,
+    committed by the workflow."""
+    path = path or RECORD
+    try:
+        items = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        items = []
+    try:
+        man = json.loads((out / f"{pack}-{kind}-manifest.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        man = {}
+    entry = {"pack": pack, "size": kind, "cover": f"{RELEASE_URL}{pack}-{kind}-cover.jpg",
+             "count": int(man.get("count") or len(man.get("items") or [])), "run": man.get("run", ""),
+             "updated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
+    items = [i for i in items if not (i.get("pack") == pack and i.get("size") == kind)] + [entry]
+    path.write_text(json.dumps(items, indent=1) + "\n", encoding="utf-8")
+    return items
 
 
 def cmd_publish(a) -> int:

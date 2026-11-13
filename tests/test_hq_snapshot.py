@@ -49,9 +49,12 @@ def test_next_post_follows_the_cap_slots_and_gap():
     # posted at 11:05 (a late first post): 15:00 is under 5 h, so 19:00
     got = hq.next_post(one, t("2026-10-21T11:30:00"), t("2026-10-21T11:05:00"))
     assert got["at"] == "2026-10-21T19:00:00Z"
-    # both posted: tomorrow's first cron
+    # two posted (three a day since 2026-11-13): the third from the 19:00 slot, posted by the 23:00 cron here
     two = [{"date": "2026-10-21"}, {"date": "2026-10-21"}]
-    assert hq.next_post(two, t("2026-10-21T16:00:00"), t("2026-10-21T15:05:00"))["at"] == "2026-10-22T03:00:00Z"
+    assert hq.next_post(two, t("2026-10-21T16:00:00"), t("2026-10-21T15:05:00"))["at"] == "2026-10-21T23:00:00Z"
+    # all three posted: tomorrow's first cron
+    three = two + [{"date": "2026-10-21"}]
+    assert hq.next_post(three, t("2026-10-21T20:00:00"), t("2026-10-21T19:05:00"))["at"] == "2026-10-22T03:00:00Z"
 
 
 def test_bot_status_reads_runs():
@@ -123,7 +126,7 @@ def test_build_offline_is_one_small_json_document():
     assert len(raw) < 200_000        # one db document holds at most 256 KiB
     assert [b["id"] for b in doc["bots"]][0] == "producer"
     assert "posted today" in doc["bots"][0]["note"]
-    assert doc["nextPost"]["cap"] == 2
+    assert doc["nextPost"]["cap"] == 3
     assert all(b["url"].startswith("https://github.com/") for b in doc["bots"])
 
 

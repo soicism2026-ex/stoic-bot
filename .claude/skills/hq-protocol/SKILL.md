@@ -4,6 +4,12 @@ description: How every session reports into the owner's HQ app (https://claude.a
 ---
 # The HQ protocol
 
+> **In a small crew session** (Longinus, the review, Cicero, Varro: created by the chief with the repo but without the
+> HQ database tools) the HQ is written ONLY through the outbox: `python3 scripts/hq_outbox.py log|ask|note ...`,
+> committed and pushed with your work. The HQ sync carries it into the app within four hours (hq/studio: crewLog,
+> askUpdates, noteUpdates; the page merges them). Never call a claude-artifacts db tool there: it stops on a permission
+> prompt nobody answers. Everything below about ArtifactData and ArtifactComments is for the chief chat.
+
 The owner runs the channel from the HQ app on his phone (pinned in his Claude sidebar). Every Claude session on this
 project reports into it; he reads `hq/now` and `hq/log` as status reports, so write them in plain words with the REAL
 current time (`date -u`), never a time ahead of the clock.

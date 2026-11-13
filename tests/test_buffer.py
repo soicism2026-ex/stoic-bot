@@ -119,9 +119,13 @@ def test_a_post_is_read_back_across_pages(monkeypatch):
 def data(tmp_path, monkeypatch):
     for name in ("STATUS", "POSTS", "STATS", "REELS"):
         monkeypatch.setattr(echo, name, tmp_path / Path(getattr(echo, name)).name)
+    monkeypatch.setattr(echo, "TIKTOK_POSTS", tmp_path / "tiktok_posts.csv")
     monkeypatch.setenv("BUFFER_API_KEY", KEY)
     monkeypatch.setenv("GITHUB_REPOSITORY", "me/repo")
     monkeypatch.setattr(echo.time, "sleep", lambda s: None)
+    # TikTok isn't connected unless a test says so (no network in tests)
+    monkeypatch.setattr(bf, "tiktok_channel", lambda key: (_ for _ in ()).throw(
+        bf.BufferError(200, "Buffer has no TikTok channel connected", "NO_CHANNEL")))
     video = tmp_path / "reel.mp4"
     video.write_bytes(b"mp4")
     return {"tmp": tmp_path, "video": str(video)}
@@ -250,3 +254,83 @@ def test_settle_reads_back_what_is_going_out_and_posts_nothing_new(data):
     wf = yaml.safe_load((ROOT / ".github" / "workflows" / "instagram.yml").read_text())
     assert wf[True]["workflow_dispatch"]["inputs"]["mode"]["options"] == ["run", "check", "settle"]
 
+
+
+# ------------------------------------------------------------- TikTok (owner 2026-11-13)
+
+TT = {**IG, "id": "ch_tt", "name": "forged.in.stoicism", "service": "tiktok"}
+CREATED = lambda: (200, {"data": {"createPost": {"post": {"id": "t1", "status": "sending"}}}})  # noqa: E731
+
+
+def test_echo_finds_the_connected_tiktok_channel_and_not_instagram(monkeypatch):
+    post, calls = _server({"Orgs": ORGS, "Channels": _channels(IG, TT)})
+    monkeypatch.setattr(bf.requests, "post", post)
+    assert bf.tiktok_channel(KEY)["id"] == "ch_tt" and bf.instagram_channel(KEY)["id"] == "ch_ig"
+    post, _ = _server({"Orgs": ORGS, "Channels": _channels(IG)})
+    monkeypatch.setattr(bf.requests, "post", post)
+    with pytest.raises(bf.BufferError) as e:
+        bf.tiktok_channel(KEY)
+    assert e.value.code == "NO_CHANNEL" and "TikTok" in e.value.message
+    post, _ = _server({"Orgs": ORGS, "Channels": _channels({**TT, "isDisconnected": True})})
+    monkeypatch.setattr(bf.requests, "post", post)
+    with pytest.raises(bf.BufferError) as e:
+        bf.tiktok_channel(KEY)
+    assert e.value.code == "DISCONNECTED"
+
+
+def test_a_tiktok_is_shared_now_from_the_hosted_url_with_no_metadata_first(monkeypatch):
+    post, calls = _server({"Reel": lambda v: CREATED()})
+    monkeypatch.setattr(bf.requests, "post", post)
+    made = bf.create_tiktok(KEY, "ch_tt", "https://gh/v.mp4", "Line one\n\nmore")
+    assert made["id"] == "t1" and len(calls) == 1
+    inp = calls[0]["variables"]["input"]
+    assert inp["channelId"] == "ch_tt" and inp["mode"] == "shareNow" and inp["schedulingType"] == "automatic"
+    assert inp["assets"] == [{"video": {"url": "https://gh/v.mp4"}}] and "metadata" not in inp
+
+
+def test_a_tiktok_buffer_wants_metadata_for_is_retried_once_with_a_title(monkeypatch):
+    seen = []
+
+    def answer(v):
+        seen.append(v["input"].get("metadata"))
+        if len(seen) == 1:
+            return 200, {"errors": [{"message": "Field metadata.tiktok is required"}]}
+        return CREATED()
+    post, calls = _server({"Reel": answer})
+    monkeypatch.setattr(bf.requests, "post", post)
+    made = bf.create_tiktok(KEY, "ch_tt", "https://gh/v.mp4", "x" * 120 + "\nsecond line")
+    assert made["id"] == "t1" and seen == [None, {"tiktok": {"title": "x" * 90}}]
+
+
+def test_a_tiktok_refused_twice_raises_buffers_words_never_the_key(monkeypatch):
+    post, calls = _server({"Reel": lambda v: (200, {"errors": [{"message": "TikTok needs a privacy level"}]})})
+    monkeypatch.setattr(bf.requests, "post", post)
+    with pytest.raises(bf.BufferError) as e:
+        bf.create_tiktok(KEY, "ch_tt", "https://gh/v.mp4", "caption")
+    assert len(calls) == 2 and "privacy level" in str(e.value) and KEY not in str(e.value)
+    assert all(KEY not in json.dumps(c["variables"]) for c in calls)
+    # an error that has nothing to do with TikTok or metadata is not retried
+    post, calls = _server({"Reel": lambda v: (200, {"errors": [{"message": "Failed to fetch video"}]})})
+    monkeypatch.setattr(bf.requests, "post", post)
+    with pytest.raises(bf.BufferError):
+        bf.create_tiktok(KEY, "ch_tt", "https://gh/v.mp4", "caption")
+    assert len(calls) == 1
+    # a refused key
+    post, _ = _server({"Reel": lambda v: (401, {"errors": [{"message": "Unauthorized"}]})})
+    monkeypatch.setattr(bf.requests, "post", post)
+    with pytest.raises(bf.BufferError) as e:
+        bf.create_tiktok(KEY, "ch_tt", "https://gh/v.mp4", "caption")
+    assert e.value.key_rejected and KEY not in str(e.value)
+
+
+def test_the_tiktok_caption():
+    import tiktok_caption as tc
+    cap = tc.tiktok_caption({"hook": "Stay calm.", "quote": "You have power over your mind.",
+                             "author": "Marcus Aurelius", "citation": "Meditations 8.47",
+                             "hashtags": ["shorts", "stoicism", "stoic", "#a", "b", "c", "d"],
+                             "igCaption": "x #seneca #stoic"})
+    assert cap.startswith("Stay calm.\n\n“You have power over your mind.”\n— Marcus Aurelius, Meditations 8.47")
+    assert "Follow for one Stoic line a day." in cap and "#shorts" not in cap.lower() and "http" not in cap
+    assert len([w for w in cap.split() if w.startswith("#")]) == 5
+    assert len(tc.tiktok_caption({"hook": "h", "quote": "q" * 5000})) <= 2200
+    assert "#stoicism" in tc.tiktok_caption({"quote": "q"})        # defaults when the post carries none

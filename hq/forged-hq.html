@@ -892,6 +892,29 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
   const isIdea = (a) => a && a.kind === "idea";
 
   let ideasSig = "";
+  // The crew's small sessions report through git (scripts/hq_outbox.py): the HQ sync
+  // carries their lines in hq/studio (crewLog, askUpdates, noteUpdates) and the page
+  // merges them here, so a Go'd idea shows its outcome and a message its reply.
+  function withCrew(docs, key) {
+    const up = (S.studio && S.studio[key]) || {};
+    const have = new Set((docs || []).map((d) => d.id));
+    const merged = (docs || []).map((d) => {
+      const u = up[d.id];
+      if (!u) return d;
+      const out = { ...d };
+      for (const k of ["outcome", "status", "answer", "closed", "reply"]) if (u[k] !== undefined && (k !== "status" || d.status !== "answered" || u.status === "answered")) out[k] = u[k];
+      return out;
+    });
+    // a card the crew created in the outbox (an idea card from Cicero's shift) that has no document yet
+    for (const [id, u] of Object.entries(up)) if (!have.has(id) && u && u.create && typeof u.create === "object") merged.push({ id, status: "open", created: u.t, ...u.create, ...Object.fromEntries(Object.entries(u).filter(([k]) => !["create", "t"].includes(k))) });
+    return merged;
+  }
+  function crewLogItems() {
+    const own = (S.log && S.log.items) || [], crew = (S.studio && S.studio.crewLog) || [];
+    const seen = new Set(own.map((i) => i.t + "|" + i.who + "|" + i.text));
+    return own.concat(crew.filter((i) => !seen.has(i.t + "|" + i.who + "|" + i.text))).sort((a, b) => (b.t || "").localeCompare(a.t || "")).slice(0, 80);
+  }
+
   function drawIdeas() {
     const all = S.asks.filter(isIdea);
     const open = all.filter((a) => a.status === "open").sort((x, y) => (x.order ?? 99) - (y.order ?? 99));
@@ -1240,7 +1263,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       const opt = (a.options || []).find((o) => o.id === a.answer);
       return `<div class="note"><div class="a-meta">${tAgo(a.answeredAt)}</div><div class="txt"><b>${esc(a.title)}</b>: ${esc(opt ? opt.label : a.answer || "closed")}</div>${a.outcome ? `<div class="reply">${esc(a.outcome)}</div>` : ""}</div>`;
     }).join("")}</div>` : `<p class="empty">Your answered decisions show up here.</p>`;
-    const items = ((S.log && S.log.items) || []).concat(studioEvents())
+    const items = crewLogItems().concat(studioEvents())
       .filter((it) => it && it.t && !isNaN(Date.parse(it.t)))
       .sort((a, b) => Date.parse(b.t) - Date.parse(a.t)).slice(0, 80);
     if (!items.length) { $("#log").innerHTML = `<p class="empty">Nothing logged yet.</p>`; return; }
@@ -1257,7 +1280,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
   function studioEvents() {
     const st = S.studio;
     if (!st) return [];
-    const logged = (S.log && S.log.items) || [];
+    const logged = crewLogItems();
     const ev = [];
     const add = (e) => { if (!logged.some((m) => m.who === e.who && Math.abs(Date.parse(m.t) - Date.parse(e.t)) < 15 * 60000)) ev.push(e); };
     for (const p of st.posts || []) {
@@ -1347,10 +1370,6 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
         if (S.canSend === "available") {
           const r = await cm.sendToClaude({ anchor, text });
           note.sent = true; note.thread = r.threadId;
-          // Since 2026-11-13 a message also wakes a small fresh session (the HQ inbox task) instead of the big chief chat.
-          if (caps.mcp && S.config && S.config.inboxTrigger) {
-            try { await caps.mcp.callTool(REMOTE, "fire_trigger", { trigger_id: S.config.inboxTrigger, text: "The owner wrote in the HQ: " + text.slice(0, 300) }); } catch (e) {}
-          }
         } else {
           const r = await cm.create({ anchor, text });
           note.thread = r.threadId;
@@ -1578,10 +1597,14 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       const n = $("#notice"); n.hidden = false; n.textContent = "The studio's live data isn't available in this view. Open it signed in to Claude.";
     } else {
       const onErr = () => { S.db = "off"; render(); };
-      const doc = (path, key) => db.doc(path).onSnapshot((s) => { S[key] = s.exists ? s.data() : null; S.db = "live"; render(); }, onErr);
+      const doc = (path, key) => db.doc(path).onSnapshot((s) => {
+        S[key] = s.exists ? s.data() : null; S.db = "live";
+        if (key === "studio") { S.asks = withCrew(S.rawAsks || S.asks, "askUpdates"); S.notes = withCrew(S.rawNotes || S.notes, "noteUpdates"); }
+        render();
+      }, onErr);
       doc("hq/now", "now"); doc("hq/studio", "studio"); doc("hq/log", "log"); doc("hq/config", "config"); doc("hq/upnext", "upnext");
-      db.collection("asks").onSnapshot((q) => { S.asks = q.docs.map((d) => ({ id: d.id, ...d.data() })); S.db = "live"; render(); }, onErr);
-      db.collection("notes").onSnapshot((q) => { S.notes = q.docs.map((d) => ({ id: d.id, ...d.data() })); render(); }, onErr);
+      db.collection("asks").onSnapshot((q) => { S.rawAsks = q.docs.map((d) => ({ id: d.id, ...d.data() })); S.asks = withCrew(S.rawAsks, "askUpdates"); S.db = "live"; render(); }, onErr);
+      db.collection("notes").onSnapshot((q) => { S.rawNotes = q.docs.map((d) => ({ id: d.id, ...d.data() })); S.notes = withCrew(S.rawNotes, "noteUpdates"); render(); }, onErr);
     }
 
     if (caps.mcp) {

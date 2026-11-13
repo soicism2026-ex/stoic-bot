@@ -8,7 +8,7 @@ Each crew member makes ONE improvement in their own specialty, from evidence, ne
 one small frame sheet read, no agents, no design-lab run (the lab shares Cloudflare's free painting allowance with the
 posts; the Thursday run is after the day's posts, but the evidence below is enough).
 
-1. Load `hq-protocol`; run `hq-inbox` if anything waits. `git fetch origin main && git merge --ff-only origin/main`.
+1. `git fetch origin main && git merge --ff-only origin/main`. The HQ is written through the outbox here (`scripts/hq_outbox.py`).
 2. Gather the week: `data/inspector.csv` (every live painted shot: pass / flagged / stock with the problems named; count
    the problem words of the last 7 days), `data/longinus.csv` (what Longinus rewrote by eye),
    `python3 scripts/marketer.py` (Cicero's "new-look" test: views at 3 days, before against after) and
@@ -28,6 +28,7 @@ posts; the Thursday run is after the day's posts, but the evidence below is enou
 6. Anything that changes the LOOK itself (fonts, colours, layout, motion, music) goes to the owner first as an `asks/`
    card with a before/after, never straight to air. Defect fixes ship directly.
 7. `python3 -m pytest -q tests/test_painter.py tests/test_shelf.py tests/test_edit_type.py tests/test_inspector.py
-   tests/test_painted_daily_post.py`, commit, push to main (merge origin/main first, never force). One `hq/log` line per
-   crew member who changed something (who "Zeuxis" / "Plutarch" / "Callimachus", kind "done", the change in plain
-   words, the real time). Reply with those lines and stop.
+   tests/test_painted_daily_post.py`, then one outbox line per crew member who changed something:
+   `python3 scripts/hq_outbox.py log --who Zeuxis --kind done --text "<the change in plain words>"` (Plutarch,
+   Callimachus likewise), commit everything, push to main (merge origin/main first, never force). Reply with those
+   lines and stop.
