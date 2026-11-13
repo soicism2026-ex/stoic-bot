@@ -8,58 +8,58 @@
   "countries": [
    {
     "key": "US",
-    "views": 6819,
-    "share": 0.712
+    "views": 7473,
+    "share": 0.687
    },
    {
     "key": "IN",
-    "views": 1147,
-    "share": 0.12
-   },
-   {
-    "key": "CA",
-    "views": 435,
-    "share": 0.045
+    "views": 1332,
+    "share": 0.122
    },
    {
     "key": "GB",
-    "views": 369,
-    "share": 0.039
+    "views": 482,
+    "share": 0.044
+   },
+   {
+    "key": "CA",
+    "views": 474,
+    "share": 0.044
    },
    {
     "key": "DE",
-    "views": 232,
-    "share": 0.024
+    "views": 303,
+    "share": 0.028
    },
    {
     "key": "PH",
-    "views": 161,
-    "share": 0.017
+    "views": 201,
+    "share": 0.018
    },
    {
     "key": "ZA",
-    "views": 159,
-    "share": 0.017
+    "views": 199,
+    "share": 0.018
    },
    {
     "key": "AU",
-    "views": 80,
+    "views": 131,
+    "share": 0.012
+   },
+   {
+    "key": "NL",
+    "views": 92,
+    "share": 0.008
+   },
+   {
+    "key": "IT",
+    "views": 84,
     "share": 0.008
    },
    {
     "key": "PL",
-    "views": 52,
-    "share": 0.005
-   },
-   {
-    "key": "IT",
-    "views": 46,
-    "share": 0.005
-   },
-   {
-    "key": "NL",
-    "views": 42,
-    "share": 0.004
+    "views": 81,
+    "share": 0.007
    },
    {
     "key": "SE",
@@ -70,23 +70,23 @@
   "sources": [
    {
     "key": "SHORTS",
-    "views": 14958,
-    "share": 0.927
+    "views": 16652,
+    "share": 0.93
    },
    {
     "key": "YT_SEARCH",
-    "views": 561,
-    "share": 0.035
+    "views": 584,
+    "share": 0.033
    },
    {
     "key": "YT_OTHER_PAGE",
-    "views": 352,
+    "views": 402,
     "share": 0.022
    },
    {
     "key": "YT_CHANNEL",
     "views": 213,
-    "share": 0.013
+    "share": 0.012
    },
    {
     "key": "EXT_URL",
@@ -104,6 +104,11 @@
     "share": 0.0
    },
    {
+    "key": "NOTIFICATION",
+    "views": 2,
+    "share": 0.0
+   },
+   {
     "key": "NO_LINK_OTHER",
     "views": 1,
     "share": 0.0
@@ -112,25 +117,30 @@
   "subscribed": [
    {
     "key": "UNSUBSCRIBED",
-    "views": 15823,
-    "share": 0.98
+    "views": 17581,
+    "share": 0.982
    },
    {
     "key": "SUBSCRIBED",
-    "views": 317,
-    "share": 0.02
+    "views": 328,
+    "share": 0.018
    }
   ],
   "searchTerms": [
    {
     "key": "stoicism",
     "views": 27,
-    "share": 0.227
+    "share": 0.225
+   },
+   {
+    "key": "stoicism marcus aurelius",
+    "views": 9,
+    "share": 0.075
    },
    {
     "key": "stoicism motivation",
     "views": 9,
-    "share": 0.076
+    "share": 0.075
    },
    {
     "key": "marcus aurelius",
@@ -138,14 +148,9 @@
     "share": 0.067
    },
    {
-    "key": "stoicism marcus aurelius",
-    "views": 8,
-    "share": 0.067
-   },
-   {
     "key": "stoic reset",
     "views": 7,
-    "share": 0.059
+    "share": 0.058
    },
    {
     "key": "blue lotus",
@@ -165,17 +170,17 @@
    {
     "key": "marcus aurelius meditations",
     "views": 4,
-    "share": 0.034
+    "share": 0.033
    },
    {
     "key": "marcus aurelius quotes",
     "views": 4,
-    "share": 0.034
+    "share": 0.033
    },
    {
     "key": "stoic ben",
     "views": 4,
-    "share": 0.034
+    "share": 0.033
    },
    {
     "key": "my word is law",
@@ -252,7 +257,7 @@
    {
     "key": "stoicism",
     "views": 60,
-    "share": 0.247
+    "share": 0.246
    },
    {
     "key": "stoic",
@@ -261,8 +266,8 @@
    },
    {
     "key": "stoicism marcus aurelius",
-    "views": 17,
-    "share": 0.07
+    "views": 18,
+    "share": 0.074
    },
    {
     "key": "stoicism motivation",
@@ -317,17 +322,17 @@
    {
     "key": "blue lotus",
     "views": 5,
-    "share": 0.021
+    "share": 0.02
    },
    {
     "key": "marcus aurelius quotes",
     "views": 5,
-    "share": 0.021
+    "share": 0.02
    },
    {
     "key": "stoic man",
     "views": 5,
-    "share": 0.021
+    "share": 0.02
    },
    {
     "key": "carl jung shadow",
@@ -376,23 +381,23 @@
    }
   ]
  },
- "updated": "2026-11-12",
+ "updated": "2026-11-13",
  "source": "scripts/marketer.py (Cicero, free)",
  "funnel": {
-  "asOf": "2026-11-12",
-  "subscribers": 276,
-  "viewsPerDay": 1209,
-  "viewsPerDayBefore": 485,
+  "asOf": "2026-11-13",
+  "subscribers": 277,
+  "viewsPerDay": 1210,
+  "viewsPerDayBefore": 492,
   "subsPerDay": 2.9,
   "subsPerDayBefore": 1.6,
   "subsPer1kViews": 2.4,
-  "likesPer100Views": 3.1,
-  "viewsChange": 1.49
+  "likesPer100Views": 3.0,
+  "viewsChange": 1.46
  },
  "hours": [
   {
    "band": "00-03",
-   "posts": 88,
+   "posts": 89,
    "lift": 1.23,
    "stalled": 13
   },
@@ -404,15 +409,15 @@
   },
   {
    "band": "08-11",
-   "posts": 71,
-   "lift": 1.14,
-   "stalled": 12
+   "posts": 72,
+   "lift": 1.07,
+   "stalled": 11
   },
   {
    "band": "12-15",
    "posts": 31,
    "lift": 0.69,
-   "stalled": 6
+   "stalled": 7
   },
   {
    "band": "16-19",
@@ -432,7 +437,7 @@
    "id": "second-post-morning",
    "kind": "second_vs_first",
    "question": "Does the second Short reach more people in the morning than in the afternoon?",
-   "change": "The second Short goes out from 07:00 UTC (about 3-5 AM Toronto) instead of 15:00 UTC (about 11 AM-1 PM Toronto). Still 2 a day; the evening Short stays put.",
+   "change": 1.36,
    "why": "Across 294 Shorts, each against its own week: 00-03 UTC 1.15x, 04-11 UTC 1.0x, 12-19 UTC 0.75x. Since October 19 the afternoon Short got a median 0.63x of the same day's evening Short, and six of them stalled under 90 views.",
    "measure": "The second Short's day-1 views divided by the same day's first Short's, for 14 days, against the median before.",
    "baselineSince": "2026-10-19",
@@ -446,8 +451,8 @@
     "median": 0.61
    },
    "during": {
-    "days": 6,
-    "median": 0.81,
+    "days": 7,
+    "median": 0.83,
     "ends": "2026-11-20"
    }
   },
@@ -466,9 +471,9 @@
    "before": {
     "shorts": 28,
     "views": 6494,
-    "comments": 5,
+    "comments": 8,
     "likes": 288,
-    "per1k": 0.77,
+    "per1k": 1.23,
     "likesPer100": 4.4
    },
    "during": {
@@ -476,17 +481,17 @@
      "old style": {
       "shorts": 28,
       "views": 6494,
-      "comments": 5,
+      "comments": 8,
       "likes": 288,
-      "per1k": 0.77,
+      "per1k": 1.23,
       "likesPer100": 4.4
      },
      "new style": {
-      "shorts": 12,
-      "views": 7582,
+      "shorts": 14,
+      "views": 8202,
       "comments": 1,
-      "likes": 174,
-      "per1k": 0.13,
+      "likes": 191,
+      "per1k": 0.12,
       "likesPer100": 2.3
      }
     },
@@ -508,12 +513,12 @@
    "approved": "2026-11-06: owner, in the HQ: \"Yes, make the playlists\"",
    "before": {
     "views": 1,
-    "of": 6369,
+    "of": 6358,
     "share": 0.0002
    },
    "during": {
     "views": 0,
-    "of": 5712,
+    "of": 7492,
     "share": 0.0,
     "ends": "2026-11-20"
    }
@@ -533,14 +538,14 @@
    "use": "descriptions",
    "approved": "2026-11-07: owner, in the HQ: \"Yes: descriptions, hashtags and tags\" (titles stay as they are)",
    "before": {
-    "views": 362,
-    "of": 8082,
-    "share": 0.0448
+    "views": 361,
+    "of": 8071,
+    "share": 0.0447
    },
    "during": {
-    "views": 62,
-    "of": 3299,
-    "share": 0.0188,
+    "views": 86,
+    "of": 5079,
+    "share": 0.0169,
     "ends": "2026-11-22"
    }
   },
@@ -558,26 +563,59 @@
    "started": "2026-11-12",
    "approved": "2026-11-11: owner, in the HQ: \"Switch to the new look\"",
    "before": {
-    "shorts": 24,
-    "median": 260
+    "shorts": 26,
+    "median": 284
    },
    "during": {
     "shorts": 0,
     "median": null,
     "ends": "2026-11-26"
    }
-  }
- ],
- "next": [
+  },
   {
    "id": "follow-line",
-   "idea": "Subscribers: 98% of views come from people who don't follow the channel (Glaux, 28 days to 11-06), and it gains about 1.5 subscribers a day toward the 500 it needs. Test a short, calm follow line at the end of each Short (\"One Stoic line a day. Follow for tomorrow's.\"), judged by subscribers per 1,000 views."
+   "kind": "subs_per_1k",
+   "question": "Does a follow line at the end of every description turn more viewers into subscribers?",
+   "change": "The last line of every edit's description, before the hashtags: \"One Stoic line a day. Follow for tomorrow's.\"",
+   "why": "98% of views come from people who don't follow the channel (Glaux, 28 days to 11-06); it gains about 1.5 subscribers a day and 1,000 by the end of 2027 needs 1.8. The cheapest ask there is.",
+   "measure": "New subscribers per 1,000 views, the 14 days after against the 14 before (channel_stats.csv).",
+   "ask": "idea-follow-line",
+   "status": "queued",
+   "proposed": "2026-11-12",
+   "start": "2026-11-21",
+   "approved": "2026-11-12: within the autonomy rule (words only, reversible); on the owner's Ideas board as idea-follow-line",
+   "before": {
+    "days": 14,
+    "subs": 30,
+    "views": 11586,
+    "per1k": 2.59
+   }
   },
   {
    "id": "third-short",
-   "idea": "If the morning slot works, test a third Short a day in the evening window (your call: you chose 2 a day over 3 on Oct 18)."
+   "kind": "views_before_after",
+   "age": 3,
+   "question": "Does a third Short a day, in the evening window, add views a day without starving each Short?",
+   "change": "From 2026-11-13: three posts a day (MAX_POSTS_PER_DAY 3); the third waits for 19:00 UTC (POST_SLOT_HOURS 0,7,19; the 19:00 and 23:00 crons post it), at least 5 hours apart.",
+   "why": "The 2027 goal needs about 2,740 views a day; two Shorts make about 1,200. Each Short reaches 600 to 950 people in its first days whatever the slot, and the evening slot got 1.15x the reach of its week, so a third post should add roughly 40%.",
+   "measure": "Views a day (Cicero's funnel, the 14 days after against the 14 before) and the median Short's views at 3 days old, so a third post that only splits the same views shows up.",
+   "ask": "idea-third-short",
+   "status": "running",
+   "proposed": "2026-11-12",
+   "started": "2026-11-13",
+   "approved": "2026-11-13: owner, in the HQ: \"A third Short a day, in the evening: Go\"",
+   "before": {
+    "shorts": 24,
+    "median": 319
+   },
+   "during": {
+    "shorts": 0,
+    "median": null,
+    "ends": "2026-11-27"
+   }
   }
  ],
+ "next": [],
  "goal": {
   "chosen": "million",
   "ask": "goal-2027",
@@ -587,14 +625,14 @@
    "start": "2027-01-01",
    "deadline": "2027-12-31",
    "started": false,
-   "daysLeft": 414,
+   "daysLeft": 413,
    "targets": [
     {
      "metric": "views",
      "target": 1000000,
      "have": 0,
      "pct": 0.0,
-     "pace": 653.1,
+     "pace": 674.0,
      "needed": 2739.7,
      "status": "starts",
      "onPace": false,
@@ -603,10 +641,10 @@
     {
      "metric": "subscribers",
      "target": 1000,
-     "have": 276,
-     "pct": 27.6,
-     "pace": 1.6,
-     "needed": 1.7,
+     "have": 277,
+     "pct": 27.7,
+     "pace": 1.7,
+     "needed": 1.8,
      "status": "behind",
      "label": "Subscribers"
     }
@@ -620,7 +658,7 @@
        "target": 100000,
        "have": 0,
        "pct": 0.0,
-       "pace": 653.1,
+       "pace": 674.0,
        "needed": 1111.1,
        "status": "starts",
        "onPace": false,
@@ -629,9 +667,9 @@
       {
        "metric": "subscribers",
        "target": 450,
-       "have": 276,
-       "pct": 61.33,
-       "pace": 1.6,
+       "have": 277,
+       "pct": 61.56,
+       "pace": 1.7,
        "needed": 1.3,
        "status": "on track",
        "label": "Subscribers"
@@ -648,7 +686,7 @@
        "target": 300000,
        "have": 0,
        "pct": 0.0,
-       "pace": 653.1,
+       "pace": 674.0,
        "needed": 1657.5,
        "status": "starts",
        "onPace": false,
@@ -657,9 +695,9 @@
       {
        "metric": "subscribers",
        "target": 600,
-       "have": 276,
-       "pct": 46.0,
-       "pace": 1.6,
+       "have": 277,
+       "pct": 46.17,
+       "pace": 1.7,
        "needed": 1.4,
        "status": "on track",
        "label": "Subscribers"
@@ -676,7 +714,7 @@
        "target": 600000,
        "have": 0,
        "pct": 0.0,
-       "pace": 653.1,
+       "pace": 674.0,
        "needed": 2197.8,
        "status": "starts",
        "onPace": false,
@@ -685,9 +723,9 @@
       {
        "metric": "subscribers",
        "target": 800,
-       "have": 276,
-       "pct": 34.5,
-       "pace": 1.6,
+       "have": 277,
+       "pct": 34.62,
+       "pace": 1.7,
        "needed": 1.6,
        "status": "on track",
        "label": "Subscribers"
@@ -704,7 +742,7 @@
        "target": 1000000,
        "have": 0,
        "pct": 0.0,
-       "pace": 653.1,
+       "pace": 674.0,
        "needed": 2739.7,
        "status": "starts",
        "onPace": false,
@@ -713,10 +751,10 @@
       {
        "metric": "subscribers",
        "target": 1000,
-       "have": 276,
-       "pct": 27.6,
-       "pace": 1.6,
-       "needed": 1.7,
+       "have": 277,
+       "pct": 27.7,
+       "pace": 1.7,
+       "needed": 1.8,
        "status": "behind",
        "label": "Subscribers"
       }
@@ -733,7 +771,7 @@
       "target": 100000,
       "have": 0,
       "pct": 0.0,
-      "pace": 653.1,
+      "pace": 674.0,
       "needed": 1111.1,
       "status": "starts",
       "onPace": false,
@@ -742,9 +780,9 @@
      {
       "metric": "subscribers",
       "target": 450,
-      "have": 276,
-      "pct": 61.33,
-      "pace": 1.6,
+      "have": 277,
+      "pct": 61.56,
+      "pace": 1.7,
       "needed": 1.3,
       "status": "on track",
       "label": "Subscribers"
@@ -756,5 +794,5 @@
    "onTrack": false
   }
  },
- "note": "1,209 views a day (+149% on last week) · 2.9 new subscribers a day · goal: behind · testing: Does the second Short reach more people in the morning than in the afternoon? (+4 more)"
+ "note": "1,210 views a day (+146% on last week) · 2.9 new subscribers a day · goal: behind · testing: Does the second Short reach more people in the morning than in the afternoon? (+5 more)"
 }
