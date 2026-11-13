@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-13T03:20:17Z",
+ "checked": "2026-11-13T10:26:59Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-13T03:20:17Z",
-  "youtube": "9fgQziG22q0",
-  "title": "\"Poor and full, or rich and starving\" — Seneca | Stoicism",
-  "status": "queued",
-  "permalink": null,
+  "at": "2026-11-13T10:26:59Z",
+  "youtube": "Y0k8OCq2z4A",
+  "title": "\"Anxious? Ask yourself this one question\" — Epictetus | Stoicism",
+  "status": "published",
+  "permalink": "https://www.instagram.com/reel/DfrairwEzQj/",
   "reason": null
  }
 }
