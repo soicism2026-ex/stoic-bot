@@ -391,6 +391,10 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
         <h2 class="eyebrow" id="h-ig">Instagram</h2>
         <div id="ig"><p class="empty">Echo reports here once Instagram is connected.</p></div>
       </section>
+      <section class="block" aria-labelledby="h-wall">
+        <h2 class="eyebrow" id="h-wall">Wallpaper packs</h2>
+        <div id="wallpapers"><p class="empty">The first pack paints after 20:00 UTC and shows here.</p></div>
+      </section>
       <section class="block" aria-labelledby="h-posts">
         <h2 class="eyebrow" id="h-posts">Latest Shorts</h2>
         <div id="posts"><p class="empty">No posts yet.</p></div>
@@ -1078,6 +1082,21 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
 
   // Echo's numbers (scripts/hq_snapshot.py instagram()): followers, Reels and
   // their views, or what blocks him, in the owner's words.
+  // The wallpaper packs for Gumroad (scripts/hq_snapshot.py wallpapers()): each
+  // finished pack's cover; the zip is private, behind the run link (GitHub, signed in).
+  function drawWallpapers() {
+    const el = $("#wallpapers"), packs = (S.studio && S.studio.wallpapers) || [];
+    if (!el) return;
+    if (!packs.length) { el.innerHTML = `<p class="empty">The first pack paints after 20:00 UTC and shows here. Nothing goes on Gumroad until you say Go.</p>`; return; }
+    const name = p => ({ marcus: "Marcus Aurelius", seneca: "Seneca", epictetus: "Epictetus" })[p] || p;
+    el.innerHTML = `<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px">` + packs.map(p => {
+      const c = safeUrl(p.cover), r = safeUrl(p.run);
+      return `<figure style="margin:0">${c ? `<a href="${esc(c)}" target="_blank" rel="noopener"><img src="${esc(c)}" alt="${esc(name(p.pack))} ${esc(p.size)} pack cover" loading="lazy" style="width:100%;border-radius:8px;display:block;aspect-ratio:4/5;object-fit:cover"></a>` : ""}` +
+        `<figcaption class="sub" style="margin-top:6px"><b>${esc(name(p.pack))}</b> · ${esc(p.size)}${p.count ? " · " + p.count + " wallpapers" : ""}` +
+        `${r ? ` · <a href="${esc(r)}" target="_blank" rel="noopener">download the pack</a>` : ""}</figcaption></figure>`;
+    }).join("") + `</div><p class="sub">Covers are public; the zips are private to you (GitHub, signed in). Listing copy and prices: docs/wallpapers.md.</p>`;
+  }
+
   function drawInstagram() {
     const g = S.studio && S.studio.instagram, el = $("#ig");
     if (!el) return;
@@ -1155,6 +1174,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
 
   function drawChannel() {
     drawInstagram();
+    drawWallpapers();
     const c = S.studio && S.studio.channel;
     if (!c || !c.subs) return;
     const dSubs = c.subsWeekAgo != null ? c.subs - c.subsWeekAgo : null;
