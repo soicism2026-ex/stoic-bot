@@ -1825,3 +1825,15 @@ that story must always be captioned "recorded in the Historia Augusta", never
   format and the voice don't vary (they are the owner's standing choices, now
   exempt).
 
+## 2026-11-13: Token diet (owner, chat: "We keep reaching the limit too quickly please create skills or find ways to reduce token usage")
+
+The limit is the Claude plan's usage window, spent by context size times turns. In force from today:
+- CLAUDE.md is short (8 KB, was 53 KB). The reference moved to docs/reference.md; every session reads one section at a time, never a whole file.
+- The crew's shifts are skills (.claude/skills: longinus-review, crew-review, cicero-shift, varro-restock, hq-inbox, hq-protocol), each run by its scheduled task in a SMALL standing session on Sonnet (one per crew member, ids in the HQ's hq/config), never in the chief chat. The old tasks that fired into the chief chat are disabled, never deleted (deleting a task deletes the sessions it started). The HQ sync runs on Sonnet too.
+- An owner message in the HQ fires the HQ inbox task (the small inbox session) instead of waking the chief chat; the chief chat no longer watches the HQ. A request that needs hours of building becomes an idea card marked "queued for the chief session".
+- Every session works small: batched shell work, one small frame sheet at most and only when something is flagged, one helper agent at a time on Sonnet, no design-lab runs or re-rehearsals unless needed, one short report.
+- Owner's call, still open: disconnect the connectors this project never uses (ElevenLabs, Figma, Higgsfield, Era Context, Canva, Picsart, Shopify, Jotform, LlamaParse, Gmail, Calendar, Drive, Sheets, Spotify, Microsoft Learn, the Economic Index): their ~900 tool names ride along in every turn of the chief chat. The Monday "Stoic Bots weekly episode" task (six agents a week) is the account's other big draw.
+
+## 2026-11-13: Wallpaper packs (owner 2026-11-12, chat: "create some Desktop & Mobile Wallpaper Packs I can sell on gumbee aswell for the channel")
+
+Built as scripts/wallpapers.py + wallpapers.yml (dispatch only): one pack (an author) in one size (phone 1170x2532 or desktop 3840x2160) per run, painted by the channel's painter from the quotes' scenes with the v2 type over a soft band, zipped with a cover and README into the `wallpapers` release. Painting shares Cloudflare's free allowance with the posts, so a pack paints only after 20:00 UTC (about 2,100 neurons a phone pack, 3,100 desktop). Listing copy and prices (C$4.99 a pack, C$9.99 the bundle of three) in docs/wallpapers.md. A product and its price wait for the owner's Go (autonomy rule): nothing is listed on Gumroad until he says so.
