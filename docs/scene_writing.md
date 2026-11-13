@@ -100,6 +100,10 @@ effort ends up.
    the quote or hook.
 5. Lamps: write "oil lamp"; the painter turns it into a small terracotta Roman lamp
    with an open flame (a bare "oil lamp" painted as a glass hurricane lantern).
+7. Materials, every time (the first live week, 2026-11-12: a glass cup, glass
+   lanterns three times, a cardigan): write "clay cup", "bronze jug", "torch in an
+   iron bracket", never a bare "cup" or "lantern". The painter rewrites bare words
+   (painter.PERIOD_WORDS), but a named material in the scene paints better.
 6. Words the model takes literally (first real renders, 2026-11-11): "the face of a
    boulder" painted a giant stone head, so describe an object by its shape and
    surface ("a jagged, moss-flecked grey boulder"). A light named next to a held

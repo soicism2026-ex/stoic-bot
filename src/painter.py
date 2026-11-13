@@ -183,7 +183,8 @@ LIGHT_WORDS = re.compile(
     r"dusk|moon|moonlight|glow|glowing|embers|hearth|brazier|lantern)\b", re.I)
 # Period, stated as physical things (prompt_lint's lesson: name what IS there).
 ERA = ("period-accurate antiquity: stone, marble, plaster, terracotta and "
-       "timber, wool and linen clothing, clay and bronze oil lamps")
+       "timber, wool and linen clothing, every cup, jug and bowl of fired clay "
+       "or bronze, every light an open flame in a clay oil lamp or a torch")
 # The same period for a shot with nobody in it: things, not clothing or hands.
 ERA_EMPTY = ("period-accurate antiquity: stone, marble, plaster, terracotta, "
              "timber and bronze")
@@ -408,6 +409,18 @@ def refused(scene: str) -> str:
 # the scene itself names the Roman object. "lamplight"/"lamplit" are left alone.
 LAMP = re.compile(r"\b(?:(?:small|clay|bronze|terracotta) )*(?:oil[- ])?lamp(s)?\b"
                   r"(?:\s+(glow|light|glowing)\b)?", re.I)
+# The week's defect class (data/inspector.csv, 11-12: a glass cup, glass
+# lanterns three times, a cardigan): the model fills a Roman room with the
+# objects it knows. Name the material and the model paints the period.
+PERIOD_WORDS = [
+    (re.compile(r"\bglass\b", re.I), "clay"),                                   # a glass cup -> a clay cup
+    (re.compile(r"(?<!clay )(?<!bronze )(?<!wooden )(?<!silver )(?<!terracotta )"
+                r"\b((?:wine |water |drinking )?(?:cups?|goblets?|jugs?|pitchers?|bowls?|plates?))\b", re.I),
+     r"clay \1"),
+    (re.compile(r"\blanterns\b", re.I), "torches in iron brackets"),
+    (re.compile(r"\blantern\b", re.I), "torch in an iron bracket"),
+    (re.compile(r"\b(?:cardigan|sweater|jacket|coat|shirt|trousers|pants|jeans)s?\b", re.I), "wool tunic"),
+]
 
 
 def _roman_lamp(m: re.Match) -> str:
@@ -420,11 +433,15 @@ def _roman_lamp(m: re.Match) -> str:
 
 
 def period_objects(text: str) -> str:
-    """The scene with its lamps written as the Roman objects they are. One
-    pass; a scene that already names a Roman oil lamp is left as written."""
-    if "roman oil lamp" in (text or "").lower():
-        return text or ""
-    return LAMP.sub(_roman_lamp, text or "")
+    """The scene with its lamps, vessels, lights and clothes written as the
+    Roman objects they are. One pass each; a scene that already names a Roman
+    oil lamp keeps its lamps as written."""
+    text = text or ""
+    if "roman oil lamp" not in text.lower():
+        text = LAMP.sub(_roman_lamp, text)
+    for pattern, roman in PERIOD_WORDS:
+        text = pattern.sub(roman, text)
+    return text
 
 
 def build_prompt(scene: str) -> str:

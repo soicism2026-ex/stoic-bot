@@ -380,7 +380,7 @@ def test_lamps_are_painted_as_roman_lamps():
     import painter
     p = painter.period_objects
     assert p("warm oil lamp glow") == "warm warm lamplight"                          # light, not a lamp object
-    assert p("a wine cup, oil lamp glow") == "a wine cup, warm lamplight"
+    assert p("a wine cup, oil lamp glow") == "a clay wine cup, warm lamplight"
     assert p("lit by a single clay oil lamp") == "lit by a single small terracotta Roman oil lamp with an open flame"
     assert p("lamps along the walls") == "small terracotta Roman oil lamps with open flames along the walls"
     assert p("soft lamplight, a lamplit room") == "soft lamplight, a lamplit room"     # left alone
@@ -424,3 +424,18 @@ def test_frame_fill_only_fails_a_render_it_can_fix(monkeypatch):
     monkeypatch.setattr(painter, "SLOTS", {})                                         # no painting at all
     monkeypatch.setattr(painter, "BANNED_SLOTS", set())
     assert painter.frame_fill_failures(painter.Path("x.mp4"), None) == []
+
+
+def test_bare_objects_get_their_roman_material():
+    """The first live week's defect class (data/inspector.csv, 2026-11-12): a
+    glass cup, glass lanterns three times, a cardigan. Bare words paint the
+    objects the model knows; a named material paints the period."""
+    import painter
+    p = painter.period_objects
+    assert p("a cup of wine on the table") == "a clay cup of wine on the table"
+    assert p("a glass cup beside two lanterns") == "a clay cup beside two torches in iron brackets"
+    assert p("a clay cup of wine") == "a clay cup of wine" and p("a bronze cup") == "a bronze cup"
+    assert p("under hanging lanterns") == "under hanging torches in iron brackets"
+    assert p("a glass goblet") == "a clay goblet"
+    assert p("{man} in a cardigan by the hearth") == "{man} in a wool tunic by the hearth"
+    assert "fired clay" in painter.build_prompt("{man} at a table at dawn")
