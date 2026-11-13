@@ -20,3 +20,11 @@ date,edit,video_id,slot,tries,verdict,problems,seed,scene
 2026-11-13,poor_and_sated,9fgQziG22q0,4,2,pass,,418089,"{man} sharing bread with the old fisherman by the fire, both laughing, firelight on their faces"
 2026-11-13,poor_and_sated,9fgQziG22q0,5,1,pass,,1606435045,"Wide shot of a small stone hut by the sea at sunset, smoke curling up, nets drying, orange sun"
 2026-11-13,poor_and_sated,9fgQziG22q0,6,1,pass,,410170,"{man} lying back on warm sand with hands behind his head, content smile, sunset sky"
+2026-11-13,what_does_he_want,Y0k8OCq2z4A,0,1,pass,,330258383,"empty stage, in the ancient Greco-Roman world"
+2026-11-13,what_does_he_want,Y0k8OCq2z4A,1,1,pass,,780546476,"{man} pacing, in ancient Rome"
+2026-11-13,what_does_he_want,Y0k8OCq2z4A,2,1,pass,,1032482208,"ancient greek lyre player sitting alone on an empty stone stage, soft evening light"
+2026-11-13,what_does_he_want,Y0k8OCq2z4A,3,1,flagged,"The man is holding an ink lamp in his left hand, but the stylus is not beside the blank wax tablet as described, it is being used to write. The wax tablet also appears to be made of a smooth white material, not wax, and there is no bronze stylus beside it.",1879168765,"{man} beside a blank wax tablet and a bronze stylus on a wooden table, in ancient Rome"
+2026-11-13,what_does_he_want,Y0k8OCq2z4A,4,1,pass,,1835156502,a bronze sundial casting a long shadow across stone
+2026-11-13,what_does_he_want,Y0k8OCq2z4A,5,1,pass,,211804643,"storm clouds, in the ancient Greco-Roman world"
+2026-11-13,what_does_he_want,Y0k8OCq2z4A,6,1,pass,,513930139,"calm lake, in the ancient Greco-Roman world"
+2026-11-13,what_does_he_want,Y0k8OCq2z4A,7,1,pass,,888960863,"sunrise, in the ancient Greco-Roman world"
