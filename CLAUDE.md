@@ -24,7 +24,7 @@ Every turn re-reads the whole context, so the cost of a session is its context s
 - Batch shell work into one Bash call; never cat a file you can grep; never re-read a file you just edited.
 - Images cost the most: at most ONE small frame sheet (≤ 1,100 px wide) per job, and only when the inspector flagged a shot or a number looks wrong.
 - One helper agent at a time, on Sonnet, with a brief that names the files and the tests; never an agent to check an agent.
-- Recurring crew work runs in FRESH sessions from the skills below (scheduled tasks with `create_new_session_on_fire`, on Sonnet, no connectors); nothing is fired into a long chat. The owner's HQ messages wake a fresh `hq-inbox` session. The chief chat is for the owner's own requests.
+- Recurring crew work runs in SMALL standing sessions on Sonnet (one per crew member, created by the chief with the repo and push access; their scheduled tasks fire into them; ids in the HQ's `hq/config`), never in a long chat. The owner's HQ messages wake the small inbox session. The chief chat is for the owner's own requests.
 - No design-lab runs, re-rehearsals, WebSearch or new scheduled tasks unless the task needs them. Finish with one short report; no narration between steps.
 
 ## Skills (`.claude/skills/`)
@@ -42,7 +42,7 @@ Every turn re-reads the whole context, so the cost of a session is its context s
 | `remember` | The owner states a decision, veto or preference: `data/decisions.md` (operational) or `data/doctrine.md` (creative), same turn |
 | `preview-short` | Any visual/audio change: render a test Short locally and show frames through the iPhone crop before anything publishes |
 
-Scheduled tasks (ids in the HQ's `hq/config`: `syncTrigger` = the HQ sync, `librarian`, `inboxTrigger`, `crewTriggers` {id: inspector | review | marketer}) are the crew's shifts above plus the **HQ sync** (6×/day at :47, `scripts/hq_snapshot.py` → `hq/studio`, the rehearsal → `hq/upnext`); all fresh sessions on Sonnet.
+Scheduled tasks (ids in the HQ's `hq/config`: `syncTrigger` = the HQ sync, `librarian`, `inboxTrigger`, `crewTriggers` {id: inspector | review | marketer}) are the crew's shifts above plus the **HQ sync** (6×/day at :47, a fresh session: `scripts/hq_snapshot.py` → `hq/studio`, the rehearsal → `hq/upnext`); all on Sonnet. A pushed scene change re-rehearses by itself (`edit-preview.yml` runs on pushes to `data/edit_quotes.json`; `up_next.py need` compares the scenes).
 
 ## HQ app (https://claude.ai/artifact/8MtajequXptMk8RUQnSsmx): the owner's live view
 

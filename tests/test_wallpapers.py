@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 sys.path.insert(0, str(ROOT / "src"))
 import wallpapers as w  # noqa: E402
+import wallpapers as wp  # noqa: E402
 
 WF = ROOT / ".github" / "workflows" / "wallpapers.yml"
 QUOTES = [
@@ -199,36 +200,46 @@ def test_desktop_accepts_portrait_painting_with_blurred_sides(tmp_path):
     assert im.getpixel((10, 1000)) != im.getpixel((1920, 1000))
 
 
-def test_publish_replaces_assets_in_the_wallpapers_release(monkeypatch, tmp_path):
-    for n in ("a-phone.zip", "a-phone-cover.jpg", "a-phone-manifest.json"):
-        (tmp_path / n).write_bytes(b"x")
-    calls = []
-
-    class R:
-        def __init__(self, rc):
-            self.returncode = rc
-
-    def gh(*args, check=True):
-        calls.append(args)
-        return R(1 if args[:2] == ("release", "view") else 0)
-    monkeypatch.setattr(w, "_gh", gh)
-    names = w.publish("a", "phone", tmp_path)
-    assert names[0] == "a-phone.zip"
-    assert any(c[:3] == ("release", "create", "wallpapers") for c in calls)
-    up = [c for c in calls if c[:2] == ("release", "upload")][0]
-    assert "--clobber" in up and any(str(tmp_path / "a-phone.zip") == x for x in up)
-
-
-def test_workflow_is_dispatch_only_with_the_secrets_and_inputs():
-    wf = yaml.safe_load(WF.read_text())
-    on = wf.get(True) or wf.get("on")
-    assert list(on) == ["workflow_dispatch"]
+def test_workflow_paints_one_queued_pack_a_night_and_keeps_the_zip_private():
+    """The queue (data/wallpapers_queue.json) paints one pack a night after the
+    posts (20:33 UTC); a dispatch can name a pack. The zip is a private workflow
+    artifact; only the cover and manifest go to the public release."""
+    import yaml
+    text = (ROOT / ".github" / "workflows" / "wallpapers.yml").read_text(encoding="utf-8")
+    wf = yaml.safe_load(text)
+    on = wf.get("on") or wf.get(True)
+    assert set(on) == {"schedule", "workflow_dispatch"}
+    assert on["schedule"] == [{"cron": "33 20 * * *"}]                  # after the day's posts have painted
     ins = on["workflow_dispatch"]["inputs"]
-    assert ins["pack"]["options"] == ["marcus", "seneca", "epictetus"]
-    assert ins["size"]["options"] == ["phone", "desktop"]
-    assert ins["limit"]["default"] == "10" and ins["force"]["default"] is False
-    text = WF.read_text()
+    assert ins["pack"]["options"] == ["next", "marcus", "seneca", "epictetus"] and ins["pack"]["default"] == "next"
+    assert ins["size"]["options"] == ["phone", "desktop"] and ins["force"]["default"] is False
     assert "secrets.CLOUDFLARE_ACCOUNT_ID" in text and "secrets.CLOUDFLARE_API_TOKEN" in text
-    assert "schedule" not in on and "still_cache" in text and "stills-" in text
-    assert "wallpapers.py render" in text and "wallpapers.py package" in text and "wallpapers.py publish" in text
-    assert "upload-artifact" in text
+    assert "still_cache" in text and "stills-" in text
+    steps = wf["jobs"][next(iter(wf["jobs"]))]["steps"]
+    art = next(s for s in steps if "upload-artifact" in s.get("uses", ""))
+    assert art["with"]["path"].endswith(".zip") and art["with"]["retention-days"] == 90
+    pop = next(s for s in steps if "queue --pop" in s.get("run", ""))
+    assert "steps.paint.outputs.complete == '1'" in pop["if"]
+    queue = json.loads((ROOT / "data" / "wallpapers_queue.json").read_text(encoding="utf-8"))
+    assert [(q["pack"], q["size"]) for q in queue][:3] == [("marcus", "phone"), ("seneca", "phone"), ("epictetus", "phone")]
+
+
+def test_the_queue_hands_out_the_next_pack_and_drops_a_finished_one(tmp_path):
+    q = tmp_path / "queue.json"
+    q.write_text(json.dumps([{"pack": "marcus", "size": "phone"}, {"pack": "seneca", "size": "desktop", "limit": 6}]))
+    assert wp.queue_head(q) == {"pack": "marcus", "size": "phone", "limit": 10}
+    assert wp.queue_pop("marcus", "phone", q) == 1
+    assert wp.queue_head(q) == {"pack": "seneca", "size": "desktop", "limit": 6}
+    assert wp.queue_pop("seneca", "desktop", q) == 0 and wp.queue_head(q) is None
+    assert wp.queue_head(tmp_path / "missing.json") is None
+
+
+def test_the_release_carries_only_the_cover_and_the_manifest(tmp_path, monkeypatch):
+    calls = []
+    monkeypatch.setattr(wp, "_gh", lambda *a, **k: (calls.append(a), type("R", (), {"returncode": 0})())[1])
+    for n in ("marcus-phone-cover.jpg", "marcus-phone-manifest.json", "marcus-phone.zip"):
+        (tmp_path / n).write_bytes(b"x")
+    names = wp.publish("marcus", "phone", tmp_path)
+    assert names == ["marcus-phone-cover.jpg", "marcus-phone-manifest.json"]
+    uploaded = next(a for a in calls if a[:2] == ("release", "upload"))
+    assert not any(x.endswith(".zip") for x in uploaded)

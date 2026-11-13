@@ -1,0 +1,26 @@
+[
+ {
+  "pack": "marcus",
+  "size": "phone"
+ },
+ {
+  "pack": "seneca",
+  "size": "phone"
+ },
+ {
+  "pack": "epictetus",
+  "size": "phone"
+ },
+ {
+  "pack": "marcus",
+  "size": "desktop"
+ },
+ {
+  "pack": "seneca",
+  "size": "desktop"
+ },
+ {
+  "pack": "epictetus",
+  "size": "desktop"
+ }
+]

@@ -19,7 +19,8 @@ posts; the Thursday run is after the day's posts, but the evidence below is enou
    of shot instead (the inspector's "least broken" airs, `tries` 3).
 4. Plutarch (the scenes): rewrite the upcoming scenes (next 14 days in air order: simulate `edits.pick` over
    `data/posts.csv`) that share that failure pattern, following `docs/scene_writing.md`; add the lesson as a line of
-   rule 6 or 7. Never touch a quote already rehearsed for tomorrow (its paintings are cached). Validate with
+   rule 6 or 7. A pushed change to the next Short's scenes re-rehearses it by itself (edit-preview runs on pushes to
+   data/edit_quotes.json), at the cost of one narration; prefer the quotes after it. Validate with
    `shelf.scene_problems`.
 5. Callimachus (the type, `src/edit_type.py`, `data/edit_type.json`): from the rehearsal (`python3 scripts/up_next.py
    fetch /tmp/upnext`, one sheet read) look for a hook with one lonely word on a line, text over a busy patch, or gold

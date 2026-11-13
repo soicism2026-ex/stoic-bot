@@ -19,6 +19,9 @@ on:
   workflow_run:
     workflows: [daily-short]
     types: [completed]
+  push:                      # a rewritten scene (Longinus, the crew, Varro) re-rehearses by itself:
+    branches: [main]         # the check job compares the next Short's scenes with the rehearsal's
+    paths: [data/edit_quotes.json]
   schedule:
     - cron: "40 4 * * *"
     - cron: "40 19 * * *"

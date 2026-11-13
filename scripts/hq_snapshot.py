@@ -342,6 +342,25 @@ def instagram(now: dt.datetime) -> dict | None:
 # Channel
 # ---------------------------------------------------------------------------
 
+def wallpapers() -> list[dict]:
+    """The finished wallpaper packs (owner 2026-11-12: packs to sell on Gumroad):
+    each cover and manifest in the public `wallpapers` release; the zip itself
+    is a private workflow artifact, linked through the manifest's run URL."""
+    rel = _get_json(f"https://api.github.com/repos/{REPO}/releases/tags/wallpapers") or {}
+    assets = {a.get("name", ""): a for a in rel.get("assets") or []}
+    out = []
+    for name, a in sorted(assets.items()):
+        if not name.endswith("-cover.jpg"):
+            continue
+        key = name[:-len("-cover.jpg")]
+        pack, _, size = key.rpartition("-")
+        man = _get_json((assets.get(f"{key}-manifest.json") or {}).get("browser_download_url", "")) or {}
+        out.append({"pack": pack, "size": size, "cover": a.get("browser_download_url", ""),
+                    "updated": a.get("updated_at", ""), "count": len(man.get("items") or man.get("files") or []),
+                    "run": man.get("run", "")})
+    return out
+
+
 def channel(now: dt.datetime) -> dict:
     stats = {}
     for r in _rows("channel_stats.csv"):
@@ -483,6 +502,7 @@ def build(now: dt.datetime | None = None, runs: list[dict] | None = None) -> dic
         "goals": goals_status(now),
         "posts": recent_posts(posts),
         "instagram": instagram(now),
+        "wallpapers": wallpapers(),
         "runsSeen": len(runs),
         "runsSource": source,
     }

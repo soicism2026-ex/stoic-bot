@@ -6,23 +6,25 @@
 # daily posts (they paint before 20:00 UTC), so run after 20:00 UTC or tick force.
 name: Wallpaper pack
 on:
+  schedule:
+    - cron: "33 20 * * *"    # one queued pack a night, after the day's posts and rehearsals have painted
   workflow_dispatch:
     inputs:
       pack:
-        description: Whose quotes
+        description: Which pack (next = the next in data/wallpapers_queue.json)
         type: choice
-        options: [marcus, seneca, epictetus]
-        default: marcus
+        options: [next, marcus, seneca, epictetus]
+        default: next
       size:
-        description: Which screen
+        description: phone (1170x2532) or desktop (3840x2160); ignored for "next"
         type: choice
         options: [phone, desktop]
         default: phone
       limit:
-        description: How many wallpapers (up to 10)
+        description: Quotes per pack
         default: '10'
       force:
-        description: Paint before 20:00 UTC (spends the daily posts' free neurons)
+        description: Paint before 20:00 UTC (eats into the posts' free painting allowance)
         type: boolean
         default: false
 permissions:
@@ -53,29 +55,60 @@ jobs:
         key: stills-${{ github.run_id }}
         restore-keys: |
           stills-
+    - name: Which pack
+      id: which
+      env:
+        PACK: ${{ inputs.pack }}
+        SIZE: ${{ inputs.size }}
+        LIMIT: ${{ inputs.limit }}
+      run: |
+        if [ -n "$PACK" ] && [ "$PACK" != "next" ]; then
+          echo "pack=$PACK" >> "$GITHUB_OUTPUT"; echo "size=$SIZE" >> "$GITHUB_OUTPUT"; echo "limit=${LIMIT:-10}" >> "$GITHUB_OUTPUT"
+        else
+          python scripts/wallpapers.py queue
+        fi
     - name: Paint the pack
+      if: steps.which.outputs.pack != ''
+      id: paint
       env:
         CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         REEL_STILL_CACHE: data/still_cache
-        PACK: ${{ inputs.pack }}
-        SIZE: ${{ inputs.size }}
-        LIMIT: ${{ inputs.limit }}
+        PACK: ${{ steps.which.outputs.pack }}
+        SIZE: ${{ steps.which.outputs.size }}
+        LIMIT: ${{ steps.which.outputs.limit }}
         FORCE: ${{ inputs.force && '--force' || '' }}
       run: python scripts/wallpapers.py render --pack "$PACK" --size "$SIZE" --limit "$LIMIT" --out wallpapers_out $FORCE
     - name: Zip it and make the cover
+      if: steps.which.outputs.pack != ''
       env:
-        PACK: ${{ inputs.pack }}
-        SIZE: ${{ inputs.size }}
+        PACK: ${{ steps.which.outputs.pack }}
+        SIZE: ${{ steps.which.outputs.size }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: python scripts/wallpapers.py package --pack "$PACK" --size "$SIZE" --out wallpapers_out
-    - name: Put it in the wallpapers release
-      env:
-        PACK: ${{ inputs.pack }}
-        SIZE: ${{ inputs.size }}
-      run: python scripts/wallpapers.py publish --pack "$PACK" --size "$SIZE" --out wallpapers_out
-    - name: Cover as an artifact
+    - name: The pack, private (a workflow artifact only the owner can download)
+      if: steps.which.outputs.pack != ''
       uses: actions/upload-artifact@v4
       with:
-        name: wallpapers-${{ inputs.pack }}-${{ inputs.size }}-cover
-        path: wallpapers_out/${{ inputs.pack }}-${{ inputs.size }}-cover.jpg
+        name: wallpapers-${{ steps.which.outputs.pack }}-${{ steps.which.outputs.size }}
+        path: wallpapers_out/${{ steps.which.outputs.pack }}-${{ steps.which.outputs.size }}.zip
         if-no-files-found: error
+        retention-days: 90
+    - name: The cover and the manifest, public (the wallpapers release, for the HQ)
+      if: steps.which.outputs.pack != ''
+      env:
+        GH_TOKEN: ${{ github.token }}
+        PACK: ${{ steps.which.outputs.pack }}
+        SIZE: ${{ steps.which.outputs.size }}
+      run: python scripts/wallpapers.py publish --pack "$PACK" --size "$SIZE" --out wallpapers_out
+    - name: A finished pack leaves the queue
+      if: steps.which.outputs.pack != '' && steps.paint.outputs.complete == '1' && (inputs.pack == '' || inputs.pack == 'next')
+      env:
+        PACK: ${{ steps.which.outputs.pack }}
+        SIZE: ${{ steps.which.outputs.size }}
+      run: |
+        python scripts/wallpapers.py queue --pop "$PACK" "$SIZE"
+        git config user.name "stoic-bot" && git config user.email "bot@users.noreply.github.com"
+        git add data/wallpapers_queue.json
+        git commit -m "wallpapers: $PACK $SIZE pack painted (queue)" || exit 0
+        for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break || sleep 5; done

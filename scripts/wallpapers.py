@@ -384,8 +384,63 @@ def cmd_render(a) -> int:
     print(f"[wallpapers] {len(quotes)} {a.size} pictures x ~{per:.0f} neurons = ~{total:.0f} neurons "
           f"(free day: 10,000; cached pictures cost 0)", flush=True)
     rows = render_pack(a.pack, a.size, Path(a.out), a.limit, quotes=quotes)
-    print(f"[wallpapers] {len(rows)}/{len(quotes)} wallpapers set in {pack_dir(Path(a.out), a.pack, a.size)}")
+    complete = len(rows) >= len(quotes)
+    print(f"[wallpapers] {len(rows)}/{len(quotes)} wallpapers set in {pack_dir(Path(a.out), a.pack, a.size)}"
+          f" (complete: {str(complete).lower()})")
+    gh_out = os.environ.get("GITHUB_OUTPUT")
+    if gh_out:
+        with open(gh_out, "a", encoding="utf-8") as f:
+            f.write(f"complete={'1' if complete else '0'}\n")
     return 0 if rows else 1
+
+
+# ----------------------------------------------------------------------------
+# the queue: one pack a night, after the day's posts have painted (wallpapers.yml)
+# ----------------------------------------------------------------------------
+QUEUE = ROOT / "data" / "wallpapers_queue.json"
+
+
+def queue_head(path: Path | None = None) -> dict | None:
+    """The next pack to paint, or None. The file is a list of {pack, size, limit?}."""
+    path = path or QUEUE
+    try:
+        items = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    for it in items:
+        if it.get("pack") in PACKS and it.get("size") in SIZES:
+            return {"pack": it["pack"], "size": it["size"], "limit": int(it.get("limit", 10))}
+    return None
+
+
+def queue_pop(pack: str, kind: str, path: Path | None = None) -> int:
+    """Remove the first {pack, size} entry; returns how many entries remain."""
+    path = path or QUEUE
+    items = json.loads(path.read_text(encoding="utf-8"))
+    for i, it in enumerate(items):
+        if it.get("pack") == pack and it.get("size") == kind:
+            del items[i]
+            break
+    path.write_text(json.dumps(items, indent=1) + "\n", encoding="utf-8")
+    return len(items)
+
+
+def cmd_queue(a) -> int:
+    head = queue_head()
+    gh_out = os.environ.get("GITHUB_OUTPUT")
+    if a.pop:
+        left = queue_pop(a.pop[0], a.pop[1])
+        print(f"[wallpapers] queue: {a.pop[0]} {a.pop[1]} done, {left} left")
+        return 0
+    if not head:
+        print("[wallpapers] queue: empty")
+        if gh_out:
+            open(gh_out, "a", encoding="utf-8").write("pack=\nsize=\nlimit=\n")
+        return 0
+    print(f"[wallpapers] queue: next is {head['pack']} {head['size']} ({head['limit']} quotes)")
+    if gh_out:
+        open(gh_out, "a", encoding="utf-8").write(f"pack={head['pack']}\nsize={head['size']}\nlimit={head['limit']}\n")
+    return 0
 
 
 # ----------------------------------------------------------------------------
@@ -482,7 +537,9 @@ def package_pack(pack: str, kind: str, out: Path) -> dict:
         for f in files:
             z.write(f, f.name)
     cpath = cover(pack, kind, files, out / f"{pack}-{kind}-cover.jpg")
-    manifest = {"title": title(pack), "pack": pack, "author": PACKS[pack], "size": kind,
+    manifest = {
+        "run": os.environ.get("RUN_URL", ""),
+        "title": title(pack), "pack": pack, "author": PACKS[pack], "size": kind,
                 "dimensions": f"{SIZES[kind]['w']}x{SIZES[kind]['h']}", "count": len(shipped),
                 "zip": zpath.name, "zipBytes": zpath.stat().st_size, "zipSha256": sha256(zpath),
                 "cover": cpath.name, "licence": "Personal use; no resale or redistribution",
@@ -509,15 +566,20 @@ def _gh(*args: str, check: bool = True) -> subprocess.CompletedProcess:
 
 
 def publish(pack: str, kind: str, out: Path) -> list[str]:
-    names = [f"{pack}-{kind}.zip", f"{pack}-{kind}-cover.jpg", f"{pack}-{kind}-manifest.json"]
+    """The cover and the manifest go to the public `wallpapers` release (the
+    HQ shows them). The zip itself is the product: it stays OFF the public
+    release and travels as a workflow artifact, which only the owner, signed
+    in to GitHub, can download (wallpapers.yml)."""
+    names = [f"{pack}-{kind}-cover.jpg", f"{pack}-{kind}-manifest.json"]
     paths = [out / n for n in names]
     missing = [str(p) for p in paths if not p.exists()]
     if missing:
         raise SystemExit(f"nothing to publish, missing {missing}: run `package` first")
     if _gh("release", "view", TAG, check=False).returncode != 0:
         _gh("release", "create", TAG, "--prerelease", "--title", "Wallpaper packs",
-            "--notes", "Finished wallpaper packs for the Gumroad listings. Each upload replaces "
-                       "the pack of the same name. Auto-managed: do not delete.")
+            "--notes", "Covers and manifests of the finished wallpaper packs, for the HQ app. "
+                       "The packs themselves are workflow artifacts of wallpapers.yml (private). "
+                       "Auto-managed: do not delete.")
     _gh("release", "upload", TAG, *[str(p) for p in paths], "--clobber")   # --clobber = replace same name
     print(f"[wallpapers] published {', '.join(names)} to release {TAG}")
     return names
@@ -531,6 +593,9 @@ def cmd_publish(a) -> int:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
+    q = sub.add_parser("queue", help="print the next pack to paint (GITHUB_OUTPUT: pack, size, limit)")
+    q.add_argument("--pop", nargs=2, metavar=("PACK", "SIZE"), help="remove a finished pack from the queue")
+    q.set_defaults(fn=cmd_queue)
     for name, fn in (("render", cmd_render), ("package", cmd_package), ("publish", cmd_publish)):
         p = sub.add_parser(name)
         p.add_argument("--pack", required=True, choices=sorted(PACKS))

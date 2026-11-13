@@ -79,12 +79,34 @@ def plan(rows: list[dict], air_day: str) -> dict:
     return out
 
 
+def scenes_hash(edit_id: str | None) -> str:
+    """A short fingerprint of the quote's `scenes` (and its stills) as shelved
+    now. Stored with each rehearsal: when Longinus or the crew rewrite a shot
+    and push, the next edit-preview run sees the change and re-rehearses
+    (only the changed shot is repainted; the rest comes from the stills cache)."""
+    if not edit_id:
+        return ""
+    import hashlib
+    p = ROOT / "data" / "edit_quotes.json"
+    try:
+        bank = json.loads(p.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return ""
+    q = next((x for x in bank if x.get("id") == edit_id), None)
+    if not q:
+        return ""
+    key = json.dumps({"scenes": q.get("scenes"), "still": q.get("still"), "visuals": q.get("visuals")},
+                     sort_keys=True, ensure_ascii=False)
+    return hashlib.sha1(key.encode("utf-8")).hexdigest()[:12]
+
+
 def describe(preview: Path, now: dt.datetime | None = None) -> dict:
     meta = json.loads((preview / "meta.json").read_text(encoding="utf-8"))
     meta["renderedAt"] = (now or dt.datetime.now(dt.timezone.utc)).strftime("%Y-%m-%dT%H:%M:%SZ")
     meta["run"] = os.environ.get("RUN_URL", "")
     if meta.get("airDay"):
         meta["plan"] = plan(_rows(), meta["airDay"])
+    meta["scenesHash"] = scenes_hash(meta.get("edit"))
     return meta
 
 
@@ -97,6 +119,8 @@ def need(next_edit: str | None, air_day: str, current: dict | None,
     same = bool(current) and current.get("edit") == next_edit and current.get("airDay") == air_day
     was = (current or {}).get("plan") or {}
     changed = [f"{k} {was.get(k)} -> {v}" for k, v in (planned or {}).items() if was.get(k) != v]
+    if same and current.get("scenesHash") and current.get("scenesHash") != scenes_hash(next_edit):
+        changed.append("scenes rewritten since the rehearsal")
     if same and not changed:
         return False, f"skip: {next_edit} for {air_day} is already rehearsed ({current.get('renderedAt')})"
     if failures_today >= 2:
