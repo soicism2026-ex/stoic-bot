@@ -7,22 +7,22 @@
  "countries": [
   {
    "key": "US",
-   "views": 7458,
-   "share": 0.676
+   "views": 7694,
+   "share": 0.677
   },
   {
    "key": "IN",
-   "views": 1415,
-   "share": 0.128
+   "views": 1487,
+   "share": 0.131
+  },
+  {
+   "key": "CA",
+   "views": 537,
+   "share": 0.047
   },
   {
    "key": "GB",
    "views": 525,
-   "share": 0.048
-  },
-  {
-   "key": "CA",
-   "views": 509,
    "share": 0.046
   },
   {
@@ -53,7 +53,7 @@
   {
    "key": "IT",
    "views": 84,
-   "share": 0.008
+   "share": 0.007
   },
   {
    "key": "PL",
@@ -69,32 +69,32 @@
  "sources": [
   {
    "key": "SHORTS",
-   "views": 16688,
-   "share": 0.928
+   "views": 17235,
+   "share": 0.927
   },
   {
    "key": "YT_SEARCH",
-   "views": 599,
-   "share": 0.033
+   "views": 636,
+   "share": 0.034
   },
   {
    "key": "YT_OTHER_PAGE",
-   "views": 394,
+   "views": 402,
    "share": 0.022
   },
   {
    "key": "YT_CHANNEL",
-   "views": 241,
-   "share": 0.013
+   "views": 257,
+   "share": 0.014
   },
   {
    "key": "EXT_URL",
-   "views": 36,
+   "views": 45,
    "share": 0.002
   },
   {
    "key": "SUBSCRIBER",
-   "views": 18,
+   "views": 19,
    "share": 0.001
   },
   {
@@ -116,30 +116,30 @@
  "subscribed": [
   {
    "key": "UNSUBSCRIBED",
-   "views": 17633,
-   "share": 0.981
+   "views": 18235,
+   "share": 0.98
   },
   {
    "key": "SUBSCRIBED",
-   "views": 349,
-   "share": 0.019
+   "views": 365,
+   "share": 0.02
   }
  ],
  "searchTerms": [
   {
    "key": "stoicism",
    "views": 27,
-   "share": 0.227
+   "share": 0.225
   },
   {
    "key": "stoicism marcus aurelius",
    "views": 9,
-   "share": 0.076
+   "share": 0.075
   },
   {
    "key": "stoicism motivation",
    "views": 9,
-   "share": 0.076
+   "share": 0.075
   },
   {
    "key": "marcus aurelius",
@@ -149,7 +149,7 @@
   {
    "key": "stoic reset",
    "views": 7,
-   "share": 0.059
+   "share": 0.058
   },
   {
    "key": "blue lotus",
@@ -169,22 +169,22 @@
   {
    "key": "marcus aurelius meditations",
    "views": 4,
-   "share": 0.034
+   "share": 0.033
   },
   {
    "key": "marcus aurelius quotes",
    "views": 4,
-   "share": 0.034
+   "share": 0.033
   },
   {
    "key": "stoic ben",
    "views": 4,
-   "share": 0.034
+   "share": 0.033
   },
   {
    "key": "stoic motivation",
    "views": 4,
-   "share": 0.034
+   "share": 0.033
   },
   {
    "key": "my word is law",
@@ -200,6 +200,11 @@
    "key": "stoicism philosophy",
    "views": 3,
    "share": 0.025
+  },
+  {
+   "key": "agnostic atheist",
+   "views": 2,
+   "share": 0.017
   },
   {
    "key": "ai terbaik",
@@ -245,11 +250,6 @@
    "key": "washing machine coin removal",
    "views": 2,
    "share": 0.017
-  },
-  {
-   "key": "500 euro",
-   "views": 1,
-   "share": 0.008
   }
  ],
  "searchTermsAllTime": [
