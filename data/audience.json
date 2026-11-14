@@ -1,34 +1,34 @@
 {
- "pulled_on": "2026-11-12",
+ "pulled_on": "2026-11-14",
  "window": [
-  "2026-10-15",
-  "2026-11-12"
+  "2026-10-17",
+  "2026-11-14"
  ],
  "countries": [
   {
    "key": "US",
-   "views": 7473,
-   "share": 0.687
+   "views": 7458,
+   "share": 0.676
   },
   {
    "key": "IN",
-   "views": 1332,
-   "share": 0.122
+   "views": 1415,
+   "share": 0.128
   },
   {
    "key": "GB",
-   "views": 482,
-   "share": 0.044
+   "views": 525,
+   "share": 0.048
   },
   {
    "key": "CA",
-   "views": 474,
-   "share": 0.044
+   "views": 509,
+   "share": 0.046
   },
   {
    "key": "DE",
    "views": 303,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "PH",
@@ -69,23 +69,23 @@
  "sources": [
   {
    "key": "SHORTS",
-   "views": 16652,
-   "share": 0.93
+   "views": 16688,
+   "share": 0.928
   },
   {
    "key": "YT_SEARCH",
-   "views": 584,
+   "views": 599,
    "share": 0.033
   },
   {
    "key": "YT_OTHER_PAGE",
-   "views": 402,
+   "views": 394,
    "share": 0.022
   },
   {
    "key": "YT_CHANNEL",
-   "views": 213,
-   "share": 0.012
+   "views": 241,
+   "share": 0.013
   },
   {
    "key": "EXT_URL",
@@ -94,7 +94,7 @@
   },
   {
    "key": "SUBSCRIBER",
-   "views": 16,
+   "views": 18,
    "share": 0.001
   },
   {
@@ -116,30 +116,30 @@
  "subscribed": [
   {
    "key": "UNSUBSCRIBED",
-   "views": 17581,
-   "share": 0.982
+   "views": 17633,
+   "share": 0.981
   },
   {
    "key": "SUBSCRIBED",
-   "views": 328,
-   "share": 0.018
+   "views": 349,
+   "share": 0.019
   }
  ],
  "searchTerms": [
   {
    "key": "stoicism",
    "views": 27,
-   "share": 0.225
+   "share": 0.227
   },
   {
    "key": "stoicism marcus aurelius",
    "views": 9,
-   "share": 0.075
+   "share": 0.076
   },
   {
    "key": "stoicism motivation",
    "views": 9,
-   "share": 0.075
+   "share": 0.076
   },
   {
    "key": "marcus aurelius",
@@ -149,7 +149,7 @@
   {
    "key": "stoic reset",
    "views": 7,
-   "share": 0.058
+   "share": 0.059
   },
   {
    "key": "blue lotus",
@@ -169,25 +169,25 @@
   {
    "key": "marcus aurelius meditations",
    "views": 4,
-   "share": 0.033
+   "share": 0.034
   },
   {
    "key": "marcus aurelius quotes",
    "views": 4,
-   "share": 0.033
+   "share": 0.034
   },
   {
    "key": "stoic ben",
    "views": 4,
-   "share": 0.033
+   "share": 0.034
+  },
+  {
+   "key": "stoic motivation",
+   "views": 4,
+   "share": 0.034
   },
   {
    "key": "my word is law",
-   "views": 3,
-   "share": 0.025
-  },
-  {
-   "key": "stoic man",
    "views": 3,
    "share": 0.025
   },
@@ -197,14 +197,14 @@
    "share": 0.025
   },
   {
-   "key": "stoic motivation",
+   "key": "stoicism philosophy",
    "views": 3,
    "share": 0.025
   },
   {
-   "key": "stoicism philosophy",
-   "views": 3,
-   "share": 0.025
+   "key": "ai terbaik",
+   "views": 2,
+   "share": 0.017
   },
   {
    "key": "epictetus audiobook",
@@ -227,11 +227,6 @@
    "share": 0.017
   },
   {
-   "key": "seneca quotes",
-   "views": 2,
-   "share": 0.017
-  },
-  {
    "key": "stoic dre",
    "views": 2,
    "share": 0.017
@@ -250,33 +245,38 @@
    "key": "washing machine coin removal",
    "views": 2,
    "share": 0.017
+  },
+  {
+   "key": "500 euro",
+   "views": 1,
+   "share": 0.008
   }
  ],
  "searchTermsAllTime": [
   {
    "key": "stoicism",
    "views": 60,
-   "share": 0.246
+   "share": 0.245
   },
   {
    "key": "stoic",
    "views": 18,
-   "share": 0.074
+   "share": 0.073
   },
   {
    "key": "stoicism marcus aurelius",
    "views": 18,
-   "share": 0.074
+   "share": 0.073
   },
   {
    "key": "stoicism motivation",
    "views": 17,
-   "share": 0.07
+   "share": 0.069
   },
   {
    "key": "marcus aurelius",
    "views": 16,
-   "share": 0.066
+   "share": 0.065
   },
   {
    "key": "epictetus",
@@ -311,12 +311,12 @@
   {
    "key": "marcus aurelius stoicism",
    "views": 6,
-   "share": 0.025
+   "share": 0.024
   },
   {
    "key": "stocism",
    "views": 6,
-   "share": 0.025
+   "share": 0.024
   },
   {
    "key": "blue lotus",
@@ -330,6 +330,11 @@
   },
   {
    "key": "stoic man",
+   "views": 5,
+   "share": 0.02
+  },
+  {
+   "key": "stoic motivation",
    "views": 5,
    "share": 0.02
   },
@@ -355,11 +360,6 @@
   },
   {
    "key": "stoic dre",
-   "views": 4,
-   "share": 0.016
-  },
-  {
-   "key": "stoic motivation",
    "views": 4,
    "share": 0.016
   },
