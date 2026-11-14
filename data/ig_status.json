@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-13T21:11:08Z",
+ "checked": "2026-11-14T00:04:12Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-13",
+  "checked": "2026-11-14",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -22,8 +22,8 @@
   "at": "2026-11-13T21:11:08Z",
   "youtube": "Baq1qEmsVEQ",
   "title": "\"About to do something you'll regret\" — Marcus Aurelius | Stoicism",
-  "status": "queued",
-  "permalink": null,
+  "status": "published",
+  "permalink": "https://www.instagram.com/reel/DfskYx4Fatt/",
   "reason": null
  },
  "tiktok": {
