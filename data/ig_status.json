@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-14T22:50:39Z",
+ "checked": "2026-11-15T02:30:57Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-14",
+  "checked": "2026-11-15",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-14T19:42:52Z",
-  "youtube": "bzvdAXuhgZw",
-  "title": "\"Scared they'll watch you try\" — Marcus Aurelius | Stoicism",
-  "status": "published",
-  "permalink": "https://www.instagram.com/reel/Dfu_DMZFde3/",
+  "at": "2026-11-15T02:30:57Z",
+  "youtube": "jS4Yl-4EhgY",
+  "title": "\"Death isn't ahead of you\" — Seneca | Stoicism",
+  "status": "queued",
+  "permalink": null,
   "reason": null
  },
  "tiktok": {
