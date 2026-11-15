@@ -1,19 +1,19 @@
 {
- "pulled_on": "2026-11-14",
+ "pulled_on": "2026-11-15",
  "window": [
-  "2026-10-17",
-  "2026-11-14"
+  "2026-10-18",
+  "2026-11-15"
  ],
  "countries": [
   {
    "key": "US",
-   "views": 7694,
-   "share": 0.677
+   "views": 7790,
+   "share": 0.688
   },
   {
    "key": "IN",
-   "views": 1487,
-   "share": 0.131
+   "views": 1466,
+   "share": 0.129
   },
   {
    "key": "CA",
@@ -22,8 +22,8 @@
   },
   {
    "key": "GB",
-   "views": 525,
-   "share": 0.046
+   "views": 492,
+   "share": 0.043
   },
   {
    "key": "DE",
@@ -31,14 +31,14 @@
    "share": 0.027
   },
   {
-   "key": "PH",
-   "views": 201,
-   "share": 0.018
+   "key": "ZA",
+   "views": 169,
+   "share": 0.015
   },
   {
-   "key": "ZA",
-   "views": 199,
-   "share": 0.018
+   "key": "PH",
+   "views": 153,
+   "share": 0.014
   },
   {
    "key": "AU",
@@ -69,17 +69,17 @@
  "sources": [
   {
    "key": "SHORTS",
-   "views": 17235,
-   "share": 0.927
+   "views": 16976,
+   "share": 0.926
   },
   {
    "key": "YT_SEARCH",
-   "views": 636,
-   "share": 0.034
+   "views": 639,
+   "share": 0.035
   },
   {
    "key": "YT_OTHER_PAGE",
-   "views": 402,
+   "views": 396,
    "share": 0.022
   },
   {
@@ -99,7 +99,7 @@
   },
   {
    "key": "PLAYLIST",
-   "views": 3,
+   "views": 4,
    "share": 0.0
   },
   {
@@ -116,40 +116,40 @@
  "subscribed": [
   {
    "key": "UNSUBSCRIBED",
-   "views": 18235,
-   "share": 0.98
+   "views": 17953,
+   "share": 0.979
   },
   {
    "key": "SUBSCRIBED",
-   "views": 365,
-   "share": 0.02
+   "views": 386,
+   "share": 0.021
   }
  ],
  "searchTerms": [
   {
    "key": "stoicism",
    "views": 27,
-   "share": 0.225
+   "share": 0.229
   },
   {
    "key": "stoicism marcus aurelius",
    "views": 9,
-   "share": 0.075
+   "share": 0.076
   },
   {
    "key": "stoicism motivation",
    "views": 9,
-   "share": 0.075
+   "share": 0.076
   },
   {
    "key": "marcus aurelius",
    "views": 8,
-   "share": 0.067
+   "share": 0.068
   },
   {
    "key": "stoic reset",
    "views": 7,
-   "share": 0.058
+   "share": 0.059
   },
   {
    "key": "blue lotus",
@@ -169,22 +169,17 @@
   {
    "key": "marcus aurelius meditations",
    "views": 4,
-   "share": 0.033
+   "share": 0.034
   },
   {
    "key": "marcus aurelius quotes",
    "views": 4,
-   "share": 0.033
+   "share": 0.034
   },
   {
    "key": "stoic ben",
    "views": 4,
-   "share": 0.033
-  },
-  {
-   "key": "stoic motivation",
-   "views": 4,
-   "share": 0.033
+   "share": 0.034
   },
   {
    "key": "my word is law",
@@ -233,6 +228,11 @@
   },
   {
    "key": "stoic dre",
+   "views": 2,
+   "share": 0.017
+  },
+  {
+   "key": "stoic motivation",
    "views": 2,
    "share": 0.017
   },
