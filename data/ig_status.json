@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-15T02:30:57Z",
+ "checked": "2026-11-15T10:15:49Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-15T02:30:57Z",
-  "youtube": "jS4Yl-4EhgY",
-  "title": "\"Death isn't ahead of you\" — Seneca | Stoicism",
-  "status": "queued",
-  "permalink": null,
+  "at": "2026-11-15T10:15:49Z",
+  "youtube": "nL-dSYJW7aA",
+  "title": "\"Worried how it'll all turn out\" — Epictetus | Stoicism",
+  "status": "published",
+  "permalink": "https://www.instagram.com/reel/Dfwi3qTGcLk/",
   "reason": null
  },
  "tiktok": {
