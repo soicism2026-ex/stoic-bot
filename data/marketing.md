@@ -1,13 +1,13 @@
 # Marketing: how the channel reaches people
 
-_Updated 2026-11-14 by Cicero (scripts/marketer.py, free, no paid API)._
+_Updated 2026-11-15 by Cicero (scripts/marketer.py, free, no paid API)._
 
 ## The funnel
 
-- Views a day, last 7 days: **1175** (the 7 before: 554, +112%)
-- New subscribers a day: **2.4** (the 7 before: 1.6); 278 in all
-- Subscribers per 1,000 views: 2.1
-- Likes per 100 views (Shorts of the last 14 days): 3.1
+- Views a day, last 7 days: **1027** (the 7 before: 746, +38%)
+- New subscribers a day: **1.7** (the 7 before: 2.1); 279 in all
+- Subscribers per 1,000 views: 1.7
+- Likes per 100 views (Shorts of the last 14 days): 3.0
 
 ## Reach by upload hour (UTC)
 
@@ -15,16 +15,16 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 
 | Hour (UTC) | Shorts | Reach vs its week | Stalled (<0.4x) |
 |---|---|---|---|
-| 00-03 | 90 | 1.19x | 13 |
+| 00-03 | 91 | 1.15x | 13 |
 | 04-07 | 29 | 1.01x | 5 |
-| 08-11 | 73 | 1.0x | 12 |
+| 08-11 | 74 | 1.08x | 11 |
 | 12-15 | 31 | 0.69x | 7 |
-| 16-19 | 53 | 0.72x | 9 |
-| 20-23 | 43 | 0.67x | 10 |
+| 16-19 | 54 | 0.7x | 9 |
+| 20-23 | 43 | 0.67x | 9 |
 
 ## Who watches (last 28 days, pulled 2026-11-14)
 
-- Countries: US 68%, IN 13%, GB 5%, CA 5%, DE 3%, PH 2%
+- Countries: US 68%, IN 13%, CA 5%, GB 5%, DE 3%, PH 2%
 - How they find the Shorts: SHORTS 93%, YT_SEARCH 3%, YT_OTHER_PAGE 2%, YT_CHANNEL 1%, EXT_URL 0%
 - Subscribed or not: UNSUBSCRIBED 98%, SUBSCRIBED 2%
 - What they typed into YouTube before watching (since June): "stoicism" (60), "stoic" (18), "stoicism marcus aurelius" (18), "stoicism motivation" (17), "marcus aurelius" (16), "epictetus" (11), "stoicism philosophy" (11), "marcus aurelius meditations" (10), "stoic mindset" (8), "stoic wisdom" (8)
@@ -32,8 +32,8 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 ## The goal
 
 - **A million views and 1,000 subscribers in 2027** (by 2027-12-31)
-- Views in 2027: 0 of 1,000,000 (starts; 692 a day now, 2,740 needed)
-- Subscribers: 278 of 1,000 (behind; 1.7 a day now, 1.8 needed)
+- Views in 2027: 0 of 1,000,000 (starts; 683 a day now, 2,740 needed)
+- Subscribers: 279 of 1,000 (behind; 1.7 a day now, 1.8 needed)
 - Next checkpoint 2027-03-31: behind
 - Every test below is judged by whether it moves these numbers.
 
@@ -55,7 +55,7 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 - Why: Through November 5, viewers left 5 comments on 51 edits (0.48 per 1,000 views). Comments are one of the signals YouTube ranks on, and a question about the viewer's own life is easier to answer than one about the video.
 - Judged by: Comments from viewers per 1,000 views on the Shorts in the new style (14 days from the start) against the Shorts of the 14 days before; likes per 100 views alongside.
 - Old style: 9 viewer comments on 28 Shorts (1.39 per 1,000 views; 4.4 likes per 100 views)
-- New style: 3 viewer comments on 17 Shorts (0.34 per 1,000 views; 2.6 likes per 100 views)
+- New style: 3 viewer comments on 20 Shorts (0.31 per 1,000 views; 2.6 likes per 100 views)
 
 ### Do playlists per philosopher bring in extra views?
 
@@ -71,15 +71,16 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 - Change: Each Short's description opens with the YouTube search its quote answers ("How to stop overthinking: Epictetus's answer."), a matching hashtag joins #stoicism, and the search goes into the tags. Ten searches, picked from YouTube's own suggestions (data/search_phrases.json, data/search_research.md). The title carries it too only if the owner picks titles.
 - Why: Since June, YouTube search brought 225 views, all from broad words (stoicism, marcus aurelius). Searches like "how to stop overthinking" are among YouTube's most popular, and brought us none: our Shorts never use those words.
 - Judged by: The share of views from YouTube search, the 14 days after against the 14 before.
-- Share of views: 0.0447 before, 0.0214 during
+- Share of views: 0.0447 before, 0.0251 during
 
 ### Does the crew's new look (painted shots, a hook readable on the first frame, YouTube-level sound) bring more views?
 
 - Status: **running** since 2026-11-12
-- Change: Every Short from 2026-11-12: each shot a colour painting from the free FLUX.2 model (inspected before it airs), the v2 type with gold key words, sound mastered to -14 LUFS.
+- Change: 1.02
 - Why: This month's top Stoicism Shorts are painted, colourful and readable on frame one; ours were washed-out black-and-white stock with a grey first frame and quieter sound.
 - Judged by: The median edit's views at 3 days old, the 14 days after against the 14 before.
 - Before: median 284 views at 3 days over 28 Shorts
+- During: median 291 views at 3 days over 2 Shorts (ends 2026-11-26)
 
 ### Does a follow line at the end of every description turn more viewers into subscribers?
 
@@ -94,5 +95,5 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 - Change: From 2026-11-13: three posts a day (MAX_POSTS_PER_DAY 3); the third waits for 19:00 UTC (POST_SLOT_HOURS 0,7,19; the 19:00 and 23:00 crons post it), at least 5 hours apart.
 - Why: The 2027 goal needs about 2,740 views a day; two Shorts make about 1,200. Each Short reaches 600 to 950 people in its first days whatever the slot, and the evening slot got 1.15x the reach of its week, so a third post should add roughly 40%.
 - Judged by: Views a day (Cicero's funnel, the 14 days after against the 14 before) and the median Short's views at 3 days old, so a third post that only splits the same views shows up.
-- Before: median 304 views at 3 days over 26 Shorts
+- Before: median 304 views at 3 days over 28 Shorts
 
