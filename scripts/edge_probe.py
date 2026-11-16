@@ -60,6 +60,7 @@ VARIANTS = {
     "noise only": "[g]noise=alls=3:allf=t[e]",
     "vignette only": "[g]vignette=angle=0.300[e]",
     "full + fillborders smear": "FULL,fillborders=right=16:mode=smear",
+    "fixed (padded enhance)": "PADDED",
     "full, yuv420p into blend": "[g]split[pb][pg];[pg]gblur=sigma=18,eq=brightness=0.02,format=yuv420p[pgb];[pb]format=yuv420p[pb2];[pb2][pgb]blend=c1_expr=A:c2_expr=A:c0_mode=screen:c0_opacity=0.160,noise=alls=3:allf=t,vignette=angle=0.300[e]",
     "full, gbrp into blend": "[g]split[pb][pg];[pg]gblur=sigma=18,eq=brightness=0.02,format=gbrp[pgb];[pb]format=gbrp[pb2];[pb2][pgb]blend=all_mode=screen:all_opacity=0.160,noise=alls=3:allf=t,vignette=angle=0.300[e]",
 }
@@ -79,6 +80,10 @@ def bisect(clip: Path) -> None:
     for name, v in VARIANTS.items():
         if v is None:
             v = full
+        elif v == "PADDED":
+            # exactly what render.padded_enhance builds (src/render.py)
+            v = ("[g]pad=w=1088:h=ih:x=0:y=0,fillborders=right=8:mode=smear[gpad];"
+                 + painter.enhance_graph("gpad", "enhpad") + ";[enhpad]crop=1080:ih:0:0[e]")
         elif v.startswith("FULL,"):
             v = full.replace("[e]", "[e0]") + f";[e0]{v[5:]}[e]"
         raw = frame(["ffmpeg", "-v", "error", "-i", str(clip), "-filter_complex", geo + ";" + v, "-map", "[e]",
