@@ -1,0 +1,27 @@
+name: edge-probe
+# Diagnostic (2026-11-16): finds which stage of the painted picture chain puts
+# the red strip at the right edge of the Shorts. Manual only; writes nothing.
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install ffmpeg the way the Shorts do
+        run: bash scripts/ci_install_ffmpeg.sh
+      - name: Real paintings from the stills cache
+        uses: actions/cache/restore@v4
+        with:
+          path: data/still_cache
+          key: stills-probe-${{ github.run_id }}
+          restore-keys: |
+            stills-
+      - name: Probe every stage
+        run: python3 scripts/edge_probe.py data/still_cache
