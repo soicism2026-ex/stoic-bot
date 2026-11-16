@@ -49,39 +49,63 @@ def run(clip: Path, stages: str, slot: int = 1) -> str:
                        "-ss", "1.5", "-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "rgb24", "-"]))
 
 
+VARIANTS = {
+    "graded (no enhance)": "[g]null[e]",
+    "glow blend only": "[g]split[pb][pg];[pg]gblur=sigma=18,eq=brightness=0.02[pgb];[pb][pgb]blend=c1_expr=A:c2_expr=A:c0_mode=screen:c0_opacity=0.160[e]",
+    "glow+noise": "[g]split[pb][pg];[pg]gblur=sigma=18,eq=brightness=0.02[pgb];[pb][pgb]blend=c1_expr=A:c2_expr=A:c0_mode=screen:c0_opacity=0.160,noise=alls=3:allf=t[e]",
+    "full enhance": None,
+    "gblur only": "[g]gblur=sigma=18[e]",
+    "eq only": "[g]eq=brightness=0.02[e]",
+    "blend with plain copy": "[g]split[a][b];[a][b]blend=c1_expr=A:c2_expr=A:c0_mode=screen:c0_opacity=0.16[e]",
+    "noise only": "[g]noise=alls=3:allf=t[e]",
+    "vignette only": "[g]vignette=angle=0.300[e]",
+    "full + fillborders smear": "FULL,fillborders=right=16:mode=smear",
+    "full, yuv420p into blend": "[g]split[pb][pg];[pg]gblur=sigma=18,eq=brightness=0.02,format=yuv420p[pgb];[pb]format=yuv420p[pb2];[pb2][pgb]blend=c1_expr=A:c2_expr=A:c0_mode=screen:c0_opacity=0.160,noise=alls=3:allf=t,vignette=angle=0.300[e]",
+    "full, gbrp into blend": "[g]split[pb][pg];[pg]gblur=sigma=18,eq=brightness=0.02,format=gbrp[pgb];[pb]format=gbrp[pb2];[pb2][pgb]blend=all_mode=screen:all_opacity=0.160,noise=alls=3:allf=t,vignette=angle=0.300[e]",
+}
+
+
+def widthmap(raw: bytes, y: int) -> str:
+    """The last 24 columns: X where a pixel is far from the picture just inside."""
+    row = y * 1080 * 3
+    px = lambda x: raw[row + x * 3: row + x * 3 + 3]  # noqa: E731
+    ref = [sum(px(x)[c] for x in range(1036, 1052)) / 16 for c in range(3)]
+    return "".join("X" if sum(abs(px(x)[c] - ref[c]) for c in range(3)) > 70 else "." for x in range(1056, 1080))
+
+
+def bisect(clip: Path) -> None:
+    geo = f"[0:v]{GEO},trim=0:end=3,setpts=PTS-STARTPTS,{painter.motion_filter(1, 90)},{','.join(painter.grade_parts(0.0, 0.0))}[g]"
+    full = painter.enhance_graph("g", "e")
+    for name, v in VARIANTS.items():
+        if v is None:
+            v = full
+        elif v.startswith("FULL,"):
+            v = full.replace("[e]", "[e0]") + f";[e0]{v[5:]}[e]"
+        raw = frame(["ffmpeg", "-v", "error", "-i", str(clip), "-filter_complex", geo + ";" + v, "-map", "[e]",
+                     "-ss", "1.5", "-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "rgb24", "-"])
+        if len(raw) < 1080 * 1920 * 3:
+            print(f"  {name:26s} no frame"); continue
+        row = 960 * 1080 * 3
+        e = tuple(raw[row + 1079 * 3: row + 1079 * 3 + 3])
+        print(f"  {name:26s} y300 {widthmap(raw, 300)}  y960 {widthmap(raw, 960)}  x1079={e}")
+
+
 def main() -> int:
     print(subprocess.run(["ffmpeg", "-version"], capture_output=True, text=True).stdout.splitlines()[0])
-    flags = open("/proc/cpuinfo").read() if os.path.exists("/proc/cpuinfo") else ""
-    print("cpu:", platform.processor() or "?", "| avx2" if " avx2" in flags else "", "| avx512" if "avx512f" in flags else "")
     tmp = Path(tempfile.mkdtemp())
-    stills = []
-    for ext in ("jpg", "png"):
-        p = tmp / f"synthetic.{ext}"
-        subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
-                        "nullsrc=s=1024x1920,format=rgb24,geq=r='150+80*sin(X/37)*cos(Y/53)':g='110+60*sin(X/61+1)':b='70+50*cos(Y/41+X/71)'",
-                        "-frames:v", "1", str(p)], check=True)
-        stills.append(p)
+    still = tmp / "synthetic.jpg"
+    subprocess.run(["ffmpeg", "-v", "error", "-y", "-f", "lavfi", "-i",
+                    "nullsrc=s=1024x1920,format=rgb24,geq=r='150+80*sin(X/37)*cos(Y/53)':g='110+60*sin(X/61+1)':b='70+50*cos(Y/41+X/71)'",
+                    "-frames:v", "1", str(still)], check=True)
+    stills = [still]
     cache = Path(sys.argv[1]) if len(sys.argv) > 1 else ROOT / "data" / "still_cache"
-    real = sorted([p for p in cache.rglob("*") if p.suffix in (".png", ".jpg", ".webp") and ".keep" not in p.name],
-                  key=lambda p: -p.stat().st_mtime)[:3] if cache.exists() else []
-    stills += real
-    print(f"real cached stills: {len(real)}")
+    if cache.exists():
+        stills += sorted([p for p in cache.rglob("*.jpg")], key=lambda p: -p.stat().st_mtime)[:1]
     for s in stills:
-        size = subprocess.run(["ffprobe", "-v", "error", "-show_entries", "stream=width,height,pix_fmt", "-of", "csv=p=0", str(s)],
-                              capture_output=True, text=True).stdout.strip()
         clip = tmp / (s.stem + ".mp4")
-        info = painter.prepare_still(s, clip, seconds=3.0)
-        print(f"\n== {s.name} ({size}) k={info and round(info['k'], 3)} crop={info and info['crop']!r}")
-        if not info:
-            continue
-        print("  still itself     ", edge(frame(["ffmpeg", "-v", "error", "-i", str(s), "-vf", "scale=1080:1920,format=rgb24",
-                                                  "-frames:v", "1", "-f", "rawvideo", "-pix_fmt", "rgb24", "-"])))
-        print("  prepared clip    ", run(clip, ""))
-        for slot in (0, 1, 2):
-            print(f"  move {painter.MOVES[slot]:6s}      ", run(clip, "move", slot))
-        print("  move+grade       ", run(clip, "move grade"))
-        print("  move+grade+enh   ", run(clip, "move grade enh"))
-        print("  grade+enh, still ", run(clip, "grade enh"))
+        if painter.prepare_still(s, clip, seconds=3.0):
+            print(f"\n== {s.name}: the last 24 columns (X = not the picture)")
+            bisect(clip)
     return 0
 
 
