@@ -59,6 +59,31 @@ jobs:
       go: ${{ steps.need.outputs.go }}
     steps:
     - uses: actions/checkout@v4
+    # Fama (scripts/fama.py): what the US is talking about today, tied to one
+    # of the next quotes when a SAFE trend fits. Planned once per post; the
+    # plan is committed so the live run and the rehearsal air the same hook.
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+    - name: Fama plans today's topical Short
+      continue-on-error: true
+      env:
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      run: |
+        pip install -r requirements.txt
+        python3 scripts/fama.py plan
+        git config user.name "stoic-bot"
+        git config user.email "bot@users.noreply.github.com"
+        git add data/topical.json
+        if ! git diff --staged --quiet; then
+          git commit -m "fama: topical plan $(date -u +%F)"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase origin main && continue
+          done
+        fi
     - name: Is the next Short already rehearsed?
       id: need
       env:
@@ -81,6 +106,8 @@ jobs:
       UP_NEXT: ${{ (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.up_next) && inputs.music == '' && '1' || '' }}
     steps:
     - uses: actions/checkout@v4
+      with:
+        ref: main
     - name: Install ffmpeg + fonts
       timeout-minutes: 20
       run: bash scripts/ci_install_ffmpeg.sh

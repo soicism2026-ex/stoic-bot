@@ -279,9 +279,35 @@ def _type_edit(pack: dict, content: dict, fmt: str) -> None:
     look = os.environ.get("REEL_EDIT_LOOK", "").strip().lower()
     if look == "painted" or edit_type.enabled(os.environ.get("REEL_EDIT_TYPE")):
         pack.update(edit_type.style_env(content))
+        top = content.get("_topical")
+        if top and top.get("punch"):
+            # Fama's hook has its own highlighted word; the quote's gold words stay.
+            pack["REEL_HOOK_EMPHASIS"] = top["punch"]
 
 
 INSPECTOR_LOG = ROOT / "data" / "inspector.csv"
+TOPICAL_LOG = ROOT / "data" / "topical_log.csv"
+
+
+def _log_topical(today: str, content: dict, upload_result: dict) -> None:
+    """One row per LIVE Short that aired on Fama's plan (data/topical_log.csv:
+    date, video_id, edit, trend, source, hook). Never stops a post."""
+    top = content.get("_topical")
+    if not top:
+        return
+    try:
+        import csv
+        new = not TOPICAL_LOG.exists()
+        with open(TOPICAL_LOG, "a", newline="", encoding="utf-8") as fh:
+            w = csv.writer(fh)
+            if new:
+                w.writerow(["date", "video_id", "edit", "trend", "source", "hook"])
+            t = top.get("trend", {})
+            w.writerow([today, (upload_result or {}).get("video_id") or (upload_result or {}).get("id", ""),
+                        content.get("_edit_id", ""), t.get("topic", ""), t.get("source", ""),
+                        top.get("hook", "")])
+    except Exception as e:  # noqa: BLE001
+        print(f"  [fama] topical log skipped: {e}", file=sys.stderr)
 
 
 def _shots_summary() -> list[dict]:
@@ -824,6 +850,9 @@ def main():
     if content.get("_search"):
         # the exact search first: YouTube matches tags word for word
         seo_tags = [content["_search"]["phrase"], f'{content["author"].lower()} quotes'] + seo_tags
+    if content.get("_topical"):
+        # Fama's keywords for today's event first: YouTube matches tags word for word
+        seo_tags = [str(t) for t in content["_topical"].get("tags", [])] + seo_tags
     all_tags = list(dict.fromkeys(base_tags + seo_tags))[:30]  # dedup, cap at 30
 
     # Mission counter — enrols the viewer in a streak they can root for.
@@ -1248,6 +1277,12 @@ def main():
                 # Each painted shot and what the inspector did with it, for
                 # Longinus's review of the rehearsal (src/inspector.py).
                 "shots": _shots_summary(),
+                # Fama's tie to today's event, for the HQ (None on a normal Short).
+                "topical": ({"topic": content["_topical"].get("trend", {}).get("topic", ""),
+                             "source": content["_topical"].get("trend", {}).get("source", ""),
+                             "hook": content["_topical"].get("hook", ""),
+                             "lead": content["_topical"].get("lead", "")}
+                            if content.get("_topical") else None),
             }, ensure_ascii=False, indent=1) + "\n", encoding="utf-8")
             print(f"  [preview] DRY_RUN — saved {out.name}/{exp_name.replace(':', '_')}.mp4, "
                   f"voice {spoke}, NOT uploaded, NOT logged")
@@ -1338,6 +1373,7 @@ def main():
                 reviewed=preflight_verdict,
             )
             _log_inspection(today, content, upload_result)
+            _log_topical(today, content, upload_result)
             print("  logged. done.")
             break
 

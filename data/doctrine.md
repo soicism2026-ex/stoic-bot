@@ -217,3 +217,33 @@ Every Short's description follows that shape (`data/edit_quotes.json`
 - 35-95 words. No links or hashtags in the paragraphs (the hashtags, the quote
   with its source and the journal line are added after). Only historical facts
   that are certain; the quote's words stay verbatim in the source block below.
+
+## 11. Today's world.
+
+Owner, 2026-11-16, in chat: *"Also try to make the shorts a bit less boring and
+more enticing to leave a comment but dont ask to leave a comment. Pivot the
+shorts to somethign more relevant to todays world and news everyday or find a
+way to figure out whats trending the day of before posting and post relating
+to that event."* Fama (`scripts/fama.py`) does it; these are her rules.
+
+- **The quote is never changed.** The event is the doorway and the quote is
+  the point. Only the hook, the description's first line, the question and the
+  tags are today's.
+- **Never exploit tragedy, never take a political side.** Anything about
+  death, harm, crime, disaster, war, illness, courts, elections, parties,
+  policy, religion, or a named minor is dropped by code before a model sees
+  it. What stays: sports, entertainment, technology and products, money and
+  markets, shopping days, weather without casualties, holidays and seasons,
+  science and space, viral culture.
+- **The hook speaks to the viewer's own life through the event**: their
+  feeling, choice or temptation, in 2-9 words. It may be a question. It takes
+  a stance or poses a choice (a dilemma, a mild provocation), so people want
+  to answer. It never asks for comments, likes or subscribes, never mocks,
+  never names a private person, and states no fact about the event beyond its
+  name. One word of it is highlighted.
+- **The description opens with one sentence (22 words at most)** joining the
+  event to the quote, then the usual paragraphs. The question is one line the
+  viewer answers from their own life, often a choice between two.
+- **No invented names or numbers**: every capitalised name and every figure in
+  the hook and lead must appear in the trend itself. A fit under 7 of 10, or
+  any failed check, means no topical plan: the Short airs as scheduled.

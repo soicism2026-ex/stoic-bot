@@ -76,6 +76,11 @@ def plan(rows: list[dict], air_day: str) -> dict:
     for role in sfx.ROLES:
         t = sfx.pick(role, air_day, audition=False)
         out[role] = t["id"] if t else None
+    # Fama's hook for the next post (None on a normal Short): a new topical
+    # plan re-rehearses it.
+    import edits  # noqa: PLC0415
+    top = edits.topical_for(rows)
+    out["topical"] = top["hook"] if top else None
     return out
 
 
@@ -107,6 +112,7 @@ def describe(preview: Path, now: dt.datetime | None = None) -> dict:
     if meta.get("airDay"):
         meta["plan"] = plan(_rows(), meta["airDay"])
     meta["scenesHash"] = scenes_hash(meta.get("edit"))
+    meta["topical"] = meta.get("topical") or None
     return meta
 
 

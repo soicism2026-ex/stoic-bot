@@ -96,6 +96,20 @@
    "proposed": "2026-11-12",
    "started": "2026-11-13",
    "approved": "2026-11-13: owner, in the HQ: \"A third Short a day, in the evening: Go\""
+  },
+  {
+   "id": "topical",
+   "kind": "views_before_after",
+   "age": 3,
+   "question": "Does tying a Short's hook, description lead and question to what the US is talking about today add views and comments?",
+   "change": "From 2026-11-16: Fama (scripts/fama.py) screens today's trends (Google Trends, Wikipedia, Google News) and, when a safe one fits one of the next quotes, airs that quote with a topical hook, description lead, question and tags. The quote is never changed.",
+   "why": "The owner finds the Shorts a bit boring and wants them relevant to today's world. A hook that meets viewers in an event they already know should stop more scrolls and give them something to answer.",
+   "measure": "the median edit's views at 3 days old, 14 days after against 14 before",
+   "ask": null,
+   "status": "running",
+   "proposed": "2026-11-16",
+   "started": "2026-11-16",
+   "approved": "2026-11-16: owner, in chat: \"Pivot the shorts to something more relevant to today's world and news everyday\""
   }
  ],
  "next": []
