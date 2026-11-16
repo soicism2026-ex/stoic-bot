@@ -1,25 +1,25 @@
 {
- "forPost": 76,
- "airDay": "2026-11-16",
- "decidedAt": "2026-11-16T10:27:10Z",
+ "forPost": 77,
+ "airDay": "2026-11-17",
+ "decidedAt": "2026-11-16T20:45:43Z",
  "trend": {
-  "topic": "Huge waves pummel California coast, forcing closure of popular piers",
-  "score": 95.0,
-  "source": "google-news",
+  "topic": "SS United States",
+  "score": 0.0,
+  "source": "wikipedia-news",
   "headlines": [
-   "Huge waves pummel California coast, forcing closure of popular piers"
+   "American ocean liner SS United States is scuttled in the Gulf of Mexico to create the largest artificial reef."
   ]
  },
- "edit": "courage_and_calm",
- "theme": "adversity",
- "hook": "Facing huge waves?",
- "punch": "huge",
- "lead": "Huge waves hit California coast",
- "question": "Courage or calm?",
+ "edit": "in_our_power",
+ "theme": "control",
+ "hook": "Some losses are inevitable",
+ "punch": "inevitable",
+ "lead": "SS United States sinks",
+ "question": "What can you control today?",
  "tags": [
-  "Huge waves",
-  "California coast",
-  "storm"
+  "SS United States",
+  "artificial reef",
+  "Gulf of Mexico"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
