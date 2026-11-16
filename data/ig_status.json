@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-16T02:41:33Z",
+ "checked": "2026-11-16T10:26:59Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-16T02:41:33Z",
-  "youtube": "Lo6gaORI5do",
-  "title": "\"Think it's too hard for you\" — Seneca | Stoicism",
-  "status": "published",
-  "permalink": "https://www.instagram.com/reel/DfyTp3-lX9Q/",
+  "at": "2026-11-16T10:26:59Z",
+  "youtube": "Liu4cUZTNqg",
+  "title": "\"Stop wishing things went differently\" — Epictetus | Stoicism",
+  "status": "queued",
+  "permalink": null,
   "reason": null
  },
  "tiktok": {
