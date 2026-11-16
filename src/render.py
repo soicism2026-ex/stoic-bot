@@ -1217,33 +1217,30 @@ def _frame_overlays() -> list:
     ]
 
 
-ENH_PAD_MULT = 64
+EDGE_FILL_PX = 16
 
 
-def padded_enhance(src_label: str, out_label: str, painted: bool) -> str:
-    """The enhance stage (bloom blend, grain) run on a frame padded to a width
-    that is a multiple of 64, then cropped back to W.
+def edge_filled_enhance(src_label: str, out_label: str, painted: bool) -> str:
+    """The enhance stage (bloom blend, grain), exactly as before, followed by
+    `fillborders=right=16:mode=smear` on its output.
 
     Owner, 2026-11-16: "There a little red line that catches your eye on all
     the new shorts remove it". Diagnosed with scripts/edge_probe.py on GitHub's
     ffmpeg 8.0.1: `blend` (screen) overwrites the last 8 columns with a fixed
     dark colour and `noise=allf=t` with (213,45,20), the red strip. 1080 % 16
     = 8, so it is a vector-code tail bug on widths that are not a multiple of
-    16 (this container's 6.1.1 does not show it). The padding is the picture's
-    own edge smeared outward, so nothing visible is invented, and the crop
-    throws the damaged columns away. Used for the painted AND the classic
-    graph (both use blend and noise)."""
+    16 (this container's 6.1.1 does not show it). The 16 right-hand columns
+    are refilled by smearing the picture beside them. Used for the painted AND
+    the classic graph (both use blend and noise).
+
+    Padding the frame to 1088 before the stage and cropping after was tried
+    first and measured on the runner (edge-probe run 43804546836): it did NOT
+    remove the strip (x1079 still corrupted), so do not go back to it."""
     import painter
-    wp = -(-W // ENH_PAD_MULT) * ENH_PAD_MULT
-    if wp == W:
-        return (painter.enhance_graph(src_label, out_label) if painted
-                else _enhance_graph(src_label, out_label))
-    inner = (painter.enhance_graph("gpad", "enhpad") if painted
-             else _enhance_graph("gpad", "enhpad"))
-    return (f"[{src_label}]pad=w={wp}:h=ih:x=0:y=0,"
-            f"fillborders=right={wp - W}:mode=smear[gpad];"
-            f"{inner};"
-            f"[enhpad]crop={W}:ih:0:0[{out_label}]")
+    inner_out = "enhraw"
+    inner = (painter.enhance_graph(src_label, inner_out) if painted
+             else _enhance_graph(src_label, inner_out))
+    return f"{inner};[{inner_out}]fillborders=right={EDGE_FILL_PX}:mode=smear[{out_label}]"
 
 
 def _enhance_graph(src_label: str, out_label: str) -> str:
@@ -1751,7 +1748,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
         segs = [f"[0:v]{','.join(pre_parts)}[graded]"]
 
     if ENHANCE_ON:
-        segs.append(padded_enhance("graded", "enh", painted))
+        segs.append(edge_filled_enhance("graded", "enh", painted))
         last = "enh"
     else:
         last = "graded"
