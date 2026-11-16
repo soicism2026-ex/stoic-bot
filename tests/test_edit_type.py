@@ -231,8 +231,8 @@ def test_hook_is_fully_drawn_on_frame_zero_and_the_spoken_word_turns_gold():
     gold = T._c(T.GOLD)
     # WINNING (spoken at 1.20 s) turns gold over 60 ms and settles at RIGHT (1.51 s)
     assert f"\\t(1200,1260,\\1c{gold})\\t(1510,1630,\\1c&HFFFFFF&)}}WINNING" in joined
-    # the emphasis word is gold from the start and never transformed
-    assert f"{{\\1c{gold}}}LOOSELY." in joined
+    # the emphasis word is red from the start and never transformed (owner 2026-11-16)
+    assert f"{{\\1c{T._c(T.RED)}}}LOOSELY." in joined
     assert _plain("\n".join(text)).split() == HOOK.upper().split()
 
 
@@ -384,7 +384,7 @@ def test_v2_knobs_reach_the_frame(v2_render):
     assert "@forged.in.stoicism" not in ass, "REEL_WATERMARK='' turns it off"
     assert "Meditations 8.33" in ass
     assert ass.count("\\i1\\1c") == 4, "arrogance + let + it + go in gold italic"
-    assert f"{{\\1c{T._c(T.GOLD)}}}LOOSELY." in ass
+    assert f"{{\\1c{T._c(T.RED)}}}LOOSELY." in ass
 
 
 def test_v2_falls_back_to_a_static_quote_when_the_voice_said_other_words(v2_render):
@@ -460,3 +460,22 @@ def test_the_v2_thumbnail_seeks_inside_a_short_opening_clip(tmp_path, monkeypatc
     out = render._thumbnail_v2("Can't resist it yet? Don't stand near it.", "Epictetus", clip, tmp_path / "t.thumb.jpg")
     assert out is not None and out.exists() and out.stat().st_size > 10_000
     assert not (tmp_path / "t.thumb.thumb.ass").exists()                  # no doubled suffix
+
+
+
+def test_the_important_words_are_red_and_the_colour_can_be_set(monkeypatch):
+    """Owner 2026-11-16: "use red to highlight the important speaking points".
+    The hook's punch word and the quote's key phrases are red; the spoken word
+    still lights gold; REEL_EMPHASIS_COLOUR sets another colour (bad = red)."""
+    monkeypatch.delenv("REEL_EMPHASIS_COLOUR", raising=False)
+    assert T.emphasis_colour() == T.RED == "EF3B2D"
+    hook = T.layout_hook("Hold it loosely.", "loosely")
+    ev = "\n".join(T.hook_events(hook, [], 0.0, 3.0))
+    assert f"\\1c{T._c(T.RED)}}}LOOSELY." in ev
+    q = T.layout_quote("Receive without arrogance; let it go.", "Marcus Aurelius", "arrogance")
+    qe = "\n".join(T.quote_events(q, [], 0.0, 5.0))
+    assert f"\\i1\\1c{T._c(T.RED)}\\2c{T._c(T.RED)}}}arrogance" in qe
+    monkeypatch.setenv("REEL_EMPHASIS_COLOUR", "#f3bf4c")
+    assert T.emphasis_colour() == "F3BF4C"
+    monkeypatch.setenv("REEL_EMPHASIS_COLOUR", "crimson")
+    assert T.emphasis_colour() == T.RED

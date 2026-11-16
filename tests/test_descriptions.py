@@ -61,7 +61,7 @@ def test_the_description_follows_the_owners_example():
     body = q["description"].split("\n\n")
     assert paras[:len(body)] == body                          # his layout: the paragraphs open it
     ask = paras[len(body)]
-    assert ask == f"\U0001F4AC Question: {q['question']} Share your thoughts in the comments."
+    assert ask == f"\U0001F4AC Question: {q['question']}"          # no ask to comment (owner 2026-11-16)
     assert paras[len(body) + 1] == f"“{q['quote']}”\n— {q['author']}, {q['citation']}"
     assert paras[-1] == " ".join(c["hashtags"])               # hashtags last, then the promo block
     assert c["pinned_comment"] == q["question"]               # and the same question as the comment

@@ -168,7 +168,7 @@ def caption(hook: str, quote: str, author: str, citation: str = "",
     owner said yes (points_to_bio), a line after the follow line says so."""
     hook = hook.strip().rstrip(".!? ")
     source = "— " + ", ".join(x for x in (author.strip(), citation.strip()) if x)
-    opening = [body.strip(), f"\U0001F4AC Question: {question.strip()} Share your thoughts in the comments."
+    opening = [body.strip(), f"\U0001F4AC Question: {question.strip()}"
                if question.strip() else ""] if body.strip() else [f"{hook}." if hook else ""]
     parts = [*opening, f"“{quote.strip()}”\n{source}" if quote.strip() else "",
              FOLLOW_LINE, BIO_LINE if points_to_bio() else "", credit.strip(), " ".join(hashtags(tags))]

@@ -40,6 +40,7 @@ break, size and position is decided before libass draws a pixel.
 """
 from __future__ import annotations
 
+import os
 import re
 import struct
 from dataclasses import dataclass, field
@@ -188,10 +189,14 @@ BUTTONS_X, BUTTONS_Y = 930, 1000
 TEXT_TOP, TEXT_BOTTOM = 300, 1370  # the hook and the quote block live in here
 CENTER_Y = 820                     # optical centre shared by hook and quote
 
-# Colours (hex RGB). One gold for everything gold: the spoken hook word, the
-# emphasis words, the author.
+# Colours (hex RGB). Gold: the spoken hook word, the rule, the author.
+# RED: the important words, the hook's punch word and the quote's key
+# phrases (owner 2026-11-16, after a red line caught his eye on a Short: "use
+# red to highlight the important speaking points"; they were gold before).
+# REEL_EMPHASIS_COLOUR=<hex> overrides it (the design lab, or back to gold).
 WHITE = "FFFFFF"
 GOLD = "F3BF4C"
+RED = "EF3B2D"
 PARCHMENT = "F4EAD8"
 UNREAD_ALPHA = 0x40                # quote words not yet spoken: 75% opaque
 
@@ -535,6 +540,13 @@ def _quote_geometry(fs: int, n_lines: int, roman: Font, auth: Font, has_source: 
 # ---------------------------------------------------------------------------
 # ASS
 # ---------------------------------------------------------------------------
+def emphasis_colour() -> str:
+    """The colour of the important words: RED unless REEL_EMPHASIS_COLOUR
+    names another 6-digit hex colour."""
+    v = os.environ.get("REEL_EMPHASIS_COLOUR", "").strip().lstrip("#").upper()
+    return v if len(v) == 6 and all(c in "0123456789ABCDEF" for c in v) else RED
+
+
 def _c(hexrgb: str) -> str:
     """RRGGBB -> an ASS colour override value &HBBGGRR&."""
     h = hexrgb.lstrip("#").upper()
@@ -709,18 +721,18 @@ def hook_events(block: Block, word_starts: list, start: float, end: float,
     """The hook, one event per line at its own baseline, fully drawn from
     `start` (frame 0 for edits: no dimmed words, no fade-in). With word
     starts, each word turns gold as the voice reaches it and settles back
-    when the next one begins; emphasis words are gold throughout."""
+    when the next one begins; emphasis words are red throughout."""
     f = font(HOOK_FONT)
     follow = bool(word_starts) and len(word_starts) == len(block.words)
     fade = f"\\fad({fade_in_ms},{fade_out_ms})"
-    gold, white = _c(GOLD), _c(WHITE)
+    gold, white, accent = _c(GOLD), _c(WHITE), _c(emphasis_colour())
     out = []
     for k, line in enumerate(block.lines):
         y = _baseline_pos(f, block.fs, block.baselines[k])
         parts, plain = [], []
         for i in line:
             w = _esc(block.words[i])
-            base = gold if block.emph[i] else white
+            base = accent if block.emph[i] else white
             tag = f"\\1c{base}"
             if follow and base == white:
                 a = int(round((word_starts[i] - start) * 1000))
@@ -742,11 +754,11 @@ def quote_events(block: Block, times: list, start: float, end: float,
     """The quote, its gold rule, author and source. With per-word `times`
     ((start, end) of each word, from the narration) the words fill as they
     are spoken: unread ones at 75%, spoken ones full; without, all full.
-    Emphasis words are set in gold italic (their punctuation stays roman)."""
+    Emphasis words are set in red italic (their punctuation stays roman)."""
     roman = font(QUOTE_FONT)
     karaoke = bool(times) and len(times) == len(block.words)
     fade = f"\\fad({fade_in_ms},0)"
-    gold, parch = _c(GOLD), _c(PARCHMENT)
+    gold, parch, accent = _c(GOLD), _c(PARCHMENT), _c(emphasis_colour())
     out = []
     for k, line in enumerate(block.lines):
         y = _baseline_pos(roman, block.fs, block.baselines[k])
@@ -764,7 +776,7 @@ def quote_events(block: Block, times: list, start: float, end: float,
                 k_tag = f"\\k{max(1, int(round((nxt - times[i][0]) * 100)))}"
             if block.emph[i]:
                 lead_p, core, trail = (_esc(p) for p in _split(word))
-                parts.append(f"{{{k_tag}}}{lead_p}{{\\i1\\1c{gold}\\2c{gold}}}{core}"
+                parts.append(f"{{{k_tag}}}{lead_p}{{\\i1\\1c{accent}\\2c{accent}}}{core}"
                              f"{{\\i0\\1c{parch}\\2c{parch}}}{trail}{sep}")
                 plain.append(f"{lead_p}{{\\i1}}{core}{{\\i0}}{trail}{sep}")
             else:

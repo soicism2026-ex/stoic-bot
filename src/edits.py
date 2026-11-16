@@ -162,7 +162,9 @@ PINNED_BY_THEME = {
 # The line that ends every new-style description, worded like the owner's
 # example; Cicero (scripts/marketer.py) tells old Shorts from new by it.
 QUESTION_MARK = "\U0001F4AC Question:"
-QUESTION_LINE = QUESTION_MARK + " {question} Share your thoughts in the comments."
+# Owner 2026-11-16: "more enticing to leave a comment but dont ask to leave a
+# comment". The question invites the answer; the explicit ask is gone.
+QUESTION_LINE = QUESTION_MARK + " {question}"
 
 
 # The YouTube searches our audience makes (owner 2026-11-07: "a list of 10
