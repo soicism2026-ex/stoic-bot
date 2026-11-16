@@ -2,3 +2,4 @@
 {"t": "2026-11-15T04:41:52Z", "who": "Longinus", "kind": "done", "text": "Checked \"Worried how it'll all turn out?\": clean. Eight painted shots, all passed."}
 {"t": "2026-11-16T04:29:13Z", "who": "Zeuxis", "kind": "done", "text": "Removed the red line at the right edge of every painted Short: GitHub's new ffmpeg (8.0.1) left the last 8 pixel columns unfinished in two filters; the picture is now polished a little wider and trimmed back."}
 {"t": "2026-11-16T04:44:48Z", "who": "Zeuxis", "kind": "done", "text": "Removed the red line at the right edge of every painted Short: GitHub's new ffmpeg (8.0.1) leaves the last 8 pixel columns unfinished in two filters, so the edge is now filled from the picture beside it."}
+{"t": "2026-11-16T04:41:45Z", "who": "Longinus", "kind": "done", "text": "Checked \"Stop wishing things went differently.\": clean. Seven painted shots, all passed."}
