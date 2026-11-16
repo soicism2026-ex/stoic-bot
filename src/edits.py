@@ -94,7 +94,57 @@ def theme_rank() -> dict[str, int]:
         return {}
 
 
+# Fama's plan for the next Short (scripts/fama.py): a safe trend of the day
+# tied to one of the next quotes. The quote is never changed; only the hook,
+# the description's lead, the question and the tags are today's.
+TOPICAL = ROOT / "data" / "topical.json"
+TOPICAL_MAX_AGE_H = 20
+
+
+def edit_post_count(post_rows: list[dict]) -> int:
+    return sum(1 for r in post_rows if (r.get("experiment") or "").startswith("edit:"))
+
+
+def topical_for(post_rows: list[dict], now=None) -> dict | None:
+    """Fama's plan for THIS post when it is fresh (same forPost, decided under
+    20 hours ago), its edit is still unaired and not jammed, and it is whole;
+    else None, and the rotation decides as it always did."""
+    import datetime as dt
+    try:
+        plan = json.loads(TOPICAL.read_text(encoding="utf-8"))
+        if plan.get("none") or plan.get("forPost") != edit_post_count(post_rows):
+            return None
+        at = dt.datetime.fromisoformat(str(plan["decidedAt"]).replace("Z", "+00:00"))
+        if at.tzinfo is None:
+            at = at.replace(tzinfo=dt.timezone.utc)
+        now = now or dt.datetime.now(dt.timezone.utc)
+        if not dt.timedelta(0) <= now - at < dt.timedelta(hours=TOPICAL_MAX_AGE_H):
+            return None
+        if not all(isinstance(plan.get(k), str) and plan[k].strip() for k in ("edit", "hook", "lead")):
+            return None
+        eid = plan["edit"]
+        if eid in _used(post_rows) or eid in jammed_ids():
+            return None
+        aired = _aired_quotes(post_rows)
+        q = next((x for x in load() if x["id"] == eid), None)
+        if q is None or _already_aired(q, aired):
+            return None
+        return plan
+    except Exception:  # noqa: BLE001  a broken plan never stops a post
+        return None
+
+
 def pick(post_rows: list[dict]) -> dict | None:
+    """The quote to air: Fama's topical one when she has a fresh plan for this
+    post (returned as a copy carrying `_topical`), else the rotation's."""
+    plan = topical_for(post_rows)
+    if plan:
+        q = next(x for x in load() if x["id"] == plan["edit"])
+        return {**q, "_topical": plan}
+    return rotation_pick(post_rows)
+
+
+def rotation_pick(post_rows: list[dict]) -> dict | None:
     """Next quote: never one already used, from the author used LEAST
     recently, avoiding the theme of the last edit.
 
@@ -235,7 +285,8 @@ def search_lead(content: dict) -> str:
 
 def pinned_comment(q: dict) -> str:
     """The quote's own question, else its theme's, else the generic line."""
-    own = (q.get("question") or "").strip()
+    top = q.get("_topical") or {}
+    own = ((top.get("question") or "") or (q.get("question") or "")).strip()
     return own or PINNED_BY_THEME.get(q.get("theme"), PINNED_GENERIC)
 
 
@@ -248,6 +299,8 @@ def description(content: dict) -> str:
     every edit had before: the hook, then the quote and its source."""
     body = (content.get("_description") or "").strip()
     ask = (content.get("_question") or "").strip()
+    top = content.get("_topical") or {}
+    ask = (top.get("question") or "").strip() or ask
     source = "\u2014 " + ", ".join(x for x in (content["author"], content.get("_citation") or "") if x)
     if not body:
         hook = content["hook"].strip().rstrip(".!? ")
@@ -256,6 +309,8 @@ def description(content: dict) -> str:
         parts = [body, QUESTION_LINE.format(question=ask) if ask else "",
                  f"\u201c{content['quote'].strip()}\u201d\n{source}"]
     parts.insert(0, search_lead(content))            # only once the owner said yes
+    if (top.get("lead") or "").strip():
+        parts.insert(0, top["lead"].strip())          # Fama: today's event, then the quote's own words
     parts.append(follow_line())                       # Cicero's test 6, while it runs
     parts.append(" ".join(content["hashtags"]))
     return "\n\n".join(p for p in parts if p)
@@ -271,12 +326,13 @@ def as_content(q: dict) -> dict:
     tags = ["#stoicism", "#motivation", "#discipline", "#stoic", "#shorts"]
     if found and found.get("hashtag") and found["hashtag"] not in tags:
         tags.insert(1, found["hashtag"])
+    top = q.get("_topical") or None
     return {
         "theme": q["theme"],
         "quote": q["quote"],
         "author": q["author"],
         "caption": caption,
-        "hook": q["hook"],
+        "hook": (top or {}).get("hook") or q["hook"],
         "format": "edit",
         "hashtags": tags,
         # act 1 is the hook alone; act 3 is the quote (spoken-quote mode puts
@@ -290,7 +346,8 @@ def as_content(q: dict) -> dict:
         "_edit_id": q["id"],
         "_citation": q["citation"],
         "_description": q.get("description", ""),
-        "_question": q.get("question", ""),
+        "_question": (top or {}).get("question") or q.get("question", ""),
+        "_topical": top,
         "_search": found,
         "_searchUse": use if found else None,
         # The painted look (REEL_EDIT_LOOK=painted): the scene writer's shots

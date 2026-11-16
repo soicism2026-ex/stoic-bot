@@ -36,6 +36,7 @@ FEATURES = {
     "qa_vision": "the vision half of the QA check (ffmpeg checks still run)",
     "replies": "auto-replies to viewer comments",
     "strategy": "the daily strategy rewrite",
+    "topical": "Fama's pick of today's trend for the next Short (the quote airs as scheduled)",
 }
 
 
@@ -47,7 +48,7 @@ FEATURES = {
 # for features in FREE_OK: short conversational text that a person reads
 # (replies). It never generates posts (quotes must be verbatim public-domain
 # text, which no model is trusted to produce) and never reviews video.
-FREE_OK = {"replies"}
+FREE_OK = {"replies", "topical"}
 CF_MODEL = os.environ.get("CLOUDFLARE_TEXT_MODEL", "@cf/meta/llama-3.3-70b-instruct-fp8-fast")
 CF_TIMEOUT = 60
 # Neurons per token on Workers AI (developers.cloudflare.com pricing, 2026-11-11).
