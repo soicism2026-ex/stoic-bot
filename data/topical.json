@@ -1,0 +1,25 @@
+{
+ "forPost": 76,
+ "airDay": "2026-11-16",
+ "decidedAt": "2026-11-16T10:27:10Z",
+ "trend": {
+  "topic": "Huge waves pummel California coast, forcing closure of popular piers",
+  "score": 95.0,
+  "source": "google-news",
+  "headlines": [
+   "Huge waves pummel California coast, forcing closure of popular piers"
+  ]
+ },
+ "edit": "courage_and_calm",
+ "theme": "adversity",
+ "hook": "Facing huge waves?",
+ "punch": "huge",
+ "lead": "Huge waves hit California coast",
+ "question": "Courage or calm?",
+ "tags": [
+  "Huge waves",
+  "California coast",
+  "storm"
+ ],
+ "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+}
