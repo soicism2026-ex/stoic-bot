@@ -3112,5 +3112,904 @@
    "mountain peak",
    "sunrise"
   ]
+ },
+ {
+  "id": "no_opinion_no_storm",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 6.52, trans. George Long",
+  "quote": "It is in our power to have no opinion about a thing, and not to be disturbed in our soul; for things themselves have no natural power to form our judgments.",
+  "hook": "Stop letting events decide your mood.",
+  "theme": "control",
+  "description": "Stop letting events decide your mood.\n\nMarcus Aurelius wrote that things have no power to form your judgments. The event arrives; the verdict is yours to give or hold back.\n\nBefore you react today, ask what you are adding to what happened.",
+  "question": "What did you decide was a disaster this week that was only an event?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man at a stone window reading a bad message calmly as rain falls outside",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} at a stone window gripping a rolled message, rain streaming down the sill, grey overcast light on a tense face",
+   "Close-up of {man}'s hands unrolling a papyrus scroll, oil lamp flame steady beside him",
+   "A rain-lashed harbour wall with waves crashing, a lone fishing boat riding the swell, overcast noon",
+   "{marcus} seated at a bare wooden desk, calm and unhurried, warm oil lamp glow on his weathered face",
+   "Close-up of {man} drawing one slow breath, eyes closed, soft window light on his cheek",
+   "{man} setting the scroll down on a stone table and turning to the open courtyard, shoulders relaxed, morning sun",
+   "{man} stepping out under a bright sky as the storm clouds break overhead, golden dawn light"
+  ]
+ },
+ {
+  "id": "free_man_or_slave",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 9.40, trans. George Long",
+  "quote": "Well, then, is it not better to use what is in thy power like a free man than to desire in a slavish and abject way what is not in thy power?",
+  "hook": "Chasing what you can't control?",
+  "theme": "control",
+  "description": "Chasing something that isn't up to you?\n\nMarcus Aurelius put it as a plain choice: use what is in your power like a free man, or beg for what is not in your power like a slave.\n\nSpend today's energy on the one thing you can actually do.",
+  "question": "What are you chasing right now that isn't up to you?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man reaching toward a high shelf of amphorae out of reach in a torchlit storeroom, then turning to work",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} stretching on tiptoe toward a high stone shelf of clay jars far out of reach, torchlight flickering on the wall",
+   "Close-up of {man}'s fingertips straining toward the rim of a clay jar, torchlight on his knuckles",
+   "{marcus} watching from the doorway with a patient look, soft dawn light behind him",
+   "A pair of calloused hands lifting a wooden ladder from the floor, firelight from a hearth behind",
+   "{man} setting the ladder against the shelf and climbing with steady hands, torchlight on the stone",
+   "Wide view of a sunlit olive grove where {man} works with a hoe, unhurried, golden morning sun",
+   "{man} resting on a stone wall with a clay cup of water, calm and upright, warm sunset"
+  ]
+ },
+ {
+  "id": "a_waveless_bay",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 12.22, trans. George Long",
+  "quote": "Take away then, when thou choosest, thy opinion, and like a mariner who has doubled the promontory, thou wilt find calm, everything stable, and a waveless bay.",
+  "hook": "Mind in a storm? Change the opinion.",
+  "theme": "resilience",
+  "description": "Mind in a storm?\n\nMarcus Aurelius pictured a sailor rounding a headland into a calm bay. Drop the opinion that is churning you, he said, and the water settles.\n\nName the one story you keep telling yourself tonight, then put it down.",
+  "question": "What story are you telling yourself that keeps the water rough?",
+  "visuals": [
+   "man thinking",
+   "still:ancient sailing ship rounding a rocky headland from stormy waves into a calm bay at sunset",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "A bronze-skinned sailor gripping a wooden steering oar as grey waves slam a small ship, stormy overcast light",
+   "Close-up of the sailor's weathered face squinting into spray, wet wool cloak plastered to his shoulders, overcast noon",
+   "A small wooden ship cresting a wave beside a jagged headland of dark rock, spray flying, stormy daylight",
+   "The ship rounding the headland and gliding into a glassy bay, the sail slackening, golden hour",
+   "Close-up of the sailor's hand easing off the steering oar, calm water rippling past, warm sunset",
+   "{marcus} standing on a stone harbour wall at sunset, still and thoughtful, the bay shining behind him",
+   "{man} sitting on the wall with his feet over calm water, eyes closed and smiling, soft evening sun"
+  ]
+ },
+ {
+  "id": "what_an_idea",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 9.34, trans. George Long",
+  "quote": "When they think that they do harm by their blame or good by their praise, what an idea!",
+  "hook": "Their opinion of you? What an idea.",
+  "theme": "ego",
+  "description": "Their opinion of you has less power than you think.\n\nMarcus Aurelius, the most powerful man in Rome, laughed at the idea that anyone's blame could harm him or their praise could help him.\n\nLet the comment land, then let it pass.",
+  "question": "Whose opinion of you do you still give too much weight?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man calmly smiling in a crowded torchlit forum as people point and whisper",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} walking through a crowded torchlit forum while people whisper and point behind their hands, his chin level",
+   "Close-up of a woman's mouth whispering into a friend's ear, torchlight flickering on their faces",
+   "A shouting orator on stone steps flinging his arms wide, a crowd below, harsh noon sun",
+   "{marcus} smiling slightly at a long table, amused eyebrows raised, warm oil lamp glow",
+   "Close-up of {man}'s face breaking into a quiet laugh, eyes bright, soft window light",
+   "{man} walking out of the forum through a sunlit stone archway, cloak swaying, the crowd small behind him",
+   "{man} on a hillside at golden hour, arms open to the breeze, free and relaxed"
+  ]
+ },
+ {
+  "id": "one_thing_at_a_time",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.22, trans. George Long",
+  "quote": "Attend to the matter which is before thee, whether it is an opinion or an act or a word.",
+  "hook": "Too much in your head? Do this one.",
+  "theme": "discipline",
+  "description": "Too much going on in your head?\n\nMarcus Aurelius gave himself one instruction: attend to the matter in front of you, whether it is a thought, a task or a sentence.\n\nPick the one thing in front of you and give it everything for ten minutes.",
+  "question": "What is the one thing in front of you that you keep avoiding?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man at a workbench surrounded by scattered tools and scrolls, focusing on one chisel in lamplight",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} at a cluttered workbench with scrolls and tools piled around him, hands pressed to his temples, oil lamp flickering",
+   "Close-up of {man}'s eyes darting across a messy table, oil lamp flame glinting in them",
+   "A single bronze chisel resting on a clean slab of marble, sharp window light falling on its edge",
+   "{marcus} at a desk with one scroll unrolled before him, intense and still, warm oil lamp glow",
+   "Close-up of {man}'s hand lifting the chisel and setting its tip to the marble, window light on his knuckles",
+   "{man} working with steady focus, marble dust drifting in a shaft of sun from a doorway",
+   "{man} stepping back from a finished carved line, tired and satisfied, golden afternoon sun"
+  ]
+ },
+ {
+  "id": "blame_yourself_first",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 9.42, trans. George Long",
+  "quote": "Consider whether thou shouldst not rather blame thyself, because thou didst not expect such a man to err in such a way.",
+  "hook": "Someone let you down again?",
+  "theme": "anger",
+  "description": "Someone let you down again?\n\nMarcus Aurelius asked whether the fault might be partly yours for not expecting it from that kind of person.\n\nThis isn't about excusing them. It's about being surprised less often and angry for less time.",
+  "question": "Who keeps letting you down in the same way?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man at a table with an empty chair, a clay cup and a broken promise, candle burning low",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} waiting alone at a long wooden table set for two, an empty chair opposite, a candle burning low",
+   "Close-up of a clay cup on the table with untouched bread beside it, candle flame trembling",
+   "{man} rising from the table with a hard face, hands flat on the wood, torchlight throwing his shadow on the wall",
+   "{marcus} in a stone doorway at dusk, calm and knowing, looking straight at {man}",
+   "Close-up of {man} exhaling slowly, shoulders dropping, soft dusk light on his face",
+   "{man} blowing out the candle and walking out into a courtyard of warm sunset light, steady stride",
+   "{man} sitting on the courtyard wall watching the first stars arrive, at ease, last glow of sunset"
+  ]
+ },
+ {
+  "id": "not_crushed_by_the_present",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 4.49, trans. George Long",
+  "quote": "Not so, but happy am I, though this has happened to me, because I continue free from pain, neither crushed by the present nor fearing the future.",
+  "hook": "Something went wrong? Say this instead.",
+  "theme": "resilience",
+  "description": "Something just went wrong?\n\nMarcus Aurelius suggested a different sentence: I am still fine, though this happened, because the present has not crushed me and the future has not frightened me.\n\nSay it out loud once today and see what it does to your shoulders.",
+  "question": "What happened this week that you are still treating as the end of the story?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man standing in rain amid fallen pottery, then lifting his head to a break in the clouds",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} standing in a courtyard of shattered clay jars, rain falling, head bowed, grey overcast light",
+   "Close-up of {man}'s hands, palms open and wet with rain, grey overcast light",
+   "A heavy wooden door hanging off its hinges in a stone wall, rain dripping, overcast noon",
+   "{marcus} standing close to {man} with a hand on his shoulder, calm, soft grey daylight",
+   "Close-up of {man} lifting his chin, eyes clear, a thin line of sun breaking across his face",
+   "A shaft of golden sun breaking through grey clouds over the courtyard, wet stones glittering",
+   "{man} gathering the shards into a basket with steady hands, sun on his shoulders, warm morning"
+  ]
+ },
+ {
+  "id": "swallowed_by_time",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 7.19, trans. George Long",
+  "quote": "How many a Chrysippus, how many a Socrates, how many an Epictetus has time already swallowed up!",
+  "hook": "Think your problems will last forever?",
+  "theme": "time",
+  "description": "Think this will matter forever?\n\nMarcus Aurelius looked at the great names and noticed time had swallowed them up. Philosophers, kings, rivals. If they fit inside it, so do your worries.\n\nHold this week lightly. It is smaller than it feels.",
+  "question": "What are you worrying about now that you won't remember in five years?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man on a clifftop watching a vast sunset sea as waves swallow a low rock",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} pacing a stone terrace with a clenched jaw, a heavy sky behind him, late afternoon sun",
+   "Wide view of an enormous sea at dusk, long waves rolling in over a dark rock, last orange sun",
+   "Close-up of waves washing over a worn rock until it sinks beneath foam, dusk light",
+   "{marcus} on a hilltop looking down on a valley of tiny rooftops, quiet and thoughtful, golden hour",
+   "Close-up of old stone steps worn smooth in the middle by centuries of feet, low sun raking across them",
+   "{man} stopping at the cliff edge, breathing out, shoulders loosening, orange sunset",
+   "{man} turning from the sea with a small smile and walking home along a lit path, warm dusk glow"
+  ]
+ },
+ {
+  "id": "change_your_mind_freely",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 8.16, trans. George Long",
+  "quote": "Remember that to change thy opinion and to follow him who corrects thy error is as consistent with freedom as it is to persist in thy error.",
+  "hook": "Hate being wrong? Read this.",
+  "theme": "ego",
+  "description": "Hate being wrong?\n\nMarcus Aurelius pointed out that changing your mind when someone corrects you is just as free as sticking to your mistake. It only feels weaker.\n\nAdmit one small error today and watch how little it costs.",
+  "question": "When did changing your mind last make you better off?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man arguing in a torchlit courtyard then lowering his hand and nodding to an old friend",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} jabbing a finger at an older friend across a stone table, face flushed, torchlight flickering on both of them",
+   "Close-up of {man}'s clenched fist on the table, torchlight on his knuckles",
+   "The friend calmly laying a clay tablet of figures between them, steady firelight from a hearth behind",
+   "Close-up of {man}'s eyes reading the figures, the anger draining away, soft lamp glow",
+   "{marcus} seated nearby with a faint smile of approval, warm oil lamp glow",
+   "{man} clasping the friend's forearm in a firm Roman handshake, both smiling, torchlight",
+   "{man} walking out into a sunlit street with a straight back and a lighter step, bright morning sun"
+  ]
+ },
+ {
+  "id": "what_need_of_fear",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 10.12, trans. George Long",
+  "quote": "What need is there of suspicious fear, since it is in thy power to inquire what ought to be done?",
+  "hook": "Scared of what might happen?",
+  "theme": "fear",
+  "description": "Scared of what might happen?\n\nMarcus Aurelius asked what use suspicious fear is when you can simply ask what ought to be done, and then do it.\n\nTurn one fear today into one question, and write the first step.",
+  "question": "What is one fear you could turn into a question today?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man pacing a dark corridor then lifting a torch and walking forward",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} pacing a dark stone corridor with his arms wrapped around himself, a single torch guttering on the wall",
+   "Close-up of {man}'s wide eyes scanning the shadows, torchlight trembling on his face",
+   "A long dark staircase descending into black, a single torch burning in an iron bracket",
+   "{marcus} stepping from the shadows with a calm gaze, torchlight on his weathered face",
+   "Close-up of {man}'s hand lifting a torch from an iron bracket, flames steady",
+   "{man} walking forward down the corridor with the torch held high, back straight, firelight on the walls",
+   "{man} stepping out through a stone doorway into bright dawn, squinting and smiling"
+  ]
+ },
+ {
+  "id": "why_are_you_afraid",
+  "author": "Epictetus",
+  "citation": "Discourses IV.5, trans. George Long",
+  "quote": "Why then are you still disturbed and why do you choose to show yourself afraid?",
+  "hook": "Still rattled? Ask yourself why.",
+  "theme": "fear",
+  "description": "Still rattled by something you cannot change?\n\nEpictetus asked a blunt question: why are you still disturbed, and why do you choose to show yourself afraid? He said choose, because the fear is partly a habit.\n\nThis week, catch yourself rehearsing the worst and stop mid-sentence.",
+  "question": "What are you still rehearsing in your head that has not happened?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek man in a lamplit doorway gripping the frame, then letting go and stepping out calm",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} gripping a stone door frame at night, knuckles white, an oil lamp flickering behind him",
+   "Close-up of {man}'s trembling hand on the rough stone, oil lamp glow on his skin",
+   "{epictetus} sitting on a low stool in the dark room, calm and amused, warm oil lamp glow",
+   "Close-up of {epictetus}'s steady eyes, an old man's gentle challenge, lamplight",
+   "{man} loosening his grip and exhaling, shoulders dropping, soft lamp glow",
+   "{man} stepping out of the doorway into a quiet moonlit street, upright, silver moonlight",
+   "{man} sitting on a stone step beneath the stars, relaxed and smiling, moonlight on his face"
+  ]
+ },
+ {
+  "id": "bear_the_thirst",
+  "author": "Epictetus",
+  "citation": "Discourses III.10, trans. George Long",
+  "quote": "Now is the time for thirst, bear it well; now is the time for hunger, bear it well.",
+  "hook": "Discipline is a bit of thirst.",
+  "theme": "discipline",
+  "description": "Discipline is a little bit of thirst.\n\nEpictetus told his students that now is the time to bear hunger and thirst well. Not later, not when it's easy.\n\nPick one small discomfort to do properly today and finish it.",
+  "question": "What small discomfort are you dodging that would make you stronger?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek athlete in harsh noon sun resisting a jug of water in a dusty training yard",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} in a dusty training yard at harsh noon, sweat on his brow, eyes fixed on a clay jug of water in the shade",
+   "Close-up of drops of water sliding down the side of a clay jug, noon sun glinting",
+   "Close-up of {man}'s dry lips and clenched jaw, hard noon sun on his face",
+   "{epictetus} watching from a shaded portico, arms folded, an approving nod, noon sun beyond the portico columns",
+   "{man} turning his back on the jug and picking up a heavy wooden training sword, harsh noon sun",
+   "{man} finishing his drills as the sun sinks, chest heaving, a fierce smile, golden hour",
+   "{man} finally lifting the clay jug and drinking slowly, shoulders relaxed, warm sunset"
+  ]
+ },
+ {
+  "id": "blame_your_opinions",
+  "author": "Epictetus",
+  "citation": "Enchiridion 5, trans. George Long",
+  "quote": "When then we are impeded or disturbed or grieved, let us never blame others, but ourselves, that is, our opinions.",
+  "hook": "Always blaming someone else?",
+  "theme": "control",
+  "description": "Always blaming someone else for how you feel?\n\nEpictetus said when we are disturbed, the thing to blame is not other people but our own opinions about what happened.\n\nTry swapping one \"he made me\" for \"I decided\" today.",
+  "question": "What would change if you stopped blaming and started examining?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek man at a market stall slamming a hand down on the counter at a vendor, then pausing",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} slamming a hand on a market stall counter at a shrugging vendor, a spilled basket of figs at his feet, noon sun",
+   "Close-up of the vendor's puzzled face, a hand holding a fig, harsh noon sun",
+   "Close-up of {man}'s fist loosening on the wooden counter, noon light on his scarred knuckles",
+   "{epictetus} sitting on a low stool in the shade of an awning, studying {man} with a gentle gaze, noon sun bright beyond",
+   "{man} lowering his head and rubbing his eyes, shoulders sinking, noon sun bright beyond the awning",
+   "{man} helping the vendor gather the fallen figs into a basket, a quiet nod between them, warm afternoon sun",
+   "{man} walking off through the market square lighter, a fig in hand, golden sunset"
+  ]
+ },
+ {
+  "id": "not_shameful_to_be_hungry",
+  "author": "Epictetus",
+  "citation": "Discourses III.24, trans. George Long",
+  "quote": "For it is not shameful to be without something to eat, but not to have reason sufficient for keeping away fear and sorrow.",
+  "hook": "Money tight? Read this.",
+  "theme": "adversity",
+  "description": "Money tight and your mind racing?\n\nEpictetus said it isn't shameful to go without a meal. What shames us is lacking the reason to keep fear and sorrow at a distance.\n\nWhat you have today is enough to start with. Build your calm from there.",
+  "question": "What would you still have if the money disappeared tomorrow?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek man at a bare wooden table with a single loaf of bread, calm, in a small lamplit room",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} sitting at a bare wooden table with one small loaf of bread, shoulders hunched, a single oil lamp burning",
+   "Close-up of {man}'s hands breaking the loaf in two, steam rising, oil lamp glow",
+   "A nearly empty clay jar of grain on a stone shelf, dusty window light",
+   "{epictetus} on a worn stool in the corner, patient and kind, warm oil lamp light on his face",
+   "Close-up of {man} lifting his head, a breath of resolve, soft lamplight",
+   "{man} stepping out of his small house at dawn with a tool bag over his shoulder, golden sunrise",
+   "{man} pausing on a hilltop to watch the sun clear the horizon, shoulders square, warm dawn"
+  ]
+ },
+ {
+  "id": "friend_in_adversity",
+  "author": "Epictetus",
+  "citation": "Discourses IV.13, trans. George Long",
+  "quote": "In prosperity it is very easy to find a friend; but in adversity it is most difficult of all things.",
+  "hook": "Who stays when it gets hard?",
+  "theme": "friendship",
+  "description": "Who is still around when it gets hard?\n\nEpictetus noticed that friends are easy to find in good times and hard to find in bad ones.\n\nBe the one who shows up. Send the message today to the person who is quietly struggling.",
+  "question": "Who showed up for you when things were hard?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek man sitting alone on a stone step as a friend approaches with a clay jug through evening light",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} sitting alone on a stone step at dusk, head in his hands, the street empty, fading sunset",
+   "Close-up of an empty clay cup beside him, long shadows across the step, dusk light",
+   "A friend's silhouette approaching down the lane with a clay jug in hand, golden hour behind",
+   "Close-up of the friend's broad hand setting the jug down beside {man}, golden hour",
+   "{epictetus} watching the two men from a doorway, gentle smile, warm oil lamp glow behind him",
+   "Two men sitting shoulder to shoulder on the step sharing the jug, the sunset glowing",
+   "{man} laughing quietly with his friend as the first stars appear, warm lamplight spilling from a doorway"
+  ]
+ },
+ {
+  "id": "let_the_seed_grow",
+  "author": "Epictetus",
+  "citation": "Discourses IV.8, trans. George Long",
+  "quote": "Fruit grows thus: the seed must be buried for some time, hid, grow slowly in order that it may come to perfection.",
+  "hook": "Nothing seems to be working?",
+  "theme": "discipline",
+  "description": "Nothing seems to be working?\n\nEpictetus reminded his students that fruit grows slowly. The seed must be buried, hidden and left to grow for some time before it comes to perfection.\n\nKeep doing the unglamorous work today. Roots come before leaves.",
+  "question": "What are you doing now that won't show results for a year?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek farmer pressing a seed into dark soil at dawn then watching a green shoot break through",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "A weathered farmer's hand pressing a seed into dark soil, dawn light low across the field",
+   "{man} kneeling in a bare field watering a patch of dark earth from a clay jug, golden sunrise",
+   "Close-up of rain pattering on bare soil in an olive grove, overcast noon",
+   "{epictetus} leaning on a staff at the field's edge, patient and smiling, soft morning sun",
+   "Close-up of a first green shoot splitting dark soil, dew glittering in the dawn",
+   "A row of small green plants stretching across a field, long golden shadows, sunrise",
+   "{man} standing among tall ripening stalks, hand brushing the grain, warm golden hour"
+  ]
+ },
+ {
+  "id": "a_useful_difficulty",
+  "author": "Epictetus",
+  "citation": "Discourses I.24, trans. George Long",
+  "quote": "In my opinion no man has had a more profitable difficulty than you have had, if you choose to make use of it as an athlete would deal with a young antagonist.",
+  "hook": "Your hardest thing is your trainer.",
+  "theme": "adversity",
+  "description": "Your hardest thing might be your best trainer.\n\nEpictetus told a man that no one had a more profitable difficulty, if he would use it the way an athlete uses a young, strong opponent.\n\nTreat today's problem as a sparring partner, not an enemy.",
+  "question": "What hard thing in your life is secretly making you stronger?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek wrestler grappling with a strong young opponent in sand under hot sun, then shaking hands",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} locked in a wrestling hold with a larger opponent on sand, sweat streaming, harsh noon sun",
+   "Close-up of {man}'s bared teeth and straining neck, noon sun on his skin",
+   "{man} thrown to the sand, dust rising, the opponent standing over him, harsh noon sun",
+   "{epictetus} on a stone bench at the arena edge calling out a quiet instruction, noon sun on the sand beyond",
+   "Close-up of {man}'s hand slapping the sand and pushing himself up, resolve in his eyes, noon sun",
+   "{man} and the opponent clasping forearms, both breathing hard, respectful smiles, golden afternoon sun",
+   "{man} sitting on the sand pouring water over his head at sunset, exhausted and proud, warm golden hour"
+  ]
+ },
+ {
+  "id": "afraid_of_the_wrong_things",
+  "author": "Epictetus",
+  "citation": "Discourses IV.1, trans. George Long",
+  "quote": "But will you be afraid about your body and your possessions, about things which are not yours, about things which in no way concern you?",
+  "hook": "Afraid of what was never yours?",
+  "theme": "fear",
+  "description": "Afraid of losing things that were never really yours?\n\nEpictetus asked if you will really tremble over your body, your possessions, things that in no way concern your character.\n\nThe part of you that decides and chooses cannot be taken. Stand there today.",
+  "question": "Which of your fears is about something you never fully owned?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek man guarding a heap of belongings through the night then setting them down at dawn",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} clutching a heavy chest to his chest in a dark room, an oil lamp trembling on the table, eyes darting",
+   "Close-up of his knuckles white on a bronze lock, oil lamp glow on the metal",
+   "A pile of clay jars, cloaks and a bronze bowl heaped on a stone floor, shadows from a single oil lamp",
+   "{epictetus} sitting calmly on a stool with his arms open, warm oil lamp glow",
+   "Close-up of {man} setting the chest on the floor and letting his hands fall open, soft lamp glow",
+   "{man} walking out at dawn with only a cloak, the sun rising over the hills, warm golden sunrise",
+   "{man} standing on a hilltop with his arms wide in the sunrise, breathing deep, golden light"
+  ]
+ },
+ {
+  "id": "do_it_in_front_of_them",
+  "author": "Epictetus",
+  "citation": "Enchiridion 35, trans. George Long",
+  "quote": "When you have decided that a thing ought to be done and are doing it, never avoid being seen doing it, though the many shall form an unfavourable opinion about it.",
+  "hook": "Doing the right thing? Don't hide.",
+  "theme": "duty",
+  "description": "Doing the right thing and worried what people will say?\n\nEpictetus said that once you've decided something ought to be done, never avoid being seen doing it, even if the crowd forms a poor opinion.\n\nIf it's right, you don't have to do it in secret. Do it in daylight.",
+  "question": "What right thing are you doing quietly because of what people might say?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek man carrying a heavy sack of grain through a crowded sunlit market as people jeer",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} carrying a heavy sack of grain through a crowded market square, onlookers sneering behind raised hands, bright noon sun",
+   "Close-up of {man}'s face, sweat on his brow, eyes forward, hard noon sun",
+   "A group of idle men on a stone bench laughing and pointing, noon sun",
+   "{epictetus} watching from the shade of an arch with a faint approving smile, noon sun beyond the arch",
+   "Close-up of {man}'s hands gripping the rough sack, steady, noon light",
+   "{man} reaching an old woman's doorway and setting the sack down at her feet, her face lighting, warm afternoon sun",
+   "{man} walking home through the quiet market at sunset, head high, golden hour glow"
+  ]
+ },
+ {
+  "id": "habit_of_not_attending",
+  "author": "Epictetus",
+  "citation": "Discourses IV.12, trans. George Long",
+  "quote": "For first, and what causes most trouble, a habit of not attending is formed in you; then a habit of deferring your attention.",
+  "hook": "Can't focus? It starts small.",
+  "theme": "discipline",
+  "description": "Can't focus on anything?\n\nEpictetus said the trouble starts when a habit of not attending is formed, followed by a habit of putting it off. It happens a little at a time.\n\nStart the other habit today: one task, full attention, no drifting for twenty minutes.",
+  "question": "What was the last thing you gave your full attention to?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek man at a desk distracted by a window while a scroll lies untouched then returning to the page",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} at a wooden desk gazing out of a sunny window while a scroll sits untouched, dust drifting in the sunlight",
+   "Close-up of his fingers drumming on the wood, bright window light across the table",
+   "A bird hopping on the window ledge, bright afternoon sun",
+   "{epictetus} sitting opposite with a patient look, tapping the scroll, warm oil lamp glow",
+   "Close-up of {man}'s eyes snapping back to the scroll, jaw set, soft lamp glow",
+   "{man} bent over the scroll with a reed in his hand, the oil lamp steady beside him",
+   "{man} putting down his reed at dusk with a deep, satisfied breath, last orange sunlight through the window"
+  ]
+ },
+ {
+  "id": "you_can_choose",
+  "author": "Epictetus",
+  "citation": "Discourses II.2, trans. George Long",
+  "quote": "If you choose to be modest and faithful, who shall not allow you to be so?",
+  "hook": "Be who you want. Who can stop you?",
+  "theme": "duty",
+  "description": "Who can stop you from being the person you want to be?\n\nEpictetus asked a simple question: if you choose to be modest and faithful, who can forbid it? Your character is yours alone to build.\n\nChoose one trait today and act it out in the smallest thing.",
+  "question": "What kind of person do you choose to be, whatever anyone says?",
+  "visuals": [
+   "man thinking",
+   "still:ancient greek man in a stone courtyard setting a lamp straight on a table while others argue behind him",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} standing upright in a loud courtyard where men argue and shove behind him, his gaze steady, harsh noon sun",
+   "Close-up of {man}'s steady eyes, the blur of a shouting crowd behind him, noon light",
+   "A clay oil lamp burning with a straight flame in a room of drafts, doorway light",
+   "{epictetus} seated on a stone bench smiling slowly, open hands resting on his knees, afternoon sun through a fig tree",
+   "Close-up of {man}'s hand returning a lost coin purse to a stranger, bright noon sun",
+   "{man} bowing his head slightly to the stranger, who nods back, warm afternoon sun",
+   "{man} walking away down a long road lined with cypress trees, back straight, golden hour"
+  ]
+ },
+ {
+  "id": "unhappy_before_its_time",
+  "author": "Seneca",
+  "citation": "Moral Letters 24, trans. Richard M. Gummere",
+  "quote": "It is indeed foolish to be unhappy now because you may be unhappy at some future time.",
+  "hook": "Already dreading something that hasn't happened?",
+  "theme": "fear",
+  "description": "Already dreading something that hasn't happened?\n\nSeneca called it foolish to be unhappy now because you might be unhappy later. You pay for the pain twice, once in your head and once in real life, if it ever comes.\n\nCome back to the day you are actually in.",
+  "question": "What are you suffering from today that hasn't happened yet?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man pacing a rain-darkened terrace staring at a distant storm cloud on the horizon, then sunlight on his face",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} pacing a stone terrace staring at a dark storm cloud on the horizon, fists clenched, heavy overcast light",
+   "Close-up of {man}'s furrowed brow, eyes fixed far away, grey overcast light",
+   "A dark storm cloud far out over the sea while the sky overhead is clear and blue, afternoon sun on the terrace",
+   "{seneca} seated at a table in the sun with a clay cup of water, calm and wry, golden afternoon sun",
+   "Close-up of {man}'s fingers unclenching around the terrace rail, warm sun on his hand",
+   "{man} turning his back to the horizon and sitting beside {seneca} in the sunshine, shoulders easing, warm afternoon sun",
+   "{man} laughing with a bit of bread in his hand, the storm cloud small behind him, warm sunset"
+  ]
+ },
+ {
+  "id": "poverty_cannot_bend_him",
+  "author": "Seneca",
+  "citation": "Moral Letters 82, trans. Richard M. Gummere",
+  "quote": "For it is not poverty that we praise, it is the man whom poverty cannot humble or bend.",
+  "hook": "Poor, but not bent.",
+  "theme": "resilience",
+  "description": "Poor, but not bent.\n\nSeneca wrote that we don't praise poverty itself. We praise the person it cannot humble or bend.\n\nYour bank balance is a number. Your posture is a decision. Stand straight in whatever circumstances you have.",
+  "question": "What helps you stand tall when money is tight?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man in a patched cloak carrying a heavy water jar uphill at dawn, head high",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} in a patched wool cloak climbing a dusty hill with a heavy water jar on his shoulder, head high, golden dawn",
+   "Close-up of his cracked bare feet on warm stone, low dawn sun",
+   "Close-up of calloused hands gripping the jar's rim, steady, golden sunrise",
+   "{seneca} watching from a stone terrace with a look of quiet respect, warm morning sun",
+   "{man} setting the jar down at a gate and wiping his brow with a smile, bright morning sun",
+   "{man} standing tall on the hilltop with the city spread out in morning haze, arms at his sides, golden sunrise",
+   "{man} sharing a heel of bread with a ragged child on a doorstep, warm sunlight on both"
+  ]
+ },
+ {
+  "id": "choose_friends_slowly",
+  "author": "Seneca",
+  "citation": "Moral Letters 3, trans. Richard M. Gummere",
+  "quote": "Ponder for a long time whether you shall admit a given person to your friendship; but when you have decided to admit him, welcome him with all your heart and soul.",
+  "hook": "Choose friends slowly. Then fully.",
+  "theme": "friendship",
+  "description": "Choose friends slowly. Then trust them fully.\n\nSeneca advised pondering for a long time before admitting someone to your friendship, but once you've decided, to welcome him with your whole heart.\n\nHalf-hearted friendships cost the most. Decide, then show up.",
+  "question": "How long does it take you to decide who is really your friend?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man studying a stranger across a torchlit table, then clasping his forearm warmly",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} studying a stranger across a long torchlit table, eyes narrowed and arms folded, flames flickering",
+   "Close-up of the stranger's open palm set quietly on the table, torchlight on his hand",
+   "{seneca} standing behind a chair with a thoughtful finger raised, warm oil lamp glow",
+   "Close-up of {man}'s eyes softening, a slow nod, torchlight on his face",
+   "{man} rising and gripping the stranger's forearm with both hands, both smiling, warm firelight",
+   "Two men sharing bread and wine at a table, laughing, firelight from a hearth behind them",
+   "{man} and his friend walking out together under the stars, arms across shoulders, silver moonlight"
+  ]
+ },
+ {
+  "id": "yesterday_is_lost",
+  "author": "Seneca",
+  "citation": "Moral Letters 24, trans. Richard M. Gummere",
+  "quote": "Counting even yesterday, all past time is lost time; the very day which we are now spending is shared between ourselves and death.",
+  "hook": "Today is already being spent.",
+  "theme": "time",
+  "description": "Today is already being spent.\n\nSeneca reminded Lucilius that everything behind us is gone, and even the day we are in is shared with death.\n\nThat isn't a threat. It's an invitation to use the part that's still in your hands.",
+  "question": "What would you do with today if you remembered it was already running out?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man watching water drip from a bronze spout into a basin as a sundial shadow shifts",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "Water dripping from a bronze spout into a stone basin, the surface rippling, slanted sun through a doorway",
+   "{man} sitting beside the basin staring at the drops with a heavy sigh, window light on his face",
+   "Close-up of a sundial's shadow creeping across the dial in the afternoon sun",
+   "{seneca} bent over a desk by the window with a reed in hand, pausing to look at {man} kindly, soft window light",
+   "Close-up of {man} standing and rolling up his sleeves, hands steady, window light",
+   "{man} hurrying along a lane with a basket of tools, the afternoon sun low, golden hour",
+   "{man} working the soil in a garden at sunset, absorbed and smiling, warm orange sunlight"
+  ]
+ },
+ {
+  "id": "learned_for_yourself",
+  "author": "Seneca",
+  "citation": "Moral Letters 7, trans. Richard M. Gummere",
+  "quote": "You may say: “For what purpose did I learn all these things?” But you need not fear that you have wasted your efforts; it was for yourself that you learned them.",
+  "hook": "Learned it for nothing? Not so.",
+  "theme": "discipline",
+  "description": "Feel like your hard work led nowhere?\n\nSeneca anticipated the question: for what purpose did I learn all this? Then he answered it. You learned it for yourself.\n\nThe skill stays with you whatever the audience does. Keep building it.",
+  "question": "What did you learn the hard way that nobody saw?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man at a desk closing a scroll alone in the evening, then smiling quietly",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} at a wooden desk late at night, surrounded by finished scrolls, rubbing his tired eyes, oil lamp burning low",
+   "Close-up of {man}'s ink-stained fingers resting on a closed scroll, oil lamp glow",
+   "An empty rows of seats in a lecture hall, dusty light falling from a high window",
+   "{seneca} sitting in the corner with a gentle smile, warm oil lamp glow",
+   "Close-up of {man}'s face as the truth lands, a small smile forming, soft lamplight",
+   "{man} stepping out onto a balcony into a night of bright stars, moonlight on his shoulders",
+   "{man} at dawn picking up a chisel and starting to work with ease, golden sunrise"
+  ]
+ },
+ {
+  "id": "time_slips_past_unseen",
+  "author": "Seneca",
+  "citation": "Moral Letters 49, trans. Richard M. Gummere",
+  "quote": "For when we are intent on the present, we do not notice it, so gentle is the passage of time’s headlong flight.",
+  "hook": "Time doesn't announce itself.",
+  "theme": "time",
+  "description": "Time doesn't announce itself.\n\nSeneca wrote that when we are busy with the present we do not notice it, so gentle is time's headlong flight.\n\nLook up from the screen, the schedule, the plan. This is the part that's actually going by.",
+  "question": "When did you last notice an ordinary hour passing?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man at a bench carving, then lifting his head to find the afternoon has turned to dusk",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} at a workbench carving a wooden figure in bright afternoon sun streaming through a doorway",
+   "Close-up of his hands working a knife along the grain, wood shavings curling in the sun",
+   "The sunbeam slowly sliding across the stone floor from the doorway, dust drifting through it",
+   "{seneca} watching from a stool with a quiet smile, amber late-afternoon sun",
+   "{man} lifting his head, startled that the light is gold and low, dusk glowing in the doorway",
+   "Wide view of the dusk sky turning orange over rooftops, a swallow gliding across it",
+   "{man} standing in the doorway with the half-finished figure held up to the sunset, warm and thoughtful"
+  ]
+ },
+ {
+  "id": "death_hangs_over_everyone",
+  "author": "Seneca",
+  "citation": "Moral Letters 24, trans. Richard M. Gummere",
+  "quote": "What, have you only at this moment learned that death is hanging over your head, at this moment exile, at this moment grief?",
+  "hook": "Life isn't a surprise party.",
+  "theme": "mortality",
+  "description": "Surprised that life has hard parts?\n\nSeneca asked what, have you only now learned that loss, exile and grief hang over every head? None of it should shock a person who has been paying attention.\n\nLive with that in mind, and appreciate what's still here today.",
+  "question": "What are you taking for granted that you'd miss most?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man walking with his elderly father along a sunlit cypress road, treasuring each step",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} walking beside his elderly father on a cypress-lined road, the old man leaning on his arm, golden late sun",
+   "Close-up of the father's wrinkled hand on {man}'s forearm, warm sunlight",
+   "A table laid for a family meal under a vine arbour, bread and olives glowing in the sun",
+   "{seneca} sitting at the end of the table raising a clay cup, a kind and wry smile, warm afternoon sun",
+   "Close-up of {man} laughing at something his father said, eyes crinkled, golden hour",
+   "{man} stopping to look at the setting sun, drinking in the sight, deep breath, orange sunset",
+   "{man} and his father sitting together on a stone wall as the first stars appear, comfortable silence, lamplight from a doorway"
+  ]
+ },
+ {
+  "id": "how_you_take_praise",
+  "author": "Seneca",
+  "citation": "Moral Letters 52, trans. Richard M. Gummere",
+  "quote": "These qualities become known by certain marks; but you can tell the character of every man when you see how he gives and receives praise.",
+  "hook": "Want to know a person? Watch this.",
+  "theme": "ego",
+  "description": "Want to know a person's character?\n\nSeneca said you can tell by how he gives and receives praise. Does he envy others' wins, and does his own praise go to his head?\n\nWatch yourself this week. Celebrate someone else generously and accept your own wins quietly.",
+  "question": "How do you react when someone else gets the praise?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man applauding a rival crowned with laurel in a sunlit amphitheatre while quietly smiling",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} watching a rival crowned with a laurel wreath in a crowded sunlit amphitheatre, a pang of envy on his face, bright noon sun",
+   "Close-up of {man}'s jaw tightening as the crowd roars, noon sun on his skin",
+   "The laurel wreath resting on the winner's head, leaves glinting in the sun",
+   "{seneca} sitting in the stands, arms folded, studying {man} with a knowing look, sunlit shade",
+   "Close-up of {man}'s face as his expression warms, a genuine smile forming, soft sunlight",
+   "{man} clapping loud and sincere, then clasping the rival's hand, both smiling, warm afternoon sun",
+   "{man} walking home at sunset with the rival, laughing together, golden hour"
+  ]
+ },
+ {
+  "id": "a_mind_that_owns_itself",
+  "author": "Seneca",
+  "citation": "Moral Letters 124, trans. Richard M. Gummere",
+  "quote": "I shall tell you: it is a free mind, an upright mind, subjecting other things to itself and itself to nothing.",
+  "hook": "What is real strength?",
+  "theme": "control",
+  "description": "What does real strength look like?\n\nSeneca's answer: a free mind, an upright mind, one that governs everything else and answers to nothing outside itself.\n\nToday, pick one habit or craving that runs you, and take back the reins.",
+  "question": "What is one thing that still runs your mind that you wish didn't?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man holding the reins of a pair of horses at sunrise, steady as they strain, then calm",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} gripping the leather reins of two rearing horses on a dusty road, muscles straining, harsh morning sun",
+   "Close-up of his hands wrapped around the reins, knuckles pale, sunrise light",
+   "Close-up of a horse's wild eye and flaring nostril, dust rising in golden sunrise light",
+   "{seneca} standing at the roadside with a quiet smile of respect, warm dawn light",
+   "Close-up of {man}'s steady voice and set jaw as the horses begin to calm, morning sun",
+   "{man} walking the horses down a path between olive trees, reins loose and relaxed, golden sunrise",
+   "{man} on a hilltop with the horses grazing beside him, his arms open in the wind, warm golden hour"
+  ]
+ },
+ {
+  "id": "ask_for_the_work",
+  "author": "Seneca",
+  "citation": "Moral Letters 31, trans. Richard M. Gummere",
+  "quote": "It is not enough if you do not shrink from work; ask for it.",
+  "hook": "Don't just accept hard work. Ask.",
+  "theme": "discipline",
+  "description": "Don't just accept hard work. Ask for it.\n\nSeneca said it's not enough that you don't shrink from the work. Go and ask for it.\n\nPick the harder task today, before anyone assigns it, and see who you become.",
+  "question": "What hard task could you volunteer for this week?",
+  "visuals": [
+   "man thinking",
+   "still:ancient roman man stepping forward in a workshop to lift the heaviest beam as others hesitate",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} in a busy stone workshop stepping forward toward a massive wooden beam while others hang back, bright window light",
+   "Close-up of {man}'s forearms tensing as he grips the rough beam, window sun on the grain",
+   "A crew of tired workers watching in the shade, sweat on their faces, noon sun",
+   "{seneca} at the back of the room with his arms folded, a pleased nod, warm window light",
+   "Close-up of {man}'s face straining with effort, then a grin, bright window light",
+   "{man} and two workers lifting the beam into place together, shouts of cheer, golden afternoon sun",
+   "{man} drinking water from a clay cup with the crew at sunset, tired and proud, warm golden hour"
+  ]
  }
 ]
