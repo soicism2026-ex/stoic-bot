@@ -42,7 +42,7 @@ def test_publish_replaces_both_files_in_the_release(tmp_path, monkeypatch):
     assert {Path(a).name for a in up if a.startswith("/")} == {"up-next.mp4", "up-next.json"}
     written = json.loads((tmp_path / "up-next" / "up-next.json").read_text())
     assert written["renderedAt"].endswith("Z") and written["airDay"] == "2026-10-24"
-    assert set(written["plan"]) == {"music", "impact", "whoosh"}     # what `need` compares
+    assert set(written["plan"]) == {"music", "impact", "whoosh", "topical"}     # what `need` compares
 
 
 def test_fetch_reports_failure_without_raising(tmp_path, monkeypatch):
@@ -115,7 +115,7 @@ def test_apelles_rehearses_after_every_post_with_the_crons_as_backstop():
     on = wf[True]
     assert on["workflow_run"] == {"workflows": ["daily-short"], "types": ["completed"]}
     jobs = wf["jobs"]
-    assert "scripts/up_next.py need" in jobs["check"]["steps"][1]["run"]
+    assert "scripts/up_next.py need" in next(s for s in jobs["check"]["steps"] if "up_next.py need" in s.get("run", ""))["run"]
     assert jobs["preview"]["needs"] == "check" and jobs["preview"]["if"] == "needs.check.outputs.go == '1'"
     assert "github.event_name == 'workflow_run'" in jobs["preview"]["env"]["UP_NEXT"]
     assert wf["permissions"]["actions"] == "read"
