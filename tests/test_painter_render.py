@@ -139,3 +139,38 @@ def test_the_meter_catches_zoompan_judder(tmp_path):
     s = _series(_frames(still, vf), W2 // 2, H2 // 2)
     mean = sum(s) / len(s)
     assert min(s) < 0.4 * mean or max(s) > 1.6 * mean, [round(x, 2) for x in s]
+
+
+# ------------------------------------------------------------------ the red edge line
+# Owner, 2026-11-16: "a little red line ... on all the new shorts". ffmpeg 8.0.1's
+# blend and noise leave the last 8 columns of a 1080-wide frame unfinished
+# (1080 % 16 = 8), so the enhance stage runs on a frame padded to a multiple
+# of 64 and is cropped back.
+
+def _assert_padded_enhance(g: str):
+    pad = g.index("pad=w=1088")
+    assert 1088 % 16 == 0 and "fillborders=right=8:mode=smear" in g
+    assert pad < g.index("blend=") < g.index("noise=")
+    crop = g.index("crop=1080:ih:0:0", g.index("noise="))
+    assert pad < g.index("blend=") and g.index("noise=") < crop
+    assert g.index("fillborders=right=8") < g.index("blend=")
+
+
+def test_painted_enhance_runs_padded_and_crops_back(monkeypatch):
+    g = _painted_graph(monkeypatch)
+    _assert_padded_enhance(g)
+    assert "[enhpad]crop=1080:ih:0:0[enh]" in g
+
+
+def test_classic_enhance_runs_padded_and_crops_back(monkeypatch):
+    env, _ = rc.CASES["classic"]
+    with tempfile.TemporaryDirectory() as d:
+        cmd = rc.capture(render, Path(d), "classic")
+    g = cmd[cmd.index("-filter_complex") + 1]
+    _assert_padded_enhance(g)
+    assert "[enhpad]crop=1080:ih:0:0[enh]" in g
+
+
+def test_padded_enhance_is_a_plain_graph_when_width_is_already_aligned(monkeypatch):
+    monkeypatch.setattr(render, "W", 1024)
+    assert "pad=" not in render.padded_enhance("a", "b", True)
