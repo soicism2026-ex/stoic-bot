@@ -1,25 +1,27 @@
 {
- "forPost": 78,
+ "forPost": 79,
  "airDay": "2026-11-17",
- "decidedAt": "2026-11-17T02:15:10Z",
+ "decidedAt": "2026-11-17T11:25:31Z",
  "trend": {
-  "topic": "SS United States",
-  "score": 0.0,
-  "source": "wikipedia-news",
+  "topic": "nyt connections hints today",
+  "score": 10000.0,
+  "source": "google-trends",
   "headlines": [
-   "American ocean liner SS United States is scuttled in the Gulf of Mexico to create the largest artificial reef."
+   "NYT Connections Answers for November 17, 2026",
+   "NYT Connections hints today: Meanings for each word for Nov. 15, 2026",
+   "Today's NYT Connections Hints (and Answer) for Sunday, November 17, 2026"
   ]
  },
- "edit": "beginning_in_our_power",
- "theme": "control",
- "hook": "Do you control the outcome?",
- "punch": "control",
- "lead": "SS United States sinks",
- "question": "Do you start or react?",
+ "edit": "your_own_work",
+ "theme": "duty",
+ "hook": "Stuck on someone else's puzzle?",
+ "punch": "puzzle",
+ "lead": "NYT Connections hints at a solution",
+ "question": "Solve yours or theirs?",
  "tags": [
-  "SS United States",
-  "artificial reef",
-  "ocean liner"
+  "NYT Connections",
+  "puzzles",
+  "games"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
