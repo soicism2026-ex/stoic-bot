@@ -1,7 +1,7 @@
 {
- "forPost": 77,
+ "forPost": 78,
  "airDay": "2026-11-17",
- "decidedAt": "2026-11-16T20:45:43Z",
+ "decidedAt": "2026-11-17T02:15:10Z",
  "trend": {
   "topic": "SS United States",
   "score": 0.0,
@@ -10,16 +10,16 @@
    "American ocean liner SS United States is scuttled in the Gulf of Mexico to create the largest artificial reef."
   ]
  },
- "edit": "in_our_power",
+ "edit": "beginning_in_our_power",
  "theme": "control",
- "hook": "Some losses are inevitable",
- "punch": "inevitable",
+ "hook": "Do you control the outcome?",
+ "punch": "control",
  "lead": "SS United States sinks",
- "question": "What can you control today?",
+ "question": "Do you start or react?",
  "tags": [
   "SS United States",
   "artificial reef",
-  "Gulf of Mexico"
+  "ocean liner"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
