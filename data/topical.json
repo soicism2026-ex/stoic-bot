@@ -1,27 +1,25 @@
 {
- "forPost": 79,
- "airDay": "2026-11-17",
- "decidedAt": "2026-11-17T11:25:31Z",
+ "forPost": 80,
+ "airDay": "2026-11-18",
+ "decidedAt": "2026-11-17T19:31:31Z",
  "trend": {
-  "topic": "nyt connections hints today",
-  "score": 10000.0,
-  "source": "google-trends",
+  "topic": "What to expect during Tuesday’s nationwide FEMA emergency alert test",
+  "score": 99.0,
+  "source": "google-news",
   "headlines": [
-   "NYT Connections Answers for November 17, 2026",
-   "NYT Connections hints today: Meanings for each word for Nov. 15, 2026",
-   "Today's NYT Connections Hints (and Answer) for Sunday, November 17, 2026"
+   "What to expect during Tuesday’s nationwide FEMA emergency alert test"
   ]
  },
- "edit": "your_own_work",
+ "edit": "not_right_not_true",
  "theme": "duty",
- "hook": "Stuck on someone else's puzzle?",
- "punch": "puzzle",
- "lead": "NYT Connections hints at a solution",
- "question": "Solve yours or theirs?",
+ "hook": "Tempted to panic?",
+ "punch": "panic",
+ "lead": "FEMA alert tests honesty",
+ "question": "Panic or prepare?",
  "tags": [
-  "NYT Connections",
-  "puzzles",
-  "games"
+  "FEMA",
+  "emergency",
+  "alert"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
