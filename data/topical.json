@@ -1,27 +1,27 @@
 {
- "forPost": 81,
+ "forPost": 82,
  "airDay": "2026-11-18",
- "decidedAt": "2026-11-18T01:29:49Z",
+ "decidedAt": "2026-11-18T10:58:48Z",
  "trend": {
-  "topic": "harry shum jr",
-  "score": 2000.0,
+  "topic": "retirement",
+  "score": 1000.0,
   "source": "google-trends",
   "headlines": [
-   "Harry Shum Jr.’s Mom Tells Him ‘I Love You’ for the First Time After 44 Years Following ‘DWTS’",
-   "Harry Shum Jr. Says His Mom Told Him ‘I Love You’ for the First Time After Watching Him on Dancing with the Stars",
-   "Harry Shum Jr. Heard Three Words From His Mom For The First Time At 44 After ‘DWTS’"
+   "Treasury finalizes 401(k) auto-enrollment rules that could boost retirement savings",
+   "US Treasury issues rules for automatic retirement plan enrollment years after law passed",
+   "IRS finalizes rules for 401(k), 403(b) automatic enrollment"
   ]
  },
- "edit": "share_your_worries",
- "theme": "friendship",
- "hook": "Hearing I love you for the first time",
- "punch": "first",
- "lead": "Harry Shum Jr's mom told him she loves him",
- "question": "Who do you wish told you they love you?",
+ "edit": "choose_free",
+ "theme": "control",
+ "hook": "Ready to retire",
+ "punch": "Ready",
+ "lead": "Retirement savings",
+ "question": "Freedom or security?",
  "tags": [
-  "Harry Shum Jr",
-  "love",
-  "family"
+  "retirement",
+  "savings",
+  "401k"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
