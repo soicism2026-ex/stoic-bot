@@ -1,27 +1,29 @@
 {
- "forPost": 82,
- "airDay": "2026-11-18",
- "decidedAt": "2026-11-18T10:58:48Z",
+ "forPost": 83,
+ "airDay": "2026-11-19",
+ "decidedAt": "2026-11-18T19:13:16Z",
  "trend": {
-  "topic": "retirement",
-  "score": 1000.0,
+  "topic": "usda health alert breakfast",
+  "score": 5000.0,
   "source": "google-trends",
   "headlines": [
-   "Treasury finalizes 401(k) auto-enrollment rules that could boost retirement savings",
-   "US Treasury issues rules for automatic retirement plan enrollment years after law passed",
-   "IRS finalizes rules for 401(k), 403(b) automatic enrollment"
+   "Do not eat these breakfast items, says USDA health alert",
+   "Breakfast foods recalled over listeria risk. What to know",
+   "A Popular Ready-to-Eat Meal Is Being Recalled for Possible Listeria Contamination—Here’s What to Know"
   ]
  },
- "edit": "choose_free",
- "theme": "control",
- "hook": "Ready to retire",
- "punch": "Ready",
- "lead": "Retirement savings",
- "question": "Freedom or security?",
+ "edit": "break_thy_promise",
+ "theme": "duty",
+ "hook": "Break rules for breakfast?",
+ "punch": "break",
+ "lead": "USDA health alert tests our will",
+ "question": "Food or word?",
  "tags": [
-  "retirement",
-  "savings",
-  "401k"
+  "usda",
+  "health",
+  "alert",
+  "breakfast",
+  "recall"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
