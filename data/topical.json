@@ -1,29 +1,27 @@
 {
- "forPost": 83,
+ "forPost": 84,
  "airDay": "2026-11-19",
- "decidedAt": "2026-11-18T19:13:16Z",
+ "decidedAt": "2026-11-19T00:54:14Z",
  "trend": {
-  "topic": "usda health alert breakfast",
-  "score": 5000.0,
+  "topic": "soldier",
+  "score": 500.0,
   "source": "google-trends",
   "headlines": [
-   "Do not eat these breakfast items, says USDA health alert",
-   "Breakfast foods recalled over listeria risk. What to know",
-   "A Popular Ready-to-Eat Meal Is Being Recalled for Possible Listeria Contamination—Here’s What to Know"
+   "43 soldiers said yes to more Army if they could play ‘GTA VI’",
+   "Soldiers sign up to play ‘Grand Theft Auto VI’ in exchange for reenlisting",
+   "Dozens of Army soldiers sign up for unique reenlistment incentive to play Grand Theft Auto VI"
   ]
  },
- "edit": "break_thy_promise",
- "theme": "duty",
- "hook": "Break rules for breakfast?",
- "punch": "break",
- "lead": "USDA health alert tests our will",
- "question": "Food or word?",
+ "edit": "blame_yourself_first",
+ "theme": "anger",
+ "hook": "Disappointed by others?",
+ "punch": "others",
+ "lead": "43 soldiers reenlist for GTA VI",
+ "question": "Blame others or yourself?",
  "tags": [
-  "usda",
-  "health",
-  "alert",
-  "breakfast",
-  "recall"
+  "GTA VI",
+  "soldiers",
+  "reenlistment"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
