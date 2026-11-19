@@ -84,3 +84,54 @@ def test_the_research_is_kept_for_the_next_session():
     for p in DATA["phrases"]:
         assert p["phrase"] in doc, p["id"]
     assert "Not one view came from a problem search" in doc
+
+
+# Cicero's "titles-search" test (owner 2026-11-16, Go on idea-titles-search).
+def _two(tmp_path, monkeypatch, titles):
+    p = tmp_path / "marketing_tests.json"
+    p.write_text(json.dumps({"tests": [
+        {"id": "search-phrases", "status": "running", "started": "2026-11-08"},
+        {"id": "titles-search", **titles}]}))
+    monkeypatch.setattr(edits, "MARKETING_TESTS", p)
+
+
+def test_titles_search_is_in_the_ledger_on_the_same_measure():
+    ledger = json.loads((ROOT / "data" / "marketing_tests.json").read_text())
+    t = next(t for t in ledger["tests"] if t["id"] == "titles-search")
+    assert t["kind"] == "traffic_source" and t["source"] == "YT_SEARCH"
+    assert t["status"] in ("queued", "running", "done") and t["start"] == "2026-11-22"
+    assert t["use"] == "titles" and t["ask"] == "idea-titles-search"
+    assert "owner, in the HQ" in t["approved"]
+
+
+def test_titles_wait_for_their_start_date_then_switch_on_by_themselves(tmp_path, monkeypatch):
+    from datetime import date
+    _two(tmp_path, monkeypatch, {"status": "queued", "start": "2026-11-22"})
+    assert edits._titles_test_on(date(2026, 11, 21)) is False
+    assert edits._titles_test_on(date(2026, 11, 22)) is True
+    # before the start date today's real clock may be either side: pin it
+    monkeypatch.setattr(edits, "_titles_test_on", lambda today=None: False)
+    assert edits.search_use() == "descriptions"
+    monkeypatch.setattr(edits, "_titles_test_on", lambda today=None: True)
+    assert edits.search_use() == "titles"
+    assert edits.as_content(Q)["_searchUse"] == "titles"
+
+
+def test_titles_follow_the_ledger_status(tmp_path, monkeypatch):
+    _two(tmp_path, monkeypatch, {"status": "running", "start": "2026-11-22"})
+    assert edits.search_use() == "titles"
+    _two(tmp_path, monkeypatch, {"status": "done", "adopted": "titles"})
+    assert edits.search_use() == "titles"
+    _two(tmp_path, monkeypatch, {"status": "done", "verdict": "loss"})      # a loss reverts
+    assert edits.search_use() == "descriptions"
+    _two(tmp_path, monkeypatch, {"status": "queued", "start": "2999-01-01"})
+    assert edits.search_use() == "descriptions"
+
+
+def test_titles_need_the_search_itself_to_be_on(tmp_path, monkeypatch):
+    p = tmp_path / "marketing_tests.json"
+    p.write_text(json.dumps({"tests": [
+        {"id": "search-phrases", "status": "done", "verdict": "loss"},
+        {"id": "titles-search", "status": "running"}]}))
+    monkeypatch.setattr(edits, "MARKETING_TESTS", p)
+    assert edits.search_use() is None
