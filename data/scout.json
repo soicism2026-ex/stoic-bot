@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-18",
+ "updated": "2026-11-19",
  "window": 30,
  "searched": [
   "stoicism",
@@ -9,87 +9,81 @@
   "seneca",
   "epictetus"
  ],
- "videos": 271,
- "outliers": 98,
+ "videos": 270,
+ "outliers": 96,
  "themes": [
   {
    "key": "(none of ours)",
-   "outliers": 70,
-   "medianViews": 75087,
-   "medianScore": 7.1
+   "outliers": 71,
+   "medianViews": 84452,
+   "medianScore": 7.5
   },
   {
    "key": "anger",
-   "outliers": 7,
-   "medianViews": 135463,
-   "medianScore": 20.4
+   "outliers": 8,
+   "medianViews": 128688,
+   "medianScore": 19.0
   },
   {
    "key": "discipline",
-   "outliers": 7,
-   "medianViews": 94608,
-   "medianScore": 9.8
+   "outliers": 5,
+   "medianViews": 94834,
+   "medianScore": 21.0
+  },
+  {
+   "key": "desire",
+   "outliers": 5,
+   "medianViews": 88092,
+   "medianScore": 16.7
   },
   {
    "key": "ego",
    "outliers": 5,
-   "medianViews": 49990,
-   "medianScore": 25.5
-  },
-  {
-   "key": "desire",
-   "outliers": 4,
-   "medianViews": 95264,
-   "medianScore": 27.0
+   "medianViews": 50294,
+   "medianScore": 25.4
   },
   {
    "key": "resilience",
-   "outliers": 4,
-   "medianViews": 78225,
-   "medianScore": 18.6
-  },
-  {
-   "key": "friendship",
    "outliers": 3,
-   "medianViews": 121979,
-   "medianScore": 4.8
+   "medianViews": 140079,
+   "medianScore": 21.0
   },
   {
    "key": "time",
    "outliers": 2,
-   "medianViews": 124320,
-   "medianScore": 13.0
+   "medianViews": 144831,
+   "medianScore": 13.4
+  },
+  {
+   "key": "friendship",
+   "outliers": 2,
+   "medianViews": 129454,
+   "medianScore": 10.5
   },
   {
    "key": "control",
    "outliers": 2,
-   "medianViews": 79513,
+   "medianViews": 79561,
    "medianScore": 71.6
-  },
-  {
-   "key": "fear",
-   "outliers": 1,
-   "medianViews": 23746,
-   "medianScore": 7.7
   }
  ],
  "authors": [
   {
    "key": "Marcus Aurelius",
-   "outliers": 14,
-   "medianViews": 35878,
-   "medianScore": 18.5
+   "outliers": 17,
+   "medianViews": 36966,
+   "medianScore": 11.7
   },
   {
    "key": "Seneca",
-   "outliers": 6,
-   "medianViews": 43138,
-   "medianScore": 15.4
+   "outliers": 4,
+   "medianViews": 44845,
+   "medianScore": 21.5
   },
   {
    "key": "Epictetus",
    "outliers": 4,
-   "medianViews": 43632,
+   "medianViews": 43639,
    "medianScore": 23.5
   }
  ],
@@ -97,9 +91,9 @@
   {
    "title": "#CriticalThinking #DeepThoughts #Philosophy #DeepQuotes #LifeQuotes #Poetry #Human #love",
    "channel": "The Experienced Stoic",
-   "views": 392286,
-   "subscribers": 1880,
-   "score": 208.7,
+   "views": 398296,
+   "subscribers": 2010,
+   "score": 198.2,
    "published": "2026-11-10",
    "seconds": 7,
    "themes": [],
@@ -109,9 +103,9 @@
   {
    "title": "#CriticalThinking #DeepThoughts #Philosophy #DeepQuotes #LifeQuotes #Poetry #Human",
    "channel": "The Experienced Stoic",
-   "views": 334592,
-   "subscribers": 1880,
-   "score": 178.0,
+   "views": 353161,
+   "subscribers": 2010,
+   "score": 175.7,
    "published": "2026-11-14",
    "seconds": 7,
    "themes": [],
@@ -121,9 +115,9 @@
   {
    "title": "A Strong Man Can Handle the Truth  | Marcus Aurelius",
    "channel": "Midnight Quotes",
-   "views": 190078,
-   "subscribers": 1290,
-   "score": 147.3,
+   "views": 208213,
+   "subscribers": 1340,
+   "score": 155.4,
    "published": "2026-11-16",
    "seconds": 7,
    "themes": [
@@ -135,9 +129,9 @@
   {
    "title": "#CriticalThinking #DeepThoughts #Philosophy #DeepQuotes #LifeQuotes #Poetry #Human",
    "channel": "The Experienced Stoic",
-   "views": 252401,
-   "subscribers": 1880,
-   "score": 134.3,
+   "views": 296750,
+   "subscribers": 2010,
+   "score": 147.6,
    "published": "2026-11-12",
    "seconds": 4,
    "themes": [],
@@ -147,9 +141,9 @@
   {
    "title": "You've Mistaken Comfort for Peace. 🏛️ | Marcus Aurelius",
    "channel": "Midnight Quotes",
-   "views": 141243,
-   "subscribers": 1290,
-   "score": 109.5,
+   "views": 141576,
+   "subscribers": 1340,
+   "score": 105.7,
    "published": "2026-11-08",
    "seconds": 7,
    "themes": [],
@@ -159,9 +153,9 @@
   {
    "title": "Alexander the Great: Leave Nothing Behind. ⚔️ | Powerful Wisdom",
    "channel": "Midnight Quotes",
-   "views": 137739,
-   "subscribers": 1290,
-   "score": 106.8,
+   "views": 139974,
+   "subscribers": 1340,
+   "score": 104.5,
    "published": "2026-11-11",
    "seconds": 7,
    "themes": [],
@@ -169,10 +163,22 @@
    "url": "https://youtube.com/shorts/6GFI-6ttgcE"
   },
   {
+   "title": "It Is Better to Know the Worst Than Live in a Fool's Paradise 🖤 | Dostoevsky",
+   "channel": "Midnight Quotes",
+   "views": 114771,
+   "subscribers": 1340,
+   "score": 85.7,
+   "published": "2026-11-14",
+   "seconds": 7,
+   "themes": [],
+   "author": null,
+   "url": "https://youtube.com/shorts/goWLjyJh2iY"
+  },
+  {
    "title": "Unstoppable Mindset Rules from History's Greatest Leaders 🗿🔥",
    "channel": "RiseZenX ",
-   "views": 821697,
-   "subscribers": 9610,
+   "views": 822585,
+   "subscribers": 9620,
    "score": 85.5,
    "published": "2026-10-20",
    "seconds": 27,
@@ -181,23 +187,11 @@
    "url": "https://youtube.com/shorts/rmAgacUlIgs"
   },
   {
-   "title": "It Is Better to Know the Worst Than Live in a Fool's Paradise 🖤 | Dostoevsky",
-   "channel": "Midnight Quotes",
-   "views": 108954,
-   "subscribers": 1290,
-   "score": 84.5,
-   "published": "2026-11-14",
-   "seconds": 7,
-   "themes": [],
-   "author": null,
-   "url": "https://youtube.com/shorts/goWLjyJh2iY"
-  },
-  {
    "title": "Nothing in This World Is Truly Yours | Marcus Aurelius",
    "channel": "Daily life quotes",
-   "views": 76315,
-   "subscribers": 718,
-   "score": 76.3,
+   "views": 76640,
+   "subscribers": 720,
+   "score": 76.6,
    "published": "2026-11-08",
    "seconds": 6,
    "themes": [],
@@ -207,7 +201,7 @@
   {
    "title": "You become free the moment your desires stop controlling you. 🖤 #lifelessons #stoicmindset #shorts",
    "channel": "hiddenverses ",
-   "views": 88064,
+   "views": 88092,
    "subscribers": 1220,
    "score": 72.2,
    "published": "2026-10-22",
@@ -222,8 +216,8 @@
   {
    "title": "Stop Worrying About What You Cannot Control | Epictetus #shorts",
    "channel": "Daily life quotes",
-   "views": 70963,
-   "subscribers": 718,
+   "views": 71030,
+   "subscribers": 720,
    "score": 71.0,
    "published": "2026-11-06",
    "seconds": 6,
@@ -234,11 +228,23 @@
    "url": "https://youtube.com/shorts/9-GtI4lwuMk"
   },
   {
+   "title": "#CriticalThinking #DeepThoughts #Philosophy #DeepQuotes #LifeQuotes #Poetry #Human",
+   "channel": "The Experienced Stoic",
+   "views": 103383,
+   "subscribers": 2010,
+   "score": 51.4,
+   "published": "2026-11-17",
+   "seconds": 6,
+   "themes": [],
+   "author": null,
+   "url": "https://youtube.com/shorts/kiCIcAtapo8"
+  },
+  {
    "title": "The Coldest Rule of Marcus Aurelius👑. #shorts",
    "channel": "PRISAT",
-   "views": 162072,
-   "subscribers": 3100,
-   "score": 52.3,
+   "views": 164491,
+   "subscribers": 3250,
+   "score": 50.6,
    "published": "2026-11-07",
    "seconds": 31,
    "themes": [],
@@ -248,9 +254,9 @@
   {
    "title": "The Philosopher Who Laughed Too Hard #history #greekphilosopher #historicalstories",
    "channel": "Stories hub",
-   "views": 1549782,
-   "subscribers": 32400,
-   "score": 47.8,
+   "views": 1611322,
+   "subscribers": 32500,
+   "score": 49.6,
    "published": "2026-11-07",
    "seconds": 16,
    "themes": [],
@@ -258,33 +264,16 @@
    "url": "https://youtube.com/shorts/l1tXkXyDIzs"
   },
   {
-   "title": "The Secret to Inner Peace Is Having No Desire for Validation | Epictetus #shorts",
-   "channel": "Daily life quotes",
-   "views": 40283,
-   "subscribers": 718,
-   "score": 40.3,
-   "published": "2026-11-06",
-   "seconds": 6,
-   "themes": [
-    "ego",
-    "desire"
-   ],
-   "author": "Epictetus",
-   "url": "https://youtube.com/shorts/nBmoftq9kIA"
-  },
-  {
-   "title": "Habit build excellence #quotes #philosophy #aristotle #psycology",
-   "channel": "Deep Words",
-   "views": 94608,
-   "subscribers": 2360,
-   "score": 40.1,
-   "published": "2026-10-21",
-   "seconds": 4,
-   "themes": [
-    "discipline"
-   ],
-   "author": null,
-   "url": "https://youtube.com/shorts/pQ5tujnDJZg"
+   "title": "#marcusaurelius #philosophy #wisdom #mindset",
+   "channel": "Darkkk__quotess ",
+   "views": 152812,
+   "subscribers": 3520,
+   "score": 43.4,
+   "published": "2026-11-02",
+   "seconds": 9,
+   "themes": [],
+   "author": "Marcus Aurelius",
+   "url": "https://youtube.com/shorts/cBnGOgSeEt0"
   }
  ]
 }
