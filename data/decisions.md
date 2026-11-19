@@ -1849,3 +1849,12 @@ Built as scripts/wallpapers.py + wallpapers.yml (dispatch only): one pack (an au
 - "There a little red line that catches your eye on all the new shorts remove it." A thin red strip at the right edge of every painted Short (it is in every painted render since 2026-11-10 and never in the old stock look; no colour in the code is red: a rendering fault, traced with scripts/edge_probe.py, fixed in the painted chain).
 - "It also gave me an idea to use red to highlight the important speaking points do that." The hook's punch word and the quote's key phrases (data/edit_type.json) are red (edit_type.RED, EF3B2D) instead of gold; the spoken hook word still lights gold; the author and the rule stay gold. REEL_EMPHASIS_COLOUR sets another colour.
 - "make the shorts a bit less boring and more enticing to leave a comment but dont ask to leave a comment." The description and the Instagram caption keep the question and drop "Share your thoughts in the comments."; the Shorts never ask. Comments are to come from what the Short says (a stance, a choice, today's world), not from a request.
+
+## 2026-11-16: Today's world (owner, chat)
+
+Owner: "Also try to make the shorts a bit less boring and more enticing to leave a comment but dont ask to leave a comment. Pivot the shorts to somethign more relevant to todays world and news everyday or find a way to figure out whats trending the day of before posting and post relating to that event".
+
+- Fama (`scripts/fama.py`, doctrine 11) reads today's US trends (Google Trends, Wikipedia most-read, Google News) before each Short is rehearsed, once per post, and writes `data/topical.json`.
+- When a safe trend fits one of the next 12 quotes, that quote airs with a topical hook (one highlighted word), a description lead, a question and tags; the hook invites an answer and never asks for comments.
+- A plain-code screen drops tragedy, harm, politics, religion and anything about a minor before a model sees a word; names and numbers must come from the trend itself; any failed check means the Short airs as usual.
+- The quote itself never changes: verbatim, same citation. Cicero's test `topical` measures it.
