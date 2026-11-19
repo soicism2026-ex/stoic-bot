@@ -237,6 +237,32 @@ def search_phrase(q: dict) -> dict | None:
     return next((p for p in data.get("phrases", []) if p.get("id") == pid), None)
 
 
+def _titles_test_on(today=None) -> bool:
+    """Cicero's "titles-search" test (owner 2026-11-16, Go on the Ideas card
+    idea-titles-search): the title carries the search too. On while the test
+    runs or is adopted, and from its start date while it is still queued (it
+    is meant to begin the day test "search-phrases" ends, 2026-11-22, and no
+    shift has to flip a status for that to happen). A loss ("done" without
+    "adopted") turns it off."""
+    try:
+        tests = json.loads(MARKETING_TESTS.read_text(encoding="utf-8")).get("tests", [])
+        t = next(t for t in tests if t.get("id") == "titles-search")
+    except Exception:  # noqa: BLE001
+        return False
+    if t.get("adopted"):
+        return True
+    if t.get("status") == "running":
+        return True
+    if t.get("status") == "queued" and t.get("start"):
+        from datetime import date, datetime, timezone
+        today = today or datetime.now(timezone.utc).date()
+        try:
+            return date.fromisoformat(t["start"]) <= today
+        except ValueError:
+            return False
+    return False
+
+
 def search_use() -> str | None:
     """None until the owner says yes; then "descriptions" or "titles"."""
     try:
@@ -244,11 +270,14 @@ def search_use() -> str | None:
         t = next(t for t in tests if t.get("id") == "search-phrases")
     except Exception:  # noqa: BLE001  no ledger, no test: nothing changes
         return None
+    use = None
     if t.get("adopted") in ("descriptions", "titles"):
-        return t["adopted"]
-    if t.get("status") == "running":
-        return t.get("use") if t.get("use") in ("descriptions", "titles") else "descriptions"
-    return None
+        use = t["adopted"]
+    elif t.get("status") == "running":
+        use = t.get("use") if t.get("use") in ("descriptions", "titles") else "descriptions"
+    if use and _titles_test_on():
+        return "titles"
+    return use
 
 
 # Cicero's test 6 (2026-11-12): a follow line as the description's last line

@@ -110,6 +110,21 @@
    "proposed": "2026-11-16",
    "started": "2026-11-16",
    "approved": "2026-11-16: owner, in chat: \"Pivot the shorts to something more relevant to today's world and news everyday\""
+  },
+  {
+   "id": "titles-search",
+   "kind": "traffic_source",
+   "source": "YT_SEARCH",
+   "question": "Does the search in the title bring more viewers from YouTube search?",
+   "change": "Each Short's title carries the search its quote answers, e.g. \"How to control your emotions | Marcus Aurelius\" style: the hook, then the search, then the author. The description lead, hashtag and tags stay as in test search-phrases.",
+   "why": "Test search-phrases put the searches in descriptions, hashtags and tags; the title is the field YouTube weighs most for search, and the owner said yes to it once that test ends.",
+   "measure": "The share of views from YouTube search, the 14 days after against the 14 before (same measure as search-phrases).",
+   "ask": "idea-titles-search",
+   "status": "queued",
+   "proposed": "2026-11-13",
+   "start": "2026-11-22",
+   "use": "titles",
+   "approved": "2026-11-16: owner, in the HQ: \"Put the search in the title too: Go\""
   }
  ],
  "next": []

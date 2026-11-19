@@ -408,6 +408,20 @@ jobs:
           if-no-files-found: ignore
           retention-days: 30
 
+      # Channel name + About for search (owner 2026-11-16, Go on the HQ idea
+      # idea-channel-seo). Target in data/channel_branding.json; compares with
+      # the live channel and updates only if different, so after the first
+      # success it does nothing. If YouTube refuses the new name through the
+      # API the About still goes through and the refusal is written to
+      # data/channel_branding_applied.json. Never costs a post.
+      - name: Channel name and About for search
+        continue-on-error: true
+        env:
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+        run: python scripts/channel_seo.py apply
+
       - name: Commit log and backups
         run: |
           git config user.name "stoic-bot"
@@ -423,6 +437,7 @@ jobs:
           if [ -f data/playlists.json ]; then git add data/playlists.json; fi
           if [ -f data/inspector.csv ]; then git add data/inspector.csv; fi
           if [ -f data/topical_log.csv ]; then git add data/topical_log.csv; fi
+          if [ -f data/channel_branding_applied.json ]; then git add data/channel_branding_applied.json; fi
           git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
           # The 4 daily slots race on pushing to main — rebase-retry instead of
           # failing the run (a lost push means a lost posts.csv row).
