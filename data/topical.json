@@ -1,27 +1,5 @@
 {
- "forPost": 85,
- "airDay": "2026-11-19",
- "decidedAt": "2026-11-19T11:00:40Z",
- "trend": {
-  "topic": "spider",
-  "score": 100.0,
-  "source": "google-trends",
-  "headlines": [
-   "British hacker who stole $11m through text message scheme jailed for six years in US",
-   "Hackers used fake texts to steal $11.6 million in cryptocurrency, feds say",
-   "British hackers face prison for GTA 6 data breach and crypto thefts"
-  ]
- },
- "edit": "bear_it_nobly",
- "theme": "adversity",
- "hook": "Hacked and stressed?",
- "punch": "stressed",
- "lead": "British hacker jailed,",
- "question": "Bad news: flip it?",
- "tags": [
-  "hacker",
-  "GTA",
-  "stress"
- ],
- "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+ "forPost": 86,
+ "decidedAt": "2026-11-19T19:17:53Z",
+ "none": "invented name: Watch Invincible"
 }
