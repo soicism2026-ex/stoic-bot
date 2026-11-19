@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-18T19:13:10Z",
+ "checked": "2026-11-19T00:53:58Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-18",
+  "checked": "2026-11-19",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-18T19:13:10Z",
-  "youtube": "Bj-ErtAUJYQ",
-  "title": "\"Ready to retire\" — Epictetus | Stoicism",
-  "status": "published",
-  "permalink": "https://www.instagram.com/reel/Df5OvnRiS56/",
+  "at": "2026-11-19T00:53:58Z",
+  "youtube": "u4-ZjOLYwTQ",
+  "title": "\"Break rules for breakfast\" — Marcus Aurelius | Stoicism",
+  "status": "queued",
+  "permalink": null,
   "reason": null
  },
  "tiktok": {
