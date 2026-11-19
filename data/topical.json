@@ -1,27 +1,27 @@
 {
- "forPost": 84,
+ "forPost": 85,
  "airDay": "2026-11-19",
- "decidedAt": "2026-11-19T00:54:14Z",
+ "decidedAt": "2026-11-19T11:00:40Z",
  "trend": {
-  "topic": "soldier",
-  "score": 500.0,
+  "topic": "spider",
+  "score": 100.0,
   "source": "google-trends",
   "headlines": [
-   "43 soldiers said yes to more Army if they could play ‘GTA VI’",
-   "Soldiers sign up to play ‘Grand Theft Auto VI’ in exchange for reenlisting",
-   "Dozens of Army soldiers sign up for unique reenlistment incentive to play Grand Theft Auto VI"
+   "British hacker who stole $11m through text message scheme jailed for six years in US",
+   "Hackers used fake texts to steal $11.6 million in cryptocurrency, feds say",
+   "British hackers face prison for GTA 6 data breach and crypto thefts"
   ]
  },
- "edit": "blame_yourself_first",
- "theme": "anger",
- "hook": "Disappointed by others?",
- "punch": "others",
- "lead": "43 soldiers reenlist for GTA VI",
- "question": "Blame others or yourself?",
+ "edit": "bear_it_nobly",
+ "theme": "adversity",
+ "hook": "Hacked and stressed?",
+ "punch": "stressed",
+ "lead": "British hacker jailed,",
+ "question": "Bad news: flip it?",
  "tags": [
-  "GTA VI",
-  "soldiers",
-  "reenlistment"
+  "hacker",
+  "GTA",
+  "stress"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
