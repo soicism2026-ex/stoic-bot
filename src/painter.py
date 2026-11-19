@@ -417,6 +417,11 @@ PERIOD_WORDS = [
     (re.compile(r"(?<!clay )(?<!bronze )(?<!wooden )(?<!silver )(?<!terracotta )"
                 r"\b((?:wine |water |drinking )?(?:cups?|goblets?|jugs?|pitchers?|bowls?|plates?))\b", re.I),
      r"clay \1"),
+    # 11-13..19 (inspector.csv: "extra objects: two torches", a torch with a
+    # glass or plastic handle): a bare "torch" paints a modern flashlight-like
+    # object. Name it a wooden, pitch-wrapped torch (idempotent).
+    (re.compile(r"(?<!wooden )(?<!pitch-wrapped )(?<!iron )\btorch\b(?! in an iron)", re.I), "wooden pitch-wrapped torch"),
+    (re.compile(r"(?<!wooden )(?<!pitch-wrapped )(?<!iron )\btorches\b(?! in iron)", re.I), "wooden pitch-wrapped torches"),
     (re.compile(r"\blanterns\b", re.I), "torches in iron brackets"),
     (re.compile(r"\blantern\b", re.I), "torch in an iron bracket"),
     (re.compile(r"\b(?:cardigan|sweater|jacket|coat|shirt|trousers|pants|jeans)s?\b", re.I), "wool tunic"),

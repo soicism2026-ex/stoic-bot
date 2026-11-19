@@ -439,3 +439,13 @@ def test_bare_objects_get_their_roman_material():
     assert p("a glass goblet") == "a clay goblet"
     assert p("{man} in a cardigan by the hearth") == "{man} in a wool tunic by the hearth"
     assert "fired clay" in painter.build_prompt("{man} at a table at dawn")
+
+
+def test_torch_is_named_wooden_and_stays_idempotent():
+    p = painter.period_objects
+    assert p("a single torch burning on the wall") == "a single wooden pitch-wrapped torch burning on the wall"
+    assert p("two torches flank the door") == "two wooden pitch-wrapped torches flank the door"
+    assert p("under hanging lanterns") == "under hanging torches in iron brackets"
+    assert p("soft torchlight on his face") == "soft torchlight on his face"
+    once = p("a torch at his hip")
+    assert p(once) == once
