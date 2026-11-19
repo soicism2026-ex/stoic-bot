@@ -1858,3 +1858,16 @@ Owner: "Also try to make the shorts a bit less boring and more enticing to leave
 - When a safe trend fits one of the next 12 quotes, that quote airs with a topical hook (one highlighted word), a description lead, a question and tags; the hook invites an answer and never asks for comments.
 - A plain-code screen drops tragedy, harm, politics, religion and anything about a minor before a model sees a word; names and numbers must come from the trend itself; any failed check means the Short airs as usual.
 - The quote itself never changes: verbatim, same citation. Cicero's test `topical` measures it.
+
+## 2026-11-19: Shorts from the owner's own thoughts (owner, HQ)
+
+Owner: "I want to make the short more personal and based on my life: Heres some of my recent thoughts have them correlate to the message and a stoic teaching." His five thoughts, verbatim:
+1. "Life is going to be hard the longer you keep it easy and easy once you learn to live through hard things."
+2. "When you have trouble focusing you probably are living with too much noise you have to find a way to block it out and focus on whats important today not tomorrow just today"
+3. "You have so little time in this world do not waste your energy on things that you know will not impact poepl around you for the better"
+4. "Focus on the high impact things the good things the things that make people happy for the future"
+5. "Certainty is absurd and always be kind to others you never know they might repay the favour"
+
+- Five shelf entries marked `"personal": true` (the last five in `data/edit_quotes.json`), one per thought, each paired with the Stoic text that says the same: Seneca Letter 18 (1), Seneca Letter 55 (2), Marcus Aurelius 12.20 (3), Seneca Letter 8 (4), Epictetus Discourses IV.13 (5). The hook is his thought condensed in his own words; the description's first paragraph is his thought with spelling and punctuation cleaned; his words are never attributed to a philosopher.
+- They air FIRST, one at a time in shelf order, ahead of Fama's topical plan and the author rotation (`edits.personal_fresh`, `edits.pick`; test in `tests/test_edits.py`). `scripts/shelf.py` allows the optional `personal` key between `visuals` and `scenes`.
+- Going forward, when the owner sends a new thought of his own, Varro makes it a `personal` entry the same way.

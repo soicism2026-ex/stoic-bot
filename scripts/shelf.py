@@ -68,6 +68,8 @@ KEYS = ["id", "author", "citation", "quote", "hook", "theme", "description", "qu
 # Plutarch's scene-writer fields (docs/scene_writing.md): optional, in this order
 # after KEYS. Older quotes have none; the painter and the typographer read them.
 SCENE_KEYS = ["scenes"]
+# The owner's own thoughts (2026-11-19): optional, between KEYS and scenes; src/edits.py airs them first.
+PERSONAL_KEYS = ["personal"]
 # The same words tests/test_edits.py checks: these return women's fitness
 # footage unless the query names a man.
 PEOPLE = {"boxer", "boxing", "training", "weight", "weightlifting", "lifting",
@@ -221,11 +223,13 @@ def scene_problems(q: dict) -> list[str]:
 def problems(q: dict, bank: list[dict], rows: list[dict], batch_ids: set | None = None) -> list[str]:
     """Every rule this candidate breaks; an empty list means it may go on the shelf."""
     out = []
-    if list(q.keys()) != KEYS + [k for k in SCENE_KEYS if k in q]:
-        out.append(f"keys must be exactly {KEYS} in that order (then optionally {SCENE_KEYS})")
+    if list(q.keys()) != KEYS + [k for k in PERSONAL_KEYS + SCENE_KEYS if k in q]:
+        out.append(f"keys must be exactly {KEYS} in that order (then optionally {PERSONAL_KEYS + SCENE_KEYS})")
         if not all(k in q for k in KEYS):
             return out
     qid = q["id"]
+    if "personal" in q and q["personal"] is not True:
+        out.append('personal: true or leave it out')
     if not re.fullmatch(r"[a-z][a-z0-9_]{2,40}", qid or ""):
         out.append("id: lowercase words joined by underscores")
     if qid in {b["id"] for b in bank} or (batch_ids and qid in batch_ids):

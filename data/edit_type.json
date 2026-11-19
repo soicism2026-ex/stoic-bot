@@ -111,6 +111,11 @@
   "death_hangs_over_everyone": {"hook": "surprise party", "quote": "hanging over your head"},
   "how_you_take_praise": {"hook": "watch this", "quote": "gives and receives praise"},
   "a_mind_that_owns_itself": {"hook": "real strength", "quote": "a free mind"},
-  "ask_for_the_work": {"hook": "Ask", "quote": "ask for it"}
+  "ask_for_the_work": {"hook": "Ask", "quote": "ask for it"},
+  "keep_it_easy_life_gets_hard": {"hook": "gets hard", "quote": "toughen itself beforehand"},
+  "too_much_noise_find_today": {"hook": "noise", "quote": "the mind"},
+  "little_time_for_the_common_good": {"hook": "helps no one", "quote": "social end"},
+  "work_for_later_generations": {"hook": "high impact", "quote": "later generations"},
+  "be_kind_you_never_know": {"hook": "Be kind", "quote": "gentleness"}
  }
 }

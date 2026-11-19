@@ -179,13 +179,15 @@ def test_second_daily_post_waits_for_its_slot():
 def test_edits_rotate_authors():
     """The bank is stored by author; plain order aired ten Marcus edits in a
     row. Consecutive picks must come from different authors while more than
-    one author has quotes left."""
-    rows = []
+    one author has quotes left (the owner's own thoughts air first and are
+    chosen by hand, so they are already used here)."""
+    rows = [{"experiment": f"edit:{q['id']}", "theme": q["theme"], "author": q["author"]}
+            for q in edits.load() if q.get("personal")]
     for _ in range(12):
         q = edits.pick(rows)
         rows.append({"experiment": f"edit:{q['id']}", "theme": q["theme"],
                      "author": q["author"]})
-    authors = [r["author"] for r in rows]
+    authors = [r["author"] for r in rows if not r["experiment"][5:] in {q["id"] for q in edits.load() if q.get("personal")}]
     assert all(a != b for a, b in zip(authors, authors[1:])), authors
     assert len(set(authors[:3])) == 3
 
@@ -260,3 +262,27 @@ def test_edits_never_reair_a_quote_from_any_older_post():
     rows = [{"quote": q["quote"], "experiment": "story:something_else", "date": "2026-09-03"}]
     assert edits.pick(rows)["id"] != q["id"]
     assert edits.remaining(rows) == edits.remaining([]) - 1
+
+
+def test_the_owners_own_thoughts_air_first_one_at_a_time(monkeypatch):
+    """Owner 2026-11-19: "make the short more personal and based on my life".
+    Entries marked "personal": true air before the author rotation and before
+    Fama's topical plan, in shelf order, each once."""
+    bank = edits.load()
+    mine = [q for q in bank if q.get("personal") is True]
+    assert len(mine) == 5 and [q["id"] for q in bank[-5:]] == [q["id"] for q in mine]
+    assert all(q["author"] in ("Seneca", "Marcus Aurelius", "Epictetus") for q in mine)
+    monkeypatch.setattr(edits, "jammed_ids", lambda: set())
+    # a fresh topical plan for some other quote must not jump the queue
+    other = next(q for q in bank if not q.get("personal"))
+    monkeypatch.setattr(edits, "topical_for", lambda rows, now=None: {"edit": other["id"], "hook": "h", "lead": "l"})
+    rows, order = [], []
+    for _ in range(len(mine)):
+        q = edits.pick(rows)
+        assert "_topical" not in q
+        order.append(q["id"])
+        rows.append({"experiment": f"edit:{q['id']}", "quote": q["quote"], "theme": q["theme"]})
+    assert order == [q["id"] for q in mine]
+    assert edits.personal_fresh(rows) == []
+    # and the ordinary rotation resumes after them
+    assert not edits.pick(rows).get("personal")

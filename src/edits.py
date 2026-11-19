@@ -136,12 +136,26 @@ def topical_for(post_rows: list[dict], now=None) -> dict | None:
 
 def pick(post_rows: list[dict]) -> dict | None:
     """The quote to air: Fama's topical one when she has a fresh plan for this
-    post (returned as a copy carrying `_topical`), else the rotation's."""
-    plan = topical_for(post_rows)
+    post (returned as a copy carrying `_topical`), else the rotation's. The
+    owner's own thoughts (`personal`, below) air before either."""
+    plan = None if personal_fresh(post_rows) else topical_for(post_rows)
     if plan:
         q = next(x for x in load() if x["id"] == plan["edit"])
         return {**q, "_topical": plan}
     return rotation_pick(post_rows)
+
+
+def personal_fresh(post_rows: list[dict]) -> list[dict]:
+    """The owner's own thoughts still to air, in shelf order.
+
+    Owner 2026-11-19, in the HQ: "I want to make the short more personal and
+    based on my life". Varro pairs each of his thoughts with the Stoic who said
+    the same and marks the entry `"personal": true`; those air first, one at a
+    time, ahead of Fama's topical plan and the author rotation.
+    """
+    used, jammed, aired = _used(post_rows), jammed_ids(), _aired_quotes(post_rows)
+    return [q for q in load() if q.get("personal") is True and q["id"] not in used
+            and q["id"] not in jammed and not _already_aired(q, aired)]
 
 
 def rotation_pick(post_rows: list[dict]) -> dict | None:
@@ -157,6 +171,9 @@ def rotation_pick(post_rows: list[dict]) -> dict | None:
     used = _used(post_rows)
     edit_rows = [r for r in post_rows if (r.get("experiment") or "").startswith("edit:")]
     last_theme = edit_rows[-1].get("theme") if edit_rows else None
+    own = personal_fresh(post_rows)
+    if own:
+        return own[0]
     jammed = jammed_ids()
     aired = _aired_quotes(post_rows)
     fresh = [q for q in load() if q["id"] not in used and q["id"] not in jammed
