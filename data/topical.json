@@ -1,25 +1,5 @@
 {
- "forPost": 87,
- "airDay": "2026-11-20",
- "decidedAt": "2026-11-20T01:02:49Z",
- "trend": {
-  "topic": "Voyager 1",
-  "score": 0.0,
-  "source": "wikipedia-news",
-  "headlines": [
-   "The space probe Voyager 1 (rendering shown) becomes the first human-made object to reach one light-day from Earth."
-  ]
- },
- "edit": "too_much_noise_find_today",
- "theme": "discipline",
- "hook": "Lost in space",
- "punch": "space",
- "lead": "Voyager 1 reaches one light-day from Earth",
- "question": "What calms your mind?",
- "tags": [
-  "Voyager 1",
-  "space",
-  "exploration"
- ],
- "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+ "forPost": 88,
+ "decidedAt": "2026-11-20T10:49:34Z",
+ "none": "paused for the undo-nov16 test"
 }
