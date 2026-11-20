@@ -36,6 +36,13 @@ The owner watches every agent here from a phone (it is pinned in the Claude side
 ---
 
 
+## Idea cards: being integrated, then complete (owner 2026-11-20)
+A card the owner tapped Go on shows "Being integrated" until its change is live, then "Complete". When the change is
+live (merged to main and switched on, or switching itself on at a set date), mark it: in the chief chat
+`ArtifactData update asks/<id> {integrated: true, outcome: "<one plain line>"}`; in a small session
+`python3 scripts/hq_outbox.py ask <id> --integrated --outcome "<one plain line>"`. A test that then measures for
+two weeks is still Complete; its verdict goes in `outcome` later and `closed: true` ends the card.
+
 ## Logging rules
 - One `hq/log` line per milestone (`{t, who, kind, text}`; newest first; keep at most 80 items): who = the crew member
   (Longinus, Zeuxis, Plutarch, Callimachus, Cicero, Varro, Echo) or "Claude"; kind = work | done | post | decision | alert.

@@ -131,7 +131,24 @@ def apply(yt, t: dict, applied_path: Path = APPLIED, now=None) -> dict:
         if refused else "The new name is live.",
     }
     applied_path.write_text(json.dumps(rec, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    _report_to_hq(rec, applied_path)
     return {"status": "applied", "titleRefused": refused, "changed": diff}
+
+
+def _report_to_hq(rec: dict, applied_path: Path) -> None:
+    """The HQ card says Complete once the About is live (owner 2026-11-20: "tell me
+    its complete or not"); a refused name stays on the card as the one step left
+    for him. Only for the real record, never for a test's temporary one."""
+    if applied_path != APPLIED:
+        return
+    try:
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        import hq_outbox  # noqa: PLC0415
+        done = "The new About and keywords are live. "
+        hq_outbox.append({"ask": "idea-channel-seo", "integrated": True,
+                          "outcome": done + (rec["titleNote"] if rec.get("titleRefused") else "The new name is live too.")})
+    except Exception as e:  # noqa: BLE001  a report never fails the apply
+        print(f"[channel_seo] could not report to the HQ: {e}", file=sys.stderr)
 
 
 def _reason(e: Exception) -> str:

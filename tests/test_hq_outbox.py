@@ -52,3 +52,15 @@ def test_the_snapshot_carries_the_outbox(monkeypatch, tmp_path):
     got = hq.crew_outbox(dt.datetime.now(dt.timezone.utc))
     assert got["crewLog"][0]["who"] == "Zeuxis" and got["askUpdates"] == {} and got["noteUpdates"] == {}
     assert "crew_outbox(now)" in (ROOT / "scripts" / "hq_snapshot.py").read_text(encoding="utf-8")
+
+
+
+def test_a_card_can_be_marked_complete(tmp_path, monkeypatch):
+    """Owner 2026-11-20: cards say "Being integrated" until the change is live, then "Complete"."""
+    p = tmp_path / "outbox.jsonl"
+    monkeypatch.setattr(ob, "OUTBOX", p)
+    assert ob.main(["ask", "idea-x", "--integrated", "--outcome", "Live since today."]) == 0
+    f = ob.fold(ob.read(p))
+    assert f["askUpdates"]["idea-x"]["integrated"] is True and f["askUpdates"]["idea-x"]["outcome"] == "Live since today."
+    page = (ROOT / "hq" / "forged-hq.html").read_text(encoding="utf-8")
+    assert "Being integrated" in page and '"integrated"]' in page and ">Running<" not in page
