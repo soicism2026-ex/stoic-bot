@@ -183,10 +183,13 @@ def test_the_owner_said_yes_to_tests_2_and_3_on_2026_11_06():
     by_id = {t["id"]: t for t in ledger["tests"]}
     two = by_id["pinned-question"]
     assert two["kind"] == "pinned_question" and two["ask"] == "pinned-question"
-    assert two["status"] == "running" and two["started"] == "2026-11-06" and "inspiration" in two["approved"]
+    assert two["status"] in ("running", "done") and two["started"] == "2026-11-06" and "inspiration" in two["approved"]
     assert by_id["playlists"]["kind"] == "traffic_source" and by_id["playlists"]["source"] == "PLAYLIST"
-    assert by_id["playlists"]["status"] == "running" and by_id["playlists"]["started"] == "2026-11-06"
-    assert by_id["second-post-morning"]["status"] == "running" and by_id["second-post-morning"]["started"] == "2026-11-06"
+    assert by_id["playlists"]["status"] in ("running", "done") and by_id["playlists"]["started"] == "2026-11-06"
+    assert by_id["second-post-morning"]["status"] in ("running", "done") and by_id["second-post-morning"]["started"] == "2026-11-06"
+    # judged 2026-11-20: the second Short at 07:00 won and stays; the question loss is not reverted
+    assert by_id["second-post-morning"]["verdict"] == "win" and by_id["playlists"]["adopted"] == "yes"
+    assert two["verdict"] == "loss" and two["ended"] == "2026-11-20"
 
 
 def test_the_read_shows_who_watches(tmp_path, monkeypatch):
