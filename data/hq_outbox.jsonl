@@ -16,3 +16,10 @@
 {"t": "2026-11-20T04:23:56Z", "who": "Cicero", "kind": "done", "text": "Started your 3-day test: news tie-ins paused and the comment line back on Shorts posted Nov 20-22; I compare their views with Nov 16-19's and report on the 25th."}
 {"t": "2026-11-20T04:23:56Z", "ask": "idea-undo-nov16", "outcome": "Running Nov 20-22: news tie-ins paused, comment line back; compared with Nov 16-19 on day-1 views, report Nov 25.", "status": "answered", "answer": "go"}
 {"t": "2026-11-20T04:42:10Z", "who": "Longinus", "kind": "done", "text": "Checked \"Can't focus? Too much noise.\": clean. Seven painted shots, all passed."}
+{"t": "2026-11-20T10:54:05Z", "ask": "post-times", "outcome": "Win: the second Short at 07:00 UTC reached 0.83x of the first's day-1 views against 0.61x before (1.36x). It stays.", "closed": true}
+{"t": "2026-11-20T10:54:05Z", "ask": "pinned-question", "outcome": "Loss: 0.79 viewer comments per 1,000 views vs 1.38 before; likes 2.9 vs 4.4 per 100. Confounded by the Nov 16 changes, which your 3-day undo test is separating out.", "closed": true}
+{"t": "2026-11-20T10:54:05Z", "ask": "playlists", "outcome": "No clear change: playlists were 0.08% of views vs 0.02% before. Free, so they stay.", "closed": true}
+{"t": "2026-11-20T10:54:05Z", "who": "Cicero", "kind": "done", "text": "Second Short at 07:00 won: 0.83x of the first's day-1 views vs 0.61x before (1.36x). Kept."}
+{"t": "2026-11-20T10:54:05Z", "who": "Cicero", "kind": "done", "text": "Question under each Short: 0.79 comments per 1,000 views vs 1.38 before, likes 2.9 vs 4.4 per 100. Judged a loss but not reverted: you want a question on every Short, and the Nov 20-22 undo test covers the Nov 16 change."}
+{"t": "2026-11-20T10:54:05Z", "who": "Cicero", "kind": "done", "text": "Playlists: 0.08% of views vs 0.02%, no clear change. Free, so they stay."}
+{"t": "2026-11-20T10:54:05Z", "who": "Cicero", "kind": "work", "text": "Pace: 619 views a day (-51% on last week, 2,740 needed), 1.1 subscribers a day (1.8 needed), 285 of 1,000. New look 0.85x, third Short 0.79x, news hooks 0.42x on 3-day views; the undo test reports Nov 25. No new test this week: every views test is still open."}

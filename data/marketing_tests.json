@@ -9,10 +9,14 @@
    "measure": "The second Short's day-1 views divided by the same day's first Short's, for 14 days, against the median before.",
    "baselineSince": "2026-10-19",
    "ask": "post-times",
-   "status": "running",
+   "status": "done",
    "proposed": "2026-11-03",
    "started": "2026-11-06",
-   "approved": "2026-11-06: owner, in the HQ: \"Yes, move it\""
+   "approved": "2026-11-06: owner, in the HQ: \"Yes, move it\"",
+   "ended": "2026-11-20",
+   "verdict": "win",
+   "adopted": "second Short at 07:00 UTC (POST_SLOT_HOURS)",
+   "result": "Second/first Short day-1 ratio 0.83x vs 0.61x before (1.36x)."
   },
   {
    "id": "pinned-question",
@@ -22,10 +26,14 @@
    "why": "Through November 5, viewers left 5 comments on 51 edits (0.48 per 1,000 views). Comments are one of the signals YouTube ranks on, and a question about the viewer's own life is easier to answer than one about the video.",
    "measure": "Comments from viewers per 1,000 views on the Shorts in the new style (14 days from the start) against the Shorts of the 14 days before; likes per 100 views alongside.",
    "ask": "pinned-question",
-   "status": "running",
+   "status": "done",
    "proposed": "2026-11-06",
    "started": "2026-11-06",
-   "approved": "2026-11-06: owner, in the HQ, on this test's card: a viral Short's description, \"use it as inspiration for pur next shorts\""
+   "approved": "2026-11-06: owner, in the HQ, on this test's card: a viral Short's description, \"use it as inspiration for pur next shorts\"",
+   "ended": "2026-11-20",
+   "verdict": "loss",
+   "adopted": "no",
+   "result": "Viewer comments 0.79 per 1,000 views (10 on 35 Shorts) vs 1.38 (9 on 28) before; likes 2.9 vs 4.4 per 100 views. Not reverted: the owner wants a question on every Short, dropped the 'Share your thoughts' ask on Nov 16 and put it back for 3 days in undo-nov16, which now answers that part."
   },
   {
    "id": "playlists",
@@ -36,10 +44,14 @@
    "why": "Someone who liked one Short can watch that philosopher's others in a row, and the playlists can show up when people search for him.",
    "measure": "The share of the channel's views that come from playlists (YouTube's traffic sources), the 14 days after against the 14 before.",
    "ask": "playlists",
-   "status": "running",
+   "status": "done",
    "proposed": "2026-11-06",
    "started": "2026-11-06",
-   "approved": "2026-11-06: owner, in the HQ: \"Yes, make the playlists\""
+   "approved": "2026-11-06: owner, in the HQ: \"Yes, make the playlists\"",
+   "ended": "2026-11-20",
+   "verdict": "no clear change",
+   "adopted": "yes",
+   "result": "Playlist share of views 0.0002 before, 0.0008 during; free, so the playlists stay."
   },
   {
    "id": "search-phrases",
