@@ -108,8 +108,11 @@ def edit_post_count(post_rows: list[dict]) -> int:
 def topical_for(post_rows: list[dict], now=None) -> dict | None:
     """Fama's plan for THIS post when it is fresh (same forPost, decided under
     20 hours ago), its edit is still unaired and not jammed, and it is whole;
-    else None, and the rotation decides as it always did."""
+    else None, and the rotation decides as it always did. None while the
+    "undo-nov16" test runs (news tie-ins paused)."""
     import datetime as dt
+    if undo_nov16_active():
+        return None
     try:
         plan = json.loads(TOPICAL.read_text(encoding="utf-8"))
         if plan.get("none") or plan.get("forPost") != edit_post_count(post_rows):
@@ -232,6 +235,30 @@ QUESTION_MARK = "\U0001F4AC Question:"
 # Owner 2026-11-16: "more enticing to leave a comment but dont ask to leave a
 # comment". The question invites the answer; the explicit ask is gone.
 QUESTION_LINE = QUESTION_MARK + " {question}"
+# Owner 2026-11-20, Go on idea-undo-nov16: for the three days of Cicero's test
+# "undo-nov16" the old line is back, and Fama's news tie-ins are paused.
+ASK_SUFFIX = " Share your thoughts in the comments."
+
+
+def undo_nov16_active(day=None) -> bool:
+    """True while the ledger test "undo-nov16" is running and `day` (the air
+    day, src/airday.py, so a rehearsal matches the live post) is on or before
+    its `end`. Everything it switches reverts by itself after that date."""
+    import datetime as dt
+    try:
+        tests = json.loads(MARKETING_TESTS.read_text(encoding="utf-8")).get("tests", [])
+        t = next(t for t in tests if t.get("id") == "undo-nov16")
+        if t.get("status") != "running" or not t.get("end"):
+            return False
+        if day is None:
+            import airday
+            day = airday.today()
+        if isinstance(day, dt.datetime):
+            day = day.date()
+        first = dt.date.fromisoformat(t["started"]) if t.get("started") else day
+        return first <= day <= dt.date.fromisoformat(t["end"])
+    except Exception:  # noqa: BLE001  no ledger, no test: nothing changes
+        return False
 
 
 # The YouTube searches our audience makes (owner 2026-11-07: "a list of 10
@@ -352,7 +379,8 @@ def description(content: dict) -> str:
         hook = content["hook"].strip().rstrip(".!? ")
         parts = [f"{hook}." if hook else "", content["caption"]]
     else:
-        parts = [body, QUESTION_LINE.format(question=ask) if ask else "",
+        line = QUESTION_LINE.format(question=ask) + (ASK_SUFFIX if undo_nov16_active() else "") if ask else ""
+        parts = [body, line,
                  f"\u201c{content['quote'].strip()}\u201d\n{source}"]
     parts.insert(0, search_lead(content))            # only once the owner said yes
     if (top.get("lead") or "").strip():

@@ -125,6 +125,25 @@
    "start": "2026-11-22",
    "use": "titles",
    "approved": "2026-11-16: owner, in the HQ: \"Put the search in the title too: Go\""
+  },
+  {
+   "id": "undo-nov16",
+   "kind": "views_before_after",
+   "age": 1,
+   "question": "Did the Nov 16 changes (news-tied hooks, no comment line) cost views?",
+   "change": "Nov 20-22: Shorts open with their own hooks (Fama's news tie-ins paused) and the description's question ends with 'Share your thoughts in the comments.' again. The painted look, the red key words and the owner's personal Shorts stay.",
+   "why": "Shorts posted since Nov 16 average about 105 views on day one, against 186 in October and 265 for the first painted Shorts (Nov 12-15). The Nov 16 changes (news-tied hooks from Fama, and the description no longer ending its question with 'Share your thoughts in the comments.') line up with the drop.",
+   "measure": "Median day-1 views of the Shorts posted Nov 20-22 against those posted Nov 16-19.",
+   "ask": "idea-undo-nov16",
+   "status": "running",
+   "proposed": "2026-11-19",
+   "started": "2026-11-20",
+   "end": "2026-11-22",
+   "before": [
+    "2026-11-16",
+    "2026-11-19"
+   ],
+   "approved": "2026-11-20: owner, in the HQ: \"Test: the old hooks and the comment line back for 3 days: Go\""
   }
  ],
  "next": []

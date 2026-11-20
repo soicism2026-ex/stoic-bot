@@ -302,6 +302,9 @@ def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
     out = {"id": test["id"], "status": test.get("status")}
     start = _day(test["started"]) if test.get("started") else today
     end = start + dt.timedelta(days=TEST_DAYS)
+    if test.get("end"):
+        # A dated, self-ending test (undo-nov16): `end` is the last air day.
+        end = _day(test["end"]) + dt.timedelta(days=1)
     running = test.get("status") == "running" and bool(test.get("started"))
     if test.get("kind") == "pinned_question":
         # Not an A/B: the owner wants it on every Short (2026-11-06), so the
@@ -347,14 +350,19 @@ def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
         # A change every Short carries (the new look, 2026-11-12): the edits of
         # the 14 days before are the control, each judged at the same age.
         age = int(test.get("age", 3))
-        out["before"] = views_by_age(posts, views, start - dt.timedelta(days=TEST_DAYS), start, age)
+        b_since, b_until = start - dt.timedelta(days=TEST_DAYS), start
+        if test.get("before"):
+            # Explicit control window, first and last day inclusive.
+            b_since, b_until = _day(test["before"][0]), _day(test["before"][1]) + dt.timedelta(days=1)
+        out["before"] = views_by_age(posts, views, b_since, b_until, age)
         if running:
             during = views_by_age(posts, views, start, min(end, today), age)
             out["during"] = {**during, "ends": end.isoformat()}
             b, d = out["before"]["median"], during["median"]
             if b and d is not None:
                 out["change"] = round(d / b, 2)
-                if today >= end and during["shorts"] >= MIN_TEST_DAYS:
+                need = min(MIN_TEST_DAYS, (end - start).days) if test.get("end") else MIN_TEST_DAYS
+                if today >= end and during["shorts"] >= need:
                     out["verdict"] = ("win" if out["change"] >= WIN else "loss" if out["change"] <= LOSE
                                       else "no clear change")
         return out

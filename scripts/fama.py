@@ -469,6 +469,13 @@ def plan(now: dt.datetime | None = None) -> dict:
     now = now or _now()
     rows = _rows()
     for_post = edits.edit_post_count(rows)
+    if edits.undo_nov16_active():
+        # Owner 2026-11-20 (idea-undo-nov16): news tie-ins paused for three
+        # days: no fetch, no model call.
+        out = _none(for_post, "paused for the undo-nov16 test", now)
+        _write(out)
+        print(f"  [fama] {describe(out)}")
+        return out
     have = _read_plan()
     if have and have.get("forPost") == for_post:
         try:
