@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-19T19:17:42Z",
+ "checked": "2026-11-20T01:02:40Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-19",
+  "checked": "2026-11-20",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-19T19:17:42Z",
-  "youtube": "iuDxEHvfDsc",
-  "title": "\"Hacked and stressed\" — Marcus Aurelius | Stoicism",
+  "at": "2026-11-20T01:02:40Z",
+  "youtube": "1wl_IP213Fg",
+  "title": "\"Keep it easy, and life gets hard\" — Seneca | Stoicism",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/Df70DqCjfvb/",
+  "permalink": "https://www.instagram.com/reel/Df8bpzhAoR8/",
   "reason": null
  },
  "tiktok": {
