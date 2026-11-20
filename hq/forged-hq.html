@@ -334,7 +334,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       </section>
       <section class="block" id="ideas-block" aria-labelledby="h-ideas">
         <div class="eyebrow-row"><h2 class="eyebrow" id="h-ideas">Ideas to review</h2><span class="count" id="ideas-count"></span></div>
-        <p class="sub" id="ideas-sub">The crew's proposals, best first. Go starts one; Not now shelves it. What's running shows its numbers as they come in.</p>
+        <p class="sub" id="ideas-sub">The crew's proposals, best first. Go starts one; Not now shelves it. Each one you started says whether it is still being integrated or complete.</p>
         <div id="ideas"><p class="empty">No ideas waiting.</p></div>
       </section>
       <section class="block" id="goal-block" aria-labelledby="h-goal" hidden>
@@ -902,7 +902,7 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
       const u = up[d.id];
       if (!u) return d;
       const out = { ...d };
-      for (const k of ["outcome", "status", "answer", "closed", "reply"]) if (u[k] !== undefined && (k !== "status" || d.status !== "answered" || u.status === "answered")) out[k] = u[k];
+      for (const k of ["outcome", "status", "answer", "closed", "reply", "integrated"]) if (u[k] !== undefined && (k !== "status" || d.status !== "answered" || u.status === "answered")) out[k] = u[k];
       return out;
     });
     // a card the crew created in the outbox (an idea card from Cicero's shift) that has no document yet
@@ -918,22 +918,27 @@ textarea { width: 100%; min-height: 120px; resize: vertical; padding: 12px; bord
   function drawIdeas() {
     const all = S.asks.filter(isIdea);
     const open = all.filter((a) => a.status === "open").sort((x, y) => (x.order ?? 99) - (y.order ?? 99));
-    // Picked up ("go") and not yet closed by Claude: running. Closed: outcome set.
+    // Picked up ("go") and not yet closed: "Being integrated" until the change is live
+    // (integrated: true, set by Claude or a crew member through the outbox), then
+    // "Complete" (owner 2026-11-20: "Instead of showing running on tasks show that its
+    // being integrated and tell me its complete or not").
     const live = all.filter((a) => a.status !== "open" && a.answer === "go" && !a.closed)
-      .sort((x, y) => String(y.answeredAt || "").localeCompare(String(x.answeredAt || "")));
+      .sort((x, y) => (x.integrated ? 1 : 0) - (y.integrated ? 1 : 0) || String(y.answeredAt || "").localeCompare(String(x.answeredAt || "")));
     const sig = JSON.stringify([open, live]);
-    $("#ideas-count").textContent = open.length ? `${open.length} to review` : live.length ? `${live.length} running` : "";
+    const building = live.filter((a) => !a.integrated).length, complete = live.length - building;
+    $("#ideas-count").textContent = open.length ? `${open.length} to review`
+      : [building ? `${building} being integrated` : "", complete ? `${complete} complete` : ""].filter(Boolean).join(" · ");
     if (sig === ideasSig) return;
     ideasSig = sig;
     const box = $("#ideas");
     if (!open.length && !live.length) { box.innerHTML = `<p class="empty">No ideas waiting.</p>`; return; }
     const tag = (t, cls) => t ? `<span class="pill ${cls || "s-idle"}">${esc(t)}</span>` : "";
     const card = (a, running) => `<article class="idea ${running ? "running" : ""}" id="ask-${esc(a.id)}">
-        <div class="idea-head"><h3>${esc(a.title)}</h3>${running ? `<span class="pill s-work">Running</span>` : a.impact ? tag(a.impact + " impact", a.impact === "high" ? "s-done" : "s-idle") : ""}</div>
+        <div class="idea-head"><h3>${esc(a.title)}</h3>${running ? `${a.integrated ? `<span class="pill s-done">Complete</span>` : `<span class="pill s-work">Being integrated</span>`}` : a.impact ? tag(a.impact + " impact", a.impact === "high" ? "s-done" : "s-idle") : ""}</div>
         ${a.pitch ? `<p class="pitch">${esc(a.pitch)}</p>` : ""}
         ${a.why ? `<p class="why">${esc(a.why)}</p>` : ""}
         <div class="idea-tags">${tag(a.crew ? crewName(a.crew) : "", "s-idle")}${tag(a.cost, "s-idle")}${tag(a.needsYou ? "Needs you: " + a.needsYou : "", "s-wait")}</div>
-        ${running ? `<p class="state">${esc(a.outcome || "Started. Numbers as they come in.")}</p>` : ""}
+        ${running ? `<p class="state">${esc(a.outcome || (a.integrated ? "Live." : "Claude and the crew are building it in. This card says Complete the moment it is live."))}</p>` : ""}
         <div class="idea-foot">${running
           ? `<button class="btn" type="button" data-discuss="${esc(a.id)}">Ask about it</button><button class="btn" type="button" data-idea="${esc(a.id)}" data-opt="stop">Stop it</button>`
           : `<button class="btn" type="button" data-discuss="${esc(a.id)}">Ask</button><button class="btn" type="button" data-idea="${esc(a.id)}" data-opt="no">Not now</button><button class="btn primary" type="button" data-idea="${esc(a.id)}" data-opt="go">Go</button>`}</div>

@@ -437,6 +437,7 @@ jobs:
           if [ -f data/playlists.json ]; then git add data/playlists.json; fi
           if [ -f data/inspector.csv ]; then git add data/inspector.csv; fi
           if [ -f data/topical_log.csv ]; then git add data/topical_log.csv; fi
+          if [ -f data/hq_outbox.jsonl ]; then git add data/hq_outbox.jsonl; fi
           if [ -f data/channel_branding_applied.json ]; then git add data/channel_branding_applied.json; fi
           git diff --staged --quiet || git commit -m "log: $(date -u +%F) post"
           # The 4 daily slots race on pushing to main — rebase-retry instead of

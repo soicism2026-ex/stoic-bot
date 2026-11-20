@@ -99,6 +99,7 @@ def main(argv=None) -> int:
     a.add_argument("--text", required=True)
     b = sub.add_parser("ask"); b.add_argument("id"); b.add_argument("--outcome"); b.add_argument("--closed", action="store_true")
     b.add_argument("--status"); b.add_argument("--answer")
+    b.add_argument("--integrated", action="store_true", help="the change is live: the HQ card says Complete")
     b.add_argument("--create-json", help="a NEW card's fields as JSON (title, pitch, why, kind idea, crew, options, order, cost, impact)")
     c = sub.add_parser("note"); c.add_argument("id"); c.add_argument("--status", choices=("working", "done")); c.add_argument("--reply")
     sub.add_parser("prune"); sub.add_parser("show")
@@ -112,6 +113,8 @@ def main(argv=None) -> int:
                 item[k] = getattr(ns, k)
         if ns.closed:
             item["closed"] = True
+        if ns.integrated:
+            item["integrated"] = True
         if ns.create_json:
             item["create"] = json.loads(ns.create_json)
         print(json.dumps(append(item), ensure_ascii=False))
