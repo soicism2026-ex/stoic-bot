@@ -7,23 +7,23 @@
  "countries": [
   {
    "key": "US",
-   "views": 7972,
+   "views": 8176,
    "share": 0.673
   },
   {
    "key": "IN",
-   "views": 1718,
+   "views": 1763,
    "share": 0.145
   },
   {
    "key": "CA",
-   "views": 609,
-   "share": 0.051
+   "views": 652,
+   "share": 0.054
   },
   {
    "key": "GB",
    "views": 475,
-   "share": 0.04
+   "share": 0.039
   },
   {
    "key": "DE",
@@ -48,7 +48,7 @@
   {
    "key": "NL",
    "views": 90,
-   "share": 0.008
+   "share": 0.007
   },
   {
    "key": "IT",
@@ -69,32 +69,32 @@
  "sources": [
   {
    "key": "SHORTS",
-   "views": 17329,
-   "share": 0.921
+   "views": 17758,
+   "share": 0.92
   },
   {
    "key": "YT_SEARCH",
-   "views": 729,
+   "views": 751,
    "share": 0.039
   },
   {
    "key": "YT_OTHER_PAGE",
-   "views": 398,
+   "views": 402,
    "share": 0.021
   },
   {
    "key": "YT_CHANNEL",
-   "views": 261,
-   "share": 0.014
+   "views": 294,
+   "share": 0.015
   },
   {
    "key": "EXT_URL",
-   "views": 51,
+   "views": 53,
    "share": 0.003
   },
   {
    "key": "SUBSCRIBER",
-   "views": 25,
+   "views": 26,
    "share": 0.001
   },
   {
@@ -121,12 +121,12 @@
  "subscribed": [
   {
    "key": "UNSUBSCRIBED",
-   "views": 18305,
+   "views": 18781,
    "share": 0.973
   },
   {
    "key": "SUBSCRIBED",
-   "views": 503,
+   "views": 518,
    "share": 0.027
   }
  ],
@@ -134,27 +134,27 @@
   {
    "key": "stoicism",
    "views": 19,
-   "share": 0.176
+   "share": 0.174
   },
   {
    "key": "marcus aurelius",
    "views": 8,
-   "share": 0.074
+   "share": 0.073
   },
   {
    "key": "stoicism motivation",
    "views": 8,
-   "share": 0.074
+   "share": 0.073
   },
   {
    "key": "stoic reset",
    "views": 7,
-   "share": 0.065
+   "share": 0.064
   },
   {
    "key": "stoicism marcus aurelius",
    "views": 7,
-   "share": 0.065
+   "share": 0.064
   },
   {
    "key": "blue lotus",
@@ -197,6 +197,11 @@
    "share": 0.028
   },
   {
+   "key": "shinchan edit",
+   "views": 3,
+   "share": 0.028
+  },
+  {
    "key": "shorts",
    "views": 3,
    "share": 0.028
@@ -219,49 +224,44 @@
   {
    "key": "ai terbaik",
    "views": 2,
-   "share": 0.019
+   "share": 0.018
   },
   {
    "key": "burberry london",
    "views": 2,
-   "share": 0.019
+   "share": 0.018
   },
   {
    "key": "english tekst",
    "views": 2,
-   "share": 0.019
+   "share": 0.018
   },
   {
    "key": "epictetus audiobook",
    "views": 2,
-   "share": 0.019
+   "share": 0.018
+  },
+  {
+   "key": "epictetus quotes",
+   "views": 2,
+   "share": 0.018
   },
   {
    "key": "everything you're scared to lose was never yours",
    "views": 2,
-   "share": 0.019
+   "share": 0.018
   },
   {
    "key": "modern love david bowie",
    "views": 2,
-   "share": 0.019
-  },
-  {
-   "key": "mumbai marine drive",
-   "views": 2,
-   "share": 0.019
-  },
-  {
-   "key": "princess diana death reaction",
-   "views": 2,
-   "share": 0.019
+   "share": 0.018
   }
  ],
  "searchTermsAllTime": [
   {
    "key": "stoicism",
    "views": 60,
-   "share": 0.237
+   "share": 0.236
   },
   {
    "key": "marcus aurelius",
@@ -296,17 +296,17 @@
   {
    "key": "marcus aurelius meditations",
    "views": 10,
-   "share": 0.04
+   "share": 0.039
   },
   {
    "key": "stoic mindset",
    "views": 8,
-   "share": 0.032
+   "share": 0.031
   },
   {
    "key": "stoic wisdom",
    "views": 8,
-   "share": 0.032
+   "share": 0.031
   },
   {
    "key": "stoic reset",
@@ -379,9 +379,9 @@
    "share": 0.016
   },
   {
-   "key": "fox news david hearn",
-   "views": 3,
-   "share": 0.012
+   "key": "stoic journal",
+   "views": 4,
+   "share": 0.016
   }
  ]
 }
