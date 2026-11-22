@@ -237,7 +237,7 @@ def test_the_background_chain_tries_kling_before_stock():
 def test_the_workflow_passes_the_secret_but_never_a_literal():
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text()
     assert "HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}" in wf
-    assert wf.count("HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}") == 2
+    assert wf.count("HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}") == 3  # + the render step (video-bg, src/animator.py)
 
 
 def test_no_higgsfield_credential_is_committed():

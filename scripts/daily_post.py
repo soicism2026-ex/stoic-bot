@@ -321,6 +321,7 @@ def _shots_summary() -> list[dict]:
             v = sl.get("inspect") or {}
             out.append({"slot": i, "painted": bool(sl.get("ok")), "scene": (sl.get("scene") or "")[:160],
                         "seed": sl.get("seed"), "tries": sl.get("tries", 1),
+                        **({"animated": True} if sl.get("animated") else {}),
                         "inspector": {True: "pass", False: "flagged"}.get(v.get("ok"), "unseen"),
                         "problems": v.get("problems") or []})
         return out
@@ -1374,6 +1375,13 @@ def main():
             )
             _log_inspection(today, content, upload_result)
             _log_topical(today, content, upload_result)
+            try:
+                import animator
+                import airday
+                animator.record(content.get("_edit_id", ""),
+                                (upload_result or {}).get("video_id", ""), airday.today())
+            except Exception as e:  # noqa: BLE001
+                print(f"  [animator] log skipped: {e}", flush=True)
             print("  logged. done.")
             break
 

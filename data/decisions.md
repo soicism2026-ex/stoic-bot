@@ -1875,3 +1875,7 @@ Owner: "I want to make the short more personal and based on my life: Heres some 
 ## 2026-11-22: Cicero first (owner, in the HQ, about Cicero's card: "prioritize this one")
 
 Cicero's shift (growth: the funnel, the running tests, the next test) runs daily at 10:53 UTC instead of weekly on Fridays, in his small Sonnet session. The other crew keep their schedules.
+
+## 2026-11-22: Video backgrounds, test cheapest for a month (owner, in the HQ: "Video backgrounds: which storyboard?": "Cheapest: Seedance Mini"; "test cheapest for 1 month")
+
+From 2026-11-23 to 2026-12-22 inclusive, the FIRST post of each air day animates 3 of its painted shots (the hook's, then two spread across the Short) with Seedance 2.0 Mini on Higgsfield (`src/animator.py`, 5 s clips made from the shot's own painted still); every other shot stays painted; type, music, sound and mastering are unchanged. At most 3 generations (about 15 credits) a day, a daily ledger, clips cached beside the stills so the rehearsal pays and the live post reuses. No Higgsfield credits (the account is on the free tier until the owner buys a plan) = painted stills, logged plainly. Ledger test `video-bg` in `data/marketing_tests.json` (day-3 views against the same day's painted Shorts); records in `data/video_bg.csv`. Off by itself after 2026-12-22. UNVERIFIED: Higgsfield's docs list no "mini" model id; `VIDEO_BG_MODEL` holds the guess.

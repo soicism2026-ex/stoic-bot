@@ -156,6 +156,20 @@
     "2026-11-19"
    ],
    "approved": "2026-11-20: owner, in the HQ: \"Test: the old hooks and the comment line back for 3 days: Go\""
+  },
+  {
+   "id": "video-bg",
+   "kind": "views_before_after",
+   "question": "Do animated backgrounds bring more views than painted stills?",
+   "change": "From 2026-11-23 to 2026-12-22: the first Short of each day animates 3 of its paintings (the hook's shot and two more) with Seedance 2.0 Mini on Higgsfield, 5 seconds each; every other shot stays painted. At most 3 clips a day. It starts as soon as Higgsfield has credits.",
+   "why": "owner's choice in the HQ, 2026-11-22",
+   "measure": "day-3 views of the video Short against the same day's painted Shorts, over the month",
+   "ask": "video-storyboard",
+   "status": "running",
+   "proposed": "2026-11-20",
+   "started": "2026-11-23",
+   "end": "2026-12-22",
+   "approved": "2026-11-22: owner, in the HQ: \"test cheapest for 1 month\""
   }
  ],
  "next": []

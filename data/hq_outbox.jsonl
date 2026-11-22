@@ -24,3 +24,7 @@
 {"t": "2026-11-20T10:54:05Z", "who": "Cicero", "kind": "done", "text": "Playlists: 0.08% of views vs 0.02%, no clear change. Free, so they stay."}
 {"t": "2026-11-20T10:54:05Z", "who": "Cicero", "kind": "work", "text": "Pace: 619 views a day (-51% on last week, 2,740 needed), 1.1 subscribers a day (1.8 needed), 285 of 1,000. New look 0.85x, third Short 0.79x, news hooks 0.42x on 3-day views; the undo test reports Nov 25. No new test this week: every views test is still open."}
 {"t": "2026-11-21T04:41:50Z", "who": "Longinus", "kind": "done", "text": "Checked \"Certainty is absurd. Be kind.\": clean. Seven painted shots, all passed."}
+{"t": "2026-11-22T02:37:24Z", "ask": "video-storyboard", "outcome": "Built in: from Nov 23 the first Short of each day animates 3 of its paintings (Seedance Mini), until Dec 22; it starts as soon as Higgsfield has credits."}
+{"t": "2026-11-22T02:37:24Z", "note": "0p9f9x4mc5xikuch87ru", "status": "done", "reply": "Built in; it starts once Higgsfield has credits."}
+{"t": "2026-11-22T02:37:24Z", "note": "3ow2nrtf0410mhyqsscp", "status": "done", "reply": "Built in; it starts once Higgsfield has credits."}
+{"t": "2026-11-22T02:37:24Z", "who": "Zeuxis", "kind": "done", "text": "Video backgrounds built: from Nov 23 to Dec 22 the first Short of each day animates 3 of its paintings with Seedance Mini (max 3 clips a day, cached, painted stills on any failure or with no credits)."}

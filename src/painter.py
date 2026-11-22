@@ -814,6 +814,9 @@ BANNED_SLOTS: set[int] = set()
 # them. Painted clips sit at the slot's usual path, so the thumbnail step
 # (daily_post reads <video>.bg.mp4) finds slot 0 as before.
 PAINTED_CLIPS: set[str] = set()
+# Slots whose clip is an ANIMATED painting (src/animator.py): render.py gives
+# them no sub-pixel move of their own and holds their last frame if short.
+ANIMATED: set[int] = set()
 
 
 # The inspector's choice per (prompt, seed): the still that airs and its

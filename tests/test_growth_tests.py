@@ -304,9 +304,11 @@ def test_a_short_filed_twice_is_left_once(tmp_path, monkeypatch):
 def test_the_owner_said_yes_to_playlists_on_2026_11_06():
     ledger = json.loads((ROOT / "data" / "marketing_tests.json").read_text())
     t = next(t for t in ledger["tests"] if t["id"] == "playlists")
-    assert t["status"] == "running" and t["started"] == "2026-11-06"
+    # Cicero closes a test when its window ends: running, or judged and done
+    assert t["status"] in ("running", "done") and t["started"] == "2026-11-06"
     assert "Yes, make the playlists" in t["approved"]
-    assert playlists.gate()
+    if t["status"] == "running":
+        assert playlists.gate()
 
 
 # ---------------------------------------------------------------- the audience

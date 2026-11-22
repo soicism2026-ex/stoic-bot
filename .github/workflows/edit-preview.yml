@@ -209,6 +209,7 @@ jobs:
         # HQ (asks/new-look). "" brings back the old black-and-white look.
         REEL_EDIT_LOOK: "painted"
         REEL_STILL_CACHE: data/still_cache
+        HF_KEY: ${{ secrets.HF_KEY }}
         REEL_EDIT_MUSIC: ${{ inputs.music }}
         REEL_EDIT_SFX: ${{ (inputs.sfx || 'on') == 'on' && '1' || '0' }}
       run: |

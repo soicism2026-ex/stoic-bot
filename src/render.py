@@ -1721,10 +1721,15 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
             # a sub-pixel perspective move instead of zoompan's whole pixels.
             bar_crops = painter.source_crops(bg_clips)
             bg_segs = [
-                f"[{_i}:v]{bar_crops[_i]}{geo},trim=0:end={seg_durs[_i]:.3f},"
-                f"setpts=PTS-STARTPTS,"
-                f"{painter.motion_filter(_i, max(2, int(round(seg_durs[_i] * 30))))}"
-                f"[bgseg{_i}]"
+                f"[{_i}:v]{bar_crops[_i]}{geo},"
+                # an ANIMATED painting (src/animator.py) keeps its own motion and
+                # holds its last frame when the shot is longer than the clip
+                + (f"tpad=stop_mode=clone:stop_duration={seg_durs[_i]:.3f},"
+                   if _i in painter.ANIMATED else "")
+                + f"trim=0:end={seg_durs[_i]:.3f},setpts=PTS-STARTPTS"
+                + ("" if _i in painter.ANIMATED else
+                   f",{painter.motion_filter(_i, max(2, int(round(seg_durs[_i] * 30))))}")
+                + f"[bgseg{_i}]"
                 for _i in range(n_bg)
             ]
         else:
@@ -1765,7 +1770,10 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
     # Input list: all bg clips (stream-looped so every clip fills its segment),
     # then audio, then optional music. Audio index = number of bg clips.
     clip_inputs: list = []
-    for _clip in bg_clips:
+    for _ci, _clip in enumerate(bg_clips):
+        if painted and _ci in painter.ANIMATED:
+            clip_inputs += ["-i", str(_clip)]          # plays once; the graph holds its last frame
+            continue
         # Stock clips often open on a fade from black: edit preview 4 showed
         # 0.6s of near-black (luma 20/255) where a segment started on one.
         # Skip the opening of any clip long enough to spare it.

@@ -462,6 +462,24 @@ def _fetch_synthetic(theme: str, out_path: Path) -> Path:
 PRESET: dict = {}
 
 
+def _animate_prefetch(n: int, theme: str, out_path) -> None:
+    """VIDEO BACKGROUNDS test (src/animator.py): never raises."""
+    try:
+        import animator
+        animator.reset()
+        animator.prefetch(n, theme, Path(out_path).parent)
+    except Exception as e:  # noqa: BLE001
+        print(f"[background] animator skipped: {e}", file=sys.stderr, flush=True)
+
+
+def _animate_swap(slot: int, out_path) -> None:
+    try:
+        import animator
+        animator.animate_slot(slot, Path(out_path))
+    except Exception as e:  # noqa: BLE001
+        print(f"[background] animator swap skipped: {e}", file=sys.stderr, flush=True)
+
+
 def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
     """
     Return a background clip for today's Short.
@@ -497,9 +515,12 @@ def fetch_background(theme: str, out_path: Path, clip_idx: int = 0) -> Path:
         if painted:
             if clip_idx == 0:
                 painter.SLOTS.clear()
+                painter.ANIMATED.clear()
                 painter.prefetch(int(os.environ.get("REEL_BG_CLIPS", "1") or 1), theme)
+                _animate_prefetch(int(os.environ.get("REEL_BG_CLIPS", "1") or 1), theme, out_path)
             got = painter.fetch_slot(clip_idx, out_path, theme)
             if got is not None:
+                _animate_swap(clip_idx, out_path)
                 print(f"[background] SOURCE={_note_source('PAINTED')} slot={clip_idx} "
                       f"file={Path(got).name}", flush=True)
                 return Path(got)
