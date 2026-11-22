@@ -62,11 +62,15 @@
    "why": "Since June, YouTube search brought 225 views, all from broad words (stoicism, marcus aurelius). Searches like \"how to stop overthinking\" are among YouTube's most popular, and brought us none: our Shorts never use those words.",
    "measure": "The share of views from YouTube search, the 14 days after against the 14 before.",
    "ask": "search-phrases",
-   "status": "running",
+   "status": "done",
    "proposed": "2026-11-07",
    "started": "2026-11-08",
    "use": "descriptions",
-   "approved": "2026-11-07: owner, in the HQ: \"Yes: descriptions, hashtags and tags\" (titles stay as they are)"
+   "approved": "2026-11-07: owner, in the HQ: \"Yes: descriptions, hashtags and tags\" (titles stay as they are)",
+   "ended": "2026-11-22",
+   "verdict": "no clear change",
+   "adopted": "descriptions",
+   "result": "YouTube search share of views 3.5% during vs 4.5% before. Of the ten 'how to' searches none brought a viewer; only 'marcus aurelius quotes' (4 views) matched. Free, so the descriptions keep them; titles-search is the next step."
   },
   {
    "id": "new-look",
@@ -90,10 +94,11 @@
    "why": "98% of views come from people who don't follow the channel (Glaux, 28 days to 11-06); it gains about 1.5 subscribers a day and 1,000 by the end of 2027 needs 1.8. The cheapest ask there is.",
    "measure": "New subscribers per 1,000 views, the 14 days after against the 14 before (channel_stats.csv).",
    "ask": "idea-follow-line",
-   "status": "queued",
+   "status": "running",
    "proposed": "2026-11-12",
    "start": "2026-11-21",
-   "approved": "2026-11-12: within the autonomy rule (words only, reversible); on the owner's Ideas board as idea-follow-line"
+   "approved": "2026-11-12: within the autonomy rule (words only, reversible); on the owner's Ideas board as idea-follow-line",
+   "started": "2026-11-22"
   },
   {
    "id": "third-short",
@@ -132,11 +137,12 @@
    "why": "Test search-phrases put the searches in descriptions, hashtags and tags; the title is the field YouTube weighs most for search, and the owner said yes to it once that test ends.",
    "measure": "The share of views from YouTube search, the 14 days after against the 14 before (same measure as search-phrases).",
    "ask": "idea-titles-search",
-   "status": "queued",
+   "status": "running",
    "proposed": "2026-11-13",
    "start": "2026-11-22",
    "use": "titles",
-   "approved": "2026-11-16: owner, in the HQ: \"Put the search in the title too: Go\""
+   "approved": "2026-11-16: owner, in the HQ: \"Put the search in the title too: Go\"",
+   "started": "2026-11-22"
   },
   {
    "id": "undo-nov16",
