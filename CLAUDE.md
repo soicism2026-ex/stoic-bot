@@ -35,7 +35,7 @@ Every turn re-reads the whole context, so the cost of a session is its context s
 | `hq-inbox` | An "[HQ …]" message or decision from the owner arrives in the chief chat: pick it up, act, answer in its thread |
 | `longinus-review` | Daily 04:41 / 08:41 UTC: look at the next Short's rehearsal, rewrite a shot that still looks off, re-rehearse |
 | `crew-review` | Thursdays 20:23 UTC: Zeuxis, Plutarch and Callimachus each fix one thing from the week's evidence |
-| `cicero-shift` | Fridays 10:53 UTC: judge, start and propose growth tests; report the goal's pace |
+| `cicero-shift` | Daily 10:53 UTC (the owner's priority since 2026-11-22): judge, start and propose growth tests; report the goal's pace |
 | `varro-restock` | Mondays 13:07 UTC: keep the quote shelf at 30+ days, scenes and gold words included |
 | `channel-report` | "How's the bot doing": age-corrected performance read, leaderboards, honest verdict + one recommendation |
 | `pipeline-doctor` | "It's not posting" / "changes aren't showing up": every known silent-failure mode, verified with a real post |

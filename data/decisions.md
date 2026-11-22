@@ -1871,3 +1871,7 @@ Owner: "I want to make the short more personal and based on my life: Heres some 
 - Five shelf entries marked `"personal": true` (the last five in `data/edit_quotes.json`), one per thought, each paired with the Stoic text that says the same: Seneca Letter 18 (1), Seneca Letter 55 (2), Marcus Aurelius 12.20 (3), Seneca Letter 8 (4), Epictetus Discourses IV.13 (5). The hook is his thought condensed in his own words; the description's first paragraph is his thought with spelling and punctuation cleaned; his words are never attributed to a philosopher.
 - They air FIRST, one at a time in shelf order, ahead of Fama's topical plan and the author rotation (`edits.personal_fresh`, `edits.pick`; test in `tests/test_edits.py`). `scripts/shelf.py` allows the optional `personal` key between `visuals` and `scenes`.
 - Going forward, when the owner sends a new thought of his own, Varro makes it a `personal` entry the same way.
+
+## 2026-11-22: Cicero first (owner, in the HQ, about Cicero's card: "prioritize this one")
+
+Cicero's shift (growth: the funnel, the running tests, the next test) runs daily at 10:53 UTC instead of weekly on Fridays, in his small Sonnet session. The other crew keep their schedules.

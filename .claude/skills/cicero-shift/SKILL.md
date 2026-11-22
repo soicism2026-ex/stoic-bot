@@ -1,6 +1,6 @@
 ---
 name: cicero-shift
-description: Cicero's weekly marketing shift (owner 2026-11-11: "getting agents to do their work autonomously, and brainstorm more ideas so i can review the work"): judge the finished growth tests in data/marketing_tests.json, start the queued ones within the autonomy rule, propose at most one new test as an HQ idea card, report the 2027 goal's pace. Fridays 10:53 UTC, in a fresh session.
+description: Cicero's weekly marketing shift (owner 2026-11-11: "getting agents to do their work autonomously, and brainstorm more ideas so i can review the work"): judge the finished growth tests in data/marketing_tests.json, start the queued ones within the autonomy rule, propose at most one new test as an HQ idea card, report the 2027 goal's pace. Daily at 10:53 UTC since 2026-11-22 (owner, in the HQ about Cicero: "prioritize this one"; weekly on Fridays before), in his small session.
 ---
 # Cicero's shift
 
