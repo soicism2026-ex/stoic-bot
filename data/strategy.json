@@ -1,10 +1,10 @@
 {
- "updated": "2026-11-21",
+ "updated": "2026-11-22",
  "by": "Frontinus (scripts/strategist.py, no paid API)",
  "window_days": 28,
- "settled_edits": 58,
+ "settled_edits": 56,
  "median_views_day3": 234.5,
- "median_retention": 103.5,
+ "median_retention": 109.8,
  "theme_rank": {
   "time": 1,
   "anger": 2,
@@ -13,9 +13,9 @@
   "mortality": 1,
   "desire": 1,
   "discipline": 1,
-  "ego": 1,
   "resilience": 1,
   "friendship": 0,
+  "ego": 1,
   "control": 0,
   "duty": 1
  },
@@ -42,7 +42,7 @@
     "n": 2,
     "median_views_day3": 244.0,
     "lift": 1.15,
-    "median_retention": 154.0,
+    "median_retention": 142.8,
     "verdict": "too few"
    },
    {
@@ -58,7 +58,7 @@
     "n": 3,
     "median_views_day3": 270,
     "lift": 1.08,
-    "median_retention": 124.2,
+    "median_retention": 124.0,
     "verdict": "even"
    },
    {
@@ -66,23 +66,15 @@
     "n": 9,
     "median_views_day3": 257,
     "lift": 1.05,
-    "median_retention": 111.8,
+    "median_retention": 111.9,
     "verdict": "even"
    },
    {
     "key": "discipline",
-    "n": 5,
-    "median_views_day3": 189,
+    "n": 4,
+    "median_views_day3": 211.0,
     "lift": 0.91,
-    "median_retention": 107.1,
-    "verdict": "even"
-   },
-   {
-    "key": "ego",
-    "n": 3,
-    "median_views_day3": 215,
-    "lift": 0.86,
-    "median_retention": 109.5,
+    "median_retention": 114.1,
     "verdict": "even"
    },
    {
@@ -102,11 +94,19 @@
     "verdict": "loser"
    },
    {
+    "key": "ego",
+    "n": 2,
+    "median_views_day3": 141.5,
+    "lift": 0.58,
+    "median_retention": 118.7,
+    "verdict": "too few"
+   },
+   {
     "key": "control",
     "n": 4,
     "median_views_day3": 108.5,
     "lift": 0.46,
-    "median_retention": 121.0,
+    "median_retention": 120.5,
     "verdict": "loser"
    },
    {
@@ -114,17 +114,25 @@
     "n": 2,
     "median_views_day3": 97.5,
     "lift": 0.43,
-    "median_retention": null,
+    "median_retention": 181.9,
     "verdict": "too few"
    }
   ],
   "author": [
    {
     "key": "Marcus Aurelius",
-    "n": 18,
-    "median_views_day3": 254.5,
-    "lift": 1.13,
-    "median_retention": 109.9,
+    "n": 17,
+    "median_views_day3": 252,
+    "lift": 1.08,
+    "median_retention": 112.5,
+    "verdict": "even"
+   },
+   {
+    "key": "Seneca",
+    "n": 19,
+    "median_views_day3": 222,
+    "lift": 0.94,
+    "median_retention": 120.2,
     "verdict": "even"
    },
    {
@@ -132,15 +140,7 @@
     "n": 20,
     "median_views_day3": 234.5,
     "lift": 0.92,
-    "median_retention": 96.0,
-    "verdict": "even"
-   },
-   {
-    "key": "Seneca",
-    "n": 20,
-    "median_views_day3": 210.5,
-    "lift": 0.88,
-    "median_retention": 117.0,
+    "median_retention": 97.0,
     "verdict": "even"
    }
   ],
@@ -155,28 +155,28 @@
    },
    {
     "key": "question",
-    "n": 17,
-    "median_views_day3": 257,
-    "lift": 1.05,
-    "median_retention": 100.3,
+    "n": 16,
+    "median_views_day3": 250.0,
+    "lift": 1.02,
+    "median_retention": 109.6,
     "verdict": "even"
    },
    {
     "key": "statement",
-    "n": 33,
-    "median_views_day3": 215,
+    "n": 32,
+    "median_views_day3": 218.5,
     "lift": 0.94,
-    "median_retention": 102.4,
+    "median_retention": 103.5,
     "verdict": "even"
    }
   ],
   "hook_len": [
    {
     "key": "long (7+)",
-    "n": 19,
+    "n": 17,
     "median_views_day3": 236,
     "lift": 1.08,
-    "median_retention": 102.4,
+    "median_retention": 103.5,
     "verdict": "even"
    },
    {
@@ -184,7 +184,7 @@
     "n": 29,
     "median_views_day3": 248,
     "lift": 1.01,
-    "median_retention": 98.8,
+    "median_retention": 100.1,
     "verdict": "even"
    },
    {
@@ -199,10 +199,10 @@
   "quote_len": [
    {
     "key": "long (25+)",
-    "n": 12,
-    "median_views_day3": 250.0,
-    "lift": 1.12,
-    "median_retention": 87.1,
+    "n": 11,
+    "median_views_day3": 248,
+    "lift": 1.08,
+    "median_retention": 83.8,
     "verdict": "even"
    },
    {
@@ -215,10 +215,10 @@
    },
    {
     "key": "medium (13-24)",
-    "n": 38,
-    "median_views_day3": 222.5,
-    "lift": 0.93,
-    "median_retention": 109.9,
+    "n": 37,
+    "median_views_day3": 230,
+    "lift": 0.94,
+    "median_retention": 113.8,
     "verdict": "even"
    }
   ],
@@ -228,7 +228,7 @@
     "n": 5,
     "median_views_day3": 586,
     "lift": 2.22,
-    "median_retention": 121.0,
+    "median_retention": 120.5,
     "verdict": "winner"
    },
    {
@@ -237,14 +237,6 @@
     "median_views_day3": 309,
     "lift": 1.54,
     "median_retention": 87.0,
-    "verdict": "too few"
-   },
-   {
-    "key": "Ancient Rite",
-    "n": 1,
-    "median_views_day3": 326,
-    "lift": 1.52,
-    "median_retention": 100.3,
     "verdict": "too few"
    },
    {
@@ -276,7 +268,7 @@
     "n": 4,
     "median_views_day3": 254.5,
     "lift": 1.11,
-    "median_retention": 82.3,
+    "median_retention": 82.4,
     "verdict": "even"
    },
    {
@@ -316,7 +308,7 @@
     "n": 4,
     "median_views_day3": 227.5,
     "lift": 0.92,
-    "median_retention": 114.3,
+    "median_retention": 118.7,
     "verdict": "even"
    },
    {
@@ -332,7 +324,7 @@
     "n": 5,
     "median_views_day3": 199,
     "lift": 0.83,
-    "median_retention": 116.5,
+    "median_retention": 116.0,
     "verdict": "even"
    },
    {
@@ -348,43 +340,35 @@
     "n": 5,
     "median_views_day3": 141,
     "lift": 0.61,
-    "median_retention": 129.3,
+    "median_retention": 161.2,
     "verdict": "loser"
-   },
-   {
-    "key": "Heroic Age",
-    "n": 1,
-    "median_views_day3": 54,
-    "lift": 0.25,
-    "median_retention": null,
-    "verdict": "too few"
    }
   ],
   "voice": [
    {
     "key": "Brian",
-    "n": 58,
+    "n": 56,
     "median_views_day3": 234.5,
     "lift": 0.98,
-    "median_retention": 103.5,
+    "median_retention": 109.8,
     "verdict": "even"
    }
   ],
   "slot": [
    {
     "key": "first of the day",
-    "n": 26,
-    "median_views_day3": 247.5,
-    "lift": 1.12,
-    "median_retention": 96.8,
+    "n": 25,
+    "median_views_day3": 247,
+    "lift": 1.08,
+    "median_retention": 95.8,
     "verdict": "even"
    },
    {
     "key": "second of the day",
-    "n": 32,
-    "median_views_day3": 207.0,
-    "lift": 0.89,
-    "median_retention": 119.0,
+    "n": 31,
+    "median_views_day3": 215,
+    "lift": 0.92,
+    "median_retention": 119.5,
     "verdict": "even"
    }
   ],
@@ -402,7 +386,7 @@
     "n": 9,
     "median_views_day3": 261,
     "lift": 1.08,
-    "median_retention": 117.1,
+    "median_retention": 117.0,
     "verdict": "even"
    },
    {
@@ -415,10 +399,10 @@
    },
    {
     "key": "Saturday",
-    "n": 9,
+    "n": 7,
     "median_views_day3": 247,
     "lift": 1.01,
-    "median_retention": 98.7,
+    "median_retention": 97.3,
     "verdict": "even"
    },
    {
@@ -426,7 +410,7 @@
     "n": 7,
     "median_views_day3": 233,
     "lift": 0.98,
-    "median_retention": 119.8,
+    "median_retention": 119.3,
     "verdict": "even"
    },
    {
@@ -434,7 +418,7 @@
     "n": 9,
     "median_views_day3": 215,
     "lift": 0.89,
-    "median_retention": 103.5,
+    "median_retention": 113.8,
     "verdict": "even"
    },
    {
@@ -452,7 +436,7 @@
    "id": "fault_in_the_mind",
    "date": "2026-11-10",
    "views": 1007,
-   "retention": 113.7,
+   "retention": 113.8,
    "theme": "desire",
    "author": "Seneca",
    "hook": "Money isn't your problem.",
@@ -469,7 +453,7 @@
    "id": "death_behind_you",
    "date": "2026-11-15",
    "views": 869,
-   "retention": 124.2,
+   "retention": 124.0,
    "theme": "mortality",
    "author": "Seneca",
    "hook": "Death isn't ahead of you.",
@@ -486,7 +470,7 @@
    "id": "gentleness_is_strength",
    "date": "2026-11-08",
    "views": 957,
-   "retention": 91.5,
+   "retention": 91.3,
    "theme": "anger",
    "author": "Marcus Aurelius",
    "hook": "Think calm makes you soft?",
@@ -570,21 +554,21 @@
    "rel": 0.2471395881006865
   },
   {
-   "id": "no_right_wind",
-   "date": "2026-10-24",
-   "views": 54,
+   "id": "choose_free",
+   "date": "2026-11-18",
+   "views": 59,
    "retention": null,
-   "theme": "discipline",
-   "author": "Seneca",
-   "hook": "No goal? Then nothing will feel right.",
+   "theme": "control",
+   "author": "Epictetus",
+   "hook": "Ready to retire",
    "hook_form": "statement",
-   "hook_len": "long (7+)",
+   "hook_len": "short (<=4 words)",
    "quote_len": "medium (13-24)",
-   "music": "Heroic Age",
+   "music": "el3_taiko_distant",
    "voice": "Brian",
    "slot": "second of the day",
-   "weekday": "Saturday",
-   "rel": 0.2523364485981308
+   "weekday": "Wednesday",
+   "rel": 0.2700228832951945
   }
  ]
 }
