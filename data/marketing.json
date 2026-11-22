@@ -8,23 +8,23 @@
   "countries": [
    {
     "key": "US",
-    "views": 7972,
+    "views": 8176,
     "share": 0.673
    },
    {
     "key": "IN",
-    "views": 1718,
+    "views": 1763,
     "share": 0.145
    },
    {
     "key": "CA",
-    "views": 609,
-    "share": 0.051
+    "views": 652,
+    "share": 0.054
    },
    {
     "key": "GB",
     "views": 475,
-    "share": 0.04
+    "share": 0.039
    },
    {
     "key": "DE",
@@ -49,7 +49,7 @@
    {
     "key": "NL",
     "views": 90,
-    "share": 0.008
+    "share": 0.007
    },
    {
     "key": "IT",
@@ -70,32 +70,32 @@
   "sources": [
    {
     "key": "SHORTS",
-    "views": 17329,
-    "share": 0.921
+    "views": 17758,
+    "share": 0.92
    },
    {
     "key": "YT_SEARCH",
-    "views": 729,
+    "views": 751,
     "share": 0.039
    },
    {
     "key": "YT_OTHER_PAGE",
-    "views": 398,
+    "views": 402,
     "share": 0.021
    },
    {
     "key": "YT_CHANNEL",
-    "views": 261,
-    "share": 0.014
+    "views": 294,
+    "share": 0.015
    },
    {
     "key": "EXT_URL",
-    "views": 51,
+    "views": 53,
     "share": 0.003
    },
    {
     "key": "SUBSCRIBER",
-    "views": 25,
+    "views": 26,
     "share": 0.001
    },
    {
@@ -122,12 +122,12 @@
   "subscribed": [
    {
     "key": "UNSUBSCRIBED",
-    "views": 18305,
+    "views": 18781,
     "share": 0.973
    },
    {
     "key": "SUBSCRIBED",
-    "views": 503,
+    "views": 518,
     "share": 0.027
    }
   ],
@@ -135,27 +135,27 @@
    {
     "key": "stoicism",
     "views": 19,
-    "share": 0.176
+    "share": 0.174
    },
    {
     "key": "marcus aurelius",
     "views": 8,
-    "share": 0.074
+    "share": 0.073
    },
    {
     "key": "stoicism motivation",
     "views": 8,
-    "share": 0.074
+    "share": 0.073
    },
    {
     "key": "stoic reset",
     "views": 7,
-    "share": 0.065
+    "share": 0.064
    },
    {
     "key": "stoicism marcus aurelius",
     "views": 7,
-    "share": 0.065
+    "share": 0.064
    },
    {
     "key": "blue lotus",
@@ -198,6 +198,11 @@
     "share": 0.028
    },
    {
+    "key": "shinchan edit",
+    "views": 3,
+    "share": 0.028
+   },
+   {
     "key": "shorts",
     "views": 3,
     "share": 0.028
@@ -220,49 +225,44 @@
    {
     "key": "ai terbaik",
     "views": 2,
-    "share": 0.019
+    "share": 0.018
    },
    {
     "key": "burberry london",
     "views": 2,
-    "share": 0.019
+    "share": 0.018
    },
    {
     "key": "english tekst",
     "views": 2,
-    "share": 0.019
+    "share": 0.018
    },
    {
     "key": "epictetus audiobook",
     "views": 2,
-    "share": 0.019
+    "share": 0.018
+   },
+   {
+    "key": "epictetus quotes",
+    "views": 2,
+    "share": 0.018
    },
    {
     "key": "everything you're scared to lose was never yours",
     "views": 2,
-    "share": 0.019
+    "share": 0.018
    },
    {
     "key": "modern love david bowie",
     "views": 2,
-    "share": 0.019
-   },
-   {
-    "key": "mumbai marine drive",
-    "views": 2,
-    "share": 0.019
-   },
-   {
-    "key": "princess diana death reaction",
-    "views": 2,
-    "share": 0.019
+    "share": 0.018
    }
   ],
   "searchTermsAllTime": [
    {
     "key": "stoicism",
     "views": 60,
-    "share": 0.237
+    "share": 0.236
    },
    {
     "key": "marcus aurelius",
@@ -297,17 +297,17 @@
    {
     "key": "marcus aurelius meditations",
     "views": 10,
-    "share": 0.04
+    "share": 0.039
    },
    {
     "key": "stoic mindset",
     "views": 8,
-    "share": 0.032
+    "share": 0.031
    },
    {
     "key": "stoic wisdom",
     "views": 8,
-    "share": 0.032
+    "share": 0.031
    },
    {
     "key": "stoic reset",
@@ -380,24 +380,24 @@
     "share": 0.016
    },
    {
-    "key": "fox news david hearn",
-    "views": 3,
-    "share": 0.012
+    "key": "stoic journal",
+    "views": 4,
+    "share": 0.016
    }
   ]
  },
- "updated": "2026-11-21",
+ "updated": "2026-11-22",
  "source": "scripts/marketer.py (Cicero, free)",
  "funnel": {
   "asOf": "2026-11-21",
   "subscribers": 287,
-  "viewsPerDay": 568,
+  "viewsPerDay": 614,
   "viewsPerDayBefore": 1228,
   "subsPerDay": 1.3,
   "subsPerDayBefore": 2.4,
-  "subsPer1kViews": 2.3,
-  "likesPer100Views": 2.9,
-  "viewsChange": -0.54
+  "subsPer1kViews": 2.1,
+  "likesPer100Views": 3.0,
+  "viewsChange": -0.5
  },
  "hours": [
   {
@@ -415,7 +415,7 @@
   {
    "band": "08-11",
    "posts": 80,
-   "lift": 1.05,
+   "lift": 1.03,
    "stalled": 11
   },
   {
@@ -433,7 +433,7 @@
   {
    "band": "20-23",
    "posts": 46,
-   "lift": 0.73,
+   "lift": 0.75,
    "stalled": 9
   }
  ],
@@ -517,21 +517,19 @@
    "why": "Since June, YouTube search brought 225 views, all from broad words (stoicism, marcus aurelius). Searches like \"how to stop overthinking\" are among YouTube's most popular, and brought us none: our Shorts never use those words.",
    "measure": "The share of views from YouTube search, the 14 days after against the 14 before.",
    "ask": "search-phrases",
-   "status": "running",
+   "status": "done",
    "proposed": "2026-11-07",
    "started": "2026-11-08",
    "use": "descriptions",
    "approved": "2026-11-07: owner, in the HQ: \"Yes: descriptions, hashtags and tags\" (titles stay as they are)",
+   "ended": "2026-11-22",
+   "verdict": "no clear change",
+   "adopted": "descriptions",
+   "result": "YouTube search share of views 3.5% during vs 4.5% before. Of the ten 'how to' searches none brought a viewer; only 'marcus aurelius quotes' (4 views) matched. Free, so the descriptions keep them; titles-search is the next step.",
    "before": {
     "views": 365,
     "of": 8067,
     "share": 0.0452
-   },
-   "during": {
-    "views": 359,
-    "of": 10442,
-    "share": 0.0344,
-    "ends": "2026-11-22"
    }
   },
   {
@@ -565,15 +563,23 @@
    "why": "98% of views come from people who don't follow the channel (Glaux, 28 days to 11-06); it gains about 1.5 subscribers a day and 1,000 by the end of 2027 needs 1.8. The cheapest ask there is.",
    "measure": "New subscribers per 1,000 views, the 14 days after against the 14 before (channel_stats.csv).",
    "ask": "idea-follow-line",
-   "status": "queued",
+   "status": "running",
    "proposed": "2026-11-12",
    "start": "2026-11-21",
    "approved": "2026-11-12: within the autonomy rule (words only, reversible); on the owner's Ideas board as idea-follow-line",
+   "started": "2026-11-22",
    "before": {
     "days": 14,
-    "subs": 25,
-    "views": 12338,
-    "per1k": 2.03
+    "subs": 20,
+    "views": 11051,
+    "per1k": 1.81
+   },
+   "during": {
+    "days": 0,
+    "subs": null,
+    "views": null,
+    "per1k": null,
+    "ends": "2026-12-06"
    }
   },
   {
@@ -631,15 +637,22 @@
    "why": "Test search-phrases put the searches in descriptions, hashtags and tags; the title is the field YouTube weighs most for search, and the owner said yes to it once that test ends.",
    "measure": "The share of views from YouTube search, the 14 days after against the 14 before (same measure as search-phrases).",
    "ask": "idea-titles-search",
-   "status": "queued",
+   "status": "running",
    "proposed": "2026-11-13",
    "start": "2026-11-22",
    "use": "titles",
    "approved": "2026-11-16: owner, in the HQ: \"Put the search in the title too: Go\"",
+   "started": "2026-11-22",
    "before": {
-    "views": 402,
-    "of": 11791,
-    "share": 0.0341
+    "views": 381,
+    "of": 10933,
+    "share": 0.0348
+   },
+   "during": {
+    "views": 0,
+    "of": 0,
+    "share": null,
+    "ends": "2026-12-06"
    }
   },
   {
@@ -647,7 +660,7 @@
    "kind": "views_before_after",
    "age": 1,
    "question": "Did the Nov 16 changes (news-tied hooks, no comment line) cost views?",
-   "change": 0.87,
+   "change": 1.18,
    "why": "Shorts posted since Nov 16 average about 105 views on day one, against 186 in October and 265 for the first painted Shorts (Nov 12-15). The Nov 16 changes (news-tied hooks from Fama, and the description no longer ending its question with 'Share your thoughts in the comments.') line up with the drop.",
    "measure": "Median day-1 views of the Shorts posted Nov 20-22 against those posted Nov 16-19.",
    "ask": "idea-undo-nov16",
@@ -662,8 +675,31 @@
    "approved": "2026-11-20: owner, in the HQ: \"Test: the old hooks and the comment line back for 3 days: Go\"",
    "during": {
     "shorts": 3,
-    "median": 95,
+    "median": 129,
     "ends": "2026-11-23"
+   }
+  },
+  {
+   "id": "video-bg",
+   "kind": "views_before_after",
+   "question": "Do animated backgrounds bring more views than painted stills?",
+   "change": "From 2026-11-23 to 2026-12-22: the first Short of each day animates 3 of its paintings (the hook's shot and two more) with Seedance 2.0 Mini on Higgsfield, 5 seconds each; every other shot stays painted. At most 3 clips a day. It starts as soon as Higgsfield has credits.",
+   "why": "owner's choice in the HQ, 2026-11-22",
+   "measure": "day-3 views of the video Short against the same day's painted Shorts, over the month",
+   "ask": "video-storyboard",
+   "status": "running",
+   "proposed": "2026-11-20",
+   "started": "2026-11-23",
+   "end": "2026-12-22",
+   "approved": "2026-11-22: owner, in the HQ: \"test cheapest for 1 month\"",
+   "before": {
+    "shorts": 26,
+    "median": 242
+   },
+   "during": {
+    "shorts": 0,
+    "median": null,
+    "ends": "2026-12-23"
    }
   }
  ],
@@ -677,14 +713,14 @@
    "start": "2027-01-01",
    "deadline": "2027-12-31",
    "started": false,
-   "daysLeft": 405,
+   "daysLeft": 404,
    "targets": [
     {
      "metric": "views",
      "target": 1000000,
      "have": 0,
      "pct": 0.0,
-     "pace": 688.4,
+     "pace": 700.1,
      "needed": 2739.7,
      "status": "starts",
      "onPace": false,
@@ -710,7 +746,7 @@
        "target": 100000,
        "have": 0,
        "pct": 0.0,
-       "pace": 688.4,
+       "pace": 700.1,
        "needed": 1111.1,
        "status": "starts",
        "onPace": false,
@@ -738,7 +774,7 @@
        "target": 300000,
        "have": 0,
        "pct": 0.0,
-       "pace": 688.4,
+       "pace": 700.1,
        "needed": 1657.5,
        "status": "starts",
        "onPace": false,
@@ -766,7 +802,7 @@
        "target": 600000,
        "have": 0,
        "pct": 0.0,
-       "pace": 688.4,
+       "pace": 700.1,
        "needed": 2197.8,
        "status": "starts",
        "onPace": false,
@@ -794,7 +830,7 @@
        "target": 1000000,
        "have": 0,
        "pct": 0.0,
-       "pace": 688.4,
+       "pace": 700.1,
        "needed": 2739.7,
        "status": "starts",
        "onPace": false,
@@ -823,7 +859,7 @@
       "target": 100000,
       "have": 0,
       "pct": 0.0,
-      "pace": 688.4,
+      "pace": 700.1,
       "needed": 1111.1,
       "status": "starts",
       "onPace": false,
@@ -846,5 +882,5 @@
    "onTrack": false
   }
  },
- "note": "568 views a day (-54% on last week) · 1.3 new subscribers a day · goal: behind · testing: Do the searches people make bring more of them to our Shorts? (+4 more)"
+ "note": "614 views a day (-50% on last week) · 1.3 new subscribers a day · goal: behind · testing: Does the crew's new look (painted shots, a hook readable on the first frame, YouTube-level sound) bring more views? (+6 more)"
 }
