@@ -153,7 +153,7 @@
    "why": "Shorts posted since Nov 16 average about 105 views on day one, against 186 in October and 265 for the first painted Shorts (Nov 12-15). The Nov 16 changes (news-tied hooks from Fama, and the description no longer ending its question with 'Share your thoughts in the comments.') line up with the drop.",
    "measure": "Median day-1 views of the Shorts posted Nov 20-22 against those posted Nov 16-19.",
    "ask": "idea-undo-nov16",
-   "status": "running",
+   "status": "done",
    "proposed": "2026-11-19",
    "started": "2026-11-20",
    "end": "2026-11-22",
@@ -161,7 +161,10 @@
     "2026-11-16",
     "2026-11-19"
    ],
-   "approved": "2026-11-20: owner, in the HQ: \"Test: the old hooks and the comment line back for 3 days: Go\""
+   "approved": "2026-11-20: owner, in the HQ: \"Test: the old hooks and the comment line back for 3 days: Go\"",
+   "ended": "2026-11-23",
+   "verdict": "win",
+   "result": "Median day-1 views 163 on the 6 Shorts of Nov 20-21 vs 109 on the 12 of Nov 16-19 (1.5x). Only Nov 20-21 posted (the posting crash stopped Nov 22). The 3 days are over, so tie-ins and the missing comment line are back on their own from Nov 23."
   },
   {
    "id": "video-bg",
@@ -176,6 +179,18 @@
    "started": "2026-11-23",
    "end": "2026-12-22",
    "approved": "2026-11-22: owner, in the HQ: \"test cheapest for 1 month\""
+  },
+  {
+   "id": "keep-old-hooks",
+   "kind": "views_before_after",
+   "age": 1,
+   "question": "Do Shorts with their own hooks and the comment ask beat news-tied hooks over a full week?",
+   "change": "If the owner says Go: keep Fama's news tie-ins paused (the topical test ends) and keep ' Share your thoughts in the comments.' on the question line, for 7 days.",
+   "why": "The 3-day undo test: 163 day-1 views on 6 Shorts vs 109 on the 12 from Nov 16-19 (1.5x); the news-tied test sits at 147 views at 3 days vs 336 before.",
+   "measure": "Median day-1 views of the Shorts of the 7 days against Nov 16-19 and against the 14 days before Nov 16.",
+   "ask": "idea-keep-old-hooks",
+   "status": "proposed",
+   "proposed": "2026-11-23"
   }
  ],
  "next": []
