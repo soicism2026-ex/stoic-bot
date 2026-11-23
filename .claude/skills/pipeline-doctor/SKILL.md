@@ -53,6 +53,14 @@ even though the video published).
 push fail and the entire run error out *after* uploading. The workflow sweeps
 `backups/*.bg*.mp4`, sidecars and >95MB files before committing.
 
+**A workflow file GitHub refuses (no runs, no schedule).** A duplicate key in one
+YAML mapping (2026-11-22: `HIGGSFIELD_API_KEY` twice in daily-short.yml's env block)
+makes every run fail instantly with "likely failed because of a workflow file
+issue" (`gh run view <id>`), 0 jobs, and the cron stops firing, so nothing posts
+and no alert says why. Symptom: the last post is old, the latest daily-short runs
+are push-triggered failures, no `schedule` runs after the bad commit. PyYAML
+accepts duplicates, so check with `python3 -m pytest tests/test_workflow_yaml.py`.
+
 **Bad credentials degrading quietly.** `check_secrets.py` warns but never fails
 the run (deliberate — a bad ElevenLabs key must not stop posting). A 401 there
 means the voice silently fell back, not that posting stopped.

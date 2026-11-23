@@ -269,8 +269,9 @@ jobs:
           REEL_EDIT_LOOK: "painted"
           REEL_STILL_CACHE: data/still_cache
           # VIDEO BACKGROUNDS test (src/animator.py; owner 2026-11-22: "test
-          # cheapest for 1 month"): same Higgsfield key as Kling; no credits = painted stills.
-          HIGGSFIELD_API_KEY: ${{ secrets.HIGGSFIELD_API_KEY }}
+          # cheapest for 1 month"): same Higgsfield key as Kling (HIGGSFIELD_API_KEY is
+          # already set above in this env block; GitHub rejects a duplicate key and
+          # silently kills every run and schedule, 2026-11-22); no credits = painted stills.
           HF_KEY: ${{ secrets.HF_KEY }}
           # PRIMARY image provider — Cloudflare Workers AI (FLUX.1 schnell).
           # Free allowance is 10,000 neurons/day and a schnell image costs
