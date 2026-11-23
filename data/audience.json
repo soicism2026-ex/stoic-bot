@@ -1,19 +1,19 @@
 {
- "pulled_on": "2026-11-21",
+ "pulled_on": "2026-11-23",
  "window": [
-  "2026-10-24",
-  "2026-11-21"
+  "2026-10-26",
+  "2026-11-23"
  ],
  "countries": [
   {
    "key": "US",
-   "views": 8176,
-   "share": 0.673
+   "views": 8063,
+   "share": 0.665
   },
   {
    "key": "IN",
-   "views": 1763,
-   "share": 0.145
+   "views": 1828,
+   "share": 0.151
   },
   {
    "key": "CA",
@@ -22,8 +22,8 @@
   },
   {
    "key": "GB",
-   "views": 475,
-   "share": 0.039
+   "views": 510,
+   "share": 0.042
   },
   {
    "key": "DE",
@@ -69,27 +69,27 @@
  "sources": [
   {
    "key": "SHORTS",
-   "views": 17758,
-   "share": 0.92
+   "views": 17510,
+   "share": 0.919
   },
   {
    "key": "YT_SEARCH",
-   "views": 751,
-   "share": 0.039
+   "views": 759,
+   "share": 0.04
   },
   {
    "key": "YT_OTHER_PAGE",
-   "views": 402,
+   "views": 399,
    "share": 0.021
   },
   {
    "key": "YT_CHANNEL",
-   "views": 294,
+   "views": 284,
    "share": 0.015
   },
   {
    "key": "EXT_URL",
-   "views": 53,
+   "views": 50,
    "share": 0.003
   },
   {
@@ -121,20 +121,20 @@
  "subscribed": [
   {
    "key": "UNSUBSCRIBED",
-   "views": 18781,
+   "views": 18523,
    "share": 0.973
   },
   {
    "key": "SUBSCRIBED",
-   "views": 518,
+   "views": 520,
    "share": 0.027
   }
  ],
  "searchTerms": [
   {
    "key": "stoicism",
-   "views": 19,
-   "share": 0.174
+   "views": 20,
+   "share": 0.182
   },
   {
    "key": "marcus aurelius",
@@ -159,67 +159,67 @@
   {
    "key": "blue lotus",
    "views": 5,
-   "share": 0.046
+   "share": 0.045
   },
   {
    "key": "stoic ben",
    "views": 5,
-   "share": 0.046
+   "share": 0.045
   },
   {
    "key": "beautiful quotes",
    "views": 4,
-   "share": 0.037
+   "share": 0.036
   },
   {
    "key": "marcus aurelius quotes",
    "views": 4,
-   "share": 0.037
+   "share": 0.036
   },
   {
    "key": "stoic dre",
    "views": 4,
-   "share": 0.037
+   "share": 0.036
   },
   {
    "key": "marcus aurelius meditations",
    "views": 3,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "marcus aurelius stoicism",
    "views": 3,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "my word is law",
    "views": 3,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "shinchan edit",
    "views": 3,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "shorts",
    "views": 3,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "stoic",
    "views": 3,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "stoic meaning",
    "views": 3,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "stoicism philosophy",
    "views": 3,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "ai terbaik",
@@ -260,8 +260,8 @@
  "searchTermsAllTime": [
   {
    "key": "stoicism",
-   "views": 60,
-   "share": 0.236
+   "views": 61,
+   "share": 0.239
   },
   {
    "key": "marcus aurelius",
@@ -311,7 +311,7 @@
   {
    "key": "stoic reset",
    "views": 7,
-   "share": 0.028
+   "share": 0.027
   },
   {
    "key": "marcus aurelius stoicism",
