@@ -1,27 +1,26 @@
 {
- "forPost": 92,
+ "forPost": 93,
  "airDay": "2026-11-23",
- "decidedAt": "2026-11-23T13:16:46Z",
+ "decidedAt": "2026-11-23T18:57:20Z",
  "trend": {
-  "topic": "thanksgiving",
-  "score": 5000.0,
-  "source": "google-trends",
+  "topic": "Grand Theft Auto VI",
+  "score": 308867.0,
+  "source": "wikipedia",
   "headlines": [
-   "Holiday travel: Dual storms threaten Thanksgiving plans from coast to coast",
-   "Bicoastal Storms to Put a Damper on Thanksgiving Travel Week",
-   "Thanksgiving Weather: Storm Maps and Forecast"
+   "2026 video game",
+   "The video game Grand Theft Auto VI achieves US$3.79 billion in sales on its launch day, more than any other entertainment product in history."
   ]
  },
- "edit": "overcome_necessities",
- "theme": "adversity",
- "hook": "Travel disrupted?",
- "punch": "disrupted",
- "lead": "Thanksgiving travel faces storms",
- "question": "Face a storm or take a detour?",
+ "edit": "sailors_try_again",
+ "theme": "resilience",
+ "hook": "Failed at a game?",
+ "punch": "Failed",
+ "lead": "Grand Theft Auto VI players",
+ "question": "Try again or quit?",
  "tags": [
-  "thanksgiving",
-  "travel",
-  "storms"
+  "Grand Theft Auto VI",
+  "Gaming",
+  "Resilience"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
