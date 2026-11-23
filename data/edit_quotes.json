@@ -1577,6 +1577,15 @@
    "basketball hoop",
    "man training gym",
    "horse galloping"
+  ],
+  "scenes": [
+   "{man} on a dusty practice field fumbling a wooden sword in his left hand, an instructor shaking his head, hard noon sun",
+   "Close-up of {man}'s clumsy left hand dropping the wooden sword in the dust, noon sun",
+   "{marcus} watching from a shaded bench with a patient look, afternoon sun beyond the shade",
+   "Close-up of {man}'s fingers tightening around the sword grip, jaw set, golden afternoon sun",
+   "{man} swinging again and again, sweat flying, dust rising in the low sun",
+   "Close-up of the wooden sword striking the post cleanly, splinters flying, golden hour",
+   "{man} lowering the sword at sunset with a quiet grin, chest heaving, warm sunset glow"
   ]
  },
  {
@@ -1597,6 +1606,15 @@
    "calm lake",
    "man walking forest",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} hunched over a wooden table at night hitting his own forehead with his fist, an oil lamp trembling beside him",
+   "Close-up of {man}'s clenched jaw and wet eyes, oil lamp glow on his face",
+   "A pile of crumpled papyrus scraps on the table, oil lamp flame flickering above",
+   "{marcus} seated opposite with a hand extended, gentle and steady, warm oil lamp light",
+   "Close-up of {marcus}'s hand resting on {man}'s shoulder, soft lamplight",
+   "{man} lifting his head and breathing out slowly, shoulders dropping, soft lamp glow",
+   "{man} stepping onto a moonlit balcony with a quiet smile, silver moonlight on his face"
   ]
  },
  {
@@ -1617,6 +1635,15 @@
    "spring flowers",
    "man walking field",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} standing in a dim room staring at his tired face in a dark bowl of water, a single oil lamp trembling",
+   "Close-up of {man}'s hands gripping the edge of a wooden washstand, oil lamp glow",
+   "{marcus} at an open window at dawn, quiet and thoughtful, soft pink dawn light",
+   "Wide view of the sleeping city turning gold under the rising sun, birds wheeling",
+   "Close-up of {man} throwing open a wooden shutter, dawn light flooding his face",
+   "{man} splashing cold water on his face, laughing, bright morning window light",
+   "{man} striding out into a sunlit lane with his cloak swinging, golden sunrise"
   ]
  },
  {
@@ -1637,6 +1664,15 @@
    "compass",
    "calm water",
    "man guitar"
+  ],
+  "scenes": [
+   "{man} slamming a clay cup on a table as a messenger leaves, wine spilling, flickering torchlight",
+   "Close-up of {man}'s trembling hand and spilled red wine across the wood, torchlight",
+   "A bronze lyre with one slack string lying on a stone table, warm oil lamp glow",
+   "{marcus} lifting the lyre and turning a peg, calm and unhurried, warm oil lamp light",
+   "Close-up of {man} watching the string tighten, his breathing slowing, soft lamp glow",
+   "{man} plucking the lyre and hearing a clear tone ring out, a small smile, warm lamp light",
+   "{man} playing quietly in a moonlit courtyard, shoulders loose, silver moonlight"
   ]
  },
  {
@@ -1657,6 +1693,15 @@
    "man running dawn",
    "dominoes",
    "plant growing"
+  ],
+  "scenes": [
+   "{man} watching a crew of masons raise a tall wall, then looking down at his own small clay brick, noon sun",
+   "Close-up of {man}'s dusty hands holding a single clay brick, noon sun",
+   "{marcus} beside him with an understanding smile, warm afternoon sun",
+   "{man} setting the brick into wet mortar and pressing it level with a trowel, golden afternoon sun",
+   "Close-up of the brick settling into place, a thin line of mortar, low sun on the clay",
+   "{man} stepping back to see the straight row of bricks, a small grin, golden hour",
+   "Wide view of the finished wall glowing in the sunset, {man} small and proud beside it"
   ]
  },
  {
@@ -1677,6 +1722,15 @@
    "door opening",
    "man running street",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} sitting on the edge of a bed in the grey dawn, a scroll of plans on his knees, tired and putting off the day, soft dawn light",
+   "Close-up of {man}'s hand pushing the scroll away, grey dawn light",
+   "A bronze sundial on a stone wall, the shadow creeping from one mark to the next, bright morning sun",
+   "{marcus} at the window with a steady gaze, warm sunrise on his face",
+   "Close-up of {man}'s feet planting on the cold stone floor, golden sunrise on the tiles",
+   "{man} pulling on his tunic and striding out of the door, bright morning sun",
+   "{man} working in a sunlit courtyard with sleeves rolled up, focused and smiling, golden light"
   ]
  },
  {
@@ -2138,6 +2192,15 @@
    "man running stairs",
    "flag wind",
    "summit sunrise"
+  ],
+  "scenes": [
+   "{man} bent double on a steep dusty hillside, hands on his knees, hard noon sun beating down",
+   "Close-up of {man}'s chest heaving, sweat running down his face, harsh noon sun",
+   "{seneca} standing at the crest above with a hand held out, encouraging, golden sun behind him",
+   "{man} straightening and drawing one deep breath, eyes lifting to the crest, noon sun",
+   "Close-up of {man}'s dusty sandals digging into the slope as he sprints, dust flying, golden sun",
+   "{man} reaching the top and gripping {seneca}'s hand, both laughing, golden afternoon sun",
+   "Wide view of {man} on the summit with the valley spread below, arms raised, warm sunset"
   ]
  },
  {
@@ -2176,6 +2239,15 @@
    "harbor sunrise",
    "sailboat",
    "open ocean"
+  ],
+  "scenes": [
+   "{man} standing on a storm-wrecked beach beside splintered planks of a ship, grey sea foaming, overcast noon light",
+   "Close-up of {man}'s salt-crusted hands gripping a broken oar, grey overcast light",
+   "{seneca} sitting on a driftwood log beside him, calm and kindly, soft overcast light",
+   "A fisherman hauling a small wooden boat down a pebbled shore toward the waves, golden dawn",
+   "Close-up of {man}'s hand tightening a rope around a new mast, dawn light on the knot",
+   "{man} rowing a small wooden boat out through gentle waves, determined, golden sunrise",
+   "Wide view of the small boat gliding on a calm sea toward a bright horizon, warm sunrise"
   ]
  },
  {
@@ -2196,6 +2268,15 @@
    "man resting",
    "calm lake",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} trudging up a rocky mountain path in a wool cloak, head down against the wind, grey overcast light",
+   "Close-up of {man}'s bleeding sandal straps and dusty feet on sharp stones, overcast light",
+   "{seneca} waiting on a boulder ahead with a clay cup of water, a warm smile, soft overcast light",
+   "{man} drinking deeply from the cup, eyes closed, relief in his face, breaking sun on his cheek",
+   "Wide view of the winding path far below, tiny in the valley, golden afternoon sun",
+   "{man} turning on the summit to look back down the mountain, wind in his cloak, golden hour",
+   "{man} laughing quietly with his arms spread at the top, warm sunset glow"
   ]
  },
  {
@@ -2216,6 +2297,15 @@
    "workbench tools",
    "sunset timelapse",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} at a workbench heaped with unfinished jobs, a stack of clay tablets, head in his hands, grey window light",
+   "Close-up of {man}'s fingers drumming on the bench, grey overcast light",
+   "{seneca} laying a single clay tablet in front of {man}, gentle and firm, warm oil lamp glow",
+   "Close-up of {man}'s hand lifting a chisel and pressing it to a block of stone, window sun on the blade",
+   "{man} carving steadily, stone chips flying in a shaft of afternoon sun from a doorway",
+   "Close-up of a finished carved line gleaming on pale stone, golden afternoon sun",
+   "{man} dusting off his hands at sunset and smiling at the finished block, warm golden hour"
   ]
  },
  {
@@ -2236,6 +2326,15 @@
    "hourglass",
    "clock",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} lying on a couch scrolling a long rolled strip of papyrus past his eyes, hours slipping by, a candle burning low",
+   "Close-up of a candle stub guttering in a clay dish, flame leaning, deep shadows",
+   "Water dripping from a bronze spout into a basin, one drop at a time, dim lamp glow",
+   "{seneca} standing in the doorway at dusk, calm and wry, last orange sun behind him",
+   "Close-up of {man} lifting his head, startled to see the dark sky, orange dusk light",
+   "{man} rolling up the papyrus and walking out into the cool evening, golden dusk light",
+   "{man} sitting with a neighbour on a stone step sharing a clay cup, laughing, warm lamplight from a doorway"
   ]
  },
  {
@@ -2276,6 +2375,15 @@
    "forest light",
    "man walking forest",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} carrying an old woman's heavy basket of olives up a steep lane, sweating, hot afternoon sun",
+   "Close-up of the old woman's wrinkled hand patting {man}'s arm, afternoon sun",
+   "{man} walking away down the lane with empty hands, the woman waving behind him, golden hour",
+   "{seneca} on a terrace above watching quietly with a nod of approval, warm evening sun",
+   "Close-up of {man}'s face lit by a small private smile, golden sunset",
+   "{man} sitting on a low wall at dusk with a heel of bread, content, last orange sunlight",
+   "Wide view of the village lane glowing in the sunset, {man} walking home light-footed, warm sunset"
   ]
  },
  {
@@ -2793,6 +2901,15 @@
    "man running rain",
    "sword forging",
    "sunrise"
+  ],
+  "scenes": [
+   "{epictetus} standing alone on a windswept clifftop with his arms open, dark storm clouds rolling in, lightning flashing",
+   "Close-up of {epictetus}'s weathered face lifted to the wind, calm eyes, overcast storm light",
+   "A huge wave exploding against black rocks below the cliff, lightning flashing across the sky",
+   "{man} behind him on the path with a wool cloak whipping, watching in awe, grey overcast light",
+   "Close-up of {epictetus} turning his head with a faint smile, wind in his beard, overcast light",
+   "The storm breaking over the sea as a shaft of golden sun spills through, spray glittering",
+   "{man} and {epictetus} walking down the path together as the sun appears, golden sunset"
   ]
  },
  {
@@ -2813,6 +2930,15 @@
    "plant growing",
    "open road",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} staring at an empty clay shelf where a bronze lamp once stood, rain on the window, grey overcast light",
+   "Close-up of {man}'s hand resting on the bare shelf, a faint line of dust, grey window light",
+   "{epictetus} sitting by a hearth with a bronze balance scale on his knees, warm firelight on his face",
+   "A bronze balance scale on a wooden table, one dish holding a small lamp, the other heaped with scrolls, firelight",
+   "Close-up of {man}'s eyes as understanding dawns, a small smile, warm firelight",
+   "{man} unrolling a scroll at a table, the heavier dish of the scale sinking beside him, oil lamp glow",
+   "{man} walking out into a sunlit street with his shoulders back, bright morning sun"
   ]
  },
  {
@@ -2833,6 +2959,15 @@
    "man walking",
    "coffee steam",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} on a rooftop in Rome gazing wistfully toward a distant blue horizon, hard noon sun on terracotta tiles",
+   "Close-up of {man}'s faraway eyes, a rolled scroll dangling from his hand, noon sun",
+   "{epictetus} walking up the rooftop stairs with a clay jug of water, amused and warm, afternoon sun",
+   "Wide view of a busy sunlit Roman street below, vendors and children, bright afternoon sun",
+   "Close-up of {man}'s gaze dropping from the horizon to the street, softening, golden afternoon sun",
+   "{man} buying a ripe fig from a smiling vendor in the street, laughing, golden hour",
+   "{man} sitting on a warm stone step eating the fig, content in the crowd, sunset glow"
   ]
  },
  {
@@ -2853,6 +2988,15 @@
    "torch fire",
    "man boxing",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} in the doorway of a small room watching the dawn, a heavy cloak around his shoulders, hesitating, soft dawn light",
+   "Close-up of {man}'s hand on a wooden door latch, dawn light slanting across his knuckles",
+   "{epictetus} at the end of the lane pointing toward the stadium gates, a firm calm look, golden sunrise",
+   "Wide view of an empty stone stadium track, the gates open, golden sunrise",
+   "{man} stripping off his cloak and stepping onto the track, jaw set, golden sunrise",
+   "Close-up of {man}'s bare feet pushing off the starting line, sand flying, low sun",
+   "{man} running full speed down the track with his arms driving, the sun in his face, bright morning"
   ]
  },
  {
@@ -2913,6 +3057,15 @@
    "man breathing",
    "calm lake",
    "sunrise"
+  ],
+  "scenes": [
+   "{man} in a dark stone corridor at night, frozen as a huge looming shadow stretches across the wall, a torch flickering",
+   "Close-up of {man}'s wide eyes fixed on the shadow, torchlight trembling on his face",
+   "{epictetus} stepping forward from the dark with a calm hand raised, warm torchlight",
+   "{man} lifting the torch higher, the shadow shrinking toward its source, firelight on his hands",
+   "A small clay jar on a ledge casting the giant shadow, torchlight revealing it",
+   "Close-up of {man} exhaling and laughing softly, relief in his face, warm torchlight",
+   "{man} and {epictetus} walking out of the corridor into bright dawn, golden sunrise"
   ]
  },
  {
@@ -4160,6 +4313,325 @@
    "The same stranger striding up the road with a wooden mallet in hand, a warm smile, breaking sun through the clouds",
    "{man} and the stranger lifting the cart wheel together, laughing, golden afternoon sun",
    "The two men sitting on the cart sharing the last of the bread as the sun sets, warm sunset glow"
+  ]
+ },
+ {
+  "id": "teach_or_forbear",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 9.11, trans. George Long",
+  "quote": "If thou art able, correct by teaching those who do wrong; but if thou canst not, remember that indulgence is given to thee for this purpose.",
+  "hook": "Someone keeps doing it wrong?",
+  "theme": "anger",
+  "description": "Someone keeps getting it wrong, and it keeps getting under your skin?\n\nMarcus Aurelius had two answers. If you can, teach them. If you can't, remember that patience was given to you for exactly this purpose.\n\nChoose one today: be the teacher, or be the patient one. Skip being the angry one.",
+  "question": "Is it harder to teach them or to put up with them?",
+  "visuals": [
+   "man teaching",
+   "still:ancient roman master potter patiently guiding a young apprentice's hands on a spinning clay wheel in warm afternoon sun",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} at a potter's wheel watching an apprentice crush a wet clay pot, jaw tightening, hard noon sun through a doorway",
+   "Close-up of the apprentice's muddy hands collapsing the clay, sunlight on the wet surface",
+   "{marcus} standing behind {man} with a hand on his shoulder, calm and steady, warm afternoon sun",
+   "Close-up of {man}'s fist loosening as he draws a breath, afternoon sun on his knuckles",
+   "{man} placing his own hands over the apprentice's on the spinning clay, a patient smile, warm firelight from a kiln",
+   "A tall clay pot rising smooth between four hands, golden kiln fire glow",
+   "{man} and the apprentice holding up a finished pot together, laughing, golden sunset"
+  ]
+ },
+ {
+  "id": "whatever_it_is_do_it",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 10.33, trans. George Long",
+  "quote": "For whatever this may be, it is in thy power to do it or to say it, and do not make excuses that thou art hindered.",
+  "hook": "Think something's stopping you?",
+  "theme": "discipline",
+  "description": "Think something is stopping you?\n\nMarcus Aurelius wrote that whatever it is, it is in your power to do it or say it, so stop telling yourself you are hindered.\n\nName the thing you keep calling impossible, and do the first five minutes of it today.",
+  "question": "What have you been calling impossible that is only uncomfortable?",
+  "visuals": [
+   "man hesitating",
+   "still:ancient roman man at a stone doorway pushing open a heavy wooden door at dawn with both hands",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} standing before a heavy wooden door in a stone wall, a hand hovering at the latch, grey dawn light",
+   "Close-up of {man}'s hand trembling over an iron latch, dawn light on the metal",
+   "{marcus} at the end of the corridor watching steadily, torchlight on his face",
+   "{man} turning away to sit on a stone bench, shoulders slumped, soft dawn light",
+   "Close-up of {man}'s eyes lifting, a spark of resolve, golden light from a window",
+   "{man} throwing his shoulder against the heavy door, wood groaning, sun breaking through the crack",
+   "The door swinging wide onto a sunlit hillside road, {man} stepping out, golden sunrise"
+  ]
+ },
+ {
+  "id": "obey_rules_thyself",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 11.29, trans. George Long",
+  "quote": "Neither in writing nor in reading wilt thou be able to lay down rules for others before thou shalt have first learned to obey rules thyself.",
+  "hook": "Want to lead? Obey first.",
+  "theme": "ego",
+  "description": "Want to lead, teach or advise? Start with yourself.\n\nMarcus Aurelius said you cannot lay down rules for others before you have first learned to obey rules yourself.\n\nPick one rule you keep giving other people and follow it quietly today.",
+  "question": "What advice do you give others that you could use yourself?",
+  "visuals": [
+   "man lecturing",
+   "still:ancient roman man at dawn lifting a heavy stone alone before his students arrive",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} standing before a group of young students in a courtyard, pointing and lecturing, hard noon sun",
+   "Close-up of a student's doubtful face in the front row, noon sun",
+   "{marcus} at a stone bench quietly shaking his head with a smile, afternoon sun beyond an arch",
+   "{man} alone at dawn lifting a heavy stone onto a wall, sweat on his brow, golden sunrise",
+   "Close-up of {man}'s hands steady on the rough stone, dawn light on his knuckles",
+   "The students arriving at the gate and stopping to watch in silence, golden morning sun",
+   "{man} and the students lifting stones together, side by side, warm golden hour"
+  ]
+ },
+ {
+  "id": "shameless_men_exist",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 9.42, trans. George Long",
+  "quote": "When thou art offended with any man's shameless conduct, immediately ask thyself, Is it possible, then, that shameless men should not be in the world?",
+  "hook": "Can't believe how rude people are?",
+  "theme": "anger",
+  "description": "Can't believe how rude people can be?\n\nMarcus Aurelius asked himself the obvious question: is it possible that shameless people should not exist in the world? They do. You were going to meet one.\n\nExpect it, and the next rude person costs you a few seconds instead of your whole evening.",
+  "question": "What rude thing did someone do lately that still replays in your head?",
+  "visuals": [
+   "man shocked",
+   "still:ancient roman man at a crowded market stall calmly turning away from a loud shoving customer",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunset"
+  ],
+  "scenes": [
+   "{man} in a crowded market line as a loud man shoves ahead of him, fists tightening, hard noon sun",
+   "Close-up of the pushing man's elbow and smug grin, noon sun on his face",
+   "Close-up of {man}'s jaw working, a vein standing on his temple, noon sun",
+   "{marcus} beside him in the crowd with a faint, knowing smile, warm afternoon sun",
+   "{man} exhaling slowly with a half smile, shoulders dropping, afternoon sun beyond an awning",
+   "{man} buying a ripe pomegranate from the vendor, relaxed, golden afternoon sun",
+   "{man} walking home through the market at sunset, the pomegranate in hand, warm golden hour"
+  ]
+ },
+ {
+  "id": "judgment_at_rest",
+  "author": "Marcus Aurelius",
+  "citation": "Meditations 11.11, trans. George Long",
+  "quote": "Let then thy judgment about them be at rest, and they will remain quiet, and thou wilt not be seen either pursuing or avoiding.",
+  "hook": "Want people to calm down? Start here.",
+  "theme": "control",
+  "description": "Want the people around you to calm down?\n\nMarcus Aurelius suggested starting with your own judgment about them. Let it be at rest, he said, and they will remain quiet, and you will no longer be seen chasing or avoiding.\n\nBefore your next tense conversation, set down the verdict you walked in with.",
+  "question": "Whose mood do you spend the most energy managing?",
+  "visuals": [
+   "man calm",
+   "still:ancient roman man sitting calmly on a stone bench as an agitated crowd quiets around him",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunset"
+  ],
+  "scenes": [
+   "{man} on a stone bench in a loud courtyard, an angry neighbour shouting at him from close range, hard noon sun",
+   "Close-up of the shouting neighbour's red face and waving hands, noon sun",
+   "Close-up of {man}'s steady eyes, a slow breath, noon sun on his face",
+   "{marcus} watching from a shaded colonnade, an approving nod, afternoon sun beyond the columns",
+   "The neighbour's shoulders slowly dropping, the anger fading from his face, soft afternoon sun",
+   "{man} pouring water into two clay cups and offering one, warm golden sun",
+   "{man} and the neighbour sitting side by side in quiet, the courtyard peaceful, warm sunset"
+  ]
+ },
+ {
+  "id": "do_not_wrong_in_return",
+  "author": "Epictetus",
+  "citation": "Discourses II.10, trans. George Long",
+  "quote": "Nor yet when you are wronged must you do wrong in return, as most people think, since you must in no way do an unjust act.",
+  "hook": "Wronged? Don't wrong back.",
+  "theme": "anger",
+  "description": "Someone wronged you, and you want to wrong them back?\n\nEpictetus said most people think that is fair, but a wrong in return is still a wrong, and it is yours.\n\nLet the other person keep their own mistake today. Don't add one of yours.",
+  "question": "Have you ever regretted getting even?",
+  "visuals": [
+   "man furious",
+   "still:ancient greek man at a stone gate lowering a raised hand as a rival walks away in dusk light",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunset"
+  ],
+  "scenes": [
+   "{man} in a torchlit alley gripping a clay jug raised to throw, face hot with anger, a rival fleeing ahead, flickering torchlight",
+   "Close-up of {man}'s trembling raised arm and the clay jug, torchlight on his sweating face",
+   "{epictetus} stepping out of a doorway and quietly laying a hand on {man}'s arm, warm oil lamp glow",
+   "Close-up of {man}'s fingers opening around the jug, torchlight",
+   "{man} setting the jug down on a stone ledge and sitting on a step with his head down, breathing, soft torchlight",
+   "{man} lifting his head toward the first pink of dawn above the rooftops, quiet and clear, soft dawn",
+   "{man} walking home through empty streets with an easy stride, golden sunrise"
+  ]
+ },
+ {
+  "id": "who_can_compel_desire",
+  "author": "Epictetus",
+  "citation": "Discourses II.2, trans. George Long",
+  "quote": "If you choose not to be restrained or compelled, who shall compel you to desire what you think that you ought not to desire?",
+  "hook": "Who can force you to want it?",
+  "theme": "desire",
+  "description": "Feel pulled toward something you know you don't need?\n\nEpictetus asked who can compel you to desire what you think you ought not to desire. Nobody can reach inside and make you want it.\n\nThe pull is real, but the choice is still yours. Notice it today and decide on purpose.",
+  "question": "What do you keep wanting that you don't actually want to want?",
+  "visuals": [
+   "man tempted",
+   "still:ancient greek man at a market table of glittering bronze trinkets turning away with a calm smile",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} at a market stall of glittering bronze trinkets, eyes wide, a hand reaching, bright noon sun",
+   "Close-up of a bronze bracelet glinting in a vendor's palm, noon sun",
+   "{epictetus} standing in the crowd with arms folded and a gentle half smile, noon sun beyond an awning",
+   "Close-up of {man}'s hand stopping an inch from the bracelet, noon sun on his fingers",
+   "{man} closing his hand into a loose fist and letting out a laugh, relaxed shoulders, noon sun",
+   "{man} walking away down a sunlit lane with his hands swinging free, golden afternoon sun",
+   "{man} drinking from a clay cup at a fountain, calm and light, warm sunset"
+  ]
+ },
+ {
+  "id": "nothing_to_do_disturbed",
+  "author": "Epictetus",
+  "citation": "Discourses III.9, trans. George Long",
+  "quote": "When you have nothing to do, you are disturbed, you go to the theatre or you wander about without a purpose.",
+  "hook": "Nothing to do? Watch what you reach for.",
+  "theme": "discipline",
+  "description": "The moment there is nothing to do, what do you reach for?\n\nEpictetus noticed that when people have nothing to do they get disturbed and go looking for the theatre or wander without a purpose.\n\nNext time you feel that itch, stay with the empty minute for sixty seconds and see what it wants.",
+  "question": "What do you reach for first when you have a quiet minute?",
+  "visuals": [
+   "man bored",
+   "still:ancient roman man restless in an empty room then sitting still on a sunlit stone floor",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} pacing a quiet room, picking up objects and setting them down, restless, afternoon sun through a window",
+   "Close-up of {man}'s fingers drumming on a stone sill, window sun",
+   "A crowded lamplit theatre doorway in the distance with people streaming in, torchlight",
+   "{epictetus} sitting cross-legged on the floor in a patch of sun, eyes closed, at ease, warm sunlight",
+   "Close-up of {man}'s breath slowing, his shoulders loosening, soft window light",
+   "{man} sitting beside {epictetus} in the sun, the room very still, golden afternoon light",
+   "{man} rising with a clear look and picking up a chisel from the bench, bright window light"
+  ]
+ },
+ {
+  "id": "liberty_costs_wants",
+  "author": "Seneca",
+  "citation": "Moral Letters 104, trans. Richard M. Gummere",
+  "quote": "If you set a high value on liberty, you must set a low value on everything else.",
+  "hook": "Want freedom? Want less.",
+  "theme": "desire",
+  "description": "Want to feel free?\n\nSeneca put it simply: if you set a high value on liberty, you must set a low value on everything else.\n\nPick one thing you think you need and ask what it costs you in freedom. Then decide again.",
+  "question": "What is one thing you own that owns a bit of you?",
+  "visuals": [
+   "man walking",
+   "still:ancient roman man walking free along a sunlit road with only a small cloak and staff",
+   "clouds moving",
+   "waves rocks",
+   "man running",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} in a cramped storeroom stacked to the ceiling with jars, chests and cloaks, squeezing past them, dim oil lamp glow",
+   "Close-up of {man}'s hand on a heavy iron-bound chest, oil lamp glow on the lock",
+   "{seneca} in the doorway holding a simple wool cloak and a staff, a wry smile, dawn light behind him",
+   "{man} lifting the chest and setting it outside at the door, a deep breath, golden dawn",
+   "{man} giving away jars and cloaks to a line of neighbours, laughing, warm morning sun",
+   "{man} walking down an open road with only a cloak and a staff, arms swinging, golden sunrise",
+   "Wide view of {man} on a hilltop under an open sky, arms wide, warm sunset"
+  ]
+ },
+ {
+  "id": "your_own_stumbling_block",
+  "author": "Seneca",
+  "citation": "Moral Letters 21, trans. Richard M. Gummere",
+  "quote": "Your greatest difficulty is with yourself; for you are your own stumbling-block.",
+  "hook": "Your greatest difficulty? It's you.",
+  "theme": "ego",
+  "description": "Feel like something keeps getting in your way?\n\nSeneca told his friend, kindly, that his greatest difficulty was with himself. We are our own stumbling-block, and that is good news, because it is the one obstacle you can move.\n\nWhat habit of yours is sitting in the road? Shift it one inch today.",
+  "question": "What is the habit you know is in your own way?",
+  "visuals": [
+   "man falling",
+   "still:ancient roman man tripping over a stone in the road then picking it up and moving it aside at dawn",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{man} tripping over a large stone in a dusty road and sprawling, laundry basket spilling, hard noon sun",
+   "Close-up of {man}'s scraped hand on the dust, noon sun",
+   "{seneca} offering a hand, kind and wry, afternoon sun",
+   "Close-up of {man} looking at the stone, a rueful smile, afternoon sun on his face",
+   "{man} hauling the stone off the road onto the verge, straining, golden hour",
+   "{man} and {seneca} brushing off their hands, both laughing, warm golden sun",
+   "The clear road stretching ahead into sunset, {man} walking it with a light step, warm sunset"
+  ]
+ },
+ {
+  "id": "keep_learning_to_the_end",
+  "author": "Seneca",
+  "citation": "Moral Letters 76, trans. Richard M. Gummere",
+  "quote": "You should keep learning as long as you are ignorant,—even to the end of your life, if there is anything in the proverb.",
+  "hook": "Too old to start learning?",
+  "theme": "discipline",
+  "description": "Think it's too late to learn something new?\n\nSeneca wrote this as an old man, about himself: keep learning as long as you are ignorant, even to the end of your life.\n\nStart one small lesson today. Ten minutes counts.",
+  "question": "What would you learn if you knew you wouldn't be bad at it for long?",
+  "visuals": [
+   "man learning",
+   "still:ancient roman old man sitting in a classroom among young students listening intently by lamplight",
+   "clouds moving",
+   "waves rocks",
+   "man walking",
+   "mountain",
+   "water river",
+   "sunrise"
+  ],
+  "scenes": [
+   "{seneca} an old man with white hair taking a seat among young students on a wooden bench, a clay lamp flickering",
+   "Close-up of {seneca}'s weathered hands holding a scroll, oil lamp glow",
+   "A young teacher at the front pointing at a wax tablet, oil lamp light on the wall",
+   "Close-up of {seneca}'s eyes bright with attention, oil lamp light on his lined face",
+   "{man} beside him whispering a joke and smiling, warm lamp glow",
+   "{seneca} and {man} walking out into the cool evening together talking, silver moonlight",
+   "{man} unrolling a fresh scroll at his own table the next dawn, golden sunrise on the papyrus"
   ]
  }
 ]

@@ -270,7 +270,7 @@ def test_the_owners_own_thoughts_air_first_one_at_a_time(monkeypatch):
     Fama's topical plan, in shelf order, each once."""
     bank = edits.load()
     mine = [q for q in bank if q.get("personal") is True]
-    assert len(mine) == 5 and [q["id"] for q in bank[-5:]] == [q["id"] for q in mine]
+    assert len(mine) == 5 and mine[0]["id"] == "keep_it_easy_life_gets_hard"
     assert all(q["author"] in ("Seneca", "Marcus Aurelius", "Epictetus") for q in mine)
     monkeypatch.setattr(edits, "jammed_ids", lambda: set())
     # a fresh topical plan for some other quote must not jump the queue

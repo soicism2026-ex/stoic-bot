@@ -116,6 +116,17 @@
   "too_much_noise_find_today": {"hook": "noise", "quote": "the mind"},
   "little_time_for_the_common_good": {"hook": "helps no one", "quote": "social end"},
   "work_for_later_generations": {"hook": "high impact", "quote": "later generations"},
-  "be_kind_you_never_know": {"hook": "Be kind", "quote": "gentleness"}
+  "be_kind_you_never_know": {"hook": "Be kind", "quote": "gentleness"},
+  "teach_or_forbear": {"hook": "doing it wrong", "quote": "indulgence is given to thee"},
+  "whatever_it_is_do_it": {"hook": "stopping you", "quote": "in thy power"},
+  "obey_rules_thyself": {"hook": "Obey first", "quote": "obey rules thyself"},
+  "shameless_men_exist": {"hook": "rude", "quote": "shameless men should not be in the world"},
+  "judgment_at_rest": {"hook": "calm down", "quote": "judgment about them be at rest"},
+  "do_not_wrong_in_return": {"hook": "wrong back", "quote": "do wrong in return"},
+  "who_can_compel_desire": {"hook": "force you", "quote": "who shall compel you"},
+  "nothing_to_do_disturbed": {"hook": "reach for", "quote": "you are disturbed"},
+  "liberty_costs_wants": {"hook": "Want less", "quote": "low value on everything else"},
+  "your_own_stumbling_block": {"hook": "It's you", "quote": "your own stumbling-block"},
+  "keep_learning_to_the_end": {"hook": "Too old", "quote": "keep learning"}
  }
 }
