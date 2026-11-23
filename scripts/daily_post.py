@@ -1377,7 +1377,8 @@ def main():
             _log_topical(today, content, upload_result)
             try:
                 import animator
-                import airday
+                # airday is imported at module level (a second import here made it a
+                # local of main() and crashed line 663 with UnboundLocalError, 2026-11-22).
                 animator.record(content.get("_edit_id", ""),
                                 (upload_result or {}).get("video_id", ""), airday.today())
             except Exception as e:  # noqa: BLE001
