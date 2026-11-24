@@ -149,22 +149,26 @@
    "kind": "views_before_after",
    "age": 1,
    "question": "Did the Nov 16 changes (news-tied hooks, no comment line) cost views?",
-   "change": "Nov 20-22: Shorts open with their own hooks (Fama's news tie-ins paused) and the description's question ends with 'Share your thoughts in the comments.' again. The painted look, the red key words and the owner's personal Shorts stay.",
+   "change": "Nov 20-22, and again Nov 24-30: Shorts open with their own hooks (Fama's news tie-ins paused) and the description's question ends with 'Share your thoughts in the comments.' again. The painted look, the red key words and the owner's personal Shorts stay.",
    "why": "Shorts posted since Nov 16 average about 105 views on day one, against 186 in October and 265 for the first painted Shorts (Nov 12-15). The Nov 16 changes (news-tied hooks from Fama, and the description no longer ending its question with 'Share your thoughts in the comments.') line up with the drop.",
-   "measure": "Median day-1 views of the Shorts posted Nov 20-22 against those posted Nov 16-19.",
+   "measure": "median day-1 and day-3 views of the Shorts posted Nov 24-30 against those posted Nov 16-19 (the first run: Nov 20-21)",
    "ask": "idea-undo-nov16",
-   "status": "done",
+   "status": "running",
    "proposed": "2026-11-19",
-   "started": "2026-11-20",
-   "end": "2026-11-22",
+   "started": "2026-11-24",
+   "end": "2026-11-30",
    "before": [
     "2026-11-16",
     "2026-11-19"
    ],
    "approved": "2026-11-20: owner, in the HQ: \"Test: the old hooks and the comment line back for 3 days: Go\"",
-   "ended": "2026-11-23",
-   "verdict": "win",
-   "result": "Median day-1 views 163 on the 6 Shorts of Nov 20-21 vs 109 on the 12 of Nov 16-19 (1.5x). Only Nov 20-21 posted (the posting crash stopped Nov 22). The 3 days are over, so tie-ins and the missing comment line are back on their own from Nov 23."
+   "first_run": {
+    "verdict": "win",
+    "result": "Median day-1 views 163 on the 6 Shorts of Nov 20-21 vs 109 on the 12 of Nov 16-19 (1.5x). Only Nov 20-21 posted (the posting crash stopped Nov 22). The 3 days are over, so tie-ins and the missing comment line are back on their own from Nov 23.",
+    "ended": "2026-11-23",
+    "window": "2026-11-20 to 2026-11-22"
+   },
+   "extended": "2026-11-24: owner, in the HQ: \"Keep the old hooks and the comment line?: Test 7 more days\""
   },
   {
    "id": "video-bg",

@@ -1879,3 +1879,11 @@ Cicero's shift (growth: the funnel, the running tests, the next test) runs daily
 ## 2026-11-22: Video backgrounds, test cheapest for a month (owner, in the HQ: "Video backgrounds: which storyboard?": "Cheapest: Seedance Mini"; "test cheapest for 1 month")
 
 From 2026-11-23 to 2026-12-22 inclusive, the FIRST post of each air day animates 3 of its painted shots (the hook's, then two spread across the Short) with Seedance 2.0 Mini on Higgsfield (`src/animator.py`, 5 s clips made from the shot's own painted still); every other shot stays painted; type, music, sound and mastering are unchanged. At most 3 generations (about 15 credits) a day, a daily ledger, clips cached beside the stills so the rehearsal pays and the live post reuses. No Higgsfield credits (the account is on the free tier until the owner buys a plan) = painted stills, logged plainly. Ledger test `video-bg` in `data/marketing_tests.json` (day-3 views against the same day's painted Shorts); records in `data/video_bg.csv`. Off by itself after 2026-12-22. UNVERIFIED: Higgsfield's docs list no "mini" model id; `VIDEO_BG_MODEL` holds the guess.
+
+## 2026-11-24: The old-hooks test runs 7 more days (owner, in the HQ: "Keep the old hooks and the comment line?: Test 7 more days")
+
+The first 3-day run (Nov 20-21; the posting outage cut Nov 22) favoured the old style: 163 median views on day one against 109 for Nov 16-19 (1.5x, 6 Shorts against 12). The same test runs again Nov 24-30 (news tie-ins paused, "Share your thoughts in the comments." back) and ends by itself; Cicero judges it on Dec 2 and the owner decides what stays.
+
+## 2026-11-24: Wallpapers as free + paid (owner, in the HQ: "I dont think we can sell the wallpapers unless we sell them low quality for free then sell high quality for 5 bucks")
+
+Each pack comes in two versions: a free one (lower resolution, a small channel mark, fewer wallpapers) to give away, and the full-quality pack for $5. The owner lists both on Gumroad.
