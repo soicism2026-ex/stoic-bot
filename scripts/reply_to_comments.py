@@ -184,7 +184,7 @@ def _get_own_channel_id(yt) -> str:
 
 
 def _fetch_top_comments(yt, video_id: str, replied_ids: set,
-                        own_channel_id: str = "") -> list[dict]:
+                        own_channel_id: str = "", stats: dict | None = None) -> list[dict]:
     """Return filtered, ranked comment thread items for a single video."""
     try:
         resp = yt.commentThreads().list(
@@ -196,10 +196,17 @@ def _fetch_top_comments(yt, video_id: str, replied_ids: set,
         ).execute()
     except Exception as e:
         print(f"  [comments] fetch failed for {video_id}: {e}")
+        if stats is not None:
+            stats["fetch_failed"] = stats.get("fetch_failed", 0) + 1
         return []
+
+    st = stats if stats is not None else {}
+    def _skip(why: str) -> None:
+        st[why] = st.get(why, 0) + 1
 
     results = []
     for item in resp.get("items", []):
+        st["seen"] = st.get("seen", 0) + 1
         snip = item["snippet"]["topLevelComment"]["snippet"]
         cid  = item["snippet"]["topLevelComment"]["id"]
         text = snip.get("textDisplay", "").strip()
@@ -216,15 +223,15 @@ def _fetch_top_comments(yt, video_id: str, replied_ids: set,
             or (own_channel_id and commenter_id and own_channel_id == commenter_id)
         )
         if is_own:
-            continue
+            _skip("own"); continue
         if cid in replied_ids:
-            continue
+            _skip("already_replied"); continue
         if len(text) < MIN_COMMENT_LEN:
-            continue
+            _skip("too_short"); continue
         if _is_spam(text):
-            continue
+            _skip("spam"); continue
         if reply_count > 0:
-            continue  # already has a reply (possibly from us on a previous run)
+            _skip("has_a_reply"); continue  # already has a reply (possibly from us on a previous run)
 
         results.append(item)
 
@@ -403,8 +410,9 @@ def main():
 
     # Gather candidate comments across all recent videos
     candidates: list[tuple[dict, str, str]] = []  # (item, video_id, video_title)
+    stats: dict = {}
     for vid in video_ids:
-        items = _fetch_top_comments(yt, vid, replied_ids, own_channel_id=own_channel_id)
+        items = _fetch_top_comments(yt, vid, replied_ids, own_channel_id=own_channel_id, stats=stats)
         for item in items:
             candidates.append((item, vid, vid))  # real title filled in below
 
@@ -425,6 +433,7 @@ def main():
     candidates.sort(key=lambda x: _score_comment(x[0]), reverse=True)
     candidates = candidates[:max(MAX_REPLIES_PER_RUN * 6, 30)]
 
+    print("  Comments: " + (", ".join(f"{k} {v}" for k, v in sorted(stats.items())) or "none fetched"))
     if not candidates:
         print("  No suitable comments found this run.")
         return

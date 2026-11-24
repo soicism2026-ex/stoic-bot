@@ -237,8 +237,10 @@ def test_the_queue_hands_out_the_next_pack_and_drops_a_finished_one(tmp_path):
 def test_the_release_carries_only_the_cover_and_the_manifest(tmp_path, monkeypatch):
     calls = []
     monkeypatch.setattr(wp, "_gh", lambda *a, **k: (calls.append(a), type("R", (), {"returncode": 0})())[1])
-    for n in ("marcus-phone-cover.jpg", "marcus-phone-manifest.json", "marcus-phone.zip"):
+    for n in ("marcus-phone-cover.jpg", "marcus-phone.zip", "marcus-phone-free.zip"):
         (tmp_path / n).write_bytes(b"x")
+    (tmp_path / "marcus-phone-manifest.json").write_text(json.dumps({"count": 10, "free": {"count": 5}}))
+    monkeypatch.setattr(wp, "RECORD", tmp_path / "rec.json")
     names = wp.publish("marcus", "phone", tmp_path)
     assert names == ["marcus-phone-cover.jpg", "marcus-phone-manifest.json"]
     uploaded = next(a for a in calls if a[:2] == ("release", "upload"))
