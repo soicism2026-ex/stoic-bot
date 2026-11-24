@@ -842,6 +842,45 @@ def watermark_events(text: str, start: float, end: float) -> list:
     ]
 
 
+END_CARD_TITLE_FS, END_CARD_SUB_FS = 150, 62
+END_CARD_MAX_W = 900
+
+
+def end_card_events(lines: list, accent: str, start: float, end: float) -> list:
+    """A closing card for the last seconds (Cicero's journal-cta test): the
+    title in the hook face with `accent` in the emphasis colour, a line under
+    it and a smaller line under that, centred in the frame, on a soft band."""
+    if not lines or end <= start:
+        return []
+    f_head, f_sub = font(HOOK_FONT), font(AUTHOR_FONT)
+    title, sub1, sub2 = (list(lines) + ["", ""])[:3]
+    fs = END_CARD_TITLE_FS
+    while fs > 80 and f_head.width(title, fs) > END_CARD_MAX_W:
+        fs -= 4
+    sub_fs = END_CARD_SUB_FS
+    while sub_fs > 36 and max(f_sub.width(sub1, sub_fs), f_sub.width(sub2, sub_fs)) > END_CARD_MAX_W:
+        sub_fs -= 2
+    y_title, y_sub1, y_sub2 = 880, 880 + int(sub_fs * 2.3), 880 + int(sub_fs * 3.7)
+    fade = "\\fad(260,200)"
+    accent_c = _c(emphasis_colour())
+    shown = " ".join(
+        f"{{\\1c{accent_c}}}{_esc(w)}{{\\1c{_c(WHITE)}}}" if accent and w.strip(".,!?").upper() == accent.upper()
+        else _esc(w) for w in title.split())
+    out = band_events(y_title - fs * 1.05, y_sub2 + 40, start, end, fade)
+    for text, y, face, size, shown_text in ((title, y_title, HOOK_FONT, fs, shown),
+                                            (sub1, y_sub1, AUTHOR_FONT, sub_fs, _esc(sub1)),
+                                            (sub2, y_sub2, AUTHOR_FONT, sub_fs, _esc(sub2))):
+        if not text:
+            continue
+        yy = _baseline_pos(font(face), size, y)
+        out += _shade_events(1, start, end, fade, face, size, 540, yy, _esc(text))
+        style = "TypeHook" if face == HOOK_FONT else "TypeAuthor"
+        out.append(_dialogue(2, start, end, style,
+                             f"{{\\an2\\pos(540,{yy})\\q2\\fn{face}\\fs{size}\\bord0\\shad0{fade}"
+                             f"\\1c{_c(WHITE) if face == HOOK_FONT else _c(GOLD)}}}{shown_text}"))
+    return out
+
+
 def thumbnail_document(hook: str, author: str, emphasis: str = "", caps: bool = True) -> str:
     """A complete .ass file for the thumbnail: frame 0's hook (same face,
     size, breaks, gold), the band behind it, and the author in gold under a

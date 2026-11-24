@@ -36,6 +36,7 @@ from experiments import pick_experiment   # noqa: E402
 import render as render_mod               # noqa: E402
 import master as master_mod               # noqa: E402
 import edit_type                          # noqa: E402
+import journal_cta                        # noqa: E402
 import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
 import backgrounds                        # noqa: E402
@@ -77,6 +78,9 @@ BACKUP_MIN = 3
 # now genuinely distinct (5 formats, statue guide, scene-matched b-roll,
 # cinematic look). Env-tunable.
 MAX_POSTS_PER_DAY = int(os.environ.get("MAX_POSTS_PER_DAY", "3"))
+# How many posts were already out today when this run began (set in main()):
+# the journal pitch (src/journal_cta.py) rides on the day's third Short only.
+POSTS_TODAY = None
 
 # SPREAD THE DAY'S POSTS (owner, 2026-10-18: 2 a day). Post N of the day may
 # only go out from hour POST_SLOT_HOURS[N-1] (UTC). Without this the cap alone
@@ -293,6 +297,10 @@ def _type_edit(pack: dict, content: dict, fmt: str) -> None:
     look = os.environ.get("REEL_EDIT_LOOK", "").strip().lower()
     if look == "painted" or edit_type.enabled(os.environ.get("REEL_EDIT_TYPE")):
         pack.update(edit_type.style_env(content))
+        if content.get("_journalCta"):
+            pack["REEL_END_CARD"] = journal_cta.card_text()
+            pack["REEL_END_CARD_ACCENT"] = journal_cta.CARD_ACCENT
+            pack["REEL_END_CARD_SECONDS"] = str(journal_cta.CARD_SECONDS)
         top = content.get("_topical")
         if top and top.get("punch"):
             # Fama's hook has its own highlighted word; the quote's gold words stay.
@@ -683,6 +691,8 @@ def main():
     # guard (check if today already has an entry in posts.csv).
     post_rows = _load_post_rows()
     posts_today = sum(1 for r in post_rows if r.get("date") == today)
+    global POSTS_TODAY
+    POSTS_TODAY = posts_today
     if posts_today >= MAX_POSTS_PER_DAY:
         print(f"[{today}] already posted {posts_today}/{MAX_POSTS_PER_DAY} times today — skipping")
         return
@@ -791,6 +801,14 @@ def main():
     spoken_quote = (not is_question) and bool(content.get("quote", "").strip())
     if spoken_quote:
         act3 = f"{content['quote'].strip()} {act3}"
+    # Cicero's test "journal-cta" (owner 2026-11-24): the day's third Short
+    # closes with one line for the journal; its card, comment and tracking
+    # link follow below. Nothing changes unless the ledger test is running.
+    if content.get("format") == "edit" and journal_cta.active(POSTS_TODAY):
+        content["_journalCta"] = True
+        content["pinned_comment"] = journal_cta.PINNED
+        act3 = f"{act3} {journal_cta.CLOSING_LINE}".strip()
+        print(f"  [journal-cta] closing line added: {journal_cta.CLOSING_LINE!r}")
 
     # Voiceover once; reused across render attempts
     audio_path = ROOT / "data" / f"{today}_voice.mp3"
@@ -890,6 +908,8 @@ def main():
         # sent): three short paragraphs, a question for the comments, then the
         # quote and its source. src/edits.py:description().
         description = edits.description(content) + promo.description_block()
+        if content.get("_journalCta"):
+            description = journal_cta.with_tracking(description)
     music_credit = ""   # a CC BY track's credit line, which Instagram needs too
 
     # Experiment agent: assign this post's intro-sound + colour-grade combo.
