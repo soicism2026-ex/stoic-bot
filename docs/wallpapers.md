@@ -6,7 +6,7 @@ One pack = one philosopher x one screen. Six packs in all (Marcus Aurelius, Sene
 
 ## Run a pack
 
-Actions > "Wallpaper pack" > Run workflow (manual only, never scheduled):
+Actions > "Wallpaper pack" > Run workflow (nightly at 20:33 UTC from the queue, or by hand):
 
 | Input | Values |
 |-------|--------|
@@ -23,11 +23,43 @@ Locally: `python scripts/wallpapers.py render|package|publish --pack marcus --si
 
 ## The budget rule
 
-Cloudflare's free 10,000 neurons a day are shared with the daily posts, which paint before 20:00 UTC. A phone picture costs about 208 neurons (1024x1920), a desktop one about 312 (1920x1088), so a pack of 10 is about 2,080 (phone) or 3,120 (desktop). `render` prints the estimate, and refuses before 20:00 UTC unless `--force` (the workflow's `force`). Painted stills are cached in `data/still_cache`, so a re-run of the same pack costs nothing. Without the Cloudflare keys `render` exits 2.
+Cloudflare's free 10,000 neurons a day are shared with the daily posts, which paint between 02:00 and 20:00 UTC. A phone picture costs about 208 neurons (1024x1920), a desktop one about 312 (1920x1088), so a pack of 10 is about 2,080 (phone) or 3,120 (desktop). `render` prints the estimate, and refuses outside 20:00-02:00 UTC unless `--force` (GitHub starts the 20:33 cron late, often after midnight) (the workflow's `force`). Painted stills are cached in `data/still_cache`, so a re-run of the same pack costs nothing. Without the Cloudflare keys `render` exits 2.
 
 Pillow is not in `requirements.txt`; the workflow installs it. If the painter returns a portrait picture for desktop, the pack builds a 4K frame with the painting centred over a blurred, darkened copy of itself.
 
+## Two versions of every pack (owner 2026-11-24)
+
+"I dont think we can sell the wallpapers unless we sell them low quality for free then sell high quality for 5 bucks." Each run makes two zips, both private workflow artifacts (`wallpapers-<pack>-<size>`); the public `wallpapers` release still carries only the cover and the manifest, and the manifest lists both (`free` block + the full pack at the top level).
+
+| | Free sample | Full pack ($5) |
+|---|---|---|
+| File | `<pack>-<size>-free.zip` | `<pack>-<size>.zip` |
+| Wallpapers | 5 (the first five) | all (up to 10) |
+| Size | phone 1080x1920, desktop 1920x1080 | phone 1170x2532 PNG, desktop 3840x2160 JPEG 92 |
+| Quality | JPEG 80 | full |
+| Mark | `@forged.in.stoicism` in the bottom-right corner | none |
+
+A phone sample (a different shape from the 1170x2532 original) is set whole over a blurred copy of itself, never cropped. Code: `free_version`, `package_free` in `scripts/wallpapers.py`; tests in `tests/test_wallpapers.py`.
+
 ## Gumroad listing copy
+
+Two listings per pack. Upload the free zip to the first and the full zip to the second (both from the run's workflow artifact).
+
+### Listing 1: the free sample ($0+, "pay what you want")
+
+**Title:** Forged in Stoicism: Marcus Aurelius Wallpapers, Free Sample (swap the name for Seneca or Epictetus)
+
+**Price:** $0+ (pay what you want; a tip is welcome, nothing is required)
+
+**Description:**
+
+Five wallpapers for your phone (or desktop), each a painting with one line from Marcus Aurelius, free. Take them, use them, see if you like them.
+
+They are the lighter version: smaller files, with a small @forged.in.stoicism mark in the corner. If you want the whole set at full quality and without the mark, the full pack is $5 on my page: "Forged in Stoicism: Marcus Aurelius Wallpaper Pack".
+
+**What's inside:** 5 wallpapers (1080x1920 phone / 1920x1080 desktop, JPEG), a README, personal-use licence.
+
+### Listing 2: the full pack ($5)
 
 **Title:** Forged in Stoicism: Marcus Aurelius Wallpaper Pack (swap the name for Seneca or Epictetus; the bundle is "Forged in Stoicism: Complete Wallpaper Collection")
 
@@ -35,16 +67,16 @@ Pillow is not in `requirements.txt`; the workflow installs it. If the painter re
 
 Ten wallpapers for your phone, each one a painting with a single line from Marcus Aurelius. Not a poster, not a slogan: something calm to look at every time you pick the phone up.
 
-The pictures are painted in the same style as the Forged in Stoicism Shorts. Every quote is checked word for word against its source, and the source is printed under it. The top of each is left clear for your lock-screen clock.
+The pictures are painted in the same style as the Forged in Stoicism Shorts. Every quote is checked word for word against its source, and the source is printed under it. The top of each is left clear for your lock-screen clock. Full quality, no corner mark; try the free sample first if you like.
 
 Use one for a week, then change it. They are for your own screens. If you want the habit behind the words, the 30-day Stoic Reset journal is on my page too.
 
 **What's inside:**
-- 10 wallpapers, 1170x2532 PNG (phone) or 3840x2160 JPEG (desktop)
+- 10 wallpapers, 1170x2532 PNG (phone) or 3840x2160 JPEG (desktop), no mark
 - One verified quote each, with its source
 - A README with how to set them
 - Personal-use licence: for your own screens; not for resale or redistribution
 
-**Price:** C$4.99 per pack; C$9.99 for the bundle of all three authors (the journal sells at C$5.99). A phone and desktop pair of one author could ship as one product by zipping both packs.
+**Price:** $5 per pack (the journal sells at C$5.99). A bundle of all three authors can be priced at your choice.
 
 **Tags:** stoicism, stoic wallpaper, marcus aurelius, seneca, epictetus, phone wallpaper, desktop wallpaper, 4k wallpaper, quote wallpaper, dark wallpaper, motivation, philosophy

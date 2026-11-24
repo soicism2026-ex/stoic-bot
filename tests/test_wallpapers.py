@@ -217,7 +217,7 @@ def test_workflow_paints_one_queued_pack_a_night_and_keeps_the_zip_private():
     assert "still_cache" in text and "stills-" in text
     steps = wf["jobs"][next(iter(wf["jobs"]))]["steps"]
     art = next(s for s in steps if "upload-artifact" in s.get("uses", ""))
-    assert art["with"]["path"].endswith(".zip") and art["with"]["retention-days"] == 90
+    assert ".zip" in art["with"]["path"] and "-free.zip" in art["with"]["path"] and art["with"]["retention-days"] == 90
     pop = next(s for s in steps if "queue --pop" in s.get("run", ""))
     assert pop["env"]["COMPLETE"] == "${{ steps.paint.outputs.complete }}" and "data/wallpapers.json" in pop["run"]
     queue = json.loads((ROOT / "data" / "wallpapers_queue.json").read_text(encoding="utf-8"))
@@ -253,3 +253,93 @@ def test_a_published_pack_is_recorded_for_the_hq(tmp_path, monkeypatch):
     (out / "marcus-phone-manifest.json").write_text(json.dumps({"count": 9, "run": "https://x/runs/2"}))
     items = wp.record("marcus", "phone", out, rec)
     assert len(items) == 1 and items[0]["run"] == "https://x/runs/2"               # upserted, not doubled
+
+
+def test_paint_window_covers_the_evening_and_the_delayed_small_hours():
+    """GitHub started the 20:33 cron at 00:35-01:40 UTC on 11-21..23 and the old
+    `hour < 20` guard refused every night. Evening and small hours pass; midday
+    (the posts' painting) is refused."""
+    assert all(w.in_paint_window(h) for h in (20, 21, 23, 0, 1))
+    assert not any(w.in_paint_window(h) for h in (2, 3, 7, 12, 19))
+
+
+def test_a_delayed_scheduled_start_at_0104_is_not_refused(monkeypatch, tmp_path):
+    monkeypatch.setenv("CLOUDFLARE_ACCOUNT_ID", "x")
+    monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "y")
+    monkeypatch.setenv("REEL_STILL_CACHE", str(tmp_path / "cache"))
+    monkeypatch.setattr(w, "utcnow", lambda: dt.datetime(2026, 11, 23, 1, 4, tzinfo=dt.timezone.utc))
+    monkeypatch.setattr(w, "paint_one", lambda p, s: w.stand_in_painting(tmp_path / "p.png", 1024, 1920))
+    assert w.main(["render", "--pack", "seneca", "--size", "phone", "--limit", "2", "--out", str(tmp_path / "o")]) == 0
+
+
+def test_a_pack_is_never_recorded_without_its_real_count(tmp_path):
+    out = tmp_path / "out"; out.mkdir()
+    rec = tmp_path / "wallpapers.json"
+    with pytest.raises(SystemExit):
+        wp.record("marcus", "phone", out, rec)                       # no manifest
+    (out / "marcus-phone-manifest.json").write_text(json.dumps({"count": 0, "files": []}))
+    with pytest.raises(SystemExit):
+        wp.record("marcus", "phone", out, rec)                       # the old "count 0" record
+    (out / "marcus-phone-manifest.json").write_text(json.dumps({"files": [{}, {}, {}]}))
+    assert wp.record("marcus", "phone", out, rec)[0]["count"] == 3
+    assert not rec.exists() or json.loads(rec.read_text())[0]["count"] == 3
+
+
+def test_a_failed_night_reports_itself_and_a_finished_pack_leaves_the_queue(tmp_path):
+    import yaml
+    wf = yaml.safe_load(WF.read_text(encoding="utf-8"))
+    steps = wf["jobs"][next(iter(wf["jobs"]))]["steps"]
+    fail = next(s for s in steps if s.get("if") == "failure()")
+    assert "hq_outbox.py log" in fail["run"] and "alert" in fail["run"] and "git push" in fail["run"]
+    q = tmp_path / "q.json"
+    q.write_text(json.dumps([{"pack": "marcus", "size": "phone"}, {"pack": "seneca", "size": "phone"}]))
+    assert w.queue_pop("marcus", "phone", q) == 1 and w.queue_head(q)["pack"] == "seneca"
+
+
+@pytest.mark.parametrize("kind", ["phone", "desktop"])
+def test_every_pack_makes_a_free_sample_and_a_full_paid_pack(kind, tmp_path):
+    """Owner 2026-11-24: the free zip is small (5 max, 1080x1920 / 1920x1080, JPEG ~80,
+    corner mark); the $5 zip is every wallpaper at full quality with no mark."""
+    quotes = [dict(QUOTES[i % 2], id=f"q{i}") for i in range(7)]
+    out = tmp_path / "out"
+    w.render_pack("seneca", kind, out, quotes=quotes, painter_fn=stand_in(tmp_path))
+    m = w.package_pack("seneca", kind, out)
+    full = zipfile.ZipFile(out / f"seneca-{kind}.zip")
+    free = zipfile.ZipFile(out / f"seneca-{kind}-free.zip")
+    fnames = [n for n in free.namelist() if n != "README.txt"]
+    pnames = [n for n in full.namelist() if n != "README.txt"]
+    assert len(pnames) == 7 and len(fnames) == w.FREE_COUNT == 5
+    fw, fh = w.FREE_SIZES[kind]
+    s = w.SIZES[kind]
+    assert (fw, fh) == ((1080, 1920) if kind == "phone" else (1920, 1080))
+    free.extractall(tmp_path / "f"); full.extractall(tmp_path / "p")
+    for n in fnames:
+        assert n.endswith(".jpg") and Image.open(tmp_path / "f" / n).size == (fw, fh)
+    for n in pnames:
+        assert Image.open(tmp_path / "p" / n).size == (s["w"], s["h"])
+    assert sum(len(free.read(n)) for n in fnames) < sum(len(full.read(n)) for n in pnames)
+    fr = free.read("README.txt").decode()
+    assert "$5" in fr and "free sample" in fr and w.FREE_MARK in fr
+    assert "$5" not in full.read("README.txt").decode()
+    assert m["free"]["count"] == 5 and m["free"]["zip"] == f"seneca-{kind}-free.zip" and m["count"] == 7
+    assert m["free"]["zipSha256"] and m["free"]["dimensions"] == f"{fw}x{fh}"
+    man = json.loads((out / f"seneca-{kind}-manifest.json").read_text())
+    assert man["free"]["count"] == 5 and man["count"] == 7 and man["zipSha256"] != man["free"]["zipSha256"]
+
+
+def test_the_free_copy_has_a_corner_mark_and_the_full_one_has_none(tmp_path):
+    src = tmp_path / "a.png"
+    Image.new("RGB", (1170, 2532), (30, 30, 30)).save(src)
+    f = w.free_version(src, "phone", tmp_path / "a.jpg")
+    im = Image.open(f)
+    assert im.size == (1080, 1920) and im.format == "JPEG"
+    corner = im.crop((im.width - 400, im.height - 140, im.width, im.height)).convert("L")
+    assert corner.getextrema()[1] > 150                      # the white mark shows on the dark picture
+    assert Image.open(src).convert("L").getextrema() == (30, 30)  # the full-quality original is untouched
+
+
+def test_the_record_carries_the_free_count(tmp_path):
+    out = tmp_path / "out"; out.mkdir()
+    (out / "marcus-phone-manifest.json").write_text(json.dumps({"files": [{}] * 9, "free": {"count": 5}}))
+    e = wp.record("marcus", "phone", out, tmp_path / "r.json")[0]
+    assert e["count"] == 9 and e["freeCount"] == 5

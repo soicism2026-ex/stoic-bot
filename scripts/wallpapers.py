@@ -50,6 +50,7 @@ WATERMARK = "forged.in.stoicism"
 
 YOUTUBE = "https://www.youtube.com/@forged.in.stoicism"
 GUMROAD = "https://soicism.gumroad.com/l/cslosv"
+GUMROAD_STORE = "https://soicism.gumroad.com"
 REPO = "soicism2026-ex/stoic-bot"
 TAG = "wallpapers"
 
@@ -61,7 +62,23 @@ SIZES = {
     "desktop": {"w": 3840, "h": 2160, "cap": 48, "paint": "1920x1088",
                 "label": "Desktop", "dims": "3840x2160 (4K; fits any 16:9 screen)"},
 }
+# The free sample of each pack (owner 2026-11-24: "sell them low quality for free then sell
+# high quality for 5 bucks"): 5 wallpapers, smaller, JPEG ~80, a corner mark. The full pack
+# (all wallpapers, full size, PNG phone / JPEG 92 desktop, no mark) is the $5 product.
+FREE_COUNT = 5
+FREE_QUALITY = 80
+FREE_MARK = "@forged.in.stoicism"
+FREE_SIZES = {"phone": (1080, 1920), "desktop": (1920, 1080)}
 GUARD_HOUR_UTC = 20
+# GitHub starts scheduled runs late (the 20:33 cron actually began at 00:35-01:40 UTC on
+# 11-21..23), so the paint window is the evening AND the small hours until the first post
+# slot of the next day (02:00 UTC) has painted. Only the midday posting hours are refused.
+GUARD_END_HOUR_UTC = 2
+
+
+def in_paint_window(hour: int) -> bool:
+    """True when painting will not compete with the day's posts for the free allowance."""
+    return hour >= GUARD_HOUR_UTC or hour < GUARD_END_HOUR_UTC
 EXIT_NO_KEYS, EXIT_GUARD = 2, 3
 
 
@@ -367,10 +384,11 @@ def cmd_render(a) -> int:
               "(GitHub secrets) to paint. Nothing was painted.", file=sys.stderr)
         return EXIT_NO_KEYS
     now = utcnow()
-    if now.hour < GUARD_HOUR_UTC and not a.force:
+    if not in_paint_window(now.hour) and not a.force:
         print(f"Refusing: it is {now:%H:%M} UTC. The painter shares Cloudflare's free 10,000 "
-              f"neurons a day with the daily posts, which paint before {GUARD_HOUR_UTC}:00 UTC. "
-              "Run after 20:00 UTC, or pass --force.", file=sys.stderr)
+              f"neurons a day with the daily posts, which paint between {GUARD_END_HOUR_UTC}:00 and "
+              f"{GUARD_HOUR_UTC}:00 UTC. Run between {GUARD_HOUR_UTC}:00 and {GUARD_END_HOUR_UTC:02d}:00 UTC, "
+              "or pass --force.", file=sys.stderr)
         return EXIT_GUARD
     quotes = load_quotes(a.pack, a.limit)
     if not quotes:
@@ -501,6 +519,72 @@ def cover(pack: str, kind: str, files: list[Path], dst: Path) -> Path:
     return dst
 
 
+def free_version(src: Path, kind: str, dst: Path) -> Path:
+    """The free-sample copy of one finished wallpaper: smaller, JPEG ~80, with a small
+    channel mark in the bottom-right corner. A different shape (the phone sample is
+    1080x1920) is set whole over a blurred, darkened copy of itself, never cropped."""
+    w, h = FREE_SIZES[kind]
+    with Image.open(src) as im:
+        im = im.convert("RGB")
+    if abs(im.width / im.height - w / h) < 0.02:
+        out = im.resize((w, h), Image.LANCZOS)
+    else:
+        bg = ImageOps.fit(im, (max(w // 8, 1), max(h // 8, 1)), Image.LANCZOS)
+        out = Image.eval(bg.filter(ImageFilter.GaussianBlur(4)).resize((w, h), Image.BICUBIC),
+                         lambda v: int(v * 0.45))
+        fg = im.resize((max(round(im.width * h / im.height), 1), h), Image.LANCZOS) \
+            if im.width / im.height < w / h else im.resize((w, max(round(im.height * w / im.width), 1)), Image.LANCZOS)
+        out.paste(fg, ((w - fg.width) // 2, (h - fg.height) // 2))
+    layer = Image.new("RGBA", out.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(layer)
+    f = _font(AUTHOR_FONT, max(round(w * 0.024), 14))
+    box = d.textbbox((0, 0), FREE_MARK, font=f)
+    m = round(w * 0.03)
+    xy = (w - m - (box[2] - box[0]), h - m - (box[3] - box[1]))
+    d.text((xy[0] + 2, xy[1] + 2), FREE_MARK, font=f, fill=(0, 0, 0, 150))
+    d.text(xy, FREE_MARK, font=f, fill=(255, 255, 255, 215))
+    out = Image.alpha_composite(out.convert("RGBA"), layer).convert("RGB")
+    out.save(dst, quality=FREE_QUALITY, optimize=True)
+    return dst
+
+
+def free_readme(pack: str, kind: str, items: list[dict]) -> str:
+    s = SIZES[kind]
+    fw, fh = FREE_SIZES[kind]
+    lines = [title(pack) + " (free sample)", "", f"{len(items)} {s['label'].lower()} wallpapers, {fw}x{fh}, "
+             "with a small @forged.in.stoicism mark in the corner.", "",
+             f"THE FULL PACK: every wallpaper in this set, at full quality ({s['dims']}), no mark: "
+             f"$5 on Gumroad, from {GUMROAD_STORE}", "", "WHAT IS INSIDE", ""]
+    for n, it in enumerate(items, 1):
+        lines += [f"{n:>2}. {it['file']}", f"    \"{it['quote']}\"", f"    {it['author']}, {it['citation']}"]
+    lines += ["", "LICENCE", "", "For your own screens; not for resale or redistribution.", "",
+              "MORE", "", f"YouTube: {YOUTUBE}", f"The Stoic Reset, a 30-day guided journal: {GUMROAD}", ""]
+    return "\n".join(lines)
+
+
+def package_free(pack: str, kind: str, out: Path, items: list[dict]) -> dict:
+    """<out>/<pack>-<kind>-free.zip from the first FREE_COUNT finished wallpapers."""
+    d = pack_dir(out, pack, kind)
+    fd = d / "free"
+    fd.mkdir(exist_ok=True)
+    shipped, files = [], []
+    for it in items[:FREE_COUNT]:
+        src = d / it["file"]
+        f = free_version(src, kind, fd / (Path(it["file"]).stem + ".jpg"))
+        files.append(f)
+        shipped.append(dict(it, file=f.name, bytes=f.stat().st_size, sha256=sha256(f)))
+    (fd / "README.txt").write_text(free_readme(pack, kind, shipped), encoding="utf-8")
+    zpath = out / f"{pack}-{kind}-free.zip"
+    with zipfile.ZipFile(zpath, "w", zipfile.ZIP_STORED) as z:
+        z.write(fd / "README.txt", "README.txt")
+        for f in files:
+            z.write(f, f.name)
+    print(f"[wallpapers] {zpath.name}: {len(shipped)} files, {zpath.stat().st_size / 1e6:.1f} MB")
+    return {"zip": zpath.name, "zipBytes": zpath.stat().st_size, "zipSha256": sha256(zpath),
+            "count": len(shipped), "dimensions": f"{FREE_SIZES[kind][0]}x{FREE_SIZES[kind][1]}",
+            "quality": FREE_QUALITY, "mark": FREE_MARK, "files": shipped}
+
+
 def sha256(p: Path) -> str:
     h = hashlib.sha256()
     with open(p, "rb") as f:
@@ -537,7 +621,9 @@ def package_pack(pack: str, kind: str, out: Path) -> dict:
         for f in files:
             z.write(f, f.name)
     cpath = cover(pack, kind, files, out / f"{pack}-{kind}-cover.jpg")
+    free = package_free(pack, kind, out, items)
     manifest = {
+        "product": "full ($5)", "free": free,
         "run": os.environ.get("RUN_URL", ""),
         "title": title(pack), "pack": pack, "author": PACKS[pack], "size": kind,
                 "dimensions": f"{SIZES[kind]['w']}x{SIZES[kind]['h']}", "count": len(shipped),
@@ -603,8 +689,13 @@ def record(pack: str, kind: str, out: Path, path: Path | None = None) -> list[di
         man = json.loads((out / f"{pack}-{kind}-manifest.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
         man = {}
+    if not man or not (man.get("count") or man.get("files")):
+        raise SystemExit(f"cannot record {pack} {kind}: its manifest is missing or holds no wallpapers "
+                         "(a pack is recorded only with its real count)")
     entry = {"pack": pack, "size": kind, "cover": f"{RELEASE_URL}{pack}-{kind}-cover.jpg",
-             "count": int(man.get("count") or len(man.get("items") or [])), "run": man.get("run", ""),
+             "count": int(man.get("count") or len(man.get("files") or man.get("items") or [])),
+             "run": man.get("run", ""),
+             "freeCount": int((man.get("free") or {}).get("count") or 0),
              "updated": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")}
     items = [i for i in items if not (i.get("pack") == pack and i.get("size") == kind)] + [entry]
     path.write_text(json.dumps(items, indent=1) + "\n", encoding="utf-8")

@@ -86,12 +86,14 @@ jobs:
         SIZE: ${{ steps.which.outputs.size }}
         RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       run: python scripts/wallpapers.py package --pack "$PACK" --size "$SIZE" --out wallpapers_out
-    - name: The pack, private (a workflow artifact only the owner can download)
+    - name: The two zips, private (the free sample and the $5 full pack; a workflow artifact only the owner can download)
       if: steps.which.outputs.pack != ''
       uses: actions/upload-artifact@v4
       with:
         name: wallpapers-${{ steps.which.outputs.pack }}-${{ steps.which.outputs.size }}
-        path: wallpapers_out/${{ steps.which.outputs.pack }}-${{ steps.which.outputs.size }}.zip
+        path: |
+          wallpapers_out/${{ steps.which.outputs.pack }}-${{ steps.which.outputs.size }}.zip
+          wallpapers_out/${{ steps.which.outputs.pack }}-${{ steps.which.outputs.size }}-free.zip
         if-no-files-found: error
         retention-days: 90
     - name: The cover and the manifest, public (the wallpapers release, for the HQ)
@@ -113,4 +115,16 @@ jobs:
         git config user.name "stoic-bot" && git config user.email "bot@users.noreply.github.com"
         git add data/wallpapers_queue.json data/wallpapers.json
         git commit -m "wallpapers: $PACK $SIZE pack painted" || exit 0
+        for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break || sleep 5; done
+    - name: Say plainly that tonight's pack failed
+      if: failure()
+      env:
+        PACK: ${{ steps.which.outputs.pack }}
+        SIZE: ${{ steps.which.outputs.size }}
+        RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      run: |
+        python scripts/hq_outbox.py log --who Apelles --kind alert --text "Wallpaper pack ${PACK:-?} ${SIZE:-?} did not finish tonight (nothing was recorded, it stays first in the queue). Log: $RUN_URL"
+        git config user.name "stoic-bot" && git config user.email "bot@users.noreply.github.com"
+        git add data/hq_outbox.jsonl
+        git commit -q -m "wallpapers: tonight's pack failed [skip ci]" || exit 0
         for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && break || sleep 5; done

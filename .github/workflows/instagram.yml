@@ -64,7 +64,7 @@ jobs:
         run: |
           git config user.name "stoic-bot"
           git config user.email "bot@users.noreply.github.com"
-          for f in data/ig_status.json data/ig_posts.csv data/ig_stats.csv data/ig_reels.csv; do
+          for f in data/ig_status.json data/ig_posts.csv data/ig_stats.csv data/ig_reels.csv data/tiktok_posts.csv; do
             if [ -f "$f" ]; then git add "$f"; fi
           done
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
