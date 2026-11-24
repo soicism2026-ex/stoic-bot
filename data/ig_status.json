@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-23T22:18:41Z",
+ "checked": "2026-11-24T02:09:37Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-23",
+  "checked": "2026-11-24",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,11 +19,11 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-23T18:57:17Z",
-  "youtube": "BeKZGj992hE",
-  "title": "\"Travel disrupted\" | How to get through hard times — Seneca",
+  "at": "2026-11-24T02:09:37Z",
+  "youtube": "iM-G-sqIJ0k",
+  "title": "\"Failed at a game\" | How to stay calm under pressure — Seneca",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/DgGE8tIDvzW/",
+  "permalink": "https://www.instagram.com/reel/DgG2ZhYFwcc/",
   "reason": null
  },
  "tiktok": {
