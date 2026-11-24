@@ -1,26 +1,25 @@
 {
- "forPost": 93,
- "airDay": "2026-11-23",
- "decidedAt": "2026-11-23T18:57:20Z",
+ "forPost": 94,
+ "airDay": "2026-11-24",
+ "decidedAt": "2026-11-24T02:09:44Z",
  "trend": {
   "topic": "Grand Theft Auto VI",
-  "score": 308867.0,
-  "source": "wikipedia",
+  "score": 0.0,
+  "source": "wikipedia-news",
   "headlines": [
-   "2026 video game",
    "The video game Grand Theft Auto VI achieves US$3.79 billion in sales on its launch day, more than any other entertainment product in history."
   ]
  },
- "edit": "sailors_try_again",
- "theme": "resilience",
- "hook": "Failed at a game?",
- "punch": "Failed",
- "lead": "Grand Theft Auto VI players",
- "question": "Try again or quit?",
+ "edit": "cost_nothing",
+ "theme": "time",
+ "hook": "Free games aren't free",
+ "punch": "free",
+ "lead": "Grand Theft Auto VI sales",
+ "question": "What costs you the most?",
  "tags": [
   "Grand Theft Auto VI",
-  "Gaming",
-  "Resilience"
+  "gaming",
+  "sales"
  ],
  "model": "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 }
