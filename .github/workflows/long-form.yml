@@ -1,0 +1,110 @@
+# Long videos (owner 2026-11-24, in the HQ: "Long videos: 5-10 minutes on one Stoic
+# theme: Every other week, 5 minutes (free)"). scripts/long_form.py: a 5-minute 16:9
+# video on one theme, Brian narrating an original script around 4-6 verified quotes,
+# painted scenes in the channel's look, chapters. FREE: the Cloudflare painting
+# allowance at night, the ElevenLabs Starter characters the script fits in.
+#
+# EVERY OTHER SUNDAY (the gate in scripts/long_form.py counts weeks from 2026-11-29):
+#   Friday and Saturday 20:47 UTC  paint the stills (after the day's posts, so the
+#                                  free allowance is not shared; ~20 a night)
+#   Sunday 14:17 UTC               voice, render, upload PRIVATE
+# The FIRST video is a private preview: the run files the HQ ask "long-form-preview";
+# when the owner taps Publish, the chief runs `python3 scripts/long_form.py approve`
+# (data/long_form/state.json: public_after_approval) and later videos go public by themselves.
+name: Long video
+on:
+  schedule:
+    - cron: "47 20 * * 5,6"
+    - cron: "17 14 * * 0"
+  workflow_dispatch:
+    inputs:
+      step:
+        description: What to run
+        type: choice
+        options: [all, script, paint, render]
+        default: all
+      force:
+        description: Ignore the every-other-week gate and the night-only painting window
+        type: boolean
+        default: false
+permissions:
+  contents: write
+concurrency:
+  group: long-form
+  cancel-in-progress: false
+jobs:
+  long-video:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+      STEP: ${{ inputs.step || (github.event.schedule == '17 14 * * 0' && 'render' || 'paint') }}
+      FORCE: ${{ inputs.force && '--force' || '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Is it a long-video week?
+        id: gate
+        run: python3 scripts/long_form.py gate $FORCE >> "$GITHUB_OUTPUT"
+      - name: Install ffmpeg + fonts
+        if: steps.gate.outputs.run == 'true'
+        timeout-minutes: 20
+        run: bash scripts/ci_install_ffmpeg.sh
+      - name: Install deps
+        if: steps.gate.outputs.run == 'true'
+        run: pip install -r requirements.txt "pillow>=10,<13"
+      - name: Stills already painted (shared with the Shorts)
+        if: steps.gate.outputs.run == 'true'
+        uses: actions/cache@v4
+        with:
+          path: data/still_cache
+          key: stills-${{ github.run_id }}
+          restore-keys: |
+            stills-
+      - name: Write the next script (from the quote shelf) if none is waiting
+        if: steps.gate.outputs.run == 'true' && (env.STEP == 'all' || env.STEP == 'script' || env.STEP == 'paint' || env.STEP == 'render')
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: python3 scripts/long_form.py script --if-needed
+      - name: Paint the stills (night)
+        if: steps.gate.outputs.run == 'true' && (env.STEP == 'all' || env.STEP == 'paint' || env.STEP == 'render')
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          REEL_STILL_CACHE: data/still_cache
+          REEL_PAINT_SIZE: 1920x1088
+          REEL_INSPECT_RETRIES: '0'
+        run: python3 scripts/long_form.py paint --limit 24 $FORCE
+      - name: Voice, render and upload (PRIVATE until the owner says yes)
+        if: steps.gate.outputs.run == 'true' && (env.STEP == 'all' || env.STEP == 'render')
+        env:
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          MUSIC_KEY: ${{ secrets.MUSIC_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          REEL_STILL_CACHE: data/still_cache
+          REEL_PAINT_SIZE: 1920x1088
+          REEL_INSPECT_RETRIES: '0'
+          PROMO_ENABLED: '1'
+          PROMO_PRODUCT_NAME: The Stoic Reset
+        run: |
+          python3 scripts/long_form.py render --out "$RUNNER_TEMP/long"
+          python3 scripts/long_form.py upload --out "$RUNNER_TEMP/long"
+      - name: Commit the script, the state and the HQ card
+        if: always() && steps.gate.outputs.run == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/long_form/*.json data/hq_outbox.jsonl 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "long video: $(date -u +%F) script/state"
+          for i in 1 2 3; do
+            git push && break
+            git pull --rebase origin main && continue
+          done
