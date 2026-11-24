@@ -6,7 +6,7 @@ One pack = one philosopher x one screen. Six packs in all (Marcus Aurelius, Sene
 
 ## Run a pack
 
-Actions > "Wallpaper pack" > Run workflow (nightly at 20:33 UTC from the queue, or by hand):
+Actions > "Wallpaper pack" > Run workflow (evenings 20:33-23:13 UTC from the queue, one pack a night, or by hand):
 
 | Input | Values |
 |-------|--------|
@@ -23,7 +23,7 @@ Locally: `python scripts/wallpapers.py render|package|publish --pack marcus --si
 
 ## The budget rule
 
-Cloudflare's free 10,000 neurons a day are shared with the daily posts, which paint between 02:00 and 20:00 UTC. A phone picture costs about 208 neurons (1024x1920), a desktop one about 312 (1920x1088), so a pack of 10 is about 2,080 (phone) or 3,120 (desktop). `render` prints the estimate, and refuses outside 20:00-02:00 UTC unless `--force` (GitHub starts the 20:33 cron late, often after midnight) (the workflow's `force`). Painted stills are cached in `data/still_cache`, so a re-run of the same pack costs nothing. Without the Cloudflare keys `render` exits 2.
+Cloudflare's free 10,000 neurons a day (reset 00:00 UTC) belong to the Shorts and their rehearsals. A phone picture costs about 208 neurons (1024x1920), a desktop one about 312 (1920x1088), so a pack of 10 is about 2,080 (phone) or 3,120 (desktop). `render` prints the estimate and paints only when `src/spare_paint.py` allows it (20:00-23:59 UTC, tomorrow's first Short rehearsed and fully painted; see docs/reference.md "Painting budget") unless `--force` (the workflow's `force`). A night with a pack already finished, or while the next long video still has unpainted scenes, exits 0 with one log line. Painted stills are cached in `data/still_cache`, so a re-run of the same pack costs nothing. Without the Cloudflare keys `render` exits 2.
 
 Pillow is not in `requirements.txt`; the workflow installs it. If the painter returns a portrait picture for desktop, the pack builds a 4K frame with the painting centred over a blurred, darkened copy of itself.
 

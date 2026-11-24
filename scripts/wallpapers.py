@@ -12,9 +12,10 @@ the channel's type (Cormorant Garamond Bold, Cinzel gold).
     python scripts/wallpapers.py publish --pack marcus --size phone   [--out DIR]   # GitHub release `wallpapers`
 
 BUDGET: Cloudflare's free 10,000 neurons a day are shared with the daily
-posts, which paint before 20:00 UTC. A phone picture costs ~208 neurons, a
-desktop one ~312, so `render` refuses before 20:00 UTC unless --force, and
-prints the estimate first. A picture that cannot be painted is SKIPPED, never
+posts and their rehearsals, which spend each UTC day's allowance until tomorrow's
+first Short is rehearsed. A phone picture costs ~208 neurons, a desktop one ~312,
+so `render` paints only when src/spare_paint.py allows it (20:00-23:59 UTC, tomorrow's
+first Short rehearsed and fully painted) unless --force, and prints the estimate first. A picture that cannot be painted is SKIPPED, never
 swapped for stock. Keys: CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_API_TOKEN (never
 printed); without them `render` exits 2.
 """
@@ -36,6 +37,7 @@ from PIL import Image, ImageChops, ImageDraw, ImageFilter, ImageFont, ImageOps
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "src"))
+import spare_paint  # noqa: E402  (src/: the spare-painting rule)
 
 FONTS = ROOT / "assets" / "fonts" / "ttf"
 QUOTE_FONT = FONTS / "CormorantGaramond-Bold.ttf"
@@ -69,17 +71,12 @@ FREE_COUNT = 5
 FREE_QUALITY = 80
 FREE_MARK = "@forged.in.stoicism"
 FREE_SIZES = {"phone": (1080, 1920), "desktop": (1920, 1080)}
-GUARD_HOUR_UTC = 20
-# GitHub starts scheduled runs late (the 20:33 cron actually began at 00:35-01:40 UTC on
-# 11-21..23), so the paint window is the evening AND the small hours until the first post
-# slot of the next day (02:00 UTC) has painted. Only the midday posting hours are refused.
-GUARD_END_HOUR_UTC = 2
-
-
-def in_paint_window(hour: int) -> bool:
-    """True when painting will not compete with the day's posts for the free allowance."""
-    return hour >= GUARD_HOUR_UTC or hour < GUARD_END_HOUR_UTC
+# When painting is allowed (the spare-painting rule): src/spare_paint.py.
 EXIT_NO_KEYS, EXIT_GUARD = 2, 3
+
+
+def fetch_up_next():
+    return spare_paint.fetch_up_next()
 
 
 # ----------------------------------------------------------------------------
@@ -383,12 +380,10 @@ def cmd_render(a) -> int:
         print("No Cloudflare keys: set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN "
               "(GitHub secrets) to paint. Nothing was painted.", file=sys.stderr)
         return EXIT_NO_KEYS
-    now = utcnow()
-    if not in_paint_window(now.hour) and not a.force:
-        print(f"Refusing: it is {now:%H:%M} UTC. The painter shares Cloudflare's free 10,000 "
-              f"neurons a day with the daily posts, which paint between {GUARD_END_HOUR_UTC}:00 and "
-              f"{GUARD_HOUR_UTC}:00 UTC. Run between {GUARD_HOUR_UTC}:00 and {GUARD_END_HOUR_UTC:02d}:00 UTC, "
-              "or pass --force.", file=sys.stderr)
+    ok, why = spare_paint.check(utcnow(), force=a.force, fetch=fetch_up_next)
+    if not ok:
+        print(f"Refusing: {why}. The painter shares Cloudflare's free 10,000 neurons a day with "
+              "the daily Shorts; pass --force to override.", file=sys.stderr)
         return EXIT_GUARD
     quotes = load_quotes(a.pack, a.limit)
     if not quotes:
@@ -443,12 +438,49 @@ def queue_pop(pack: str, kind: str, path: Path | None = None) -> int:
     return len(items)
 
 
+def night_done(today: dt.date, record_path: Path | None = None, queue_path: Path | None = None) -> str | None:
+    """'pack size' when a pack was FINISHED today (UTC): recorded today and no longer in the
+    queue (a finished pack leaves it; an unfinished one stays and may resume). One pack a night,
+    however many evening attempts the workflow makes."""
+    try:
+        recs = json.loads((record_path or RECORD).read_text(encoding="utf-8"))
+        queued = {(i.get("pack"), i.get("size")) for i in json.loads((queue_path or QUEUE).read_text(encoding="utf-8"))}
+    except (OSError, ValueError):
+        return None
+    for r in recs:
+        if str(r.get("updated", "")).startswith(today.isoformat()) and (r.get("pack"), r.get("size")) not in queued:
+            return f"{r.get('pack')} {r.get('size')}"
+    return None
+
+
+def yield_reason(today: dt.date | None = None) -> str | None:
+    """Why tonight's pack must not paint, or None. Exit-0 reasons for the queue step."""
+    today = today or utcnow().date()
+    done = night_done(today)
+    if done:
+        return f"tonight's pack ({done}) is already done"
+    try:
+        import long_form
+        busy, why = long_form.paint_unfinished(today)
+    except Exception:  # noqa: BLE001
+        return None
+    if busy:
+        return f"yielding to the long video: {why}"
+    return None
+
+
 def cmd_queue(a) -> int:
     head = queue_head()
     gh_out = os.environ.get("GITHUB_OUTPUT")
     if a.pop:
         left = queue_pop(a.pop[0], a.pop[1])
         print(f"[wallpapers] queue: {a.pop[0]} {a.pop[1]} done, {left} left")
+        return 0
+    why = yield_reason() if head else None
+    if why:
+        print(f"[wallpapers] queue: nothing to paint now: {why}")
+        if gh_out:
+            open(gh_out, "a", encoding="utf-8").write("pack=\nsize=\nlimit=\n")
         return 0
     if not head:
         print("[wallpapers] queue: empty")

@@ -9,7 +9,8 @@ the script fits in, the approved music bed.
 
     python3 scripts/long_form.py script [--theme anger] [--from FILE]   # write/validate data/long_form/<date>.json
     python3 scripts/long_form.py gate [--date D] [--force]              # prints run=true|false (every other Sunday)
-    python3 scripts/long_form.py paint [--limit N] [--force]            # paint the stills (night only), into the cache
+    python3 scripts/long_form.py paint [--limit N] [--force]            # paint the stills (spare allowance only), into the cache
+    python3 scripts/long_form.py paint-status [--gh-output]             # unfinished=true while the next long video lacks paintings (wallpapers yield)
     python3 scripts/long_form.py render [--out DIR]                     # voice + stills -> long_form.mp4, thumbnail
     python3 scripts/long_form.py upload [--out DIR]                     # YouTube, PRIVATE until the owner says yes
     python3 scripts/long_form.py approve [--redo]                       # the owner's answer to the preview card
@@ -301,6 +302,67 @@ def paint_shots(script: dict, n: int, limit: int | None = None, painter_fn=None)
     return out
 
 
+def shot_count(script: dict) -> int:
+    """How many paintings the narration needs (one per ~9 s at 2.4 words a second)."""
+    return max(1, round((len(spoken_text(script).split()) / 2.4) / SHOT_SECONDS))
+
+
+def cached_still(prompt: str, seed) -> Path | None:
+    """The painting already in the still cache for this prompt and seed (any model
+    of the chain), or None. Never paints, never spends a neuron."""
+    import imagegen
+    os.environ.setdefault("REEL_PAINT_SIZE", PAINT_SIZE)
+    cache = imagegen.still_cache_dir()
+    if not cache:
+        return None
+    for model in imagegen.paint_models():
+        w, h = imagegen.paint_size(model)
+        hit = imagegen._cache_lookup(cache, imagegen.still_key(model, prompt, seed, w, h))
+        if hit:
+            return hit
+    return None
+
+
+def _cached_only(prompt: str, seed, scene: str) -> dict | None:
+    hit = cached_still(prompt, seed)
+    return {"path": str(hit), "cached": True} if hit else None
+
+
+def unpainted(script: dict) -> tuple[int, int]:
+    """(scenes with no painting in the cache yet, scenes the video needs)."""
+    import painter
+    n = shot_count(script)
+    missing = 0
+    for i in range(n):
+        scene = scene_for(script, i)
+        seed = painter.seed_for(scene, "longform:" + script.get("date", ""), i, True)
+        if not cached_still(painter.build_prompt(scene), seed):
+            missing += 1
+    return missing, n
+
+
+def paint_unfinished(today: dt.date | None = None) -> tuple[bool, str]:
+    """Is the next due long video still short of paintings? Wallpapers yield to it
+    (a long video needs ~37 scenes, ~7,700 neurons: more than one night's spare).
+    True when a script is waiting with unpainted scenes, or, Monday to Saturday of
+    a long-video week, when its script is still to be written (it is written
+    tonight, then painted)."""
+    today = today or dt.datetime.now(dt.timezone.utc).date()
+    path = current_script_path()
+    if path:
+        try:
+            script = json.loads(path.read_text(encoding="utf-8"))
+            missing, n = unpainted(script)
+        except Exception as e:  # noqa: BLE001
+            return False, f"long video script unreadable ({e}): not yielding"
+        if missing:
+            return True, f"the long video {path.stem} still has {missing} of {n} scenes unpainted"
+        return False, f"the long video {path.stem} has all {n} scenes painted"
+    if is_long_week(today) and today.weekday() != 6:
+        return True, "a long video is due this week and its script is not written yet"
+    return False, "no long video is waiting for paintings"
+
+
 def fill_gaps(stills: list[Path | None]) -> list[Path]:
     """A shot with no painting reuses the nearest painted one (never a failure)."""
     have = [i for i, s in enumerate(stills) if s]
@@ -416,7 +478,14 @@ def cmd_render(a) -> int:
     out.mkdir(parents=True, exist_ok=True)
     voice = narrate(script, out)
     shots = shot_plan(voice["duration"] + 1.5)
-    stills = fill_gaps(paint_shots(script, len(shots)))
+    # The Sunday render NEVER paints in the day (the allowance belongs to the Shorts): only
+    # what the nights cached; a scene still unpainted gets the nearest painted picture.
+    got = paint_shots(script, len(shots), painter_fn=_cached_only)
+    lacking = sum(1 for g in got if not g)
+    if lacking:
+        print(f"long-form: {lacking} of {len(got)} scenes fell back to a neighbouring painting "
+              "(not in the cache; the render does not paint)")
+    stills = fill_gaps(got)
     cards = []
     inputs = []
     for i, s in enumerate(stills):
@@ -534,20 +603,35 @@ def cmd_gate(a) -> int:
 
 
 def cmd_paint(a) -> int:
-    import painter
     if not a.force:
-        import wallpapers
-        if not wallpapers.in_paint_window(dt.datetime.now(dt.timezone.utc).hour):
-            print("long-form: painting only runs at night (after 20:00 UTC); pass --force")
+        import spare_paint
+        ok, why = spare_paint.check()
+        if not ok:
+            print(f"long-form: not painting now: {why}")
             return 0
     path = current_script_path()
     if not path:
         print("long-form: no script waiting")
         return 0
     script = json.loads(path.read_text(encoding="utf-8"))
-    n = max(1, round((len(spoken_text(script).split()) / 2.4) / SHOT_SECONDS))
+    missing, n = unpainted(script)
+    if not missing:
+        print(f"long-form: all {n} scenes of {path.stem} are painted (cached); nothing to paint")
+        return 0
     got = paint_shots(script, n, limit=a.limit)
-    print(f"long-form: {sum(1 for g in got if g)}/{n} stills painted or cached")
+    left, _ = unpainted(script)
+    print(f"long-form: {sum(1 for g in got if g)}/{n} stills painted or cached; {left} left for the next night")
+    return 0
+
+
+def cmd_paint_status(a) -> int:
+    """For wallpapers: does the next long video still need the free allowance?"""
+    busy, why = paint_unfinished()
+    print(f"long-form: {why}")
+    out = os.environ.get("GITHUB_OUTPUT")
+    if a.gh_output and out:
+        with open(out, "a", encoding="utf-8") as f:
+            f.write(f"unfinished={'true' if busy else 'false'}\n")
     return 0
 
 
@@ -558,11 +642,12 @@ def main(argv=None) -> int:
     s.add_argument("--if-needed", action="store_true", help="only when no script is waiting")
     g = sub.add_parser("gate"); g.add_argument("--date"); g.add_argument("--force", action="store_true")
     p = sub.add_parser("paint"); p.add_argument("--limit", type=int); p.add_argument("--force", action="store_true")
+    ps = sub.add_parser("paint-status"); ps.add_argument("--gh-output", action="store_true")
     for name in ("render", "upload"):
         r = sub.add_parser(name); r.add_argument("--out", default=str(ROOT / "data" / "long_form" / "out"))
     ap_ = sub.add_parser("approve"); ap_.add_argument("--redo", action="store_true")
     ns = ap.parse_args(argv)
-    return {"script": cmd_script, "gate": cmd_gate, "paint": cmd_paint, "render": cmd_render,
+    return {"script": cmd_script, "gate": cmd_gate, "paint": cmd_paint, "paint-status": cmd_paint_status, "render": cmd_render,
             "upload": cmd_upload, "approve": cmd_approve}[ns.cmd](ns)
 
 

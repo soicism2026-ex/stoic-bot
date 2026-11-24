@@ -8,6 +8,7 @@
 # to the `design-lab` release (outside git), where the chief picks them up for
 # the HQ. Looks: scripts/design_lab.py LOOKS ("current" = the live channel).
 # Manual only: it never runs on a schedule and never touches a live post.
+# BUDGET: it paints with the Shorts' free allowance, so scripts/spare_paint.py must allow it (or tick force).
 name: design-lab
 on:
   workflow_dispatch:
@@ -20,6 +21,10 @@ on:
         description: Comma-separated quote ids from data/edit_quotes.json (empty = the next to air)
         required: false
         default: ''
+      force:
+        description: Render now although it is not the spare window (eats into the Shorts' free painting allowance)
+        type: boolean
+        default: false
 permissions:
   contents: write
   actions: read
@@ -35,6 +40,15 @@ jobs:
       day: ${{ steps.m.outputs.day }}
     steps:
     - uses: actions/checkout@v4
+    - name: Is there spare painting? (a lab render paints; this stops the run before any render when it would eat the Shorts' allowance)
+      env:
+        REEL_EDIT_LOOK: "painted"   # as daily-short.yml: the Shorts need their shots painted first
+        FORCE: ${{ inputs.force && '--force' || '' }}
+      run: |
+        if ! python3 scripts/spare_paint.py check $FORCE; then
+          echo "::error::Design lab stopped: Cloudflare's free painting belongs to the Shorts until tomorrow's first Short is rehearsed (never before 20:00 UTC). Run it later, or tick force."
+          exit 3
+        fi
     - name: The renders to make
       id: m
       env:

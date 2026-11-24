@@ -2,6 +2,7 @@
 name: hq-inbox
 description: Pick up and answer the owner's messages and decisions from the HQ app - the notes with status new and the asks he answered that have no outcome yet. For the chief chat, where his messages arrive as artifact comments (the small crew sessions have no HQ tools and report through scripts/hq_outbox.py instead).
 ---
+> Painting budget: never dispatch the design lab, wallpapers or long-form before 20:00 UTC or before tomorrow's first Short is rehearsed; `python3 scripts/spare_paint.py check` decides (it needs no key).
 # HQ inbox
 
 Load `hq-protocol` first. Then, with `ArtifactData` on https://claude.ai/artifact/8MtajequXptMk8RUQnSsmx (the owner's message also arrives as an artifact comment: answer in that thread with `ArtifactComments reply`, then `resolve` it):

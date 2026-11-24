@@ -2,12 +2,23 @@
 # Paints one pack (one philosopher x one screen) with the channel's free
 # Cloudflare FLUX painter, sets the verified quotes over it, zips it and puts
 # the zip + cover + manifest in the `wallpapers` release. See docs/wallpapers.md.
-# BUDGET: the painter shares Cloudflare's free 10,000 neurons a day with the
-# daily posts (they paint before 20:00 UTC), so run after 20:00 UTC or tick force.
+# BUDGET: the painter shares Cloudflare's free 10,000 neurons a day (it resets at 00:00 UTC)
+# with the daily Shorts and their rehearsals. The spare-painting rule (src/spare_paint.py) lets
+# a pack paint only 20:00-23:59 UTC, once tomorrow's first Short is rehearsed and fully painted.
+# GitHub delays and drops scheduled runs, so there are several evening attempts and one after
+# each edit-preview run; the guard job ends refused attempts in seconds, and a night with a
+# pack already done (or a long video still unpainted) exits 0 with one log line.
 name: Wallpaper pack
 on:
   schedule:
-    - cron: "33 20 * * *"    # one queued pack a night, after the day's posts and rehearsals have painted
+    - cron: "33 20 * * *"    # one queued pack a night, from the evening on (the guard decides)
+    - cron: "13 21 * * *"
+    - cron: "53 21 * * *"
+    - cron: "33 22 * * *"
+    - cron: "13 23 * * *"
+  workflow_run:
+    workflows: [edit-preview]
+    types: [completed]
   workflow_dispatch:
     inputs:
       pack:
@@ -24,7 +35,7 @@ on:
         description: Quotes per pack
         default: '10'
       force:
-        description: Paint before 20:00 UTC (eats into the posts' free painting allowance)
+        description: Paint outside the spare window (eats into the Shorts' free painting allowance)
         type: boolean
         default: false
 permissions:
@@ -33,16 +44,28 @@ concurrency:
   group: wallpapers
   cancel-in-progress: false
 jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      go: ${{ steps.spare.outputs.go }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Is there spare painting? (src/spare_paint.py; a refusal ends the run here, green)
+      id: spare
+      env:
+        REEL_EDIT_LOOK: "painted"   # as daily-short.yml: the Shorts need their shots painted first
+        FORCE: ${{ inputs.force && '--force' || '' }}
+      run: python3 scripts/spare_paint.py check --gh-output $FORCE
   pack:
+    needs: guard
+    if: needs.guard.outputs.go == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 45
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
     - uses: actions/checkout@v4
-    - name: Install ffmpeg + fonts
-      timeout-minutes: 20
-      run: bash scripts/ci_install_ffmpeg.sh
     - uses: actions/setup-python@v5
       with:
         python-version: '3.12'
@@ -61,12 +84,17 @@ jobs:
         PACK: ${{ inputs.pack }}
         SIZE: ${{ inputs.size }}
         LIMIT: ${{ inputs.limit }}
+        REEL_STILL_CACHE: data/still_cache
       run: |
         if [ -n "$PACK" ] && [ "$PACK" != "next" ]; then
           echo "pack=$PACK" >> "$GITHUB_OUTPUT"; echo "size=$SIZE" >> "$GITHUB_OUTPUT"; echo "limit=${LIMIT:-10}" >> "$GITHUB_OUTPUT"
         else
           python scripts/wallpapers.py queue
         fi
+    - name: Install ffmpeg + fonts
+      if: steps.which.outputs.pack != ''
+      timeout-minutes: 20
+      run: bash scripts/ci_install_ffmpeg.sh
     - name: Paint the pack
       if: steps.which.outputs.pack != ''
       id: paint

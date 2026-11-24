@@ -5,8 +5,12 @@
 # allowance at night, the ElevenLabs Starter characters the script fits in.
 #
 # EVERY OTHER SUNDAY (the gate in scripts/long_form.py counts weeks from 2026-11-29):
-#   Friday and Saturday 20:47 UTC  paint the stills (after the day's posts, so the
-#                                  free allowance is not shared; ~20 a night)
+#   EVERY night of a long-video week (the gate: Monday to Sunday before the long Sunday),
+#   20:47 / 21:47 / 22:47 UTC and after each edit-preview run: paint the stills with the
+#                                  SPARE allowance only (src/spare_paint.py: 20:00-23:59 UTC,
+#                                  once tomorrow's first Short is rehearsed and painted). A
+#                                  video needs ~37 scenes (~7,700 neurons) and a night's spare
+#                                  is ~2,000-3,500, so it resumes from the still cache each night.
 #   Sunday 14:17 UTC               voice, render, upload PRIVATE
 # The FIRST video is a private preview: the run files the HQ ask "long-form-preview";
 # when the owner taps Publish, the chief runs `python3 scripts/long_form.py approve`
@@ -14,8 +18,13 @@
 name: Long video
 on:
   schedule:
-    - cron: "47 20 * * 5,6"
+    - cron: "47 20 * * *"
+    - cron: "47 21 * * *"
+    - cron: "47 22 * * *"
     - cron: "17 14 * * 0"
+  workflow_run:
+    workflows: [edit-preview]
+    types: [completed]
   workflow_dispatch:
     inputs:
       step:
@@ -24,7 +33,7 @@ on:
         options: [all, script, paint, render]
         default: all
       force:
-        description: Ignore the every-other-week gate and the night-only painting window
+        description: Ignore the every-other-week gate and the spare-painting rule (eats into the Shorts' allowance)
         type: boolean
         default: false
 permissions:
@@ -33,7 +42,28 @@ concurrency:
   group: long-form
   cancel-in-progress: false
 jobs:
+  guard:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      go: ${{ steps.spare.outputs.go }}
+    env:
+      REEL_EDIT_LOOK: "painted"     # as daily-short.yml: the Shorts need their shots painted first
+      STEP: ${{ inputs.step || (github.event.schedule == '17 14 * * 0' && 'render' || 'paint') }}
+      FORCE: ${{ inputs.force && '--force' || '' }}
+    steps:
+    - uses: actions/checkout@v4
+    - name: Is there spare painting? (a paint-only run that is refused ends here, green, in seconds)
+      id: spare
+      run: |
+        if [ "$STEP" = paint ]; then
+          python3 scripts/spare_paint.py check --gh-output $FORCE
+        else
+          echo "go=true" >> "$GITHUB_OUTPUT"
+        fi
   long-video:
+    needs: guard
+    if: needs.guard.outputs.go == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 120
     env:
@@ -70,7 +100,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: python3 scripts/long_form.py script --if-needed
-      - name: Paint the stills (night)
+      - name: Paint the stills (spare allowance only; the render never paints)
         if: steps.gate.outputs.run == 'true' && (env.STEP == 'all' || env.STEP == 'paint' || env.STEP == 'render')
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

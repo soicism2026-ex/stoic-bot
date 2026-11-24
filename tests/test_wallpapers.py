@@ -152,6 +152,12 @@ def test_package_without_render_stops(tmp_path):
         w.package_pack("seneca", "phone", tmp_path)
 
 
+def rehearsed(monkeypatch, air="2026-11-15", painted=True):
+    """tomorrow's first Short is rehearsed (the up-next release), painted or not"""
+    monkeypatch.setenv("REEL_EDIT_LOOK", "painted")
+    monkeypatch.setattr(w, "fetch_up_next", lambda: {"airDay": air, "shots": [{"painted": painted}] * 6})
+
+
 def test_guard_refuses_before_20_utc_without_force(monkeypatch, tmp_path, capsys):
     monkeypatch.setenv("CLOUDFLARE_ACCOUNT_ID", "x")
     monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "y")
@@ -160,7 +166,22 @@ def test_guard_refuses_before_20_utc_without_force(monkeypatch, tmp_path, capsys
     monkeypatch.setattr(w, "paint_one", lambda p, s: painted.append(s))
     rc = w.main(["render", "--pack", "seneca", "--size", "phone", "--out", str(tmp_path)])
     assert rc == w.EXIT_GUARD and not painted
-    assert "20:00 UTC" in capsys.readouterr().err
+    assert "20:00" in capsys.readouterr().err
+
+
+def test_guard_refuses_in_the_evening_until_tomorrows_short_is_rehearsed(monkeypatch, tmp_path, capsys):
+    monkeypatch.setenv("CLOUDFLARE_ACCOUNT_ID", "x")
+    monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "y")
+    monkeypatch.setattr(w, "utcnow", lambda: dt.datetime(2026, 11, 14, 21, 0, tzinfo=dt.timezone.utc))
+    painted = []
+    monkeypatch.setattr(w, "paint_one", lambda p, s: painted.append(s))
+    rehearsed(monkeypatch, air="2026-11-14")                       # the rehearsal is still for today
+    assert w.main(["render", "--pack", "seneca", "--size", "phone", "--out", str(tmp_path)]) == w.EXIT_GUARD
+    rehearsed(monkeypatch, painted=False)                          # tomorrow's, but a shot is unpainted
+    assert w.main(["render", "--pack", "seneca", "--size", "phone", "--out", str(tmp_path)]) == w.EXIT_GUARD
+    monkeypatch.setattr(w, "fetch_up_next", lambda: None)          # unreadable
+    assert w.main(["render", "--pack", "seneca", "--size", "phone", "--out", str(tmp_path)]) == w.EXIT_GUARD
+    assert not painted
 
 
 def test_guard_passes_after_20_and_prints_neuron_estimate(monkeypatch, tmp_path, capsys):
@@ -168,6 +189,7 @@ def test_guard_passes_after_20_and_prints_neuron_estimate(monkeypatch, tmp_path,
     monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "y")
     monkeypatch.setenv("REEL_STILL_CACHE", str(tmp_path / "cache"))
     monkeypatch.setattr(w, "utcnow", lambda: dt.datetime(2026, 11, 14, 20, 5, tzinfo=dt.timezone.utc))
+    rehearsed(monkeypatch)
     monkeypatch.setattr(w, "paint_one", lambda p, s: w.stand_in_painting(tmp_path / "p.png", 1024, 1920))
     rc = w.main(["render", "--pack", "seneca", "--size", "phone", "--limit", "2", "--out", str(tmp_path / "o")])
     out = capsys.readouterr().out
@@ -180,6 +202,7 @@ def test_force_overrides_guard(monkeypatch, tmp_path):
     monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "y")
     monkeypatch.setenv("REEL_STILL_CACHE", str(tmp_path / "cache"))
     monkeypatch.setattr(w, "utcnow", lambda: dt.datetime(2026, 11, 14, 3, 0, tzinfo=dt.timezone.utc))
+    monkeypatch.setattr(w, "fetch_up_next", lambda: None)
     monkeypatch.setattr(w, "paint_one", lambda p, s: w.stand_in_painting(tmp_path / "p.png", 1920, 1088))
     assert w.main(["render", "--pack", "marcus", "--size", "desktop", "--limit", "1",
                    "--out", str(tmp_path / "o"), "--force"]) == 0
@@ -215,7 +238,7 @@ def test_workflow_paints_one_queued_pack_a_night_and_keeps_the_zip_private():
     assert ins["size"]["options"] == ["phone", "desktop"] and ins["force"]["default"] is False
     assert "secrets.CLOUDFLARE_ACCOUNT_ID" in text and "secrets.CLOUDFLARE_API_TOKEN" in text
     assert "still_cache" in text and "stills-" in text
-    steps = wf["jobs"][next(iter(wf["jobs"]))]["steps"]
+    steps = wf["jobs"]["pack"]["steps"]
     art = next(s for s in steps if "upload-artifact" in s.get("uses", ""))
     assert ".zip" in art["with"]["path"] and "-free.zip" in art["with"]["path"] and art["with"]["retention-days"] == 90
     pop = next(s for s in steps if "queue --pop" in s.get("run", ""))
@@ -257,21 +280,34 @@ def test_a_published_pack_is_recorded_for_the_hq(tmp_path, monkeypatch):
     assert len(items) == 1 and items[0]["run"] == "https://x/runs/2"               # upserted, not doubled
 
 
-def test_paint_window_covers_the_evening_and_the_delayed_small_hours():
-    """GitHub started the 20:33 cron at 00:35-01:40 UTC on 11-21..23 and the old
-    `hour < 20` guard refused every night. Evening and small hours pass; midday
-    (the posts' painting) is refused."""
-    assert all(w.in_paint_window(h) for h in (20, 21, 23, 0, 1))
-    assert not any(w.in_paint_window(h) for h in (2, 3, 7, 12, 19))
-
-
-def test_a_delayed_scheduled_start_at_0104_is_not_refused(monkeypatch, tmp_path):
+def test_the_small_hours_are_refused_even_with_a_rehearsal(monkeypatch, tmp_path):
+    """11-24: a pack painted at 02:44 UTC and used up the day's allowance, so the 19:00 Short aired
+    unpainted. After midnight the allowance belongs to that day's Shorts."""
     monkeypatch.setenv("CLOUDFLARE_ACCOUNT_ID", "x")
     monkeypatch.setenv("CLOUDFLARE_API_TOKEN", "y")
-    monkeypatch.setenv("REEL_STILL_CACHE", str(tmp_path / "cache"))
-    monkeypatch.setattr(w, "utcnow", lambda: dt.datetime(2026, 11, 23, 1, 4, tzinfo=dt.timezone.utc))
-    monkeypatch.setattr(w, "paint_one", lambda p, s: w.stand_in_painting(tmp_path / "p.png", 1024, 1920))
-    assert w.main(["render", "--pack", "seneca", "--size", "phone", "--limit", "2", "--out", str(tmp_path / "o")]) == 0
+    rehearsed(monkeypatch)
+    for hour in (0, 1, 2, 3, 19):
+        monkeypatch.setattr(w, "utcnow", lambda h=hour: dt.datetime(2026, 11, 14, h, 4, tzinfo=dt.timezone.utc))
+        assert w.main(["render", "--pack", "seneca", "--size", "phone", "--out", str(tmp_path)]) == w.EXIT_GUARD
+
+
+def test_one_pack_a_night_and_the_long_video_goes_first(monkeypatch, tmp_path):
+    rec, q = tmp_path / "rec.json", tmp_path / "q.json"
+    q.write_text(json.dumps([{"pack": "seneca", "size": "phone"}]))
+    rec.write_text(json.dumps([{"pack": "marcus", "size": "phone", "updated": "2026-11-14T21:30:00Z"}]))
+    day = dt.date(2026, 11, 14)
+    assert w.night_done(day, rec, q) == "marcus phone"                 # recorded tonight and left the queue
+    assert w.night_done(dt.date(2026, 11, 15), rec, q) is None          # a new night
+    q.write_text(json.dumps([{"pack": "marcus", "size": "phone"}]))
+    assert w.night_done(day, rec, q) is None                            # unfinished packs stay in the queue and resume
+
+
+def test_the_queue_step_exits_zero_with_an_empty_pack_when_yielding(monkeypatch, tmp_path, capsys):
+    out = tmp_path / "gh"
+    monkeypatch.setenv("GITHUB_OUTPUT", str(out))
+    monkeypatch.setattr(w, "yield_reason", lambda today=None: "yielding to the long video: 5 of 37 scenes unpainted")
+    assert w.main(["queue"]) == 0
+    assert "pack=\n" in out.read_text() and "yielding" in capsys.readouterr().out
 
 
 def test_a_pack_is_never_recorded_without_its_real_count(tmp_path):
@@ -290,7 +326,7 @@ def test_a_pack_is_never_recorded_without_its_real_count(tmp_path):
 def test_a_failed_night_reports_itself_and_a_finished_pack_leaves_the_queue(tmp_path):
     import yaml
     wf = yaml.safe_load(WF.read_text(encoding="utf-8"))
-    steps = wf["jobs"][next(iter(wf["jobs"]))]["steps"]
+    steps = wf["jobs"]["pack"]["steps"]
     fail = next(s for s in steps if s.get("if") == "failure()")
     assert "hq_outbox.py log" in fail["run"] and "alert" in fail["run"] and "git push" in fail["run"]
     q = tmp_path / "q.json"

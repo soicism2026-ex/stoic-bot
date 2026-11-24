@@ -2,6 +2,7 @@
 name: crew-review
 description: The weekly crew review of the painted look (owner 2026-11-11: "continuously improve the shorts utilizing the agents specific tasks"): Zeuxis fixes the week's most frequent picture defect at the root in src/painter.py, Plutarch rewrites the upcoming scenes that share it, Callimachus fixes one type fault, each with a test and an HQ log line. Thursdays 20:23 UTC, in a fresh session.
 ---
+> Painting budget: never dispatch the design lab, wallpapers or long-form before 20:00 UTC or before tomorrow's first Short is rehearsed; `python3 scripts/spare_paint.py check` decides (it needs no key).
 # The weekly crew review
 
 Each crew member makes ONE improvement in their own specialty, from evidence, never from taste alone. Budget: at most

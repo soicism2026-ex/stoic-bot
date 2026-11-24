@@ -2,6 +2,7 @@
 name: longinus-review
 description: Longinus's review of the NEXT Short before it airs (owner 2026-11-11: "the generated images sometimes look off, continuously improve the shorts"): fetch Apelles' rehearsal, check the painted shots the automatic inspector passed, rewrite a scene that still looks off, re-rehearse, log it in the HQ. Daily, 04:41 and 08:41 UTC, in a fresh session.
 ---
+> Painting budget: never dispatch the design lab, wallpapers or long-form before 20:00 UTC or before tomorrow's first Short is rehearsed; `python3 scripts/spare_paint.py check` decides (it needs no key).
 # Longinus: review the next Short
 
 The automatic inspector (`src/inspector.py`, a free vision model) checks every painted shot and repaints a flagged one;
