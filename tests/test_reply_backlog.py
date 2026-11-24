@@ -140,3 +140,22 @@ def test_no_duplicate_ids_are_scanned(tmp_path, monkeypatch):
     _posts(tmp_path, monkeypatch, n_old=200, n_recent=21)
     scanned = rc._load_recent_video_ids()
     assert len(scanned) == len(set(scanned))
+
+
+def test_fetch_tallies_why_each_comment_was_dropped():
+    """The 11-16..24 runs only said "No suitable comments found"; the tally shows the numbers."""
+    def mk(cid, text, replies=0, author="UCx"):
+        return {"snippet": {"totalReplyCount": replies, "topLevelComment": {"id": cid, "snippet": {
+            "textDisplay": text, "likeCount": 0, "authorChannelId": {"value": author}}}}}
+    items = [mk("a", "This one really changed how I see my mornings"), mk("b", "nice"),
+             mk("c", "check out my channel for more"), mk("d", "Already answered by the bot, long enough", replies=1),
+             mk("e", "The channel's own pinned comment text here", author="OWN"), mk("f", "I replied to this one before, long enough")]
+
+    class YT:
+        def commentThreads(self): return self
+        def list(self, **k): return self
+        def execute(self): return {"items": items}
+    stats = {}
+    got = rc._fetch_top_comments(YT(), "v", {"f"}, own_channel_id="OWN", stats=stats)
+    assert [g["snippet"]["topLevelComment"]["id"] for g in got] == ["a"]
+    assert stats == {"seen": 6, "too_short": 1, "spam": 1, "has_a_reply": 1, "own": 1, "already_replied": 1}

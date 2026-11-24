@@ -570,3 +570,12 @@ def test_a_tiktok_buffer_refuses_is_cleaned_up_retried_and_given_up_after_three(
     rows = echo._read(echo.TIKTOK_POSTS)
     assert [r["status"] for r in rows] == ["failed"] * 3 and rows[0]["reason"] == "Buffer: TikTok said no"
     assert json.loads(echo.STATUS.read_text())["tiktok"]["problem"].startswith("TikTok: the last post failed")
+
+
+def test_instagram_workflow_commits_the_tiktok_log_too():
+    """data/ig_status.json said TikTok posted 1 while data/tiktok_posts.csv never reached main:
+    Echo wrote it on the runner, instagram.yml did not `git add` it, so the dedup log (and the
+    count) vanished after every shift."""
+    text = (Path(__file__).resolve().parent.parent / ".github" / "workflows" / "instagram.yml").read_text(encoding="utf-8")
+    assert echo.TIKTOK_POSTS.name == "tiktok_posts.csv"
+    assert "data/tiktok_posts.csv" in text and "data/ig_posts.csv" in text
