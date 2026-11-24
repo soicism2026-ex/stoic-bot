@@ -107,3 +107,13 @@ def test_the_sheet_and_the_sampler_render(tmp_path):
     assert probe == f"{420 * len(lab.SHEET_AT)},960"               # four iPhone-cropped moments
     out = lab.sampler(tmp_path / "s.mp4", [(a, "Today's look"), (b, "The new look")])
     assert lab.duration(out) == pytest.approx(2 * 1.4 + 2 * 1.2, abs=0.3)
+
+
+def test_the_emotional_look_is_lab_only_and_flagged():
+    assert lab.LOOKS["emotional"] == {"REEL_EDIT_LOOK": "painted", "REEL_EMOTION": "1"}
+    assert "REEL_EMOTION=1" in lab.env_lines("emotional")
+    # the live channel never carries the flag
+    wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text(encoding="utf-8")
+    assert "REEL_EMOTION" not in wf
+    m = lab.matrix("current,emotional", "life_in_rome")
+    assert [j["look"] for j in m["include"]] == ["current", "emotional"]

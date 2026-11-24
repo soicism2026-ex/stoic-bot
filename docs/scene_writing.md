@@ -111,3 +111,22 @@ effort ends up.
    elsewhere in the room ("firelight from a hearth behind him").
 4. Review before `add`: would a shot still make sense if the quote were swapped for
    another? Then it is atmosphere, not a shot; rewrite it.
+
+## The emotional look (rule 8, owner 2026-11-24: "wow factor, get people emotional, it gets clicks")
+
+Optional `scenes_emotional` (after `scenes`, same 6-8 shots, same checks plus the opener rule in
+`shelf.scene_problems`). It airs only under `REEL_EMOTION=1` (the design lab's `emotional` look);
+the live channel keeps `scenes`. Evidence: the niche's winners (data/scout.md) open on a human in
+pain, and the first 1-3 s decide the swipe.
+
+8. **Faces first, a feeling you can name.**
+   - Shot 1 is an extreme close-up of a named person's face with ONE clear emotion (grief, rage,
+     resolve, awe, fear, longing, shame) and a named dramatic light from one side plus "rim light".
+     The validator requires: a close-up, a cast token, an emotion word.
+   - Then eyes and hands in close-up: the places feeling reads (a fist opening, a hand letting go
+     of a blade, eyes snapping open).
+   - One scale shot: a tiny figure against a huge sky, sea, stadium or empty road. Scale makes
+     the loneliness (and the release) bigger.
+   - Arc across the shots: struggle, then the turning point (a wise figure, a breath, a hand
+     opening), then release (sunrise, a real smile, striding out). Never end on grimness.
+   - No empty rooms: every shot has a person or a part of one.

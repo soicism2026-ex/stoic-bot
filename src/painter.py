@@ -162,6 +162,32 @@ STYLE = (
     "shadows, controlled midtones, the subject in the middle third of a tall "
     "vertical frame, a full-bleed composition reaching every edge of the frame"
 )
+# THE EMOTIONAL LOOK (REEL_EMOTION=1; owner 2026-11-24: "wow factor, get people
+# emotional it gets clicks"). Off unless asked. A stronger bible: Caravaggio's
+# chiaroscuro, a colour script of cool teal-blue shadows against one warm key
+# light on the face, a bright rim light on the edge of the figure, deep blacks,
+# and the eyes and the hands kept sharp, where feeling reads.
+STYLE_EMOTION = (
+    "dramatic painterly realism, like a classical oil painting by Caravaggio "
+    "brought to life, set in the ancient Greco-Roman world, strong chiaroscuro "
+    "with deep dark shadows, a colour script of cool teal-blue shadows against "
+    "one warm golden key light on the face, a bright rim light along the edge "
+    "of the face and shoulders, high contrast, {light}, the eyes and the hands "
+    "in sharp detail, raw human emotion, the subject large in the middle third "
+    "of a tall vertical frame, a full-bleed composition reaching every edge of "
+    "the frame"
+)
+
+
+# More contrast and colour on the hook shot only (the face that stops the thumb).
+HOOK_CONTRAST = "eq=contrast=1.14:saturation=1.10:gamma=0.95"
+
+
+def emotion() -> bool:
+    """The emotional look is on for this render (read at call time)."""
+    return os.environ.get("REEL_EMOTION", "").strip().lower() in ("1", "true", "yes", "on")
+
+
 # A named physical source carries its own colour temperature (decisions
 # 2026-08-07); a scene that already names its light keeps it as the only one.
 DEFAULT_LIGHT = "lit by warm, low golden sunlight"
@@ -220,7 +246,7 @@ def has_person(scene: str) -> bool:
 def style_for(scene: str) -> str:
     own = OWN_LIGHT if has_person(scene) else OWN_LIGHT_EMPTY
     light = own if LIGHT_WORDS.search(scene or "") else DEFAULT_LIGHT
-    return STYLE.format(light=light)
+    return (STYLE_EMOTION if emotion() else STYLE).format(light=light)
 
 
 def _clean(text: str) -> str:

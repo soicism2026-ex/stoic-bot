@@ -181,7 +181,7 @@ def test_the_twelve_scened_quotes_exist_and_every_scened_quote_passes():
     assert len(SCENED) >= 12
     for q in SCENED:
         assert shelf.scene_problems(q) == [], q["id"]
-        assert list(q.keys())[-1:] == shelf.SCENE_KEYS, q["id"]
+        assert list(q.keys()) == shelf.KEYS + [k for k in shelf.PERSONAL_KEYS + shelf.SCENE_KEYS if k in q], q["id"]
         assert 6 <= len(q["scenes"]) <= 8
 
 
@@ -230,3 +230,35 @@ def test_problems_accepts_scene_keys_after_the_base_keys_only():
     assert shelf.problems(q, OTHERS, []) == []
     bad = {"scenes": q["scenes"], **{k: v for k, v in q.items() if k != "scenes"}}
     assert "keys must be exactly" in " | ".join(shelf.problems(bad, OTHERS, []))
+
+
+# ---- scenes_emotional (rule 8, the emotional look) ---------------------------
+EMO = [q for q in json.loads((ROOT / "data" / "edit_quotes.json").read_text(encoding="utf-8"))
+       if q.get("scenes_emotional")]
+
+
+def test_the_next_seven_quotes_have_emotional_scenes_and_pass():
+    assert len(EMO) >= 7
+    for q in EMO:
+        assert shelf.scene_problems(q) == [], q["id"]
+        assert 6 <= len(q["scenes_emotional"]) <= 8
+        assert q["scenes_emotional"] != q["scenes"]
+
+
+def test_emotional_opener_must_be_a_face_with_one_clear_emotion():
+    base = ["Close-up of {man}'s face in grief, tears on his cheek, rim light from a low sun"] + [
+        f"{{man}} walking a long road at dawn, golden sunrise, shot {i}" for i in range(2, 7)]
+    assert shelf.scene_problems({"scenes_emotional": base}) == []
+    for opener in ("{man} standing in a room with a table, window light on the wall",   # no close-up, no emotion
+                   "Close-up of a clay cup on a table, window light",                    # no person
+                   "Wide shot of {man} in grief on a hill, dawn light"):                 # not close
+        bad = shelf.scene_problems({"scenes_emotional": [opener] + base[1:]})
+        assert any("rule 8" in x for x in bad), opener
+
+
+def test_emotional_scenes_get_the_same_checks_as_scenes():
+    base = ["Close-up of {man}'s face in rage, torchlight from the side"] + [
+        f"{{man}} walking a long road at dawn, golden sunrise, shot {i}" for i in range(2, 7)]
+    bad = shelf.scene_problems({"scenes_emotional": base[:-1] + ["{man} has no fear, dawn light"]})
+    assert any(x.startswith("scenes_emotional shot 6") and "negation" in x for x in bad)
+    assert any("scenes_emotional" in x for x in shelf.scene_problems({"scenes_emotional": base[:3]}))

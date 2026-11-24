@@ -102,3 +102,16 @@ def test_background_chain_serves_a_generated_shot_first(tmp_path):
         assert backgrounds.LAST_BG_SOURCE == "STORYBOARD"
     finally:
         backgrounds.PRESET.clear()
+
+
+def test_first_shot_seconds_brings_the_second_shot_by_1_5s(monkeypatch):
+    import render
+    monkeypatch.delenv("REEL_FIRST_SHOT_SECONDS", raising=False)
+    assert render._segment_durations(28, 7) == [4.0] * 7                    # flag off: equal slices
+    monkeypatch.setenv("REEL_FIRST_SHOT_SECONDS", "1.5")
+    d = render._segment_durations(28, 7)
+    assert d[0] == 1.5 and abs(sum(d) - 28) < 1e-9 and len(d) == 7
+    assert all(abs(x - (28 - 1.5) / 6) < 1e-9 for x in d[1:])
+    assert render._segment_durations(1, 1) == [1.0]                          # a single shot is left alone
+    monkeypatch.setenv("REEL_FIRST_SHOT_SECONDS", "9")                       # longer than a slice: ignored
+    assert render._segment_durations(28, 7) == [4.0] * 7

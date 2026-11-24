@@ -126,3 +126,36 @@ def test_the_live_workflows_air_the_look_the_owner_picked():
         looks = [e["REEL_EDIT_LOOK"] for e in envs if "REEL_EDIT_LOOK" in e]
         assert looks == ["painted"], (wf, looks)
         assert any(e.get("REEL_STILL_CACHE") == "data/still_cache" for e in envs), wf
+
+
+EMO = next(q for q in BANK if q.get("scenes_emotional"))
+
+
+def test_as_content_carries_the_emotional_shots():
+    assert edits.as_content(EMO)["_scenes_emotional"] == EMO["scenes_emotional"]
+    assert edits.as_content(WITHOUT)["_scenes_emotional"] == []
+
+
+def test_emotional_flag_off_changes_nothing(monkeypatch):
+    monkeypatch.delenv("REEL_EMOTION", raising=False)
+    pack, _ = _pack(EMO, monkeypatch, look="painted")
+    assert pack["REEL_PAINT_SCENE"] == EMO["scenes"][0]
+    assert "REEL_EMOTION" not in pack and "REEL_FIRST_SHOT_SECONDS" not in pack
+    assert pack["REEL_PAINT_HOOK_ZOOM"] == "0.10"
+
+
+def test_emotional_flag_airs_the_face_first_shots_and_the_faster_open(monkeypatch):
+    monkeypatch.setenv("REEL_EMOTION", "1")
+    pack, _ = _pack(EMO, monkeypatch, look="painted")
+    shots = EMO["scenes_emotional"]
+    assert pack["REEL_PAINT_SCENE"] == shots[0]                      # slot 0: the face (and the poster's frame)
+    assert pack["REEL_BG_CLIPS"] == str(len(shots))
+    assert pack["REEL_FIRST_SHOT_SECONDS"] == "1.5" and pack["REEL_EMOTION"] == "1"
+    assert float(pack["REEL_PAINT_HOOK_ZOOM"]) > 0.10                # a deeper push-in on the face
+    assert pack["REEL_TYPE"] == "v2"                                 # the v2 type, so the pop and the poster apply
+
+
+def test_emotional_flag_falls_back_to_the_plain_scenes_for_a_quote_without_them(monkeypatch):
+    monkeypatch.setenv("REEL_EMOTION", "1")
+    pack, _ = _pack(WITH if not WITH.get("scenes_emotional") else WITHOUT, monkeypatch, look="painted")
+    assert pack["REEL_EMOTION"] == "1"                              # style still applies; shots come from scenes

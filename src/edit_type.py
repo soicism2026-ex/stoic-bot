@@ -231,6 +231,15 @@ PRONOUNS = frozenset("i you we they he she it you're they're we're it's "
                      "i'm you've we've they've i've".split())
 
 
+def emotion() -> bool:
+    """The emotional look (REEL_EMOTION=1, owner 2026-11-24: "wow factor, get
+    people emotional"): off unless asked, so every live render is unchanged."""
+    return os.environ.get("REEL_EMOTION", "").strip().lower() in ("1", "true", "yes", "on")
+
+
+POP_FROM, POP_MS = 115, 250        # the red word lands at 115% and settles to 100% in 250 ms
+
+
 def enabled(value) -> bool:
     """REEL_TYPE: "v2" turns this type on; "", "classic" or anything else is
     today's type."""
@@ -425,6 +434,8 @@ def layout_hook(hook: str, emphasis: str = "", caps: bool = True,
     broken where the sense breaks ("WINNING / RIGHT NOW? / HOLD IT LOOSELY.").
     The thumbnail asks for a poster: 4 lines, a wider measure, bigger type."""
     from itertools import combinations
+    if emotion() and max_lines == HOOK_MAX_LINES:
+        fs_good = fs_max            # as big as the 3-line rule allows (legibility rules stay)
     text = hook.upper() if caps else hook
     words = text.split()
     emph = emphasis_mask(words, emphasis)
@@ -717,7 +728,7 @@ def _band_piece(hook_block, hook_span, quote_block, quote_span, a, b, k) -> list
 
 
 def hook_events(block: Block, word_starts: list, start: float, end: float,
-                fade_in_ms: int = 0, fade_out_ms: int = 320) -> list:
+                fade_in_ms: int = 0, fade_out_ms: int = 320, pop: bool = False) -> list:
     """The hook, one event per line at its own baseline, fully drawn from
     `start` (frame 0 for edits: no dimmed words, no fade-in). With word
     starts, each word turns gold as the voice reaches it and settles back
@@ -726,6 +737,7 @@ def hook_events(block: Block, word_starts: list, start: float, end: float,
     follow = bool(word_starts) and len(word_starts) == len(block.words)
     fade = f"\\fad({fade_in_ms},{fade_out_ms})"
     gold, white, accent = _c(GOLD), _c(WHITE), _c(emphasis_colour())
+    pop = pop and emotion()        # the video's hook only: a poster is one still frame
     out = []
     for k, line in enumerate(block.lines):
         y = _baseline_pos(f, block.fs, block.baselines[k])
@@ -734,6 +746,9 @@ def hook_events(block: Block, word_starts: list, start: float, end: float,
             w = _esc(block.words[i])
             base = accent if block.emph[i] else white
             tag = f"\\1c{base}"
+            if pop:
+                tag += (f"\\fscx{POP_FROM}\\fscy{POP_FROM}\\t(0,{POP_MS},\\fscx100\\fscy100)"
+                        if block.emph[i] else "\\fscx100\\fscy100")
             if follow and base == white:
                 a = int(round((word_starts[i] - start) * 1000))
                 tag += f"\\t({a},{a + 60},\\1c{gold})"

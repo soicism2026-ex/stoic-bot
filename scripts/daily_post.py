@@ -229,6 +229,15 @@ PAINTED_PICTURE = {
 # The whole look adds the typographer's type (Callimachus reads REEL_TYPE)
 # and loudness mastering to YouTube's -14 LUFS (src/master.py).
 PAINTED_LOOK = {"REEL_TYPE": "v2", "REEL_MASTER_LUFS": "-14"}
+# The emotional look (REEL_EMOTION=1, owner 2026-11-24): a stronger bible and a
+# faster open, on top of the painted look. Only the design lab turns it on.
+EMOTION_ENV = {
+    "REEL_EMOTION": "1",
+    "REEL_PAINT_HOOK_ZOOM": "0.16",        # the hook shot pushes in on the face
+    "REEL_FIRST_SHOT_SECONDS": "1.5",      # the second shot arrives by about 1.5 s
+    "REEL_PAINT_SAT": "1.12",
+    "REEL_PAINT_VIGNETTE": "0.38",
+}
 # A quote's own shots drive the cut when it has at least this many.
 MIN_SCENES = 4
 MAX_SCENES = 8
@@ -251,6 +260,11 @@ def _paint_edit(pack: dict, content: dict, fmt: str, broll: list, n_flavors: int
     pack.update(PAINTED_PICTURE)
     pack["REEL_PAINT_KEY"] = content.get("_edit_id") or ""
     shots = [s for s in (content.get("_scenes") or []) if isinstance(s, str) and s.strip()]
+    emotional = os.environ.get("REEL_EMOTION", "").strip().lower() in ("1", "true", "yes", "on")
+    if emotional:
+        pack.update(EMOTION_ENV)
+        # The face-first shots, when Plutarch wrote them for this quote.
+        shots = [s for s in (content.get("_scenes_emotional") or []) if isinstance(s, str) and s.strip()] or shots
     if len(shots) >= MIN_SCENES:
         shots = shots[:MAX_SCENES]
         fallback = list(broll) or [pack.get("REEL_BG_FLAVOR", "")]

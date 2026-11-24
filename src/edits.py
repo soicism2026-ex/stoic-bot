@@ -429,4 +429,6 @@ def as_content(q: dict) -> dict:
         # sets in gold (the quote's, then the hook's). Empty when the quote
         # has none: the painter's template and the plain type take over.
         "_scenes": [s for s in (q.get("scenes") or []) if isinstance(s, str) and s.strip()],
+        # The emotional look's own shots (REEL_EMOTION=1): faces first. Unused otherwise.
+        "_scenes_emotional": [s for s in (q.get("scenes_emotional") or []) if isinstance(s, str) and s.strip()],
     }

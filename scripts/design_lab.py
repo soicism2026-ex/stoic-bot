@@ -46,9 +46,13 @@ LOOKS: dict[str, dict[str, str]] = {
     "painted": {"REEL_EDIT_LOOK": "painted"},          # the crew's whole new look
     "type": {"REEL_EDIT_TYPE": "v2"},                   # the new type (and its gold words) on today's picture
     "picture": {"REEL_PICTURE": "painted"},             # the new picture, today's type
+    # Owner 2026-11-24 ("wow factor, get people emotional"): faces first, dramatic
+    # light, a faster opening, a punchier red word. Lab only until he picks it.
+    "emotional": {"REEL_EDIT_LOOK": "painted", "REEL_EMOTION": "1"},
 }
 LABELS = {"current": "Today's look", "old": "The old look", "painted": "The new look",
-          "type": "New type only", "picture": "New picture only"}
+          "type": "New type only", "picture": "New picture only",
+          "emotional": "The emotional look"}
 MAX_JOBS = 8
 NAME = re.compile(r"^[a-z0-9_]+$")
 # Moments the sheet samples: the first frame (the swipe decision), the hook

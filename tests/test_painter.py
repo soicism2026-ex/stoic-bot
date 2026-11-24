@@ -449,3 +449,24 @@ def test_torch_is_named_wooden_and_stays_idempotent():
     assert p("soft torchlight on his face") == "soft torchlight on his face"
     once = p("a torch at his hip")
     assert p(once) == once
+
+
+def test_emotional_style_only_under_the_flag(monkeypatch):
+    scene = "Close-up of {man}'s face in rage, a torch burning on the wall beside him"
+    monkeypatch.delenv("REEL_EMOTION", raising=False)
+    live = painter.build_prompt(scene)
+    assert "Caravaggio" not in live and "chiaroscuro" not in live
+    monkeypatch.setenv("REEL_EMOTION", "1")
+    hot = painter.build_prompt(scene)
+    for w in ("chiaroscuro", "rim light", "cool teal-blue shadows", "warm golden key light"):
+        assert w in hot
+    assert painter.build_prompt(scene) != live
+    # the painted rules still apply: the cast is written out, torches named
+    assert "young Roman man" in hot and "wooden pitch-wrapped torch" in hot
+
+
+def test_hook_shot_gets_more_contrast_only_under_the_flag(monkeypatch):
+    monkeypatch.delenv("REEL_EMOTION", raising=False)
+    assert not painter.emotion()
+    monkeypatch.setenv("REEL_EMOTION", "1")
+    assert painter.emotion() and "contrast=1.14" in painter.HOOK_CONTRAST

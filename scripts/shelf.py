@@ -67,7 +67,7 @@ CITATION = {
 KEYS = ["id", "author", "citation", "quote", "hook", "theme", "description", "question", "visuals"]
 # Plutarch's scene-writer fields (docs/scene_writing.md): optional, in this order
 # after KEYS. Older quotes have none; the painter and the typographer read them.
-SCENE_KEYS = ["scenes"]
+SCENE_KEYS = ["scenes", "scenes_emotional"]
 # The owner's own thoughts (2026-11-19): optional, between KEYS and scenes; src/edits.py airs them first.
 PERSONAL_KEYS = ["personal"]
 # The same words tests/test_edits.py checks: these return women's fitness
@@ -169,27 +169,39 @@ LIGHT = re.compile(
     r"\b(lamps?|lamplight|lamplit|torch(es|light|lit)?|golden hour|moonlit|candles?|candlelight|firelight|fire|brazier|hearth|"
     r"embers|flames?|moonlight|sun|sunrise|sunset|sunlight|sunlit|dawn|dusk|daylight|noon|"
     r"overcast|window|doorway|skylight|lightning)\b", re.I)
+# Rule 8 (the emotional look): shot 1 is a face, close, with one clear emotion.
+FACE_OPENER = re.compile(r"\b(close-up|tight close-up|extreme close-up)\b", re.I)
+EMOTION_WORD = re.compile(r"\b(grief|grieving|rage|raging|fury|furious|resolve|resolute|awe|fear|fearful|"
+                          r"terror|longing|despair|shame|sorrow|tears|tearful|defiant|defiance|anguish|"
+                          r"wonder|dread|anger|angry|devastated|weeping|clenched|haunted|calm|peace)\b", re.I)
 STATUE_OPENER = re.compile(r"\b(statue|bust|sculpture|monument)\b", re.I)
 TOKEN = re.compile(r"\{(\w+)\}")
 
 
 def scene_problems(q: dict) -> list[str]:
-    """Rules for `scenes` when present (optional: older quotes have none)."""
+    """Rules for `scenes`, and for `scenes_emotional` (the emotional look's
+    face-first shots, rule 8), when present (optional: older quotes have none)."""
+    out = list(_scene_problems(q, "scenes"))
+    out += _scene_problems(q, "scenes_emotional")
+    return out
+
+
+def _scene_problems(q: dict, key: str) -> list[str]:
     out = []
-    if "scenes" not in q:
+    if key not in q:
         return out
-    sc = q.get("scenes")
+    sc = q.get(key)
     if sc is not None:
         if not isinstance(sc, list) or not all(isinstance(s, str) for s in sc):
-            out.append("scenes: a list of strings")
+            out.append(f"{key}: a list of strings")
         else:
             lo, hi = SCENE_COUNT
             if not lo <= len(sc) <= hi:
-                out.append(f"scenes: {lo}-{hi} shots, got {len(sc)}")
+                out.append(f"{key}: {lo}-{hi} shots, got {len(sc)}")
             if len({s.strip().lower() for s in sc}) != len(sc):
-                out.append("scenes: two shots are identical")
+                out.append(f"{key}: two shots are identical")
             for i, s in enumerate(sc, 1):
-                tag = f"scene {i}"
+                tag = f"{key} shot {i}"
                 n = len(s.split())
                 if not SCENE_WORDS[0] <= n <= SCENE_WORDS[1]:
                     out.append(f"{tag}: {n} words; one paintable shot is {SCENE_WORDS[0]}-{SCENE_WORDS[1]}")
@@ -215,6 +227,8 @@ def scene_problems(q: dict) -> list[str]:
                         out.append(f"{tag}: '{a}' did not exist in the ancient world")
                 if not LIGHT.search(plain):
                     out.append(f"{tag}: name a physical light source (oil lamp, torchlight, dawn, overcast noon...)")
+                if key == "scenes_emotional" and i == 1 and not (FACE_OPENER.search(plain) and EMOTION_WORD.search(plain) and toks):
+                    out.append(f"{tag}: the opener is a close-up of a named person's face showing one clear emotion (rule 8)")
                 if i == 1 and STATUE_OPENER.search(plain):
                     out.append("scene 1: the stopper is a person in a situation, never a statue")
     return out

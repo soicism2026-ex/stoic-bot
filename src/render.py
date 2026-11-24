@@ -232,6 +232,15 @@ def _segment_durations(dur: float, n_bg: int) -> list:
         except ValueError:
             pass
         print(f"  REEL_BG_SECONDS ignored (need {n_bg} positive numbers)")
+    # The emotional look (REEL_FIRST_SHOT_SECONDS): the hook shot is the face,
+    # and the second shot arrives by about 1.5 s; the rest share what is left.
+    try:
+        first = float(os.environ.get("REEL_FIRST_SHOT_SECONDS", "").strip() or 0)
+    except ValueError:
+        first = 0.0
+    if n_bg > 1 and 0 < first < dur / n_bg:
+        rest = (dur - first) / (n_bg - 1)
+        return [first] + [rest] * (n_bg - 1)
     return [dur / n_bg] * n_bg
 
 
@@ -1011,7 +1020,7 @@ def _type_v2_events(hook: str, hook_starts: list, hook_hold: float, quote: str,
         hook_block = edit_type.layout_hook(hook, HOOK_EMPHASIS, caps=HOOK_CAPS)
         start = 0.0 if (HOOK_FROM_START or not hook_starts) else max(0.0, hook_starts[0] - 0.25)
         fade_in = 0 if start == 0.0 else 180
-        events += edit_type.hook_events(hook_block, hook_starts, start, hook_hold, fade_in, 320)
+        events += edit_type.hook_events(hook_block, hook_starts, start, hook_hold, fade_in, 320, pop=True)
         hook_span = (start, hook_hold, fade_in)
     if quote and (quote_times or quote_from is not None):
         quote_block = edit_type.layout_quote(quote, author, QUOTE_EMPHASIS, QUOTE_SOURCE)
@@ -1729,6 +1738,7 @@ def render_reel(quote: str, author: str, audio_path: Path, out_path: Path,
                 + f"trim=0:end={seg_durs[_i]:.3f},setpts=PTS-STARTPTS"
                 + ("" if _i in painter.ANIMATED else
                    f",{painter.motion_filter(_i, max(2, int(round(seg_durs[_i] * 30))))}")
+                + (f",{painter.HOOK_CONTRAST}" if _i == 0 and painter.emotion() else "")
                 + f"[bgseg{_i}]"
                 for _i in range(n_bg)
             ]

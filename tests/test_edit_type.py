@@ -479,3 +479,38 @@ def test_the_important_words_are_red_and_the_colour_can_be_set(monkeypatch):
     assert T.emphasis_colour() == "F3BF4C"
     monkeypatch.setenv("REEL_EMPHASIS_COLOUR", "crimson")
     assert T.emphasis_colour() == T.RED
+
+
+# ---- the emotional look (REEL_EMOTION=1, owner 2026-11-24) -------------------
+def test_emotion_off_changes_nothing(monkeypatch):
+    monkeypatch.delenv("REEL_EMOTION", raising=False)
+    b = T.layout_hook("Waiting for Monday to start?", "start")
+    ev = "\n".join(T.hook_events(b, [], 0, 5, 0, 320, pop=True))
+    assert "fscx" not in ev
+
+
+def test_emotion_pops_only_the_red_word_in_the_video_hook(monkeypatch):
+    monkeypatch.setenv("REEL_EMOTION", "1")
+    b = T.layout_hook("Waiting for Monday to start?", "Monday")
+    ev = "\n".join(T.hook_events(b, [], 0, 5, 0, 320, pop=True))
+    assert "\\fscx115\\fscy115\\t(0,250,\\fscx100\\fscy100)" in ev
+    assert ev.count("fscx115") == 1                       # one red word
+    # the poster is one still frame: it must never freeze mid-pop
+    assert "fscx115" not in "\n".join(T.hook_events(b, [], 0, 10, 0, 0))
+    assert "fscx115" not in T.thumbnail_document("Waiting for Monday to start?", "Seneca", "Monday")
+
+
+def test_emotion_hook_is_as_big_as_the_three_line_rule_allows(monkeypatch):
+    hook = "Wronged? Don't wrong back."
+    monkeypatch.delenv("REEL_EMOTION", raising=False)
+    plain = T.layout_hook(hook, "wrong")
+    monkeypatch.setenv("REEL_EMOTION", "1")
+    big = T.layout_hook(hook, "wrong")
+    assert len(big.lines) <= T.HOOK_MAX_LINES
+    assert big.fs >= plain.fs
+    assert big.fs <= T.HOOK_FS_MAX
+    # legibility first: the widest line still fits the measure
+    f = T.font(T.HOOK_FONT)
+    widest = max(sum(f.width(big.words[i], big.fs) for i in ln) + f.width(" ", big.fs) * (len(ln) - 1)
+                 for ln in big.lines)
+    assert widest <= T.TEXT_W + 1
