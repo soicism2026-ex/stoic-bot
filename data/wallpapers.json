@@ -3,8 +3,9 @@
   "pack": "marcus",
   "size": "phone",
   "cover": "https://github.com/soicism2026-ex/stoic-bot/releases/download/wallpapers/marcus-phone-cover.jpg",
-  "count": 0,
-  "run": "",
-  "updated": "2026-11-13T17:01:45Z"
+  "count": 10,
+  "run": "https://github.com/soicism2026-ex/stoic-bot/actions/runs/45314546794",
+  "freeCount": 5,
+  "updated": "2026-11-24T02:46:23Z"
  }
 ]
