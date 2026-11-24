@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-24T02:09:37Z",
+ "checked": "2026-11-24T02:34:56Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -27,8 +27,9 @@
   "reason": null
  },
  "tiktok": {
-  "connected": false,
-  "posted": 0,
-  "problem": "TikTok: not connected in Buffer yet (Channels > Connect > TikTok)"
+  "connected": true,
+  "posted": 1,
+  "username": "forged.in.stoicis",
+  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7711560965178805510"
  }
 }
