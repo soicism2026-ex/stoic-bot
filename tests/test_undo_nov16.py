@@ -31,9 +31,12 @@ def test_the_ledger_entry_is_a_dated_self_ending_test():
     t = next(t for t in json.loads((ROOT / "data/marketing_tests.json").read_text())["tests"]
              if t["id"] == "undo-nov16")
     assert t["kind"] == "views_before_after" and t["age"] == 1
-    assert t["started"] == "2026-11-20" and t["end"] == "2026-11-22" and t["ask"] == "idea-undo-nov16"
+    # the first run (Nov 20-22) is kept in first_run; the owner extended it on Nov 24
+    # ("Keep the old hooks and the comment line?: Test 7 more days"): Nov 24-30
+    assert t["started"] == "2026-11-24" and t["end"] == "2026-11-30" and t["ask"] == "idea-undo-nov16"
+    assert t["first_run"]["verdict"] == "win" and t["first_run"]["window"] == "2026-11-20 to 2026-11-22"
     assert t["before"] == ["2026-11-16", "2026-11-19"]
-    assert "owner, in the HQ" in t["approved"]
+    assert "owner, in the HQ" in t["approved"] and "Test 7 more days" in t["extended"]
 
 
 def test_active_until_the_end_day_then_reverts_by_itself(tmp_path, monkeypatch):
