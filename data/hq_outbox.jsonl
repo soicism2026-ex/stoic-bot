@@ -51,3 +51,4 @@
 {"t": "2026-11-24T02:56:35Z", "ask": "long-form", "outcome": "Built: every other Sunday a 5-minute video; the first comes to you as a private preview.", "integrated": true}
 {"t": "2026-11-24T02:56:35Z", "note": "stjvqnoxxnd8flpicej7", "status": "done", "reply": "Built; the first long video comes to you as a private preview."}
 {"t": "2026-11-24T02:56:35Z", "who": "Zeuxis", "kind": "done", "text": "Long videos built: every other Sunday a 5-minute 16:9 video on one theme (first script: anger); the first goes to you private for approval."}
+{"t": "2026-11-24T04:59:09Z", "who": "Apelles", "kind": "alert", "text": "Wallpaper pack seneca phone did not finish tonight (nothing was recorded, it stays first in the queue). Log: https://github.com/soicism2026-ex/stoic-bot/actions/runs/45329679887"}
