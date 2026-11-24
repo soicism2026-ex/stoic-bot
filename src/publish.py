@@ -49,7 +49,7 @@ def publish_short(video_path: Path, title: str, description: str,
 
 
 def publish_longform(video_path: Path, title: str, description: str,
-                     tags: list[str]) -> dict:
+                     tags: list[str], privacy: str = "public") -> dict:
     """Upload a long-form video — NOT a Short.
 
     The distinction is the whole point of the format. Shorts watch time does
@@ -59,11 +59,11 @@ def publish_longform(video_path: Path, title: str, description: str,
     treats anything under 3 minutes in a vertical frame as a Short on its own,
     so the render must stay long and landscape.
     """
-    return _upload(video_path, title, description, tags, shorts=False)
+    return _upload(video_path, title, description, tags, shorts=False, privacy=privacy)
 
 
 def _upload(video_path: Path, title: str, description: str,
-            tags: list[str], shorts: bool = True) -> dict:
+            tags: list[str], shorts: bool = True, privacy: str = "public") -> dict:
     yt = _service()
 
     # YouTube titles cap at 100 chars.
@@ -79,7 +79,7 @@ def _upload(video_path: Path, title: str, description: str,
             "categoryId": CATEGORY_ID,
         },
         "status": {
-            "privacyStatus": "public",
+            "privacyStatus": privacy if privacy in ("public", "private", "unlisted") else "private",
             "selfDeclaredMadeForKids": False,
         },
     }
@@ -95,7 +95,7 @@ def _upload(video_path: Path, title: str, description: str,
 
     vid = response["id"]
     return {
-        "status": "published",
+        "status": "published" if privacy == "public" else privacy,
         "video_id": vid,
         "url": (f"https://youtube.com/shorts/{vid}" if shorts
                 else f"https://youtube.com/watch?v={vid}"),
