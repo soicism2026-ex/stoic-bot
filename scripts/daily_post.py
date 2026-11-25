@@ -36,6 +36,7 @@ from experiments import pick_experiment   # noqa: E402
 import render as render_mod               # noqa: E402
 import master as master_mod               # noqa: E402
 import edit_type                          # noqa: E402
+import journal_cta                        # noqa: E402
 import promo                              # noqa: E402
 import music as music_mod                 # noqa: E402
 import backgrounds                        # noqa: E402
@@ -77,6 +78,9 @@ BACKUP_MIN = 3
 # now genuinely distinct (5 formats, statue guide, scene-matched b-roll,
 # cinematic look). Env-tunable.
 MAX_POSTS_PER_DAY = int(os.environ.get("MAX_POSTS_PER_DAY", "3"))
+# How many posts were already out today when this run began (set in main()):
+# the journal pitch (src/journal_cta.py) rides on the day's third Short only.
+POSTS_TODAY = None
 
 # SPREAD THE DAY'S POSTS (owner, 2026-10-18: 2 a day). Post N of the day may
 # only go out from hour POST_SLOT_HOURS[N-1] (UTC). Without this the cap alone
@@ -229,8 +233,10 @@ PAINTED_PICTURE = {
 # The whole look adds the typographer's type (Callimachus reads REEL_TYPE)
 # and loudness mastering to YouTube's -14 LUFS (src/master.py).
 PAINTED_LOOK = {"REEL_TYPE": "v2", "REEL_MASTER_LUFS": "-14"}
-# The emotional look (REEL_EMOTION=1, owner 2026-11-24): a stronger bible and a
-# faster open, on top of the painted look. Only the design lab turns it on.
+# The emotional look (owner 2026-11-24: "wow factor, get people emotional"): a
+# stronger bible and a faster open, on top of the painted look. LIVE for every
+# Short that airs from 2026-11-26 (owner 2026-11-25 in the HQ: "Switch every
+# Short"): REEL_EMOTION_FROM in daily-short.yml and edit-preview.yml.
 EMOTION_ENV = {
     "REEL_EMOTION": "1",
     "REEL_PAINT_HOOK_ZOOM": "0.16",        # the hook shot pushes in on the face
@@ -238,6 +244,30 @@ EMOTION_ENV = {
     "REEL_PAINT_SAT": "1.12",
     "REEL_PAINT_VIGNETTE": "0.38",
 }
+
+
+def emotion_wanted(day: "datetime.date | None" = None) -> bool:
+    """Is the emotional look on for this render?
+
+    REEL_EMOTION=1 turns it on (the design lab), REEL_EMOTION=0 turns it off.
+    Otherwise REEL_EMOTION_FROM=<YYYY-MM-DD> turns it on once the AIR day
+    (airday.today(): the post's own day, or a rehearsal's REEL_TODAY) reaches
+    that date, so a Short rehearsed in one look airs in that same look and its
+    painted stills come from the cache."""
+    flag = os.environ.get("REEL_EMOTION", "").strip().lower()
+    if flag in ("1", "true", "yes", "on"):
+        return True
+    if flag in ("0", "false", "no", "off"):
+        return False
+    start = os.environ.get("REEL_EMOTION_FROM", "").strip()
+    if not start:
+        return False
+    try:
+        start_day = datetime.date.fromisoformat(start)
+    except ValueError:
+        print(f"  [look] REEL_EMOTION_FROM={start!r} is not a date: the emotional look stays off")
+        return False
+    return (day or airday.today()) >= start_day
 # A quote's own shots drive the cut when it has at least this many.
 MIN_SCENES = 4
 MAX_SCENES = 8
@@ -260,7 +290,7 @@ def _paint_edit(pack: dict, content: dict, fmt: str, broll: list, n_flavors: int
     pack.update(PAINTED_PICTURE)
     pack["REEL_PAINT_KEY"] = content.get("_edit_id") or ""
     shots = [s for s in (content.get("_scenes") or []) if isinstance(s, str) and s.strip()]
-    emotional = os.environ.get("REEL_EMOTION", "").strip().lower() in ("1", "true", "yes", "on")
+    emotional = emotion_wanted()
     if emotional:
         pack.update(EMOTION_ENV)
         # The face-first shots, when Plutarch wrote them for this quote.
@@ -293,6 +323,10 @@ def _type_edit(pack: dict, content: dict, fmt: str) -> None:
     look = os.environ.get("REEL_EDIT_LOOK", "").strip().lower()
     if look == "painted" or edit_type.enabled(os.environ.get("REEL_EDIT_TYPE")):
         pack.update(edit_type.style_env(content))
+        if content.get("_journalCta"):
+            pack["REEL_END_CARD"] = journal_cta.card_text()
+            pack["REEL_END_CARD_ACCENT"] = journal_cta.CARD_ACCENT
+            pack["REEL_END_CARD_SECONDS"] = str(journal_cta.CARD_SECONDS)
         top = content.get("_topical")
         if top and top.get("punch"):
             # Fama's hook has its own highlighted word; the quote's gold words stay.
@@ -683,6 +717,8 @@ def main():
     # guard (check if today already has an entry in posts.csv).
     post_rows = _load_post_rows()
     posts_today = sum(1 for r in post_rows if r.get("date") == today)
+    global POSTS_TODAY
+    POSTS_TODAY = posts_today
     if posts_today >= MAX_POSTS_PER_DAY:
         print(f"[{today}] already posted {posts_today}/{MAX_POSTS_PER_DAY} times today — skipping")
         return
@@ -791,6 +827,14 @@ def main():
     spoken_quote = (not is_question) and bool(content.get("quote", "").strip())
     if spoken_quote:
         act3 = f"{content['quote'].strip()} {act3}"
+    # Cicero's test "journal-cta" (owner 2026-11-24): the day's third Short
+    # closes with one line for the journal; its card, comment and tracking
+    # link follow below. Nothing changes unless the ledger test is running.
+    if content.get("format") == "edit" and journal_cta.active(POSTS_TODAY):
+        content["_journalCta"] = True
+        content["pinned_comment"] = journal_cta.PINNED
+        act3 = f"{act3} {journal_cta.CLOSING_LINE}".strip()
+        print(f"  [journal-cta] closing line added: {journal_cta.CLOSING_LINE!r}")
 
     # Voiceover once; reused across render attempts
     audio_path = ROOT / "data" / f"{today}_voice.mp3"
@@ -890,6 +934,8 @@ def main():
         # sent): three short paragraphs, a question for the comments, then the
         # quote and its source. src/edits.py:description().
         description = edits.description(content) + promo.description_block()
+        if content.get("_journalCta"):
+            description = journal_cta.with_tracking(description)
     music_credit = ""   # a CC BY track's credit line, which Instagram needs too
 
     # Experiment agent: assign this post's intro-sound + colour-grade combo.

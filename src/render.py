@@ -834,6 +834,11 @@ TYPE_V2 = os.environ.get("REEL_TYPE", "").strip().lower() == "v2"
 HOOK_EMPHASIS = os.environ.get("REEL_HOOK_EMPHASIS", "")
 QUOTE_EMPHASIS = os.environ.get("REEL_QUOTE_EMPHASIS", "")
 QUOTE_SOURCE = os.environ.get("REEL_QUOTE_SOURCE", "").strip()
+# REEL_END_CARD="TITLE|line|line" (src/journal_cta.py): a closing card over the
+# last REEL_END_CARD_SECONDS; the quote steps aside for it. Off when unset.
+END_CARD = os.environ.get("REEL_END_CARD", "").strip()
+END_CARD_ACCENT = os.environ.get("REEL_END_CARD_ACCENT", "").strip()
+END_CARD_SECONDS = float(os.environ.get("REEL_END_CARD_SECONDS", "2.5") or 2.5)
 WATERMARK = os.environ.get("REEL_WATERMARK")
 # The thumbnail is made after the render, once daily_post has put the style
 # pack's env back; v2 matches the video's black-and-white look from here.
@@ -1026,9 +1031,14 @@ def _type_v2_events(hook: str, hook_starts: list, hook_hold: float, quote: str,
         quote_block = edit_type.layout_quote(quote, author, QUOTE_EMPHASIS, QUOTE_SOURCE)
         q_start = max(0.0, quote_times[0][0] - 0.3) if quote_times else max(0.0, quote_from)
         q_end = max(quote_hide, video_end) if quote_hide > q_start else max(video_end, q_start + 6.0)
+        if END_CARD and video_end > END_CARD_SECONDS + 1.0:
+            q_end = min(q_end, max(q_start + 1.0, video_end - END_CARD_SECONDS))
         events += edit_type.quote_events(quote_block, quote_times, q_start, q_end, 220)
         quote_span = (q_start, q_end)
     bands = edit_type.bands(hook_block, hook_span, quote_block, quote_span, band_plan)
+    if END_CARD and video_end > END_CARD_SECONDS + 1.0:
+        events += edit_type.end_card_events(END_CARD.split("|"), END_CARD_ACCENT,
+                                            video_end - END_CARD_SECONDS, video_end)
     ends = [s[1] for s in (hook_span, quote_span) if s]
     events += edit_type.watermark_events(edit_type.watermark_text(WATERMARK), 0.0,
                                          video_end or (max(ends) if ends else 0.0))

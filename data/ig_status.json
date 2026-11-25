@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-24T02:34:56Z",
+ "checked": "2026-11-25T17:45:37Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-24",
+  "checked": "2026-11-25",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,17 +19,17 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-24T02:09:37Z",
-  "youtube": "iM-G-sqIJ0k",
-  "title": "\"Failed at a game\" | How to stay calm under pressure — Seneca",
+  "at": "2026-11-25T11:54:36Z",
+  "youtube": "tIrpRG1ehz0",
+  "title": "\"Wronged? Don't wrong back\" | How to control your emotions — Epictetus",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/DgG2ZhYFwcc/",
+  "permalink": "https://www.instagram.com/reel/DgKeORxhcWJ/",
   "reason": null
  },
  "tiktok": {
   "connected": true,
-  "posted": 1,
+  "posted": 6,
   "username": "forged.in.stoicis",
-  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7711560965178805510"
+  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7712076887400549639"
  }
 }

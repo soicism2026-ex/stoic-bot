@@ -195,6 +195,25 @@
    "ask": "idea-keep-old-hooks",
    "status": "proposed",
    "proposed": "2026-11-23"
+  },
+  {
+   "id": "journal-cta",
+   "kind": "third_vs_others",
+   "age": 3,
+   "question": "Does a closing pitch for the journal sell without costing views?",
+   "change": "The day's third Short (19:00 UTC), from 2026-11-25 for 14 days: Brian reads one closing line after the quote (\"If this one hit home, the Stoic Reset is thirty days of exactly this.\"), a card in the last 2.5 s says THE STOIC RESET / 30 days. One page a day. / Link on our channel page, its pinned comment is the pitch, and its description keeps the journal line with the link https://soicism.gumroad.com/l/cslosv?ref=short-cta. The other Shorts stay as they are. Nothing in it promises more than the product is: a 30-day guided journal, C$5.99.",
+   "why": "Owner, 2026-11-24, in chat: \"we need to entice peopl to buy something off gum road on the shorts. And we have to make it feel like they need it or itll chnage thier life forever\". The channel has 98% unsubscribed viewers and no sale path inside a Short; the line and card ask once, plainly, and the tracking link shows what it sells.",
+   "measure": "Views at 3 days of the pitch Short over the median of the day's other Shorts, the 14 days against the days since the third Short began (2026-11-13). Sales: the owner reads Gumroad's dashboard for ref short-cta (the bot has no Gumroad key yet; idea-gumroad-hq asks for one). Retention is not yet read per Short. Days where the pitch Short or the others aired unpainted go in `exclude`.",
+   "baselineSince": "2026-11-13",
+   "exclude": [
+    "2026-11-24"
+   ],
+   "ask": "idea-journal-cta",
+   "status": "running",
+   "proposed": "2026-11-24",
+   "started": "2026-11-25",
+   "end": "2026-12-08",
+   "approved": "2026-11-24: owner, in chat: \"we need to entice people to buy something off gum road on the shorts\""
   }
  ],
  "next": []

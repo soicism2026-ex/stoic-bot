@@ -54,7 +54,11 @@ def test_the_current_look_is_the_live_channel():
     wf = yaml.safe_load((ROOT / ".github" / "workflows" / "daily-short.yml").read_text(encoding="utf-8"))
     live = next(st["env"]["REEL_EDIT_LOOK"] for job in wf["jobs"].values() for st in job.get("steps", [])
                 if "REEL_EDIT_LOOK" in (st.get("env") or {}))
-    assert lab.LOOKS["current"] == {"REEL_EDIT_LOOK": live}
+    emotion_from = next((st["env"]["REEL_EMOTION_FROM"] for job in wf["jobs"].values()
+                         for st in job.get("steps", []) if "REEL_EMOTION_FROM" in (st.get("env") or {})), "")
+    want = {"REEL_EDIT_LOOK": live, **({"REEL_EMOTION": "1"} if emotion_from else {})}
+    assert lab.LOOKS["current"] == want
+    assert lab.LOOKS["plain"] == {"REEL_EDIT_LOOK": live, "REEL_EMOTION": "0"}
     assert lab.LOOKS["old"] == {"REEL_EDIT_LOOK": ""}
     assert lab.env_lines("old") == ["REEL_EDIT_LOOK=", "REEL_LAB_LOOK=old"]
     assert "REEL_EDIT_LOOK=painted" in lab.env_lines("painted")
@@ -109,11 +113,13 @@ def test_the_sheet_and_the_sampler_render(tmp_path):
     assert lab.duration(out) == pytest.approx(2 * 1.4 + 2 * 1.2, abs=0.3)
 
 
-def test_the_emotional_look_is_lab_only_and_flagged():
+def test_the_emotional_look_is_flagged_and_live_by_the_air_day():
     assert lab.LOOKS["emotional"] == {"REEL_EDIT_LOOK": "painted", "REEL_EMOTION": "1"}
     assert "REEL_EMOTION=1" in lab.env_lines("emotional")
-    # the live channel never carries the flag
+    # Live since the owner's "Switch every Short" (2026-11-25), keyed to the air
+    # day (REEL_EMOTION_FROM), never the unconditional flag: that would flip a
+    # Short already rehearsed in the other look.
     wf = (ROOT / ".github" / "workflows" / "daily-short.yml").read_text(encoding="utf-8")
-    assert "REEL_EMOTION" not in wf
+    assert "REEL_EMOTION_FROM:" in wf and "REEL_EMOTION:" not in wf
     m = lab.matrix("current,emotional", "life_in_rome")
     assert [j["look"] for j in m["include"]] == ["current", "emotional"]

@@ -183,6 +183,34 @@ def second_vs_first(posts: list[dict], views: Views, since: dt.date, until: dt.d
     return out
 
 
+def third_vs_others(posts: list[dict], views: Views, since: dt.date, until: dt.date,
+                    age: int = 3, exclude: list | None = None) -> list[dict]:
+    """For each day in [since, until) with three or more edits: the day's third
+    Short (by upload time: the 19:00 UTC one) at `age` days old over the median
+    of the day's other Shorts at the same age. Days in `exclude` are left out
+    (a pitch or a control that aired unpainted). Used by test "journal-cta"."""
+    by_day: dict[str, list[str]] = defaultdict(list)
+    for r in posts:
+        v = r.get("video_id")
+        if not v or not (r.get("experiment") or "").startswith("edit:") or v not in views.published:
+            continue
+        if since <= _day(r["date"]) < until and r["date"] not in (exclude or []):
+            by_day[r["date"]].append(v)
+    out = []
+    for day in sorted(by_day):
+        if len(by_day[day]) < 3:
+            continue
+        order = sorted(by_day[day], key=lambda v: views.published[v])
+        pitch = order[2]
+        others = [views.at_age(v, age) for v in order[:2] + order[3:]]
+        a = views.at_age(pitch, age)
+        others = [o for o in others if o]
+        if a is not None and others:
+            out.append({"date": day, "ratio": round(a / st.median(others), 2), "pitch": a,
+                        "others": int(st.median(others))})
+    return out
+
+
 def views_by_age(posts: list[dict], views: Views, since: dt.date, until: dt.date,
                  days: int = 3) -> dict:
     """The edits aired in [since, until) that are at least `days` old: how
@@ -303,7 +331,7 @@ def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
     start = _day(test["started"]) if test.get("started") else today
     end = start + dt.timedelta(days=TEST_DAYS)
     if test.get("end"):
-        # A dated, self-ending test (undo-nov16): `end` is the last air day.
+        # A dated, self-ending test (undo-nov16, journal-cta): `end` is the last air day.
         end = _day(test["end"]) + dt.timedelta(days=1)
     running = test.get("status") == "running" and bool(test.get("started"))
     if test.get("kind") == "pinned_question":
@@ -365,6 +393,28 @@ def judge(test: dict, posts: list[dict], views: Views, today: dt.date,
                 if today >= end and during["shorts"] >= need:
                     out["verdict"] = ("win" if out["change"] >= WIN else "loss" if out["change"] <= LOSE
                                       else "no clear change")
+        return out
+    if test.get("kind") == "third_vs_others":
+        # Test "journal-cta": the day's third Short carries the pitch; the
+        # day's other Shorts are its control; the same ratio on the days
+        # before the test is the baseline. Sales are read by the owner in
+        # Gumroad's dashboard (?ref=short-cta): the bot has no Gumroad key.
+        age = int(test.get("age", 3))
+        ex = test.get("exclude") or []
+        base_since = _day(test.get("baselineSince", "2026-11-13"))
+        base = third_vs_others(posts, views, base_since, start, age, ex)
+        out["before"] = {"days": len(base), "median": round(st.median([d["ratio"] for d in base]), 2) if base else None}
+        if not running:
+            return out
+        during = third_vs_others(posts, views, start, min(end, today), age, ex)
+        med = round(st.median([d["ratio"] for d in during]), 2) if during else None
+        out["during"] = {"days": len(during), "median": med, "ends": (end - dt.timedelta(days=1)).isoformat()}
+        need = min(MIN_TEST_DAYS, max(1, (end - start).days // 2))
+        if med is not None and out["before"]["median"] and len(during) >= need:
+            out["change"] = round(med / out["before"]["median"], 2)
+            if today >= end:
+                out["verdict"] = ("win" if out["change"] >= WIN else "loss" if out["change"] <= LOSE
+                                  else "no clear change")
         return out
     if test.get("kind") != "second_vs_first":
         return out

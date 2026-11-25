@@ -159,3 +159,70 @@ def test_emotional_flag_falls_back_to_the_plain_scenes_for_a_quote_without_them(
     monkeypatch.setenv("REEL_EMOTION", "1")
     pack, _ = _pack(WITH if not WITH.get("scenes_emotional") else WITHOUT, monkeypatch, look="painted")
     assert pack["REEL_EMOTION"] == "1"                              # style still applies; shots come from scenes
+
+
+# ---- The emotional look goes live by the AIR day (owner 2026-11-25 in the HQ:
+# "Switch every Short"): REEL_EMOTION_FROM in both workflows. ---------------------
+def _find_env(node, key):
+    """Every value of `key` anywhere in a workflow (job- or step-level env)."""
+    if isinstance(node, dict):
+        for k, v in node.items():
+            if k == key:
+                yield v
+            else:
+                yield from _find_env(v, key)
+    elif isinstance(node, list):
+        for v in node:
+            yield from _find_env(v, key)
+
+
+def test_emotion_from_switches_on_by_the_air_day(monkeypatch):
+    import datetime as _dt
+    monkeypatch.delenv("REEL_EMOTION", raising=False)
+    monkeypatch.setenv("REEL_EMOTION_FROM", "2026-11-26")
+    assert daily_post.emotion_wanted(_dt.date(2026, 11, 25)) is False   # Nov 25's Shorts keep their rehearsed look
+    assert daily_post.emotion_wanted(_dt.date(2026, 11, 26)) is True
+    assert daily_post.emotion_wanted(_dt.date(2026, 12, 1)) is True
+
+
+def test_the_flag_beats_the_date(monkeypatch):
+    import datetime as _dt
+    monkeypatch.setenv("REEL_EMOTION_FROM", "2026-11-26")
+    monkeypatch.setenv("REEL_EMOTION", "0")
+    assert daily_post.emotion_wanted(_dt.date(2026, 12, 1)) is False    # an explicit off wins
+    monkeypatch.setenv("REEL_EMOTION", "1")
+    assert daily_post.emotion_wanted(_dt.date(2026, 11, 1)) is True     # the design lab's explicit on
+
+
+def test_no_date_or_a_bad_date_keeps_it_off(monkeypatch):
+    import datetime as _dt
+    monkeypatch.delenv("REEL_EMOTION", raising=False)
+    monkeypatch.delenv("REEL_EMOTION_FROM", raising=False)
+    assert daily_post.emotion_wanted(_dt.date(2027, 1, 1)) is False
+    monkeypatch.setenv("REEL_EMOTION_FROM", "soon")
+    assert daily_post.emotion_wanted(_dt.date(2027, 1, 1)) is False
+
+
+def test_the_pack_follows_the_air_day(monkeypatch):
+    """A rehearsal (REEL_TODAY = its air day) and the post itself get the same look."""
+    import datetime as _dt
+    monkeypatch.delenv("REEL_EMOTION", raising=False)
+    monkeypatch.setenv("REEL_EMOTION_FROM", "2026-11-26")
+    monkeypatch.setattr(daily_post.airday, "today", lambda: _dt.date(2026, 11, 25))
+    pack, _ = _pack(EMO, monkeypatch, look="painted")
+    assert "REEL_EMOTION" not in pack and pack["REEL_PAINT_SCENE"] == EMO["scenes"][0]
+    monkeypatch.setattr(daily_post.airday, "today", lambda: _dt.date(2026, 11, 26))
+    pack, _ = _pack(EMO, monkeypatch, look="painted")
+    assert pack["REEL_EMOTION"] == "1" and pack["REEL_PAINT_SCENE"] == EMO["scenes_emotional"][0]
+
+
+def test_both_workflows_switch_on_the_same_air_day():
+    import datetime as _dt
+    import yaml
+    days = {}
+    for name in ("daily-short.yml", "edit-preview.yml"):
+        wf = yaml.safe_load((ROOT / ".github" / "workflows" / name).read_text(encoding="utf-8"))
+        days[name] = set(_find_env(wf, "REEL_EMOTION_FROM"))
+    assert days["daily-short.yml"] == days["edit-preview.yml"] and len(days["daily-short.yml"]) == 1
+    (day,) = days["daily-short.yml"]
+    _dt.date.fromisoformat(day)                     # a real date, or the look silently stays off
