@@ -245,7 +245,10 @@ def test_workflow_paints_one_queued_pack_a_night_and_keeps_the_zip_private():
     pop = next(s for s in steps if "queue --pop" in s.get("run", ""))
     assert pop["env"]["COMPLETE"] == "${{ steps.paint.outputs.complete }}" and "data/wallpapers.json" in pop["run"]
     queue = json.loads((ROOT / "data" / "wallpapers_queue.json").read_text(encoding="utf-8"))
-    assert [(q["pack"], q["size"]) for q in queue][:3] == [("marcus", "phone"), ("seneca", "phone"), ("epictetus", "phone")]
+    order = [("marcus", "phone"), ("seneca", "phone"), ("epictetus", "phone"),
+             ("marcus", "desktop"), ("seneca", "desktop"), ("epictetus", "desktop")]
+    got = [(q["pack"], q["size"]) for q in queue]
+    assert got == [o for o in order if o in got]                  # finished packs leave; the order never changes
 
 
 def test_the_queue_hands_out_the_next_pack_and_drops_a_finished_one(tmp_path):
