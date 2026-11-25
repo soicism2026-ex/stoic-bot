@@ -231,8 +231,9 @@ def test_workflow_paints_one_queued_pack_a_night_and_keeps_the_zip_private():
     text = (ROOT / ".github" / "workflows" / "wallpapers.yml").read_text(encoding="utf-8")
     wf = yaml.safe_load(text)
     on = wf.get("on") or wf.get(True)
-    assert set(on) == {"schedule", "workflow_dispatch"}
-    assert on["schedule"] == [{"cron": "33 20 * * *"}]                  # after the day's posts have painted
+    assert set(on) == {"schedule", "workflow_dispatch", "workflow_run"}
+    assert on["workflow_run"]["workflows"] == ["edit-preview"]          # and after each rehearsal
+    assert on["schedule"] == [{"cron": c} for c in ("33 20 * * *", "13 21 * * *", "53 21 * * *", "33 22 * * *", "13 23 * * *")]
     ins = on["workflow_dispatch"]["inputs"]
     assert ins["pack"]["options"] == ["next", "marcus", "seneca", "epictetus"] and ins["pack"]["default"] == "next"
     assert ins["size"]["options"] == ["phone", "desktop"] and ins["force"]["default"] is False

@@ -124,7 +124,9 @@ def test_gate_prints_run_true_false(capsys):
 
 def test_the_workflow_schedules_paint_nights_and_the_sunday_render():
     wf = (ROOT / ".github" / "workflows" / "long-form.yml").read_text()
-    assert '"47 20 * * 5,6"' in wf and '"17 14 * * 0"' in wf and "workflow_dispatch" in wf
+    for cron in ('"47 20 * * *"', '"47 21 * * *"', '"47 22 * * *"', '"17 14 * * 0"'):
+        assert cron in wf                      # paint every evening of a long week, render Sunday
+    assert "workflow_dispatch" in wf and "workflow_run" in wf and "spare_paint.py check" in wf
     assert "long_form.py gate" in wf and "render" in wf and "PRIVATE" in wf
     for secret in ("ELEVENLABS_API_KEY", "YOUTUBE_REFRESH_TOKEN", "CLOUDFLARE_API_TOKEN"):
         assert f"secrets.{secret}" in wf
@@ -301,3 +303,99 @@ def test_thumbnail_is_1280x720(sandbox, script):
     Image.new("RGB", (1920, 1088), (90, 60, 40)).save(still)
     out = lf.thumbnail(script, still, sandbox / "t.jpg")
     assert Image.open(out).size == (1280, 720) and out.stat().st_size < 2_000_000
+
+
+# ------------------------------------------------------------------ the spare-painting rule
+import datetime as _dt  # noqa: E402
+
+
+def _png(path):
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_bytes(b"\x89PNG\r\n\x1a\n" + b"0" * 2000)
+    return path
+
+
+@pytest.fixture
+def waiting(tmp_path, monkeypatch, script):
+    """A script waiting in a sandboxed data/long_form, and an empty still cache."""
+    d = tmp_path / "lf"
+    d.mkdir()
+    (d / "2026-11-24.json").write_text(json.dumps(script))
+    monkeypatch.setattr(lf, "DIR", d)
+    monkeypatch.setattr(lf, "STATE", d / "state.json")
+    monkeypatch.setenv("REEL_STILL_CACHE", str(tmp_path / "cache"))
+    monkeypatch.setenv("REEL_PAINT_SIZE", "1920x1088")
+    return script
+
+
+def _cache_scene(i, script):
+    import imagegen
+    import painter
+    scene = lf.scene_for(script, i)
+    seed = painter.seed_for(scene, "longform:" + script.get("date", ""), i, True)
+    model = imagegen.paint_models()[0]
+    w, h = imagegen.paint_size(model)
+    key = imagegen.still_key(model, painter.build_prompt(scene), seed, w, h)
+    _png(imagegen.still_cache_dir() / f"{key}.png")
+
+
+def test_long_form_paints_on_a_tuesday_in_the_window_and_resumes(waiting, monkeypatch, capsys):
+    import spare_paint
+    n = lf.shot_count(waiting)
+    monkeypatch.setattr(spare_paint, "check", lambda *a, **k: (True, "spare"))
+    made = []
+
+    def fake(prompt, seed, scene):
+        made.append(scene)
+        return {"path": "/x.png", "cached": False} if len(made) <= 3 else None     # the allowance ends
+    monkeypatch.setattr(lf, "paint_shots", lambda script, n_, limit=None, painter_fn=None: [fake("p", 1, "s") for _ in range(n_)] and [])
+    assert lf.cmd_paint(type("A", (), {"force": False, "limit": 24})()) == 0
+    assert "left for the next night" in capsys.readouterr().out
+    assert lf.unpainted(waiting) == (n, n)                       # nothing cached by the fake: it resumes tomorrow
+    for i in range(n):
+        _cache_scene(i, waiting)
+    assert lf.unpainted(waiting) == (0, n)
+    lf.cmd_paint(type("A", (), {"force": False, "limit": 24})())
+    assert "nothing to paint" in capsys.readouterr().out
+
+
+def test_paint_is_refused_outside_the_spare_window_with_one_log_line(waiting, monkeypatch, capsys):
+    import spare_paint
+    monkeypatch.setattr(spare_paint, "check", lambda *a, **k: (False, "it is 03:00 UTC"))
+    called = []
+    monkeypatch.setattr(lf, "paint_shots", lambda *a, **k: called.append(1))
+    assert lf.cmd_paint(type("A", (), {"force": False, "limit": 24})()) == 0
+    out = capsys.readouterr().out
+    assert not called and out.count("\n") == 1 and "not painting now" in out
+
+
+def test_wallpapers_yield_while_the_long_video_is_unfinished_then_run(waiting, monkeypatch):
+    day = _dt.date(2026, 11, 25)                                  # a Wednesday of the 11-29 long week
+    busy, why = lf.paint_unfinished(day)
+    assert busy and "unpainted" in why
+    n = lf.shot_count(waiting)
+    for i in range(n - 1):
+        _cache_scene(i, waiting)
+    assert lf.paint_unfinished(day)[0]                            # one scene short: still yielding
+    _cache_scene(n - 1, waiting)
+    busy, why = lf.paint_unfinished(day)
+    assert not busy and "all" in why
+
+
+def test_a_week_without_a_script_yields_monday_to_saturday_only(tmp_path, monkeypatch):
+    monkeypatch.setattr(lf, "DIR", tmp_path)
+    monkeypatch.setattr(lf, "STATE", tmp_path / "state.json")
+    assert lf.paint_unfinished(_dt.date(2026, 11, 25))[0]          # long week, script still to be written
+    assert not lf.paint_unfinished(_dt.date(2026, 11, 29))[0]      # the Sunday itself
+    assert not lf.paint_unfinished(_dt.date(2026, 12, 2))[0]       # the off week
+
+
+def test_the_sunday_render_never_paints_and_counts_its_fallbacks(waiting, monkeypatch, capsys):
+    n = lf.shot_count(waiting)
+    _cache_scene(0, waiting)
+    called = []
+    import imagegen
+    monkeypatch.setattr(imagegen, "generate_still", lambda *a, **k: called.append(1))
+    got = lf.paint_shots(waiting, n, painter_fn=lf._cached_only)
+    assert not called and got[0] and not any(got[1:])
+    assert len(lf.fill_gaps(got)) == n

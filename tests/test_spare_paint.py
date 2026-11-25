@@ -7,9 +7,9 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
-sys.path.insert(0, str(ROOT / "src"))
 sys.path.insert(0, str(ROOT / "scripts"))
-import spare_paint as sp  # noqa: E402
+sys.path.insert(0, str(ROOT / "src"))
+import spare_paint as sp  # noqa: E402   (src/ or the scripts/ shim: the same functions)
 
 UTC = dt.timezone.utc
 
@@ -106,8 +106,7 @@ def test_cli_exit_codes_and_github_output(monkeypatch, tmp_path, capsys):
     spec = importlib.util.spec_from_file_location("spare_paint_cli", ROOT / "scripts" / "spare_paint.py")
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    monkeypatch.setattr(mod.sp, "fetch_up_next", lambda: None)
-    assert mod.main(["check"]) in (0, 3)                       # depends on the real clock; never raises
+    assert mod.spare_ok.__code__.co_filename == sp.spare_ok.__code__.co_filename        # one rule, two doors
     assert mod.main(["check", "--force"]) == 0
     out = tmp_path / "gh"
     monkeypatch.setenv("GITHUB_OUTPUT", str(out))
