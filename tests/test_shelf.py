@@ -242,7 +242,7 @@ def test_the_next_seven_quotes_have_emotional_scenes_and_pass():
     for q in EMO:
         assert shelf.scene_problems(q) == [], q["id"]
         assert 6 <= len(q["scenes_emotional"]) <= 8
-        assert q["scenes_emotional"] != q["scenes"]
+        assert q["scenes_emotional"] != q.get("scenes")
 
 
 def test_emotional_opener_must_be_a_face_with_one_clear_emotion():
