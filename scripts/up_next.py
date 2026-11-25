@@ -100,8 +100,12 @@ def scenes_hash(edit_id: str | None) -> str:
     q = next((x for x in bank if x.get("id") == edit_id), None)
     if not q:
         return ""
-    key = json.dumps({"scenes": q.get("scenes"), "still": q.get("still"), "visuals": q.get("visuals")},
-                     sort_keys=True, ensure_ascii=False)
+    fields = {"scenes": q.get("scenes"), "still": q.get("still"), "visuals": q.get("visuals")}
+    # The emotional look's face-first shots (live from 2026-11-26) count too, but
+    # only when a quote has them, so every other quote keeps its stored hash.
+    if q.get("scenes_emotional"):
+        fields["scenes_emotional"] = q.get("scenes_emotional")
+    key = json.dumps(fields, sort_keys=True, ensure_ascii=False)
     return hashlib.sha1(key.encode("utf-8")).hexdigest()[:12]
 
 

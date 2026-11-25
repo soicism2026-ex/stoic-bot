@@ -233,8 +233,10 @@ PAINTED_PICTURE = {
 # The whole look adds the typographer's type (Callimachus reads REEL_TYPE)
 # and loudness mastering to YouTube's -14 LUFS (src/master.py).
 PAINTED_LOOK = {"REEL_TYPE": "v2", "REEL_MASTER_LUFS": "-14"}
-# The emotional look (REEL_EMOTION=1, owner 2026-11-24): a stronger bible and a
-# faster open, on top of the painted look. Only the design lab turns it on.
+# The emotional look (owner 2026-11-24: "wow factor, get people emotional"): a
+# stronger bible and a faster open, on top of the painted look. LIVE for every
+# Short that airs from 2026-11-26 (owner 2026-11-25 in the HQ: "Switch every
+# Short"): REEL_EMOTION_FROM in daily-short.yml and edit-preview.yml.
 EMOTION_ENV = {
     "REEL_EMOTION": "1",
     "REEL_PAINT_HOOK_ZOOM": "0.16",        # the hook shot pushes in on the face
@@ -242,6 +244,30 @@ EMOTION_ENV = {
     "REEL_PAINT_SAT": "1.12",
     "REEL_PAINT_VIGNETTE": "0.38",
 }
+
+
+def emotion_wanted(day: "datetime.date | None" = None) -> bool:
+    """Is the emotional look on for this render?
+
+    REEL_EMOTION=1 turns it on (the design lab), REEL_EMOTION=0 turns it off.
+    Otherwise REEL_EMOTION_FROM=<YYYY-MM-DD> turns it on once the AIR day
+    (airday.today(): the post's own day, or a rehearsal's REEL_TODAY) reaches
+    that date, so a Short rehearsed in one look airs in that same look and its
+    painted stills come from the cache."""
+    flag = os.environ.get("REEL_EMOTION", "").strip().lower()
+    if flag in ("1", "true", "yes", "on"):
+        return True
+    if flag in ("0", "false", "no", "off"):
+        return False
+    start = os.environ.get("REEL_EMOTION_FROM", "").strip()
+    if not start:
+        return False
+    try:
+        start_day = datetime.date.fromisoformat(start)
+    except ValueError:
+        print(f"  [look] REEL_EMOTION_FROM={start!r} is not a date: the emotional look stays off")
+        return False
+    return (day or airday.today()) >= start_day
 # A quote's own shots drive the cut when it has at least this many.
 MIN_SCENES = 4
 MAX_SCENES = 8
@@ -264,7 +290,7 @@ def _paint_edit(pack: dict, content: dict, fmt: str, broll: list, n_flavors: int
     pack.update(PAINTED_PICTURE)
     pack["REEL_PAINT_KEY"] = content.get("_edit_id") or ""
     shots = [s for s in (content.get("_scenes") or []) if isinstance(s, str) and s.strip()]
-    emotional = os.environ.get("REEL_EMOTION", "").strip().lower() in ("1", "true", "yes", "on")
+    emotional = emotion_wanted()
     if emotional:
         pack.update(EMOTION_ENV)
         # The face-first shots, when Plutarch wrote them for this quote.

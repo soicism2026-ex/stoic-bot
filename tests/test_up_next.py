@@ -150,3 +150,21 @@ def test_the_hq_shows_the_rehearsal_only_for_the_quote_that_airs_next():
     assert 'doc("hq/upnext", "upnext")' in page
     assert "u.edit === q.id" in page              # a stale rehearsal is never shown as next
     assert "if (sig === onAirSig) return;" in page   # redraws don't stop a playing video
+
+
+def test_scenes_hash_counts_the_face_first_shots_only_where_they_exist(tmp_path, monkeypatch):
+    """The emotional look (live from 2026-11-26) airs `scenes_emotional`: a rewrite
+    of them re-rehearses, and a quote without them keeps the hash it had."""
+    import hashlib
+    import json as _json
+    bank = [{"id": "a", "scenes": ["s1"], "scenes_emotional": ["e1"]}, {"id": "b", "scenes": ["s2"]}]
+    (tmp_path / "data").mkdir()
+    (tmp_path / "data" / "edit_quotes.json").write_text(_json.dumps(bank), encoding="utf-8")
+    monkeypatch.setattr(up_next, "ROOT", tmp_path)
+    old_b = hashlib.sha1(_json.dumps({"scenes": ["s2"], "still": None, "visuals": None},
+                                     sort_keys=True, ensure_ascii=False).encode("utf-8")).hexdigest()[:12]
+    assert up_next.scenes_hash("b") == old_b
+    before = up_next.scenes_hash("a")
+    bank[0]["scenes_emotional"] = ["e1 rewritten"]
+    (tmp_path / "data" / "edit_quotes.json").write_text(_json.dumps(bank), encoding="utf-8")
+    assert up_next.scenes_hash("a") != before
