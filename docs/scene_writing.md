@@ -130,3 +130,5 @@ pain, and the first 1-3 s decide the swipe.
    - Arc across the shots: struggle, then the turning point (a wise figure, a breath, a hand
      opening), then release (sunrise, a real smile, striding out). Never end on grimness.
    - No empty rooms: every shot has a person or a part of one.
+
+Every new quote needs `scenes_emotional` too, since 2026-11-26 (the emotional look is live for every Short): same beats as `scenes`, faces first, validated by `shelf.scene_problems`.

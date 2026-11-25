@@ -38,3 +38,5 @@ once; everything below is the shift.
    origin/main first, never force). When you restocked: `hq_outbox.py log --who Varro --kind done --text "Restocked the shelf: +N quotes, now D days
    (runs out <date>)"`, committed with the quotes. Something that needs the owner's call: `hq_outbox.py ask
    varro-<slug> --create-json '{...}'` (an open ask card). Reply with the log line and stop.
+
+**Emotional shots (owner 2026-11-25, live from 2026-11-26):** every new quote also gets `scenes_emotional` (after `scenes`; docs/scene_writing.md rule 8): the same 6-8 beats, shot 1 a close-up of a named person's face with one clear emotion, then eyes, hands, the turn and the release. `shelf.py check` validates it.
