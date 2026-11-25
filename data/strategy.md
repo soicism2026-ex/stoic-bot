@@ -1,21 +1,20 @@
 # Stoic Shorts Content Strategy
 
-_Updated 2026-11-24 by Frontinus (scripts/strategist.py, no paid API). Read from 61 edits of the last 28 days, compared at day 3 (median 230 views, 105.2% watched)._
+_Updated 2026-11-25 by Frontinus (scripts/strategist.py, no paid API). Read from 59 edits of the last 28 days, compared at day 3 (median 230 views, 105.2% watched)._
 
 ---
 
 ## What Works
 
-- theme **anger**: 1.73x the edits aired around it (423 views at day 3, 10 edits, 99.9% watched)
-- theme **time**: 1.42x the edits aired around it (344 views at day 3, 3 edits, 101.9% watched)
-- hook as a **command**: 1.26x the edits aired around it (248 views at day 3, 8 edits, 108.8% watched)
-- quote length **long (25+)**: 1.29x the edits aired around it (252 views at day 3, 12 edits, 87.1% watched)
+- theme **anger**: 1.7x the edits aired around it (423 views at day 3, 10 edits, 99.9% watched)
+- theme **time**: 1.42x the edits aired around it (344 views at day 3, 3 edits, 103.3% watched)
+- quote length **long (25+)**: 1.28x the edits aired around it (251 views at day 3, 11 edits, 87.1% watched)
 - music **el3_heartbeat**: 1.8x the edits aired around it (429 views at day 3, 6 edits, 118.2% watched)
 
 ## What Doesn't Work
 
 - theme **friendship**: 0.75x the edits aired around it (180 views at day 3, 4 edits, 122.4% watched)
-- theme **duty**: 0.71x the edits aired around it (141 views at day 3, 5 edits, 107.5% watched)
+- theme **duty**: 0.71x the edits aired around it (141 views at day 3, 5 edits, 107.0% watched)
 - theme **control**: 0.5x the edits aired around it (108 views at day 3, 4 edits, 120.7% watched)
 - music **el3_more_like_1**: 0.68x the edits aired around it (160 views at day 3, 5 edits, 128.7% watched)
 - music **el3_strings_ostinato**: 0.67x the edits aired around it (141 views at day 3, 5 edits, 161.2% watched)
@@ -25,7 +24,7 @@ _Updated 2026-11-24 by Frontinus (scripts/strategist.py, no paid API). Read from
 
 - Air and write more **anger, time**: the shelf now plays these themes first.
 - Fewer **friendship, duty, control** edits: they move to the back of the shelf.
-- Hooks that work best right now: **command** form (1.26x).
+- Hooks that work best right now: **command** form (1.23x).
 - Copy the shape of "Money isn't your problem." (Seneca, desire): 3.9x the edits around it, 1007 views at day 3.
 - Copy the shape of "Death isn't ahead of you." (Seneca, mortality): 3.7x the edits around it, 869 views at day 3.
 - Copy the shape of "Think calm makes you soft?" (Marcus Aurelius, anger): 3.5x the edits around it, 957 views at day 3.
