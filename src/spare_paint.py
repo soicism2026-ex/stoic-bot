@@ -30,6 +30,9 @@ REPO = os.environ.get("GITHUB_REPOSITORY") or "soicism2026-ex/stoic-bot"
 UP_NEXT_URL = f"https://github.com/{REPO}/releases/download/up-next/up-next.json"
 FIRST_HOUR_UTC = 20
 LAST_HOUR_UTC = 23
+# A paint run takes a few minutes and must end before Cloudflare's reset at
+# 00:00 UTC, or its last stills spend the NEXT day's allowance: none starts after 23:40.
+LAST_START_MINUTE = 40
 EXIT_REFUSED = 3
 
 
@@ -56,7 +59,10 @@ def spare_ok(now_utc: dt.datetime, up_next: dict | None, today: dt.date | None =
     hour = now.hour
     if not FIRST_HOUR_UTC <= hour <= LAST_HOUR_UTC:
         return False, (f"it is {now:%H:%M} UTC: after midnight UTC Cloudflare's free painting belongs to "
-                       f"that day's Shorts; spare painting runs only {FIRST_HOUR_UTC}:00-23:59 UTC")
+                       f"that day's Shorts; spare painting starts only {FIRST_HOUR_UTC}:00-23:{LAST_START_MINUTE} UTC")
+    if hour == LAST_HOUR_UTC and now.minute >= LAST_START_MINUTE:
+        return False, (f"it is {now:%H:%M} UTC: too close to Cloudflare's midnight reset; a run started now "
+                       f"would finish on the next day's allowance (spare painting starts only until 23:{LAST_START_MINUTE} UTC)")
     if not isinstance(up_next, dict):
         return False, "the next Short's rehearsal could not be read, so what is left of today's allowance is unknown"
     air = str(up_next.get("airDay") or "")

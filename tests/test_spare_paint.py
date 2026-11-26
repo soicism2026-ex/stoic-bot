@@ -35,7 +35,7 @@ def test_hours_outside_20_to_23_are_refused(h):
 
 @pytest.mark.parametrize("h", [20, 21, 23])
 def test_evening_with_tomorrows_painted_rehearsal_is_allowed(h):
-    ok, why = sp.spare_ok(at(h, 59 if h == 23 else 0), rehearsal())
+    ok, why = sp.spare_ok(at(h, 39 if h == 23 else 0), rehearsal())
     assert ok and "spare" in why
 
 
@@ -129,3 +129,11 @@ def test_workflows_guard_first_and_declare_the_painted_look():
         trig = d.get(True) or d.get("on")
         assert trig["workflow_run"]["workflows"] == ["edit-preview"]
     assert "force" in yaml.safe_load((ROOT / ".github/workflows/design-lab.yml").read_text())[True]["workflow_dispatch"]["inputs"]
+
+
+@pytest.mark.parametrize("minute", [40, 45, 59])
+def test_no_run_starts_in_the_last_twenty_minutes_before_the_reset(minute):
+    """A run takes a few minutes: started at 23:40 or later it would finish on the
+    next day's allowance, which belongs to that day's Shorts."""
+    ok, why = sp.spare_ok(at(23, minute), rehearsal())
+    assert not ok and "midnight" in why

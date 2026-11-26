@@ -14,7 +14,7 @@ the channel's type (Cormorant Garamond Bold, Cinzel gold).
 BUDGET: Cloudflare's free 10,000 neurons a day are shared with the daily
 posts and their rehearsals, which spend each UTC day's allowance until tomorrow's
 first Short is rehearsed. A phone picture costs ~208 neurons, a desktop one ~312,
-so `render` paints only when src/spare_paint.py allows it (20:00-23:59 UTC, tomorrow's
+so `render` paints only when src/spare_paint.py allows it (20:00-23:40 UTC starts, tomorrow's
 first Short rehearsed and fully painted) unless --force, and prints the estimate first. A picture that cannot be painted is SKIPPED, never
 swapped for stock. Keys: CLOUDFLARE_ACCOUNT_ID / CLOUDFLARE_API_TOKEN (never
 printed); without them `render` exits 2.
