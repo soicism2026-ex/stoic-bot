@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-26T02:11:01Z",
+ "checked": "2026-11-26T11:43:00Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -19,17 +19,17 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-26T02:11:01Z",
-  "youtube": "4G1IlrXoYMM",
-  "title": "\"Pick one rule. Live by it\" | How to stay disciplined — Seneca",
+  "at": "2026-11-26T11:43:00Z",
+  "youtube": "4yJZpgk6f08",
+  "title": "\"Waiting for your big moment? It's today\" | How to stop procrastinating — Epictetus",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/DgMAI2Ti63r/",
+  "permalink": "https://www.instagram.com/reel/DgNBm4vOOjl/",
   "reason": null
  },
  "tiktok": {
   "connected": true,
-  "posted": 8,
+  "posted": 9,
   "username": "forged.in.stoicis",
-  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7712296233787772178"
+  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7712444815346027828"
  }
 }
