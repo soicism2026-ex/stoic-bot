@@ -448,6 +448,14 @@ PERIOD_WORDS = [
     # object. Name it a wooden, pitch-wrapped torch (idempotent).
     (re.compile(r"(?<!wooden )(?<!pitch-wrapped )(?<!iron )\btorch\b(?! in an iron)", re.I), "wooden pitch-wrapped torch"),
     (re.compile(r"(?<!wooden )(?<!pitch-wrapped )(?<!iron )\btorches\b(?! in iron)", re.I), "wooden pitch-wrapped torches"),
+    # 11-20..23 (inspector.csv): a torch "on the wall" came out as an electric
+    # light, a balcony had a metal railing, a boot had modern laces. Name the
+    # fitting and the material.
+    (re.compile(r"\b(wooden pitch-wrapped torch(?:es)?)\s+(?:on|along|against)\s+(?:the|a)\s+(?:stone\s+)?walls?\b", re.I),
+     r"\1 in iron brackets with open orange flames"),
+    (re.compile(r"\b(?:boots?|shoes?|sneakers?)\b", re.I), "leather sandals"),
+    (re.compile(r"\b(?:balcony|balconies)\b", re.I), "stone terrace"),
+    (re.compile(r"\b(?:metal |iron )?(?:railings?|handrails?)\b", re.I), "low stone parapet"),
     (re.compile(r"\blanterns\b", re.I), "torches in iron brackets"),
     (re.compile(r"\blantern\b", re.I), "torch in an iron bracket"),
     (re.compile(r"\b(?:cardigan|sweater|jacket|coat|shirt|trousers|pants|jeans)s?\b", re.I), "wool tunic"),

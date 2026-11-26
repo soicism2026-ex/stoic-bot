@@ -104,6 +104,7 @@ effort ends up.
    lanterns three times, a cardigan): write "clay cup", "bronze jug", "torch in an
    iron bracket", never a bare "cup" or "lantern". The painter rewrites bare words
    (painter.PERIOD_WORDS), but a named material in the scene paints better.
+   Week of 2026-11-26: a torch "on the wall" read as an electric light, a balcony had a metal railing, a boot had laces; write "torch in an iron bracket", "stone terrace", "leather sandals" (the painter now rewrites these too).
 6. Words the model takes literally (first real renders, 2026-11-11): "the face of a
    boulder" painted a giant stone head, so describe an object by its shape and
    surface ("a jagged, moss-flecked grey boulder"). A light named next to a held

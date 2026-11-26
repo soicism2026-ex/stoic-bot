@@ -470,3 +470,13 @@ def test_hook_shot_gets_more_contrast_only_under_the_flag(monkeypatch):
     assert not painter.emotion()
     monkeypatch.setenv("REEL_EMOTION", "1")
     assert painter.emotion() and "contrast=1.14" in painter.HOOK_CONTRAST
+
+
+def test_week_two_modern_objects_are_named_as_roman_ones():
+    p = painter.period_objects
+    assert p("torches on the wall") == "wooden pitch-wrapped torches in iron brackets with open orange flames"
+    assert p("a torch on the stone wall") == "a wooden pitch-wrapped torch in iron brackets with open orange flames"
+    assert p("{man}'s boot stepping into the water") == "{man}'s leather sandals stepping into the water"
+    assert "stone terrace" in p("a sentry on a balcony") and "parapet" in p("a metal railing on the wall")
+    once = p("a torch on the wall and a boot")
+    assert p(once) == once
