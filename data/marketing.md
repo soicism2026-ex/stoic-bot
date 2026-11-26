@@ -1,13 +1,13 @@
 # Marketing: how the channel reaches people
 
-_Updated 2026-11-25 by Cicero (scripts/marketer.py, free, no paid API)._
+_Updated 2026-11-26 by Cicero (scripts/marketer.py, free, no paid API)._
 
 ## The funnel
 
-- Views a day, last 7 days: **376** (the 7 before: 976, -61%)
-- New subscribers a day: **1.0** (the 7 before: 1.6); 292 in all
-- Subscribers per 1,000 views: 2.7
-- Likes per 100 views (Shorts of the last 14 days): 3.7
+- Views a day, last 7 days: **375** (the 7 before: 688, -45%)
+- New subscribers a day: **1.1** (the 7 before: 1.4); 293 in all
+- Subscribers per 1,000 views: 3.0
+- Likes per 100 views (Shorts of the last 14 days): 3.9
 
 ## Reach by upload hour (UTC)
 
@@ -15,25 +15,25 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 
 | Hour (UTC) | Shorts | Reach vs its week | Stalled (<0.4x) |
 |---|---|---|---|
-| 00-03 | 99 | 1.18x | 14 |
+| 00-03 | 100 | 1.18x | 15 |
 | 04-07 | 29 | 1.01x | 5 |
-| 08-11 | 81 | 1.08x | 11 |
+| 08-11 | 82 | 1.13x | 11 |
 | 12-15 | 32 | 0.68x | 8 |
 | 16-19 | 58 | 0.7x | 10 |
-| 20-23 | 48 | 0.8x | 9 |
+| 20-23 | 49 | 0.81x | 10 |
 
-## Who watches (last 28 days, pulled 2026-11-25)
+## Who watches (last 28 days, pulled 2026-11-26)
 
-- Countries: US 66%, IN 16%, CA 6%, GB 4%, DE 3%, ZA 1%
+- Countries: US 65%, IN 16%, CA 6%, GB 4%, DE 3%, ZA 1%
 - How they find the Shorts: SHORTS 92%, YT_SEARCH 4%, YT_OTHER_PAGE 2%, YT_CHANNEL 2%, EXT_URL 0%
-- Subscribed or not: UNSUBSCRIBED 97%, SUBSCRIBED 3%
+- Subscribed or not: UNSUBSCRIBED 98%, SUBSCRIBED 2%
 - What they typed into YouTube before watching (since June): "stoicism" (61), "marcus aurelius" (18), "stoic" (18), "stoicism marcus aurelius" (18), "stoicism motivation" (17), "epictetus" (11), "stoicism philosophy" (11), "marcus aurelius meditations" (10), "stoic mindset" (8), "stoic wisdom" (8)
 
 ## The goal
 
 - **A million views and 1,000 subscribers in 2027** (by 2027-12-31)
-- Views in 2027: 0 of 1,000,000 (starts; 694 a day now, 2,740 needed)
-- Subscribers: 292 of 1,000 (behind; 1.7 a day now, 1.8 needed)
+- Views in 2027: 0 of 1,000,000 (starts; 688 a day now, 2,740 needed)
+- Subscribers: 293 of 1,000 (behind; 1.7 a day now, 1.8 needed)
 - Next checkpoint 2027-03-31: behind
 - Every test below is judged by whether it moves these numbers.
 
@@ -82,32 +82,33 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 - Why: This month's top Stoicism Shorts are painted, colourful and readable on frame one; ours were washed-out black-and-white stock with a grey first frame and quieter sound.
 - Judged by: The median edit's views at 3 days old, the 14 days after against the 14 before.
 - Before: median 284 views at 3 days over 28 Shorts
-- During: median 209 views at 3 days over 29 Shorts (ends 2026-11-26)
+- During: median 209 views at 3 days over 30 Shorts (ends 2026-11-26)
+- Verdict: **loss** (0.74x)
 
 ### Does a follow line at the end of every description turn more viewers into subscribers?
 
 - Status: **running** since 2026-11-22
-- Change: 3.67
+- Change: 3.29
 - Why: 98% of views come from people who don't follow the channel (Glaux, 28 days to 11-06); it gains about 1.5 subscribers a day and 1,000 by the end of 2027 needs 1.8. The cheapest ask there is.
 - Judged by: New subscribers per 1,000 views, the 14 days after against the 14 before (channel_stats.csv).
 
 ### Does a third Short a day, in the evening window, add views a day without starving each Short?
 
 - Status: **running** since 2026-11-13
-- Change: 0.69
+- Change: 0.68
 - Why: The 2027 goal needs about 2,740 views a day; two Shorts make about 1,200. Each Short reaches 600 to 950 people in its first days whatever the slot, and the evening slot got 1.15x the reach of its week, so a third post should add roughly 40%.
 - Judged by: Views a day (Cicero's funnel, the 14 days after against the 14 before) and the median Short's views at 3 days old, so a third post that only splits the same views shows up.
 - Before: median 304 views at 3 days over 28 Shorts
-- During: median 209 views at 3 days over 27 Shorts (ends 2026-11-27)
+- During: median 208 views at 3 days over 28 Shorts (ends 2026-11-27)
 
 ### Does tying a Short's hook, description lead and question to what the US is talking about today add views and comments?
 
 - Status: **running** since 2026-11-16
-- Change: 0.52
+- Change: 0.44
 - Why: The owner finds the Shorts a bit boring and wants them relevant to today's world. A hook that meets viewers in an event they already know should stop more scrolls and give them something to answer.
 - Judged by: the median edit's views at 3 days old, 14 days after against 14 before
 - Before: median 336 views at 3 days over 31 Shorts
-- During: median 176 views at 3 days over 18 Shorts (ends 2026-11-30)
+- During: median 149 views at 3 days over 19 Shorts (ends 2026-11-30)
 
 ### Does the search in the title bring more viewers from YouTube search?
 
@@ -115,24 +116,25 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 - Change: Each Short's title carries the search its quote answers, e.g. "How to control your emotions | Marcus Aurelius" style: the hook, then the search, then the author. The description lead, hashtag and tags stay as in test search-phrases.
 - Why: Test search-phrases put the searches in descriptions, hashtags and tags; the title is the field YouTube weighs most for search, and the owner said yes to it once that test ends.
 - Judged by: The share of views from YouTube search, the 14 days after against the 14 before (same measure as search-phrases).
-- Share of views: 0.0359 before, 0.0253 during
+- Share of views: 0.0359 before, 0.0403 during
 
 ### Did the Nov 16 changes (news-tied hooks, no comment line) cost views?
 
 - Status: **running** since 2026-11-24
-- Change: 0.61
+- Change: 0.49
 - Why: Shorts posted since Nov 16 average about 105 views on day one, against 186 in October and 265 for the first painted Shorts (Nov 12-15). The Nov 16 changes (news-tied hooks from Fama, and the description no longer ending its question with 'Share your thoughts in the comments.') line up with the drop.
 - Judged by: median day-1 and day-3 views of the Shorts posted Nov 24-30 against those posted Nov 16-19 (the first run: Nov 20-21)
 - Before: median 109 views at 1 days over 12 Shorts
-- During: median 67 views at 1 days over 3 Shorts (ends 2026-12-01)
+- During: median 53 views at 1 days over 6 Shorts (ends 2026-12-01)
 
 ### Do animated backgrounds bring more views than painted stills?
 
 - Status: **running** since 2026-11-23
-- Change: From 2026-11-23 to 2026-12-22: the first Short of each day animates 3 of its paintings (the hook's shot and two more) with Seedance 2.0 Mini on Higgsfield, 5 seconds each; every other shot stays painted. At most 3 clips a day. It starts as soon as Higgsfield has credits.
+- Change: 0.2
 - Why: owner's choice in the HQ, 2026-11-22
 - Judged by: day-3 views of the video Short against the same day's painted Shorts, over the month
 - Before: median 237 views at 3 days over 35 Shorts
+- During: median 48 views at 3 days over 1 Shorts (ends 2026-12-23)
 
 ### Do Shorts with their own hooks and the comment ask beat news-tied hooks over a full week?
 
@@ -140,7 +142,7 @@ Each Short's day-1 views against the Shorts aired within a week of it.
 - Change: If the owner says Go: keep Fama's news tie-ins paused (the topical test ends) and keep ' Share your thoughts in the comments.' on the question line, for 7 days.
 - Why: The 3-day undo test: 163 day-1 views on 6 Shorts vs 109 on the 12 from Nov 16-19 (1.5x); the news-tied test sits at 147 views at 3 days vs 336 before.
 - Judged by: Median day-1 views of the Shorts of the 7 days against Nov 16-19 and against the 14 days before Nov 16.
-- Before: median 137 views at 1 days over 35 Shorts
+- Before: median 127 views at 1 days over 36 Shorts
 
 ### Does a closing pitch for the journal sell without costing views?
 

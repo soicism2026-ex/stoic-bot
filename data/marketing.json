@@ -1,25 +1,25 @@
 {
  "audience": {
-  "pulled_on": "2026-11-25",
+  "pulled_on": "2026-11-26",
   "window": [
-   "2026-10-28",
-   "2026-11-25"
+   "2026-10-29",
+   "2026-11-26"
   ],
   "countries": [
    {
     "key": "US",
-    "views": 7943,
-    "share": 0.655
+    "views": 7864,
+    "share": 0.652
    },
    {
     "key": "IN",
     "views": 1912,
-    "share": 0.158
+    "share": 0.159
    },
    {
     "key": "CA",
-    "views": 686,
-    "share": 0.057
+    "views": 697,
+    "share": 0.058
    },
    {
     "key": "GB",
@@ -70,28 +70,28 @@
   "sources": [
    {
     "key": "SHORTS",
-    "views": 17542,
+    "views": 17314,
     "share": 0.918
    },
    {
     "key": "YT_SEARCH",
-    "views": 766,
+    "views": 755,
     "share": 0.04
    },
    {
     "key": "YT_OTHER_PAGE",
-    "views": 404,
+    "views": 393,
     "share": 0.021
    },
    {
     "key": "YT_CHANNEL",
-    "views": 303,
-    "share": 0.016
+    "views": 316,
+    "share": 0.017
    },
    {
     "key": "EXT_URL",
-    "views": 49,
-    "share": 0.003
+    "views": 45,
+    "share": 0.002
    },
    {
     "key": "SUBSCRIBER",
@@ -105,11 +105,16 @@
    },
    {
     "key": "NOTIFICATION",
-    "views": 2,
+    "views": 5,
     "share": 0.0
    },
    {
     "key": "NO_LINK_OTHER",
+    "views": 1,
+    "share": 0.0
+   },
+   {
+    "key": "RELATED_VIDEO",
     "views": 1,
     "share": 0.0
    },
@@ -122,65 +127,65 @@
   "subscribed": [
    {
     "key": "UNSUBSCRIBED",
-    "views": 18599,
-    "share": 0.973
+    "views": 18393,
+    "share": 0.975
    },
    {
     "key": "SUBSCRIBED",
-    "views": 507,
-    "share": 0.027
+    "views": 476,
+    "share": 0.025
    }
   ],
   "searchTerms": [
    {
     "key": "stoicism",
-    "views": 20,
-    "share": 0.185
+    "views": 19,
+    "share": 0.179
    },
    {
     "key": "marcus aurelius",
     "views": 8,
-    "share": 0.074
+    "share": 0.075
    },
    {
     "key": "stoicism motivation",
     "views": 8,
-    "share": 0.074
+    "share": 0.075
    },
    {
     "key": "stoic reset",
     "views": 7,
-    "share": 0.065
+    "share": 0.066
    },
    {
     "key": "blue lotus",
     "views": 5,
-    "share": 0.046
+    "share": 0.047
    },
    {
     "key": "stoic ben",
     "views": 5,
-    "share": 0.046
+    "share": 0.047
    },
    {
     "key": "stoicism marcus aurelius",
     "views": 5,
-    "share": 0.046
+    "share": 0.047
    },
    {
     "key": "beautiful quotes",
     "views": 4,
-    "share": 0.037
+    "share": 0.038
    },
    {
     "key": "marcus aurelius quotes",
     "views": 4,
-    "share": 0.037
+    "share": 0.038
    },
    {
     "key": "stoic dre",
     "views": 4,
-    "share": 0.037
+    "share": 0.038
    },
    {
     "key": "marcus aurelius meditations",
@@ -189,11 +194,6 @@
    },
    {
     "key": "marcus aurelius stoicism",
-    "views": 3,
-    "share": 0.028
-   },
-   {
-    "key": "my word is law",
     "views": 3,
     "share": 0.028
    },
@@ -256,33 +256,38 @@
     "key": "mumbai marine drive",
     "views": 2,
     "share": 0.019
+   },
+   {
+    "key": "princess diana death reaction",
+    "views": 2,
+    "share": 0.019
    }
   ],
   "searchTermsAllTime": [
    {
     "key": "stoicism",
     "views": 61,
-    "share": 0.239
+    "share": 0.238
    },
    {
     "key": "marcus aurelius",
     "views": 18,
-    "share": 0.071
+    "share": 0.07
    },
    {
     "key": "stoic",
     "views": 18,
-    "share": 0.071
+    "share": 0.07
    },
    {
     "key": "stoicism marcus aurelius",
     "views": 18,
-    "share": 0.071
+    "share": 0.07
    },
    {
     "key": "stoicism motivation",
     "views": 17,
-    "share": 0.067
+    "share": 0.066
    },
    {
     "key": "epictetus",
@@ -317,22 +322,27 @@
    {
     "key": "marcus aurelius stoicism",
     "views": 6,
-    "share": 0.024
+    "share": 0.023
    },
    {
     "key": "stocism",
     "views": 6,
-    "share": 0.024
+    "share": 0.023
    },
    {
     "key": "stoic ben",
     "views": 6,
-    "share": 0.024
+    "share": 0.023
    },
    {
     "key": "stoic dre",
     "views": 6,
-    "share": 0.024
+    "share": 0.023
+   },
+   {
+    "key": "stoic motivation",
+    "views": 6,
+    "share": 0.023
    },
    {
     "key": "blue lotus",
@@ -346,11 +356,6 @@
    },
    {
     "key": "stoic man",
-    "views": 5,
-    "share": 0.02
-   },
-   {
-    "key": "stoic motivation",
     "views": 5,
     "share": 0.02
    },
@@ -386,25 +391,25 @@
    }
   ]
  },
- "updated": "2026-11-25",
+ "updated": "2026-11-26",
  "source": "scripts/marketer.py (Cicero, free)",
  "funnel": {
-  "asOf": "2026-11-25",
-  "subscribers": 292,
-  "viewsPerDay": 376,
-  "viewsPerDayBefore": 976,
-  "subsPerDay": 1.0,
-  "subsPerDayBefore": 1.6,
-  "subsPer1kViews": 2.7,
-  "likesPer100Views": 3.7,
-  "viewsChange": -0.61
+  "asOf": "2026-11-26",
+  "subscribers": 293,
+  "viewsPerDay": 375,
+  "viewsPerDayBefore": 688,
+  "subsPerDay": 1.1,
+  "subsPerDayBefore": 1.4,
+  "subsPer1kViews": 3.0,
+  "likesPer100Views": 3.9,
+  "viewsChange": -0.45
  },
  "hours": [
   {
    "band": "00-03",
-   "posts": 99,
+   "posts": 100,
    "lift": 1.18,
-   "stalled": 14
+   "stalled": 15
   },
   {
    "band": "04-07",
@@ -414,8 +419,8 @@
   },
   {
    "band": "08-11",
-   "posts": 81,
-   "lift": 1.08,
+   "posts": 82,
+   "lift": 1.13,
    "stalled": 11
   },
   {
@@ -432,9 +437,9 @@
   },
   {
    "band": "20-23",
-   "posts": 48,
-   "lift": 0.8,
-   "stalled": 9
+   "posts": 49,
+   "lift": 0.81,
+   "stalled": 10
   }
  ],
  "tests": [
@@ -550,16 +555,17 @@
     "median": 284
    },
    "during": {
-    "shorts": 29,
+    "shorts": 30,
     "median": 209,
     "ends": "2026-11-26"
-   }
+   },
+   "verdict": "loss"
   },
   {
    "id": "follow-line",
    "kind": "subs_per_1k",
    "question": "Does a follow line at the end of every description turn more viewers into subscribers?",
-   "change": 3.67,
+   "change": 3.29,
    "why": "98% of views come from people who don't follow the channel (Glaux, 28 days to 11-06); it gains about 1.5 subscribers a day and 1,000 by the end of 2027 needs 1.8. The cheapest ask there is.",
    "measure": "New subscribers per 1,000 views, the 14 days after against the 14 before (channel_stats.csv).",
    "ask": "idea-follow-line",
@@ -575,10 +581,10 @@
     "per1k": 1.81
    },
    "during": {
-    "days": 3,
-    "subs": 2,
-    "views": 301,
-    "per1k": 6.64,
+    "days": 4,
+    "subs": 3,
+    "views": 504,
+    "per1k": 5.95,
     "ends": "2026-12-06"
    }
   },
@@ -587,7 +593,7 @@
    "kind": "views_before_after",
    "age": 3,
    "question": "Does a third Short a day, in the evening window, add views a day without starving each Short?",
-   "change": 0.69,
+   "change": 0.68,
    "why": "The 2027 goal needs about 2,740 views a day; two Shorts make about 1,200. Each Short reaches 600 to 950 people in its first days whatever the slot, and the evening slot got 1.15x the reach of its week, so a third post should add roughly 40%.",
    "measure": "Views a day (Cicero's funnel, the 14 days after against the 14 before) and the median Short's views at 3 days old, so a third post that only splits the same views shows up.",
    "ask": "idea-third-short",
@@ -600,8 +606,8 @@
     "median": 304
    },
    "during": {
-    "shorts": 27,
-    "median": 209,
+    "shorts": 28,
+    "median": 208,
     "ends": "2026-11-27"
    }
   },
@@ -610,7 +616,7 @@
    "kind": "views_before_after",
    "age": 3,
    "question": "Does tying a Short's hook, description lead and question to what the US is talking about today add views and comments?",
-   "change": 0.52,
+   "change": 0.44,
    "why": "The owner finds the Shorts a bit boring and wants them relevant to today's world. A hook that meets viewers in an event they already know should stop more scrolls and give them something to answer.",
    "measure": "the median edit's views at 3 days old, 14 days after against 14 before",
    "ask": null,
@@ -623,8 +629,8 @@
     "median": 336
    },
    "during": {
-    "shorts": 18,
-    "median": 176,
+    "shorts": 19,
+    "median": 149,
     "ends": "2026-11-30"
    }
   },
@@ -644,14 +650,14 @@
    "approved": "2026-11-16: owner, in the HQ: \"Put the search in the title too: Go\"",
    "started": "2026-11-22",
    "before": {
-    "views": 438,
-    "of": 12186,
+    "views": 437,
+    "of": 12179,
     "share": 0.0359
    },
    "during": {
-    "views": 4,
-    "of": 158,
-    "share": 0.0253,
+    "views": 12,
+    "of": 298,
+    "share": 0.0403,
     "ends": "2026-12-06"
    }
   },
@@ -660,7 +666,7 @@
    "kind": "views_before_after",
    "age": 1,
    "question": "Did the Nov 16 changes (news-tied hooks, no comment line) cost views?",
-   "change": 0.61,
+   "change": 0.49,
    "why": "Shorts posted since Nov 16 average about 105 views on day one, against 186 in October and 265 for the first painted Shorts (Nov 12-15). The Nov 16 changes (news-tied hooks from Fama, and the description no longer ending its question with 'Share your thoughts in the comments.') line up with the drop.",
    "measure": "median day-1 and day-3 views of the Shorts posted Nov 24-30 against those posted Nov 16-19 (the first run: Nov 20-21)",
    "ask": "idea-undo-nov16",
@@ -681,8 +687,8 @@
    },
    "extended": "2026-11-24: owner, in the HQ: \"Keep the old hooks and the comment line?: Test 7 more days\"",
    "during": {
-    "shorts": 3,
-    "median": 67,
+    "shorts": 6,
+    "median": 53,
     "ends": "2026-12-01"
    }
   },
@@ -690,7 +696,7 @@
    "id": "video-bg",
    "kind": "views_before_after",
    "question": "Do animated backgrounds bring more views than painted stills?",
-   "change": "From 2026-11-23 to 2026-12-22: the first Short of each day animates 3 of its paintings (the hook's shot and two more) with Seedance 2.0 Mini on Higgsfield, 5 seconds each; every other shot stays painted. At most 3 clips a day. It starts as soon as Higgsfield has credits.",
+   "change": 0.2,
    "why": "owner's choice in the HQ, 2026-11-22",
    "measure": "day-3 views of the video Short against the same day's painted Shorts, over the month",
    "ask": "video-storyboard",
@@ -704,8 +710,8 @@
     "median": 237
    },
    "during": {
-    "shorts": 0,
-    "median": null,
+    "shorts": 1,
+    "median": 48,
     "ends": "2026-12-23"
    }
   },
@@ -721,8 +727,8 @@
    "status": "proposed",
    "proposed": "2026-11-23",
    "before": {
-    "shorts": 35,
-    "median": 137
+    "shorts": 36,
+    "median": 127
    }
   },
   {
@@ -764,14 +770,14 @@
    "start": "2027-01-01",
    "deadline": "2027-12-31",
    "started": false,
-   "daysLeft": 401,
+   "daysLeft": 400,
    "targets": [
     {
      "metric": "views",
      "target": 1000000,
      "have": 0,
      "pct": 0.0,
-     "pace": 694.2,
+     "pace": 688.4,
      "needed": 2739.7,
      "status": "starts",
      "onPace": false,
@@ -780,8 +786,8 @@
     {
      "metric": "subscribers",
      "target": 1000,
-     "have": 292,
-     "pct": 29.2,
+     "have": 293,
+     "pct": 29.3,
      "pace": 1.7,
      "needed": 1.8,
      "status": "behind",
@@ -797,7 +803,7 @@
        "target": 100000,
        "have": 0,
        "pct": 0.0,
-       "pace": 694.2,
+       "pace": 688.4,
        "needed": 1111.1,
        "status": "starts",
        "onPace": false,
@@ -806,8 +812,8 @@
       {
        "metric": "subscribers",
        "target": 450,
-       "have": 292,
-       "pct": 64.89,
+       "have": 293,
+       "pct": 65.11,
        "pace": 1.7,
        "needed": 1.3,
        "status": "on track",
@@ -825,7 +831,7 @@
        "target": 300000,
        "have": 0,
        "pct": 0.0,
-       "pace": 694.2,
+       "pace": 688.4,
        "needed": 1657.5,
        "status": "starts",
        "onPace": false,
@@ -834,8 +840,8 @@
       {
        "metric": "subscribers",
        "target": 600,
-       "have": 292,
-       "pct": 48.67,
+       "have": 293,
+       "pct": 48.83,
        "pace": 1.7,
        "needed": 1.4,
        "status": "on track",
@@ -853,7 +859,7 @@
        "target": 600000,
        "have": 0,
        "pct": 0.0,
-       "pace": 694.2,
+       "pace": 688.4,
        "needed": 2197.8,
        "status": "starts",
        "onPace": false,
@@ -862,8 +868,8 @@
       {
        "metric": "subscribers",
        "target": 800,
-       "have": 292,
-       "pct": 36.5,
+       "have": 293,
+       "pct": 36.62,
        "pace": 1.7,
        "needed": 1.6,
        "status": "on track",
@@ -881,7 +887,7 @@
        "target": 1000000,
        "have": 0,
        "pct": 0.0,
-       "pace": 694.2,
+       "pace": 688.4,
        "needed": 2739.7,
        "status": "starts",
        "onPace": false,
@@ -890,8 +896,8 @@
       {
        "metric": "subscribers",
        "target": 1000,
-       "have": 292,
-       "pct": 29.2,
+       "have": 293,
+       "pct": 29.3,
        "pace": 1.7,
        "needed": 1.8,
        "status": "behind",
@@ -910,7 +916,7 @@
       "target": 100000,
       "have": 0,
       "pct": 0.0,
-      "pace": 694.2,
+      "pace": 688.4,
       "needed": 1111.1,
       "status": "starts",
       "onPace": false,
@@ -919,8 +925,8 @@
      {
       "metric": "subscribers",
       "target": 450,
-      "have": 292,
-      "pct": 64.89,
+      "have": 293,
+      "pct": 65.11,
       "pace": 1.7,
       "needed": 1.3,
       "status": "on track",
@@ -933,5 +939,5 @@
    "onTrack": false
   }
  },
- "note": "376 views a day (-61% on last week) · 1.0 new subscribers a day · goal: behind · testing: Does the crew's new look (painted shots, a hook readable on the first frame, YouTube-level sound) bring more views? (+7 more)"
+ "note": "375 views a day (-45% on last week) · 1.1 new subscribers a day · goal: behind · testing: Does the crew's new look (painted shots, a hook readable on the first frame, YouTube-level sound) bring more views? (+7 more)"
 }
