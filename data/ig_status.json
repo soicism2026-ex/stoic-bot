@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-26T19:58:21Z",
+ "checked": "2026-11-27T02:09:26Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -7,7 +7,7 @@
  "buffer": {
   "channelId": "6aefac98e29c69a1719afcdf",
   "organizationId": "6aefac80736a55e56b4fd310",
-  "checked": "2026-11-26",
+  "checked": "2026-11-27",
   "name": "forged.in.stoicism",
   "link": "https://instagram.com/forged.in.stoicism"
  },
@@ -19,17 +19,17 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-26T19:58:21Z",
-  "youtube": "7QCViAc-YgQ",
-  "title": "\"Can't believe how rude people are\" | How to control your emotions — Marcus Aurelius",
+  "at": "2026-11-27T02:09:26Z",
+  "youtube": "zfDy2kZBuBk",
+  "title": "\"Free apps aren't free\" | How to stop procrastinating — Seneca",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/DgN6SDIBx8b/",
+  "permalink": "https://www.instagram.com/reel/DgOkvIot9rm/",
   "reason": null
  },
  "tiktok": {
   "connected": true,
-  "posted": 10,
+  "posted": 11,
   "username": "forged.in.stoicis",
-  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7712572381100805396"
+  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7712667998686825748"
  }
 }
