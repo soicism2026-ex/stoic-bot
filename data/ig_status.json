@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-27T11:35:59Z",
+ "checked": "2026-11-27T19:46:43Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -19,17 +19,17 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-27T11:35:59Z",
-  "youtube": "7qAHOQjzFr8",
-  "title": "\"Not naturally gifted? Read this\" | How to stay disciplined — Epictetus",
+  "at": "2026-11-27T19:46:43Z",
+  "youtube": "qjxM1rbmPSE",
+  "title": "\"Still checking what they're up to\" | How to stop procrastinating — Marcus Aurelius",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/DgPlj9OtphI/",
+  "permalink": "https://www.instagram.com/reel/DgQdvTTqkEd/",
   "reason": null
  },
  "tiktok": {
   "connected": true,
-  "posted": 12,
+  "posted": 13,
   "username": "forged.in.stoicis",
-  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7712813983845125397"
+  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7712939914584804609"
  }
 }
