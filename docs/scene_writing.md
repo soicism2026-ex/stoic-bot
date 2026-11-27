@@ -110,6 +110,12 @@ effort ends up.
    surface ("a jagged, moss-flecked grey boulder"). A light named next to a held
    object merges with it (a wine cup with a candle burning inside): put the light
    elsewhere in the room ("firelight from a hearth behind him").
+   Hands in face close-ups (2026-11-18, 11-26, 11-27: three times): the model adds
+   bunched fists holding an unnamed dark stick (reads as a phone or cigar) at the
+   bottom of a face or chest close-up. Fill the frame with the face and shoulders
+   ("face and shoulders filling the whole frame") and do not mention hands unless
+   the shot is about them, and then name what they hold ("a clay jug").
+
 4. Review before `add`: would a shot still make sense if the quote were swapped for
    another? Then it is atmosphere, not a shot; rewrite it.
 
