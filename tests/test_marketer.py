@@ -93,7 +93,7 @@ def test_the_ledger_proposes_before_it_ships():
             assert t[k], (t["id"], k)
     assert {t["id"] for t in ledger["tests"]} >= {"pinned-question", "playlists"}   # ideas became tests
     # the third Short became a running test on 2026-11-13 (the owner's Go): it left the ideas list
-    assert any(t["id"] == "third-short" and t["status"] == "running" for t in ledger["tests"])
+    assert any(t["id"] == "third-short" and t["status"] in ("running", "done") for t in ledger["tests"])
 
 
 def test_the_read_is_written_for_people_and_for_the_hq(tmp_path, monkeypatch):
@@ -243,4 +243,4 @@ def test_the_new_look_is_judged_by_age_matched_views_before_and_after():
     assert "verdict" not in early and early["during"]["median"] == 300
     ledger = json.loads((ROOT / "data" / "marketing_tests.json").read_text(encoding="utf-8"))
     t = next(t for t in ledger["tests"] if t["id"] == "new-look")
-    assert t["kind"] == "views_before_after" and t["status"] == "running" and t["started"] == "2026-11-12"
+    assert t["kind"] == "views_before_after" and t["status"] in ("running", "done") and t["started"] == "2026-11-12"

@@ -81,10 +81,14 @@
    "why": "This month's top Stoicism Shorts are painted, colourful and readable on frame one; ours were washed-out black-and-white stock with a grey first frame and quieter sound.",
    "measure": "The median edit's views at 3 days old, the 14 days after against the 14 before.",
    "ask": "new-look",
-   "status": "running",
+   "status": "done",
    "proposed": "2026-11-11",
    "started": "2026-11-12",
-   "approved": "2026-11-11: owner, in the HQ: \"Switch to the new look\""
+   "approved": "2026-11-11: owner, in the HQ: \"Switch to the new look\"",
+   "ended": "2026-11-27",
+   "verdict": "loss",
+   "adopted": "kept (owner's pick): not reverted",
+   "result": "Median views at 3 days 208 (33 Shorts) vs 284 (28) before: 0.73x. The whole channel fell in the same weeks (views a day -47% on the week before, the news-hook and third-Short tests overlapped), so the look cannot be blamed alone. Reverting a look the owner chose is his call: card idea-review-look-cadence."
   },
   {
    "id": "follow-line",
@@ -109,10 +113,14 @@
    "why": "The 2027 goal needs about 2,740 views a day; two Shorts make about 1,200. Each Short reaches 600 to 950 people in its first days whatever the slot, and the evening slot got 1.15x the reach of its week, so a third post should add roughly 40%.",
    "measure": "Views a day (Cicero's funnel, the 14 days after against the 14 before) and the median Short's views at 3 days old, so a third post that only splits the same views shows up.",
    "ask": "idea-third-short",
-   "status": "running",
+   "status": "done",
    "proposed": "2026-11-12",
    "started": "2026-11-13",
-   "approved": "2026-11-13: owner, in the HQ: \"A third Short a day, in the evening: Go\""
+   "approved": "2026-11-13: owner, in the HQ: \"A third Short a day, in the evening: Go\"",
+   "ended": "2026-11-27",
+   "verdict": "loss",
+   "adopted": "kept (owner's pick): not reverted",
+   "result": "Each Short 203 views at 3 days (31 Shorts) vs 304 (28) before: 0.67x. Three Shorts at 203 are 609 a day against two at 304 (608): the total is flat, so the third Short adds nothing yet and costs nothing. It also carries the journal pitch test. Cadence is the owner's call: card idea-review-look-cadence."
   },
   {
    "id": "topical",
