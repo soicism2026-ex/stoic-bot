@@ -1,5 +1,5 @@
 {
- "checked": "2026-11-28T01:54:02Z",
+ "checked": "2026-11-28T11:06:34Z",
  "ok": true,
  "problem": null,
  "ownerAction": false,
@@ -19,17 +19,17 @@
  },
  "numbersProblem": "Echo posts through Buffer, so Instagram's own numbers (followers, views) aren't pulled. Each Reel's link is kept.",
  "lastPost": {
-  "at": "2026-11-28T01:54:02Z",
-  "youtube": "tDLCotqFAgw",
-  "title": "\"Train your body to obey you\" | How to stay disciplined — Seneca",
+  "at": "2026-11-28T11:06:34Z",
+  "youtube": "kg_-9PQC_QY",
+  "title": "\"Someone close hurt you? Here's your move\" | How to stay disciplined — Epictetus",
   "status": "published",
-  "permalink": "https://www.instagram.com/reel/DgRHwjbSX_l/",
+  "permalink": "https://www.instagram.com/reel/DgSG_q-NUFc/",
   "reason": null
  },
  "tiktok": {
   "connected": true,
-  "posted": 14,
+  "posted": 15,
   "username": "forged.in.stoicis",
-  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7713035084969823509"
+  "lastLink": "https://tiktok.com/@forged.in.stoicis/video/7713177469288762631"
  }
 }
