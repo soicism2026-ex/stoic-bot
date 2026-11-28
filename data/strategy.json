@@ -1,21 +1,21 @@
 {
- "updated": "2026-11-27",
+ "updated": "2026-11-28",
  "by": "Frontinus (scripts/strategist.py, no paid API)",
  "window_days": 28,
- "settled_edits": 59,
- "median_views_day3": 212,
- "median_retention": 105.0,
+ "settled_edits": 60,
+ "median_views_day3": 209.0,
+ "median_retention": 107.0,
  "theme_rank": {
   "mortality": 1,
-  "time": 2,
   "anger": 2,
   "desire": 1,
   "fear": 1,
   "duty": 1,
-  "adversity": 1,
+  "time": 1,
   "discipline": 1,
-  "resilience": 1,
+  "adversity": 1,
   "friendship": 0,
+  "resilience": 0,
   "control": 0,
   "ego": 1
  },
@@ -25,23 +25,15 @@
     "key": "mortality",
     "n": 2,
     "median_views_day3": 569.5,
-    "lift": 2.29,
+    "lift": 2.24,
     "median_retention": 122.1,
     "verdict": "too few"
    },
    {
-    "key": "time",
-    "n": 4,
-    "median_views_day3": 294.0,
-    "lift": 1.39,
-    "median_retention": 102.8,
-    "verdict": "winner"
-   },
-   {
     "key": "anger",
-    "n": 11,
-    "median_views_day3": 365,
-    "lift": 1.35,
+    "n": 12,
+    "median_views_day3": 345.0,
+    "lift": 1.29,
     "median_retention": 99.9,
     "verdict": "winner"
    },
@@ -55,9 +47,9 @@
    },
    {
     "key": "fear",
-    "n": 8,
-    "median_views_day3": 245.0,
-    "lift": 1.02,
+    "n": 7,
+    "median_views_day3": 247,
+    "lift": 1.03,
     "median_retention": 98.7,
     "verdict": "even"
    },
@@ -65,9 +57,25 @@
     "key": "duty",
     "n": 5,
     "median_views_day3": 141,
-    "lift": 0.88,
+    "lift": 0.93,
     "median_retention": 107.0,
     "verdict": "even"
+   },
+   {
+    "key": "time",
+    "n": 6,
+    "median_views_day3": 144.0,
+    "lift": 0.88,
+    "median_retention": 102.8,
+    "verdict": "even"
+   },
+   {
+    "key": "discipline",
+    "n": 2,
+    "median_views_day3": 180.0,
+    "lift": 0.85,
+    "median_retention": 114.1,
+    "verdict": "too few"
    },
    {
     "key": "adversity",
@@ -78,27 +86,19 @@
     "verdict": "even"
    },
    {
-    "key": "discipline",
-    "n": 2,
-    "median_views_day3": 180.0,
-    "lift": 0.81,
-    "median_retention": 114.1,
-    "verdict": "too few"
-   },
-   {
-    "key": "resilience",
-    "n": 5,
-    "median_views_day3": 164,
-    "lift": 0.77,
-    "median_retention": 79.3,
-    "verdict": "even"
-   },
-   {
     "key": "friendship",
     "n": 4,
     "median_views_day3": 179.5,
-    "lift": 0.73,
+    "lift": 0.66,
     "median_retention": 122.4,
+    "verdict": "loser"
+   },
+   {
+    "key": "resilience",
+    "n": 4,
+    "median_views_day3": 152.5,
+    "lift": 0.63,
+    "median_retention": 75.7,
     "verdict": "loser"
    },
    {
@@ -113,7 +113,7 @@
     "key": "ego",
     "n": 2,
     "median_views_day3": 141.5,
-    "lift": 0.49,
+    "lift": 0.39,
     "median_retention": 118.7,
     "verdict": "too few"
    }
@@ -123,15 +123,15 @@
     "key": "Marcus Aurelius",
     "n": 20,
     "median_views_day3": 243.5,
-    "lift": 1.17,
-    "median_retention": 102.0,
+    "lift": 1.23,
+    "median_retention": 102.8,
     "verdict": "even"
    },
    {
     "key": "Epictetus",
-    "n": 18,
-    "median_views_day3": 203.0,
-    "lift": 0.94,
+    "n": 19,
+    "median_views_day3": 199,
+    "lift": 0.86,
     "median_retention": 97.0,
     "verdict": "even"
    },
@@ -149,49 +149,49 @@
     "key": "command",
     "n": 6,
     "median_views_day3": 294.0,
-    "lift": 1.39,
+    "lift": 1.5,
     "median_retention": 112.9,
     "verdict": "winner"
    },
    {
     "key": "question",
-    "n": 23,
-    "median_views_day3": 209,
-    "lift": 0.99,
+    "n": 24,
+    "median_views_day3": 209.0,
+    "lift": 0.93,
     "median_retention": 103.5,
     "verdict": "even"
    },
    {
     "key": "statement",
     "n": 30,
-    "median_views_day3": 209.5,
-    "lift": 0.92,
-    "median_retention": 108.4,
+    "median_views_day3": 203.0,
+    "lift": 0.9,
+    "median_retention": 113.8,
     "verdict": "even"
    }
   ],
   "hook_len": [
    {
+    "key": "long (7+)",
+    "n": 12,
+    "median_views_day3": 242.0,
+    "lift": 1.17,
+    "median_retention": 103.0,
+    "verdict": "even"
+   },
+   {
     "key": "medium (5-6)",
-    "n": 30,
-    "median_views_day3": 245.0,
-    "lift": 1.02,
+    "n": 32,
+    "median_views_day3": 238.0,
+    "lift": 0.9,
     "median_retention": 100.1,
     "verdict": "even"
    },
    {
-    "key": "long (7+)",
-    "n": 14,
-    "median_views_day3": 238.0,
-    "lift": 1.01,
-    "median_retention": 102.9,
-    "verdict": "even"
-   },
-   {
     "key": "short (<=4 words)",
-    "n": 15,
-    "median_views_day3": 160,
-    "lift": 0.68,
+    "n": 16,
+    "median_views_day3": 153.5,
+    "lift": 0.75,
     "median_retention": 113.8,
     "verdict": "loser"
    }
@@ -199,9 +199,9 @@
   "quote_len": [
    {
     "key": "long (25+)",
-    "n": 11,
-    "median_views_day3": 251,
-    "lift": 1.11,
+    "n": 12,
+    "median_views_day3": 215.0,
+    "lift": 0.99,
     "median_retention": 89.0,
     "verdict": "even"
    },
@@ -216,9 +216,9 @@
    {
     "key": "medium (13-24)",
     "n": 38,
-    "median_views_day3": 210.5,
-    "lift": 0.92,
-    "median_retention": 108.3,
+    "median_views_day3": 209.0,
+    "lift": 0.9,
+    "median_retention": 109.6,
     "verdict": "even"
    }
   ],
@@ -235,16 +235,16 @@
     "key": "el3_taiko_distant",
     "n": 5,
     "median_views_day3": 243,
-    "lift": 1.3,
+    "lift": 1.37,
     "median_retention": 109.5,
     "verdict": "winner"
    },
    {
-    "key": "el3_choir_braam",
+    "key": "el_bass_felt_dark",
     "n": 6,
-    "median_views_day3": 260.5,
-    "lift": 1.15,
-    "median_retention": 97.2,
+    "median_views_day3": 212.0,
+    "lift": 1.07,
+    "median_retention": 114.2,
     "verdict": "even"
    },
    {
@@ -256,50 +256,50 @@
     "verdict": "even"
    },
    {
-    "key": "el_bass_felt_dark",
+    "key": "el3_grand_braam",
     "n": 5,
-    "median_views_day3": 215,
-    "lift": 0.99,
-    "median_retention": 114.2,
+    "median_views_day3": 147,
+    "lift": 0.87,
+    "median_retention": 97.3,
     "verdict": "even"
    },
    {
     "key": "el3_upright_tape",
-    "n": 6,
-    "median_views_day3": 222.5,
-    "lift": 0.94,
-    "median_retention": 102.8,
-    "verdict": "even"
-   },
-   {
-    "key": "el3_felt_cello",
-    "n": 6,
-    "median_views_day3": 212.5,
-    "lift": 0.94,
-    "median_retention": 83.8,
-    "verdict": "even"
-   },
-   {
-    "key": "el3_grand_braam",
     "n": 5,
-    "median_views_day3": 147,
-    "lift": 0.82,
-    "median_retention": 97.3,
+    "median_views_day3": 233,
+    "lift": 0.86,
+    "median_retention": 108.4,
     "verdict": "even"
    },
    {
     "key": "el3_minimal_sub",
     "n": 5,
     "median_views_day3": 199,
-    "lift": 0.79,
+    "lift": 0.83,
     "median_retention": 118.3,
+    "verdict": "even"
+   },
+   {
+    "key": "el3_choir_braam",
+    "n": 7,
+    "median_views_day3": 251,
+    "lift": 0.82,
+    "median_retention": 97.2,
+    "verdict": "even"
+   },
+   {
+    "key": "el3_felt_cello",
+    "n": 6,
+    "median_views_day3": 212.5,
+    "lift": 0.8,
+    "median_retention": 83.8,
     "verdict": "even"
    },
    {
     "key": "el3_strings_ostinato",
     "n": 6,
     "median_views_day3": 132.5,
-    "lift": 0.69,
+    "lift": 0.7,
     "median_retention": 161.2,
     "verdict": "loser"
    },
@@ -315,10 +315,10 @@
   "voice": [
    {
     "key": "Brian",
-    "n": 59,
-    "median_views_day3": 212,
-    "lift": 0.97,
-    "median_retention": 105.0,
+    "n": 60,
+    "median_views_day3": 209.0,
+    "lift": 0.93,
+    "median_retention": 107.0,
     "verdict": "even"
    }
   ],
@@ -327,15 +327,15 @@
     "key": "first of the day",
     "n": 25,
     "median_views_day3": 236,
-    "lift": 1.03,
-    "median_retention": 97.4,
+    "lift": 0.99,
+    "median_retention": 97.3,
     "verdict": "even"
    },
    {
     "key": "second of the day",
-    "n": 34,
-    "median_views_day3": 199.0,
-    "lift": 0.84,
+    "n": 35,
+    "median_views_day3": 199,
+    "lift": 0.83,
     "median_retention": 116.9,
     "verdict": "even"
    }
@@ -345,7 +345,7 @@
     "key": "Thursday",
     "n": 7,
     "median_views_day3": 236,
-    "lift": 1.17,
+    "lift": 1.23,
     "median_retention": 97.2,
     "verdict": "even"
    },
@@ -353,7 +353,7 @@
     "key": "Saturday",
     "n": 10,
     "median_views_day3": 245.0,
-    "lift": 1.16,
+    "lift": 1.19,
     "median_retention": 97.0,
     "verdict": "even"
    },
@@ -367,33 +367,33 @@
    },
    {
     "key": "Friday",
-    "n": 10,
-    "median_views_day3": 236.5,
-    "lift": 1.01,
-    "median_retention": 114.8,
+    "n": 8,
+    "median_views_day3": 242.0,
+    "lift": 1.03,
+    "median_retention": 115.5,
     "verdict": "even"
    },
    {
     "key": "Monday",
     "n": 8,
     "median_views_day3": 189.0,
-    "lift": 0.8,
+    "lift": 0.72,
     "median_retention": 109.6,
-    "verdict": "even"
+    "verdict": "loser"
    },
    {
     "key": "Tuesday",
     "n": 10,
     "median_views_day3": 174.0,
-    "lift": 0.69,
+    "lift": 0.7,
     "median_retention": 116.2,
     "verdict": "loser"
    },
    {
     "key": "Wednesday",
-    "n": 7,
-    "median_views_day3": 116,
-    "lift": 0.47,
+    "n": 10,
+    "median_views_day3": 87.5,
+    "lift": 0.37,
     "median_retention": 135.9,
     "verdict": "loser"
    }
@@ -502,41 +502,41 @@
    "voice": "Brian",
    "slot": "first of the day",
    "weekday": "Wednesday",
-   "rel": 0.1291390728476821
+   "rel": 0.11158798283261803
   },
   {
-   "id": "not_right_not_true",
-   "date": "2026-11-18",
-   "views": 54,
+   "id": "todays_task",
+   "date": "2026-11-25",
+   "views": 24,
    "retention": null,
-   "theme": "duty",
-   "author": "Marcus Aurelius",
-   "hook": "Tempted to panic?",
-   "hook_form": "question",
-   "hook_len": "short (<=4 words)",
+   "theme": "time",
+   "author": "Seneca",
+   "hook": "Worried about tomorrow? Win today first.",
+   "hook_form": "statement",
+   "hook_len": "medium (5-6)",
    "quote_len": "medium (13-24)",
-   "music": "el3_felt_cello",
+   "music": "el3_more_like_1",
    "voice": "Brian",
    "slot": "first of the day",
    "weekday": "Wednesday",
-   "rel": 0.271356783919598
+   "rel": 0.1889763779527559
   },
   {
-   "id": "choose_free",
-   "date": "2026-11-18",
-   "views": 59,
+   "id": "good_today",
+   "date": "2026-11-25",
+   "views": 32,
    "retention": null,
-   "theme": "control",
-   "author": "Epictetus",
-   "hook": "Ready to retire",
-   "hook_form": "statement",
-   "hook_len": "short (<=4 words)",
-   "quote_len": "medium (13-24)",
-   "music": "el3_taiko_distant",
+   "theme": "time",
+   "author": "Marcus Aurelius",
+   "hook": "Waiting for Monday to start?",
+   "hook_form": "question",
+   "hook_len": "medium (5-6)",
+   "quote_len": "short (<=12 words)",
+   "music": "el3_choir_braam",
    "voice": "Brian",
    "slot": "second of the day",
    "weekday": "Wednesday",
-   "rel": 0.2964824120603015
+   "rel": 0.25196850393700787
   }
  ]
 }
